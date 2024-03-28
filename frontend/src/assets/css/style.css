@@ -5,14 +5,13 @@
     --accent-muted-color: #e7eafd;
 }
 
+.accent-bg {
+    background-color: var(--accent-muted-color);
+}
+
 .navbar .logo {
     height: 40px;
     width: auto;
-}
-
-.site-header,
-.site-footer {
-    background-color: var(--accent-muted-color);
 }
 
 /* Home page styles */

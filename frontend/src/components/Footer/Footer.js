@@ -3,7 +3,7 @@ import { ReactComponent as Logo } from "../../assets/svg/logo.svg";
 
 function Footer() {
   return (
-    <footer className='site-footer'>
+    <footer className='site-footer accent-bg'>
         <nav className="navbar navbar-expand navbar-light py-5 d-block">
 			<div className="container d-flex flex-wrap justify-content-between">
                 <NavLink to="/" className="d-flex col-12 col-lg-2 justify-content-center align-items-center">
