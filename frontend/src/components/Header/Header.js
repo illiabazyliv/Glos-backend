@@ -3,7 +3,8 @@ import { ReactComponent as Logo } from "../../assets/svg/logo.svg";
 
 function Header() {
   return (
-		<nav className="navbar navbar-expand-lg navbar-light bg-light py-3">
+	<header className='site-header'>
+		<nav className="navbar navbar-expand-lg navbar-light py-4">
 			<div className="container d-flex justify-content-between">
 			<NavLink to="/" className="d-flex col-8 col-lg-2 align-items-center">
 				<Logo className="logo"/>
@@ -38,6 +39,8 @@ function Header() {
 				</div>
 			</div>
 		</nav>
+	</header>
+		
   );
 }
 
