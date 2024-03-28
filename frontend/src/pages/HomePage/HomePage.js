@@ -105,6 +105,17 @@ function HomePage() {
                     </div>
                 </div>
             </section>
+            <section className='section cta-section'>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center">
+                            <h1>Lorem ipsum dolor sit amet, consectetur</h1>
+                            <p>Maecenas sagittis felis at accumsan sodales. Nunc viverra pulvinar ipsum, convallis blandit lacus congue id sagittis felis at accumsan sodales.</p>
+                            <NavLink className="btn btn-primary" to="/">Розпочати</NavLink>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
         
     );
