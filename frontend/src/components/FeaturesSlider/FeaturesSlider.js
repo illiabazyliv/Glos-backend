@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import Feature from './Feature';
+import Feature from '../Feature/Feature';
 
 function FeaturesSlider({items}) {
   return (
