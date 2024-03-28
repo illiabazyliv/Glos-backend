@@ -5,6 +5,7 @@ import '../../assets/css/style.css';
 import Header from '../Header/Header';
 import HomePage from '../../pages/HomePage/HomePage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Footer from '../Footer/Footer.js';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Routes>
             <Route path='/' element={<HomePage />} />
           </Routes>
+          <Footer/>
       </BrowserRouter>
   );
 }
