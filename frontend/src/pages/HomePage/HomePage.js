@@ -1,11 +1,15 @@
 import { NavLink } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
 import { ReactComponent as OfferImg } from "../../assets/svg/offer-img.svg";
+import FeaturesSlider from '../../components/FeaturesSlider/FeaturesSlider';
 
 function HomePage() {
+    const features = [
+        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
+        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
+        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
+        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
+    ];
+
     return (
         <main>
             <section className="section offer-section">
@@ -26,76 +30,7 @@ function HomePage() {
                 <div className="container">
                     <div className="row">
                         <div className='col-12'>
-                            <Swiper
-                                modules={[Pagination]}
-                                pagination={{ clickable: true }}
-                                spaceBetween={30}
-                                slidesPerView={1}
-                                breakpoints={{
-                                    576: {
-                                        slidesPerView: 2,
-                                    },
-                                    992: {
-                                        slidesPerView: 3,
-                                    },
-                                    1200: {
-                                        slidesPerView: 4,
-                                    },
-                                }}
-                                >
-                                <SwiperSlide>
-                                    <div className="card feature">
-                                        <div className="card-body text-center">
-                                            <div className='card-img d-flex align-items-center justify-content-center pt-3'>
-                                                <div className='card-icon rounded-circle d-flex align-items-center justify-content-center'>
-                                                    <i className='bi bi-rocket-takeoff'></i>
-                                                </div>
-                                            </div>
-                                            <h5 className="card-title pb-1">Special title treatment</h5>
-                                            <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        </div>
-                                    </div>
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <div className="card feature">
-                                        <div className="card-body text-center">
-                                            <div className='card-img d-flex align-items-center justify-content-center pt-3'>
-                                                <div className='card-icon rounded-circle d-flex align-items-center justify-content-center'>
-                                                    <i className='bi bi-rocket-takeoff'></i>
-                                                </div>
-                                            </div>
-                                            <h5 className="card-title pb-1">Special title treatment</h5>
-                                            <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        </div>
-                                    </div>
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <div className="card feature">
-                                        <div className="card-body text-center">
-                                            <div className='card-img d-flex align-items-center justify-content-center pt-3'>
-                                                <div className='card-icon rounded-circle d-flex align-items-center justify-content-center'>
-                                                    <i className='bi bi-rocket-takeoff'></i>
-                                                </div>
-                                            </div>
-                                            <h5 className="card-title pb-1">Special title treatment</h5>
-                                            <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        </div>
-                                    </div>
-                                </SwiperSlide>
-                                <SwiperSlide>
-                                    <div className="card feature">
-                                        <div className="card-body text-center">
-                                            <div className='card-img d-flex align-items-center justify-content-center pt-3'>
-                                                <div className='card-icon rounded-circle d-flex align-items-center justify-content-center'>
-                                                    <i className='bi bi-rocket-takeoff'></i>
-                                                </div>
-                                            </div>
-                                            <h5 className="card-title pb-1">Special title treatment</h5>
-                                            <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                        </div>
-                                    </div>
-                                </SwiperSlide>
-                            </Swiper>
+                            <FeaturesSlider items={features}/>
                         </div>
                     </div>
                     <div className="row pt-3">
