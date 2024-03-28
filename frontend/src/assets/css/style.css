@@ -2,7 +2,7 @@
 
 :root {
     --accent-color: #4154f1;
-    --accent-muted-color: #e7eafd;
+    --accent-muted-color: #ebedfb;
     --accent-ultra-light-color: #f6f6fe;
 }
 
@@ -11,7 +11,7 @@
 }
 
 .navbar .logo {
-    height: 40px;
+    height: 35px;
     width: auto;
 }
 
