@@ -1,4 +1,14 @@
+:root {
+    --accent-color: #4154f1;
+    --accent-muted-color: #e7eafd;
+}
+
 .navbar .logo {
     height: 40px;
     width: auto;
+}
+
+.site-header,
+.site-footer {
+    background-color: var(--accent-muted-color);
 }
