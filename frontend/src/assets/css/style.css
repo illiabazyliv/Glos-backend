@@ -3,6 +3,7 @@
 :root {
     --accent-color: #4154f1;
     --accent-muted-color: #e7eafd;
+    --accent-ultra-light-color: #f6f6fe;
 }
 
 .accent-bg {
@@ -15,11 +16,33 @@
 }
 
 /* Home page styles */
-.offer-section {
+.section {
     padding: 80px 0;
 }
 
 .offer-img {
     width: 100%;
     height: auto;
+}
+
+.swiper-pagination {
+    position: static !important;
+    margin-top: -10px;
+}
+
+.feature {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.feature .card-icon {
+    font-size: 32px;
+    line-height: 0;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    color: var(--accent-color);;
+    background: var(--accent-ultra-light-color);
 }
