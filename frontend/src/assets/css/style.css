@@ -3,12 +3,12 @@
 :root {
     --accent-color: #4154f1;
     --accent-dark-color: #3345e2;
-    --accent-muted-color: #ebedfb;
+    --accent-light-color: #ebedfb;
     --accent-ultra-light-color: #f6f6fe;
 }
 
 .accent-bg {
-    background-color: var(--accent-muted-color);
+    background-color: var(--accent-light-color);
 }
 
 .navbar .logo {
