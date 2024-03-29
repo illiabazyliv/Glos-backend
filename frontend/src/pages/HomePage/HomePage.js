@@ -16,8 +16,8 @@ function HomePage() {
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-md-6 d-flex flex-column justify-content-center align-items-start">
-                            <h1>Lorem ipsum dolor sit amet, consectetur</h1>
-                            <p>Maecenas sagittis felis at accumsan sodales. Nunc viverra pulvinar ipsum, convallis blandit lacus congue id.</p>
+                            <h1>Наша місія - надавати розвиток </h1>
+                            <p>Настав час користуватись новими можливостями, а не обмежувати себе, свій бізнес або команду.</p>
                             <NavLink className="btn btn-primary" to="/">Розпочати</NavLink>
                         </div>
                         <div className="col-12 col-md-6 mt-5 mt-md-0">
@@ -44,8 +44,9 @@ function HomePage() {
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center">
-                            <h1>Lorem ipsum dolor sit amet, consectetur</h1>
-                            <p>Maecenas sagittis felis at accumsan sodales. Nunc viverra pulvinar ipsum, convallis blandit lacus congue id sagittis felis at accumsan sodales.</p>
+                            <h1>Зроби СВІЙ крок до успіху разом з "GLOS"</h1>
+                            <p>Найважчий завжди перший крок. Проєкт "GLOS" це дієві інструменти для 
+                                навчання, для бізнесу та для життя.</p>
                             <NavLink className="btn btn-primary" to="/">Розпочати</NavLink>
                         </div>
                     </div>
