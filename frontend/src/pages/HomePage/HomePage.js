@@ -4,10 +4,10 @@ import FeaturesSlider from '../../components/FeaturesSlider/FeaturesSlider';
 
 function HomePage() {
     const features = [
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
+        {iconClass: 'bi bi-check-circle', title: 'Доступ до даних 24/7', text: 'Повноцінна робота вашої команди з будь-якої частини світу  .'},
+        {iconClass: 'bi bi-database-lock', title: 'Захист облікових даних та інформації', text: 'Весь код і модулі захисту написані виключно спеціалістами проєкту "Glos".'},
+        {iconClass: 'bi bi-rocket-takeoff', title: 'Стабільна робота на різних пристроях', text: 'Повноцінна підтримка ноутбуків, планшетів, телефонів.'},
+        {iconClass: 'bi bi-graph-up-arrow', title: 'Адмін контроль', text: 'Широкі можливості по контролю за доступом до ваших файлів.'},
     ];
 
     return (
