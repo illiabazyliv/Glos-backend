@@ -4,10 +4,10 @@ import FeaturesSlider from '../../components/FeaturesSlider/FeaturesSlider';
 
 function HomePage() {
     const features = [
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
-        {iconClass: 'bi bi-rocket-takeoff', title: 'Special title treatment', text: 'With supporting text below as a natural lead-in to additional content.'},
+        {iconClass: 'bi bi-check-circle', title: 'Доступ до даних 24/7', text: 'Повноцінна робота вашої команди з будь-якої частини світу  .'},
+        {iconClass: 'bi bi-database-lock', title: 'Захист облікових даних та інформації', text: 'Весь код і модулі захисту написані виключно спеціалістами проєкту "Glos".'},
+        {iconClass: 'bi bi-rocket-takeoff', title: 'Стабільна робота на різних пристроях', text: 'Повноцінна підтримка ноутбуків, планшетів, телефонів.'},
+        {iconClass: 'bi bi-graph-up-arrow', title: 'Адмін контроль', text: 'Широкі можливості по контролю за доступом до ваших файлів.'},
     ];
 
     return (
@@ -16,8 +16,8 @@ function HomePage() {
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-md-6 d-flex flex-column justify-content-center align-items-start">
-                            <h1>Lorem ipsum dolor sit amet, consectetur</h1>
-                            <p>Maecenas sagittis felis at accumsan sodales. Nunc viverra pulvinar ipsum, convallis blandit lacus congue id.</p>
+                            <h1>Наша місія - надавати розвиток </h1>
+                            <p>Настав час користуватись новими можливостями, а не обмежувати себе, свій бізнес або команду.</p>
                             <NavLink className="btn btn-primary" to="/">Розпочати</NavLink>
                         </div>
                         <div className="col-12 col-md-6 mt-5 mt-md-0">
@@ -44,8 +44,9 @@ function HomePage() {
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 text-center">
-                            <h1>Lorem ipsum dolor sit amet, consectetur</h1>
-                            <p>Maecenas sagittis felis at accumsan sodales. Nunc viverra pulvinar ipsum, convallis blandit lacus congue id sagittis felis at accumsan sodales.</p>
+                            <h1>Зроби СВІЙ крок до успіху разом з "GLOS"</h1>
+                            <p>Найважчий завжди перший крок. Проєкт "GLOS" це дієві інструменти для 
+                                навчання, для бізнесу та для життя.</p>
                             <NavLink className="btn btn-primary" to="/">Розпочати</NavLink>
                         </div>
                     </div>
