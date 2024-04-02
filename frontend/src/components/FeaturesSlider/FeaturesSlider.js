@@ -25,7 +25,7 @@ function FeaturesSlider({items}) {
         >
         {
             items.map(item => {
-                return <SwiperSlide>
+                return <SwiperSlide key={item.id}>
                     <Feature item={item}/>
                 </SwiperSlide>
             })
