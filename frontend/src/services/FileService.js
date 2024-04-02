@@ -3,14 +3,6 @@ const FileService = {
     
     },
 
-    addFileTag() { // PUT /users/{username}/repositories/{id}/files/{filename}/tags/{name}
-
-    },
-
-    deleteFileTag() { // DELETE /users/{username}/repositories/{id}/files/{filename}/tags/{name}
-
-    },
-
     getFile() { // GET /users/{username}/files/{filename}/download
 
     },

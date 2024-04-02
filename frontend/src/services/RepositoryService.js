@@ -15,14 +15,6 @@ const RepositoryService = {
 
     },
 
-    addRepositoryTag() { // PUT /users/{username}/repositories/{id}/tags/{name}
-
-    },
-
-    deleteRepositoryTag() { // DELETE /users/{username}/repositories/{id}/tags/{name}
-
-    },
-
     searchRepositories() { // GET /repositories?search=rep&username=usr1&page=0&onlyroots=false&size=10&sort=name,asc
 
     },
