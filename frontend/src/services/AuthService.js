@@ -1,47 +1,49 @@
 const AuthService = {
-    register() {
+    register() { // POST /auth/register
 
     },
 
-    registerAdmin() {
+    registerAdmin() { // POST /auth/register/admin
         
     },
 
-    login() {
+    login() { // POST /auth/login
         
     },
 
-    logout() {
+    logout() { // GET /auth/logout
 
     },
 
-    refreshToken() {
+    refreshToken() { // GET /auth/refresh
 
     },
 
-    executeOperation() {
+    executeOperation() { // POST /auth/users/{username}/execute-operation
 
     },
 
-    changePassword() {
+    changePassword() { // PUT /auth/users/{username}/change-password
 
     },
 
-    changePhoneNumber() {
+    changePhoneNumber() { // PUT /auth/users/{username}/change-phone-number
 
     },
 
-    changeUsername() {
+    changeUsername() { // PUT /auth/users/{username}/change-username
 
     },
 
-    changeEmail() {
+    changeEmail() { // PUT /auth/users/{username}/change-email
 
     },
 
-    dropAccount() {
+    dropAccount() { // DELETE /auth/users/{username}/drop-account
 
     },
 
     
 };
+
+export default AuthService;
