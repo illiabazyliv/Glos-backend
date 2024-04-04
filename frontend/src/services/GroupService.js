@@ -1,3 +1,6 @@
+import { httpInstance } from "../http/httpInstance";
+import { handleHttpError } from "../helpers/helpers";
+
 const GroupService = {
     async getUserGroups(username) { // GET /users/{username}/groups
         return await httpInstance.get(`/users/${username}/groups`)
