@@ -64,7 +64,7 @@ const UserService = {
                 login: searchParam,
                 page,
                 size,
-                order: `${orderBy.toLowerCase()},${order.toLowerCase()}`,
+                sort: `${orderBy.toLowerCase()},${order.toLowerCase()}`,
             }
         })
         .then(function (response) {
