@@ -22,7 +22,7 @@ const UserService = {
         const formData = new FormData();
         formData.append('image', image);
 
-        return httpInstance.put(`/users/${username}/image`, formData, 
+        return await httpInstance.put(`/users/${username}/image`, formData, 
         {
             headers: {
                 'Content-Type': 'multipart/form-data'
