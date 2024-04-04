@@ -1,49 +1,94 @@
+import { httpInstance } from "../http/httpInstance";
+import { handleHttpError } from "../helpers/helpers";
+
 const AuthService = {
-    register() { // POST /auth/register
-
+    register(user) {
+        return httpInstance.post('/auth/register', user)
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    registerAdmin() { // POST /auth/register/admin
-        
+    registerAdmin(user) {
+        return httpInstance.post('/auth/register/admin', user)
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    login() { // POST /auth/login
-        
+    login(login, password) {
+        return httpInstance.post('/auth/login', {login, password})
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    logout() { // GET /auth/logout
-
+    logout() {
+        return httpInstance.get('/auth/logout')
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    refreshToken() { // GET /auth/refresh
-
+    refreshToken(refreshToken) { // GET /auth/refresh - i suppose it should be post
+        return httpInstance.post('/auth/refresh', {refreshToken})
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    executeOperation() { // POST /auth/users/{username}/execute-operation
-
+    executeOperation(username, code) {
+        return httpInstance.post(`/auth/users/${username}/execute-operation`, {code})
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    changePassword() { // PUT /auth/users/{username}/change-password
-
+    changePassword(oldPassword, newPassword) {
+        return httpInstance.put(`/auth/users/${username}/change-password`, {oldPassword, newPassword})
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    changePhoneNumber() { // PUT /auth/users/{username}/change-phone-number
-
+    changePhoneNumber(oldNumber, newNumber) {
+        return httpInstance.put(`/auth/users/${username}/change-phone-number`, {old: oldNumber, new: newNumber})
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    changeUsername() { // PUT /auth/users/{username}/change-username
-
+    changeUsername(oldUsername, newUsername) {
+        return httpInstance.put(`/auth/users/${username}/change-username`, {oldUsername, newUsername})
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    changeEmail() { // PUT /auth/users/{username}/change-email
-
+    changeEmail(oldEmail, newEmail) {
+        return httpInstance.put(`/auth/users/${username}/change-email`, {oldEmail, newEmail})
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    dropAccount() { // DELETE /auth/users/{username}/drop-account
-
+    dropAccount() {
+        return httpInstance.delete(`/auth/users/${username}/drop-account`)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
-
-    
 };
 
 export default AuthService;
