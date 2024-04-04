@@ -1,30 +1,76 @@
+import { httpInstance } from "../http/httpInstance";
+import { handleHttpError } from "../helpers/helpers";
+
 const UserService = {
-    getUser() { // GET /users/{username}
-
+    async getUser(username) { // GET /users/{username}
+        return await httpInstance.get(`/users/${username}`)
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    getUserImage() { // GET /users/{username}/image
-
+    async getUserImage(username) { // GET /users/{username}/image
+        return await httpInstance.get(`/users/${username}/image`)
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    setUserImage() { // PUT /users/{username}/image
+    async setUserImage(username, image) { // PUT /users/{username}/image
+        const formData = new FormData();
+        formData.append('image', image);
 
+        return httpInstance.put(`/users/${username}/image`, formData, 
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    updateUser() { // PUT /users/{username}
-
+    async updateUser(username, user) { // PUT /users/{username}
+        return await httpInstance.put(`/users/${username}`, user)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    blockUser() { // POST /users/{username}/block
-
+    async blockUser(username) { // POST /users/{username}/block
+        return await httpInstance.post(`/users/${username}/block`)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    enableUser() { // POST /users/{username}/enable
-
+    async enableUser(username) { // POST /users/{username}/enable
+        return await httpInstance.post(`/users/${username}/enable`)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    searchUsers() { // GET /users?login=<username/email/phoneNumber>&page=0&size=10&size="username,asc"
-
+    async searchUsers(searchParam, page, size, orderBy, order) { // GET /users?login=<username/email/phoneNumber>&page=0&size=10&size="username,asc"
+        return await httpInstance.get('/users', {
+            params: {
+                login: searchParam,
+                page,
+                size,
+                order: `${orderBy.toLowerCase()},${order.toLowerCase()}`,
+            }
+        })
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error)) 
     },
 };
 
