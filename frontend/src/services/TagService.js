@@ -1,30 +1,64 @@
+import { httpInstance } from "../http/httpInstance";
+import { handleHttpError } from "../helpers/helpers";
+
 const TagService = {
-    getTags() { // GET /tags
-
+    async getTags() { // GET /tags
+        return await httpInstance.get(`/tags`)
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    createTag() { // PUT /tags/{name}
-
+    // todo: ask if this is an update or a create route
+    async updateTag(name, tag) { // PUT /tags/{name}
+        return await httpInstance.put(`/tags/${name}`, tag)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    deleteTag() { // DELETE /tags/{name}
-
+    async deleteTag(name) { // DELETE /tags/{name}
+        return await httpInstance.delete(`/tags/${name}`)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    addRepositoryTag() { // PUT /users/{username}/repositories/{id}/tags/{name}
-
+    // todo: ???
+    async addRepositoryTag(username, id, name, tag) { // PUT /users/{username}/repositories/{id}/tags/{name}
+        return await httpInstance.put(`/users/${username}/repositories/${id}/tags/${name}`, tag)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    deleteRepositoryTag() { // DELETE /users/{username}/repositories/{id}/tags/{name}
-
+    async deleteRepositoryTag(username, id, name) { // DELETE /users/{username}/repositories/{id}/tags/{name}
+        return await httpInstance.delete(`/users/${username}/repositories/${id}/tags/${name}`)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
     
-    addFileTag() { // PUT /users/{username}/repositories/{id}/files/{filename}/tags/{name}
-
+    // todo: ???
+    async addFileTag(username, id, filename, name, tag) { // PUT /users/{username}/repositories/{id}/files/{filename}/tags/{name}
+        return await httpInstance.put(`/users/${username}/repositories/${id}/files/${filename}/tags/${name}`, tag)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 
-    deleteFileTag() { // DELETE /users/{username}/repositories/{id}/files/{filename}/tags/{name}
-
+    async deleteFileTag(username, id, filename, name) { // DELETE /users/{username}/repositories/{id}/files/{filename}/tags/{name}
+        return await httpInstance.delete(`/users/${username}/repositories/${id}/files/${filename}/tags/${name}`)
+        .then(function (response) {
+            return response;
+        })
+        .catch(error => handleHttpError(error))
     },
 };
 
