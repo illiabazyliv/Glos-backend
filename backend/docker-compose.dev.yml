@@ -1,0 +1,5 @@
+version: "3.5"
+
+networks:
+  glos-app-network:
+    driver: bridge
