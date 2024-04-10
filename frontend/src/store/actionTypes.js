@@ -1,3 +1,7 @@
+export const appActionTypes = {
+    SET_INITIALIZED: 'SET_INITIALIZED',
+}
+
 export const authActionTypes = {
     SET_LOADING: 'SET_LOADING',
     SET_USER: 'SET_USER',

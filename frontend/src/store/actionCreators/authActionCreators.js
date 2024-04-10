@@ -6,7 +6,7 @@ export const setLoadingAC = () => {
     }
 }
 
-export const setAuthSuccessAC = (user, token) => {
+export const setUserAC = (user, token) => {
     return {
         type: authActionTypes.SET_USER,
         payload: {
@@ -15,7 +15,7 @@ export const setAuthSuccessAC = (user, token) => {
     }
 }
 
-export const setAuthErrorsAC = (errors) => {
+export const setErrorAC = (errors) => {
     return {
         type: authActionTypes.SET_ERROR,
         payload: {
