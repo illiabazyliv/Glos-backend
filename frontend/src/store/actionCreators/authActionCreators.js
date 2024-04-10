@@ -49,7 +49,6 @@ export const updateUserAC = (user) => {
     }
 }
 
-
 export const setUpdateStatusAC = (isUpdateSuccessful, errors = []) => {
     return {
         type: authActionTypes.SET_UPDATE_STATUS,

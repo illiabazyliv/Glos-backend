@@ -5,6 +5,9 @@
     --accent-dark-color: #3345e2;
     --accent-light-color: #ebedfb;
     --accent-ultra-light-color: #f6f6fe;
+
+    --text-accent-color: #012970;
+    --faded-bg-color: #f6f9ff;
 }
 
 .accent-bg {
@@ -34,6 +37,17 @@
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: var(--accent-color);
     --bs-btn-disabled-border-color: var(--accent-color);
+}
+
+/* Sidebar styles */
+.sidebar-nav .nav-link {
+    color: var(--text-accent-color);
+    background: #fff;
+}
+
+.sidebar-nav .nav-link.active {
+    color: var(--accent-color);
+    background: var(--faded-bg-color);
 }
 
 /* Home page styles */
@@ -78,7 +92,6 @@
 }
 
 /* Loader styles */
-
 .lds-ring {
     display: inline-block;
     position: relative;
@@ -93,10 +106,10 @@
     width: 64px;
     height: 64px;
     margin: 8px;
-    border: 8px solid #cfcfcf;
+    border: 8px solid var(--accent-color);
     border-radius: 50%;
     animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #cfcfcf transparent transparent transparent;
+    border-color: var(--accent-color) transparent transparent transparent;
 }
 
 .lds-ring div:nth-child(1) {

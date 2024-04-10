@@ -5,10 +5,8 @@ function DashboardPage() {
     return (
         <div>
             <DashboardSidebar/>
-            <main className='main'>
-                <div className="inner-page">
-                    <Outlet/>
-                </div>
+            <main id='main' className='main'>
+                <Outlet/>
             </main>
         </div>
     );

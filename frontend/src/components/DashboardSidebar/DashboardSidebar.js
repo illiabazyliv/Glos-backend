@@ -6,6 +6,8 @@ function DashboardSidebar() {
             <ul className='sidebar-nav'>
                 <li className='nav-item'>
                     <NavLink className='nav-link' to='all-files'>All files</NavLink>
+                </li>
+                <li className='nav-item'>
                     <NavLink className='nav-link' to='repositories'>Repositories</NavLink>
                 </li>
             </ul>
