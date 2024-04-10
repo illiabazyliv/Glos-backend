@@ -5,7 +5,12 @@ const AuthService = {
     async register(user) { // POST /auth/register
         return await httpInstance.post('/auth/register', user)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "token": "ufhskdfhksndkf",
+                "refreshToken": "238466u823"
+            };
         })
         .catch(error => handleHttpError(error))
     },
@@ -13,7 +18,12 @@ const AuthService = {
     async registerAdmin(user) { // POST /auth/register/admin
         return await httpInstance.post('/auth/register/admin', user)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "token": "ufhskdfhksndkf",
+                "refreshToken": "238466u823"
+            };
         })
         .catch(error => handleHttpError(error))
     },
@@ -21,7 +31,12 @@ const AuthService = {
     async login(login, password) { // POST /auth/login
         return await httpInstance.post('/auth/login', {login, password})
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "token": "ufhskdfhksndkf",
+                "refreshToken": "238466u823"
+            }
         })
         .catch(error => handleHttpError(error))
     },
@@ -29,7 +44,11 @@ const AuthService = {
     async logout() { // GET /auth/logout
         return await httpInstance.get('/auth/logout')
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "expiredToken" : "sjahiasmdid" 
+            };
         })
         .catch(error => handleHttpError(error))
     },
@@ -37,7 +56,12 @@ const AuthService = {
     async refreshToken(refreshToken) { // GET /auth/refresh - i suppose it should be post
         return await httpInstance.post('/auth/refresh', {refreshToken})
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "token": "ufhskdfhksndkf",
+                "refreshToken": "238466u823"
+            }
         })
         .catch(error => handleHttpError(error))
     },
@@ -58,8 +82,8 @@ const AuthService = {
         .catch(error => handleHttpError(error))
     },
 
-    async changePhoneNumber(username, oldNumber, newNumber) { // PUT /auth/users/{username}/change-phone-number
-        return await httpInstance.put(`/auth/users/${username}/change-phone-number`, {old: oldNumber, new: newNumber})
+    async changePhoneNumber(username, oldPhoneNumber, newPhoneNumber) { // PUT /auth/users/{username}/change-phone-number
+        return await httpInstance.put(`/auth/users/${username}/change-phone-number`, {oldPhoneNumber, newPhoneNumber})
         .then(function (response) {
             return response;
         })
