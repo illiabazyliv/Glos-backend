@@ -23,7 +23,11 @@ const UserService = {
     async getUserImage(username) { // GET /users/{username}/image
         return await httpInstance.get(`/users/${username}/image`)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "tempUrl" : "https://i0.wp.com/sunrisedaycamp.org/wp-content/uploads/2020/10/placeholder.png?ssl=1"
+            };
         })
         .catch(error => handleHttpError(error))
     },
@@ -39,7 +43,11 @@ const UserService = {
             }
         })
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "imgUrl" : "https://i0.wp.com/sunrisedaycamp.org/wp-content/uploads/2020/10/placeholder.png?ssl=1"
+            };
         })
         .catch(error => handleHttpError(error))
     },
