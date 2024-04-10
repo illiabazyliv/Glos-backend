@@ -5,7 +5,17 @@ const UserService = {
     async getUser(username) { // GET /users/{username}
         return await httpInstance.get(`/users/${username}`)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "username": "username1",
+                "email": "email1@mail.com",
+                "phoneNumber": "+380123456789",
+                "firstName" : "john1",
+                "lastName" : "doe1",
+                "gender" : "male",
+                "BirthDate" : "1996.03.22" 
+            };
         })
         .catch(error => handleHttpError(error))
     },
@@ -61,14 +71,41 @@ const UserService = {
     async searchUsers(searchParam, page, size, orderBy, order) { // GET /users?login=<username/email/phoneNumber>&page=0&size=10&size="username,asc"
         return await httpInstance.get('/users', {
             params: {
-                login: searchParam,
+                login: searchParam, //todo: ask about this param in DTO
                 page,
                 size,
                 sort: `${orderBy.toLowerCase()},${order.toLowerCase()}`,
             }
         })
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+				"content": [
+					{
+						"username": "username1",
+                        "email": "email1@mail.com",
+                        "phoneNumber": "+380123456789",
+                        "firstName" : "john1",
+                        "lastName" : "doe1",
+                        "gender" : "male",
+                        "ISOBirthDate" : "1996.03.22"
+					},
+					{
+						"username": "username2",
+                        "email": "email2@mail.com",
+                        "phoneNumber": "+380123456789",
+                        "firstName" : "john2",
+                        "lastName" : "doe2",
+                        "gender" : "female",
+                        "ISOBirthDate" : "1996.03.23"
+					},
+				],
+				"page": 1,
+				"size": 10,
+				"sort": "username,acs",
+				"totalSize": 5
+		    };
         })
         .catch(error => handleHttpError(error)) 
     },
