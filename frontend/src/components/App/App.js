@@ -11,8 +11,10 @@ import { connect } from 'react-redux';
 import Header from '../Header/Header';
 import Loader from '../Loader/Loader';
 import HomePage from '../../pages/HomePage/HomePage';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import Footer from '../Footer/Footer.js';
+import DashboardPage from '../../pages/DashboardPage/DashboardPage.js';
+import FilesPage from '../../pages/FilesPage/FilesPage.js';
 
 
 const App = ({ isInitialized, initialize, user }) => {
@@ -31,6 +33,11 @@ const App = ({ isInitialized, initialize, user }) => {
             <Header />
             <Routes>
                 <Route path='/' element={<HomePage />} />
+
+                <Route path='/dashboard/*' element={<DashboardPage />}>
+                    <Route index element={<Navigate to={'/dashboard/all-files'}/>}/>
+                    <Route path='all-files' element={<FilesPage />} />
+                </Route>
             </Routes>
             <Footer />
         </BrowserRouter>
