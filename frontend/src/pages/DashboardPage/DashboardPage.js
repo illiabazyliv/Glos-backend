@@ -1,21 +1,16 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import DashboardSidebar from '../../components/DashboardSidebar/DashboardSidebar';
 
 function DashboardPage() {
     return (
-        <main>
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-3">
-                        <h1>DashboardPage</h1>
-                        <p>menu will be here</p>
-                    </div>
-                    <div className='col-9'>
-                        <Outlet/>
-                    </div>
+        <div>
+            <DashboardSidebar/>
+            <main className='main'>
+                <div className="inner-page">
+                    <Outlet/>
                 </div>
-            </div>
-        </main>
-        
+            </main>
+        </div>
     );
   }
   

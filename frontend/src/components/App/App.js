@@ -8,13 +8,13 @@ import store from '../../store/store';
 import { Provider } from 'react-redux';
 import { initialize } from '../../store/thunks/appThunks';
 import { connect } from 'react-redux';
-import Header from '../Header/Header';
 import Loader from '../Loader/Loader';
 import HomePage from '../../pages/HomePage/HomePage';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import Footer from '../Footer/Footer.js';
 import DashboardPage from '../../pages/DashboardPage/DashboardPage.js';
 import FilesPage from '../../pages/FilesPage/FilesPage.js';
+import LandingLayout from '../../layouts/LangingLayout/LangingLayout.js';
+import DashboardLayout from '../../layouts/DashboardLayout/DashboardLayout.js';
 
 
 const App = ({ isInitialized, initialize, user }) => {
@@ -30,16 +30,18 @@ const App = ({ isInitialized, initialize, user }) => {
 
     return (
         <BrowserRouter>
-            <Header />
             <Routes>
-                <Route path='/' element={<HomePage />} />
+                <Route element={<LandingLayout/>}>
+                    <Route path='/' element={<HomePage />} />
+                </Route>
 
-                <Route path='/dashboard/*' element={<DashboardPage />}>
-                    <Route index element={<Navigate to={'/dashboard/all-files'}/>}/>
-                    <Route path='all-files' element={<FilesPage />} />
+                <Route element={<DashboardLayout/>}>
+                    <Route path='/dashboard/*' element={<DashboardPage />}>
+                        <Route index element={<Navigate to={'/dashboard/all-files'}/>}/>
+                        <Route path='all-files' element={<FilesPage />} />
+                    </Route>
                 </Route>
             </Routes>
-            <Footer />
         </BrowserRouter>
     );
 }
