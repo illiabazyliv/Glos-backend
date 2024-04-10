@@ -5,10 +5,32 @@ function DashboardSidebar() {
         <aside className='sidebar'>
             <ul className='sidebar-nav'>
                 <li className='nav-item'>
-                    <NavLink className='nav-link' to='all-files'>All files</NavLink>
+                    <NavLink className='nav-link collapsed' to='all-files'>
+                        <i className='bi bi-file-earmark-text'></i>
+                        <span>All files</span>
+                    </NavLink>
                 </li>
                 <li className='nav-item'>
-                    <NavLink className='nav-link' to='repositories'>Repositories</NavLink>
+                    <NavLink to='repositories' className='nav-link' data-bs-target="#repositories-nav" data-bs-toggle="collapse" >
+                        <i className='bi bi-folder'></i>
+                        <span>Repositories</span>
+                    </NavLink>
+                    <ul id="repositories-nav" className='nav-content collapse'>
+                        <li>
+                        <NavLink className='nav-link' to='repositories' end>
+                            <i className='bi bi-circle'></i>
+                            <span>All repositories</span>
+                        </NavLink>
+                        <NavLink className='nav-link' to='repositories/general' end>
+                            <i className='bi bi-circle'></i>
+                            <span>General</span>
+                        </NavLink>
+                        <NavLink className='nav-link' to='repositories/add-new' end>
+                            <i className='bi bi-plus sub-menu-special-icon'></i>
+                            <span>Add new</span>
+                        </NavLink>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </aside>
