@@ -3,7 +3,7 @@ import DashboardSidebar from '../../components/DashboardSidebar/DashboardSidebar
 
 function DashboardPage() {
     return (
-        <div>
+        <div className='dashboard-page'>
             <DashboardSidebar/>
             <main id='main' className='main'>
                 <Outlet/>
