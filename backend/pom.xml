@@ -18,6 +18,7 @@
 
   <modules>
     <module>eureka-service</module>
+    <module>entities</module>
   </modules>
 
   <properties>
