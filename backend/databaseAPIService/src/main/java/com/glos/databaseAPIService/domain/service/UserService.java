@@ -1,8 +1,8 @@
 package com.glos.databaseAPIService.domain.service;
 
 import com.glos.databaseAPIService.domain.entity.User;
-import com.glos.databaseAPIService.domain.entity.UserFilter;
-import com.glos.databaseAPIService.domain.mappers.UserMapper;
+import com.glos.databaseAPIService.domain.filters.UserFilter;
+import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
 import com.glos.databaseAPIService.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

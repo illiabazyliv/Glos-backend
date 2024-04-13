@@ -1,6 +1,7 @@
-package com.glos.databaseAPIService.domain.mappers;
+package com.glos.databaseAPIService.domain.entityMappers;
 
 import com.glos.databaseAPIService.domain.entity.User;
+import com.glos.databaseAPIService.domain.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
 @Component

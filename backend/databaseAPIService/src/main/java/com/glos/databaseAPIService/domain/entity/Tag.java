@@ -18,4 +18,13 @@ public class Tag
     @Column(name = "name", length = 100, nullable = false, unique = true)
     private String name;
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
 }

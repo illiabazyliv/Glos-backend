@@ -1,18 +1,15 @@
 package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.databaseAPIService.domain.entity.User;
-import com.glos.databaseAPIService.domain.entity.UserFilter;
-import com.glos.databaseAPIService.domain.mappers.UserMapper;
-import com.glos.databaseAPIService.domain.repository.UserRepository;
+import com.glos.databaseAPIService.domain.filters.UserFilter;
+import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
 import com.glos.databaseAPIService.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -41,18 +38,16 @@ public class UserAPIController
     }
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteUser(@PathVariable Long id)
+    public ResponseEntity<?> deleteUser(@PathVariable Long id)
     {
         userService.delete(userService.findById(id).get());
-        return HttpStatus.NO_CONTENT;
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@RequestBody User newUser, @PathVariable Long id)
     {
-        User user = userService.findById(id).get();
-        userMapper.transferEntityDto(newUser, user);
-        userService.save(user);
+        userService.update(newUser, id);
         return ResponseEntity.noContent().build();
     }
 

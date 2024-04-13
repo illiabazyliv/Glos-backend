@@ -1,8 +1,7 @@
 package com.glos.databaseAPIService.domain.repository;
 
 import com.glos.databaseAPIService.domain.entity.User;
-import com.glos.databaseAPIService.domain.entity.UserFilter;
-import org.springframework.beans.factory.annotation.Value;
+import com.glos.databaseAPIService.domain.filters.UserFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

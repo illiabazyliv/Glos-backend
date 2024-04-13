@@ -1,5 +1,7 @@
-package com.glos.databaseAPIService.domain.entity;
+package com.glos.databaseAPIService.domain.filters;
 
+import com.glos.databaseAPIService.domain.entity.Group;
+import com.glos.databaseAPIService.domain.entity.Role;
 import jakarta.persistence.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

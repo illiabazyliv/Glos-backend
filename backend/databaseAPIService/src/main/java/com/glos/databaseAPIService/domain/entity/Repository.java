@@ -77,4 +77,8 @@ public class Repository
 
     @OneToMany(mappedBy = "repository")
     private List<File> files;
+
+    public Long getId() {
+        return id;
+    }
 }
