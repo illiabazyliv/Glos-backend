@@ -12,6 +12,6 @@ FROM amazoncorretto:17
 
 COPY --from=builder /app/eureka-service/target/*.jar /app/app.jar
 
-EXPOSE 8081
+EXPOSE 9001
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
