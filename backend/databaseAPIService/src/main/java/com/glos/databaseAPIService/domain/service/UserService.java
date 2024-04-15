@@ -27,7 +27,7 @@ public class UserService
         return userRepository.findById(id);
     }
 
-    public List<User> getAll(UserFilter filter)
+    public List<User> findAllByFilter(UserFilter filter)
     {
         return userRepository.findAll();
     }

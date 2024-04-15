@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.service;
 import com.glos.databaseAPIService.domain.entity.Repository;
 import com.glos.databaseAPIService.domain.entity.Tag;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
+import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
 import com.glos.databaseAPIService.domain.repository.RepositoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,8 +51,17 @@ public class RepositoryService
         return repository.findByOwnerId(ownerId);
     }
 
+    public Optional<Repository> findByRootFullName(String rootFullName)
+    {
+        return repository.findByRootFullName(rootFullName);
+    }
+
     Repository getRepositoryByIdOrThrow(Long id)
     {
         return findById(id).orElseThrow(() -> { return new RuntimeException("Tag is not found"); });
+    }
+
+    public List<Repository> findAllByFilter(RepositoryFilter filter) {
+        return repository.findAllByFilter(filter);
     }
 }
