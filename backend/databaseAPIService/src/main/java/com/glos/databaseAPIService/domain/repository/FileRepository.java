@@ -21,28 +21,27 @@ public interface FileRepository extends JpaRepository<File, Long>
             """)
     public List<File> findAllByRepositoryId(@Param("repositoryId") Long repositoryId);
 
-
-    @Query(value = """
-            SELECT file FROM File file
-            WHERE file.id = :filter.id
-            OR file.rootPath = :filter.rootPath
-            OR file.rootFilename = :filter.rootFilename
-            OR file.rootFullName = :filter.rootFullName
-            OR file.rootSize = :filter.rootSize
-            OR file.rootFormat = :filter.rootFormat
-            OR file.displayPath = :filter.displayPath
-            OR file.displayFilename = :filter.displayFilename
-            OR file.displayFullName = :filter.displayFullName
-            OR file.repository = :filter.repository
-            OR file.accessTypes = :filter.accessTypes
-            OR file.comments = :filter.comments
-            OR file.secureCodes = :filter.secureCodes
-            """)
+@Query("""
+         SELECT file FROM File file
+         WHERE :#{#filter.id} IS NULL OR file.id = :#{#filter.id}
+         OR (:#{#filter.rootPath} IS NULL OR file.rootPath = :#{#filter.rootPath})
+         OR (:#{#filter.rootFilename} IS NULL OR file.rootFilename = :#{#filter.rootFilename})
+         OR (:#{#filter.rootFullName} IS NULL OR file.rootFullName = :#{#filter.rootFullName})
+         OR (:#{#filter.rootSize} IS NULL OR file.rootSize = :#{#filter.rootSize})
+         OR (:#{#filter.rootFormat} IS NULL OR file.rootFormat = :#{#filter.rootFormat})
+         OR (:#{#filter.displayPath} IS NULL OR file.displayPath = :#{#filter.displayPath})
+         OR (:#{#filter.displayFilename} IS NULL OR file.displayFilename = :#{#filter.displayFilename})
+         OR (:#{#filter.displayFullName} IS NULL OR file.displayFullName = :#{#filter.displayFullName})
+         OR (:#{#filter.repository.id} IS NULL OR file.repository.id = :#{#filter.repository.id})
+         OR (:#{#filter.accessTypes} IS NULL OR ARRAY_INTERSECT(file.accessTypes, :#{#filter.accessTypes}) IN :#{#filter.accessTypes})
+         OR (:#{#filter.comments} IS NULL OR ARRAY_INTERSECT(file.comments, :#{#filter.comments}) IN :#{#filter.comments})
+         OR (:#{#filter.secureCodes} IS NULL OR ARRAY_INTERSECT(file.secureCodes, :#{#filter.secureCodes}) IN :#{#filter.secureCodes})
+        """)
     public List<File> findAllByFilter(@Param("filter") FileFilter filter);
 
     @Query(value = """
-            SELECT * FROM files
-            WHERE root_full_name = :rootFullName
+            SELECT file FROM File file
+            WHERE file.rootFullName = :rootFullName
             """)
     public Optional<File> findByRootFullName(@Param("rootFullName") String rootFullName);
 }
