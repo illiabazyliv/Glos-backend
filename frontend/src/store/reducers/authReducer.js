@@ -5,6 +5,7 @@ let initState = {
     isLoading: false,
     isUpdateSuccessful: false,
     user: null,
+    userImage: null,
     isAuth: false,
     errors: [],
 }
@@ -21,6 +22,7 @@ const authReducer = (state = initState, action) => {
                 ...state,
                 isAuth: true,
                 user: action.payload.user,
+                userImage: action.payload.userImage,
                 token: action.payload.token,
                 errors: [],
                 isLoading: false,

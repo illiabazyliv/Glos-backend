@@ -6,11 +6,11 @@ export const setLoadingAC = () => {
     }
 }
 
-export const setUserAC = (user, token) => {
+export const setUserAC = (user, userImage, token) => {
     return {
         type: authActionTypes.SET_USER,
         payload: {
-            user, token
+            user, userImage, token
         }
     }
 }
