@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(
         name = "files_user_access_types"
 )
-public class FIleUserAccessType
+public class FileUserAccessType
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

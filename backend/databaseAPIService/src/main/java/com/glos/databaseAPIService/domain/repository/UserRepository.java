@@ -25,35 +25,21 @@ public interface UserRepository extends JpaRepository<User, Long>
     @Query(value = """
             SELECT user FROM User user
             WHERE :#{#userFilter.id} IS NULL OR user.id = :#{#userFilter.id}
-            OR :#{#userFilter.username} IS NULL OR user.username = :#{#userFilter.username}
-            OR :#{#userFilter.email} IS NULL OR user.email = :#{#userFilter.email}
-            OR :#{#userFilter.phone_number} IS NULL OR user.phone_number = :#{#userFilter.phone_number}
-            OR :#{#userFilter.gender} IS NULL OR user.gender = :#{#userFilter.gender}
-            OR :#{#userFilter.first_name} IS NULL OR user.first_name = :#{#userFilter.first_name}
-            OR :#{#userFilter.last_name} IS NULL OR user.last_name = :#{#userFilter.last_name}
-            OR :#{#userFilter.birthdate} IS NULL OR user.birthdate = :#{#userFilter.birthdate}
-            OR :#{#userFilter.is_account_non_expired} IS NULL OR user.is_account_non_expired = :#{#userFilter.is_account_non_expired}
-            OR :#{#userFilter.is_account_non_locked} IS NULL OR user.is_account_non_locked = :#{#userFilter.is_account_non_locked}
-            OR :#{#userFilter.is_credentials_non_expired} IS NULL OR user.is_credentials_non_expired = :#{#userFilter.is_credentials_non_expired}
-            OR :#{#userFilter.is_enabled} IS NULL OR user.is_enabled = :#{#userFilter.is_enabled}
-            OR :#{#userFilter.is_deleted} IS NULL OR user.is_deleted = :#{#userFilter.is_deleted}
-            OR (:#{#userFilter.roles} IS NULL OR ARRAY_INTERSECT(user.roles, :#{#userFilter.roles}) IN :#{#userFilter.roles})
-            OR (:#{#userFilter.groups} IS NULL OR ARRAY_INTERSECT(user.groups, :#{#userFilter.groups}) IN :#{#userFilter.groups})
+            AND :#{#userFilter.username} IS NULL OR user.username = :#{#userFilter.username}
+            AND :#{#userFilter.email} IS NULL OR user.email = :#{#userFilter.email}
+            AND :#{#userFilter.phone_number} IS NULL OR user.phone_number = :#{#userFilter.phone_number}
+            AND :#{#userFilter.gender} IS NULL OR user.gender = :#{#userFilter.gender}
+            AND :#{#userFilter.first_name} IS NULL OR user.first_name = :#{#userFilter.first_name}
+            AND :#{#userFilter.last_name} IS NULL OR user.last_name = :#{#userFilter.last_name}
+            AND :#{#userFilter.birthdate} IS NULL OR user.birthdate = :#{#userFilter.birthdate}
+            AND :#{#userFilter.is_account_non_expired} IS NULL OR user.is_account_non_expired = :#{#userFilter.is_account_non_expired}
+            AND :#{#userFilter.is_account_non_locked} IS NULL OR user.is_account_non_locked = :#{#userFilter.is_account_non_locked}
+            AND :#{#userFilter.is_credentials_non_expired} IS NULL OR user.is_credentials_non_expired = :#{#userFilter.is_credentials_non_expired}
+            AND :#{#userFilter.is_enabled} IS NULL OR user.is_enabled = :#{#userFilter.is_enabled}
+            AND :#{#userFilter.is_deleted} IS NULL OR user.is_deleted = :#{#userFilter.is_deleted}
+            AND (:#{#userFilter.roles} IS NULL OR ARRAY_INTERSECT(user.roles, :#{#userFilter.roles}) IS NOT NULL)
+            AND (:#{#userFilter.groups} IS NULL OR ARRAY_INTERSECT(user.groups, :#{#userFilter.groups}) IS NOT NULL)
             """)
     public List<User> findAllByFilter(@Param("userFilter") UserFilter userFilter);
 
-//    OR user.username = :userFilter.username
-//    OR user.email = :userFilter.email
-//    OR user.phone_number = :userFilter.phone_number
-//    OR user.gender = :userFilter.gender
-//    OR user.first_name = :userFilter.first_name
-//    OR user.last_name = :userFilter.last_name
-//    OR user.birthdate = :userFilter.birthdate
-//    OR user.is_account_non_expired = :userFilter.is_account_non_expired
-//    OR user.is_account_non_locked = :userFilter.is_account_non_locked
-//    OR user.is_credentials_non_expired = :userFilter.is_credentials_non_expired
-//    OR user.is_enabled = :userFilter.is_enabled
-//    OR  user.is_deleted = :userFilter.is_deleted
-//    OR user.roles = :userFilter.roles
-//    OR user.groups = :userFilter.groups
 }
