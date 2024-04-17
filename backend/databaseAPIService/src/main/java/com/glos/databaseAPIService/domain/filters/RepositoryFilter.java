@@ -6,16 +6,13 @@ import jakarta.persistence.*;
 
 import java.util.HashMap;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.Map;
 
-public class RepositoryFilter implements EntityFilter
-=======
 /**
  * 	@author - yablonovskydima
  */
-public class RepositoryFilter
->>>>>>> 598b04d4c42ec0d109aac54ff9f8595880e639df
+
+public class RepositoryFilter implements EntityFilter
 {
     private Long id;
 

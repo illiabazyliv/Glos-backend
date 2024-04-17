@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * @author Mykola Melnyk
+ */
+
 public class CommentFilter implements EntityFilter
 {
     private Long id;
