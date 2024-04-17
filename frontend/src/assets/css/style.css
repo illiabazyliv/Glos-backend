@@ -68,6 +68,7 @@
 
 .dashboard-page .sidebar {
     position: relative;
+    flex-shrink: 0;
 }
 
 .nav-profile img {

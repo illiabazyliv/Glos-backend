@@ -5,7 +5,7 @@ function DashboardPage() {
     return (
         <div className='dashboard-page'>
             <DashboardSidebar/>
-            <main id='main' className='main'>
+            <main id='main' className='main w-100'>
                 <Outlet/>
             </main>
         </div>

@@ -38,8 +38,8 @@ const App = ({ isInitialized, initialize, user }) => {
 
                 <Route element={<DashboardLayout/>}>
                     <Route path='/dashboard/*' element={<DashboardPage />}>
-                        <Route index element={<Navigate to={'/dashboard/all-files'}/>}/>
-                        <Route path='all-files' element={<FilesPage />} />
+                        <Route index element={<Navigate to={'/dashboard/uploaded-files'}/>}/>
+                        <Route path='uploaded-files' element={<FilesPage />} />
                         <Route path='profile' element={<ProfilePage />} />
                     </Route>
                 </Route>

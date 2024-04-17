@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { ReactComponent as Logo } from "../../assets/svg/logo.svg";
-import HeaderProfileMenu from '../HeaderProfileMenu/HeaderProfileMenu'
+import HeaderProfileDropdown from '../HeaderProfileDropdown/HeaderProfileDropdown'
 import { connect } from 'react-redux';
 
 function DashboardHeader({ user, userImage, isSidebarVisible, setSidebarVisible }) {
@@ -17,7 +17,7 @@ function DashboardHeader({ user, userImage, isSidebarVisible, setSidebarVisible 
 							<span className="navbar-toggler-icon"></span>
 						</button>
 					</div>
-					<HeaderProfileMenu user={user} userImage={userImage}/>
+					<HeaderProfileDropdown user={user} userImage={userImage}/>
 				</div>
 			</nav>
 		</header>

@@ -5,9 +5,9 @@ function DashboardSidebar() {
         <aside className='sidebar'>
             <ul className='sidebar-nav'>
                 <li className='nav-item'>
-                    <NavLink className='nav-link collapsed' to='all-files'>
+                    <NavLink className='nav-link collapsed' to='uploaded-files'>
                         <i className='bi bi-file-earmark-text'></i>
-                        <span>All files</span>
+                        <span>Uploaded files</span>
                     </NavLink>
                 </li>
                 <li className='nav-item'>

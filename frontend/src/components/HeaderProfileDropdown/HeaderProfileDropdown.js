@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
-function HeaderProfileMenu({ user, userImage }) {
+function HeaderProfileDropdown({ user, userImage }) {
     return (
         <div className='header-profile'>
             <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
@@ -38,4 +38,4 @@ function HeaderProfileMenu({ user, userImage }) {
     );
 }
 
-export default HeaderProfileMenu;
+export default HeaderProfileDropdown;
