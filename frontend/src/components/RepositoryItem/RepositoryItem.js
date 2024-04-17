@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import ItemMenuDropdown from "../ItemMenuDropdown/ItemMenuDropdown";
+import RepositoryDropdown from "../RepositoryDropdown/RepositoryDropdown";
 
 function RepositoryItem({ repository }) {
     // todo: choode image placeholder based on type of file
@@ -15,7 +15,7 @@ function RepositoryItem({ repository }) {
                     </h6>
                     <small className="text-muted py-1">{repository.description}</small>
                 </div>
-                <ItemMenuDropdown/>
+                <RepositoryDropdown/>
             </div>
         </div>
     );

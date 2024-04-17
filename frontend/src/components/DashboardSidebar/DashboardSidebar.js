@@ -25,7 +25,7 @@ function DashboardSidebar() {
                             <i className='bi bi-circle'></i>
                             <span>General</span>
                         </NavLink>
-                        <NavLink className='nav-link' to='repositories/add-new' end>
+                        <NavLink className='nav-link' to='new-repository' end>
                             <i className='bi bi-plus sub-menu-special-icon'></i>
                             <span>Add new</span>
                         </NavLink>

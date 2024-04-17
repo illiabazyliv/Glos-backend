@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import ItemMenuDropdown from "../ItemMenuDropdown/ItemMenuDropdown";
+import FileDropdown from "../FileDropdown/FileDropdown";
 
 function FileItem({ file }) {
     // todo: choode image placeholder based on type of file
@@ -12,7 +12,7 @@ function FileItem({ file }) {
                 <h6 className="fs-6 text-medium card-title p-0 m-0">
                     <NavLink to={'files/' + file.displayFilename}>{file.displayFilename}</NavLink>
                 </h6>
-                <ItemMenuDropdown/>
+                <FileDropdown/>
             </div>
         </div>
     );
