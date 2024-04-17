@@ -5,11 +5,12 @@ import com.glos.databaseAPIService.domain.entity.AccessType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class FileFilter
+public class FileFilter implements EntityFilter
 {
-
     private Long id;
     private String rootPath;
 
@@ -170,5 +171,25 @@ public class FileFilter
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("rootPath", rootPath);
+        map.put("rootFilename", rootFilename);
+        map.put("rootFullName", rootFullName);
+        map.put("rootSize", rootSize);
+        map.put("rootFormat", rootFormat);
+        map.put("displayPath", displayPath);
+        map.put("displayFilename", displayFilename);
+        map.put("displayFullName", displayFullName);
+        map.put("repository", repository);
+        map.put("accessTypes", accessTypes);
+        map.put("comments", comments);
+        map.put("secureCodes", secureCodes);
+        map.put("tags", tags);
+        return map;
     }
 }

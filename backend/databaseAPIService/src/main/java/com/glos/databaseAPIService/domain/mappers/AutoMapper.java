@@ -2,6 +2,9 @@ package com.glos.databaseAPIService.domain.mappers;
 
 import java.util.Collection;
 
+/**
+ * @author Mykola Melnyk
+ */
 public interface AutoMapper<E, D> {
     D toDto(E entity);
     Collection<D> toDtoAll(Iterable<E> iterable);

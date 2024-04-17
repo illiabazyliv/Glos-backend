@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Mykola Melnyk
+ */
 public abstract class AbstractMapper<E, D>
         implements AutoMapper<E, D> {
 

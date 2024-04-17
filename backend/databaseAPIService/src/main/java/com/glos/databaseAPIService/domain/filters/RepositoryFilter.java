@@ -4,9 +4,11 @@ import com.glos.databaseAPIService.domain.entity.*;
 import com.glos.databaseAPIService.domain.entity.AccessType;
 import jakarta.persistence.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class RepositoryFilter
+public class RepositoryFilter implements EntityFilter
 {
     private Long id;
 
@@ -180,5 +182,26 @@ public class RepositoryFilter
 
     public void setFiles(List<File> files) {
         this.files = files;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("rootPath", rootPath);
+        map.put("rootName", rootName);
+        map.put("rootFullName", rootFullName);
+        map.put("owner", owner);
+        map.put("isDefault", isDefault);
+        map.put("displayPath", displayPath);
+        map.put("displayName", displayName);
+        map.put("displayFullName", displayFullName);
+        map.put("description", description);
+        map.put("accessTypes", accessTypes);
+        map.put("comments", comments);
+        map.put("secureCodes", secureCodes);
+        map.put("tags", tags);
+        map.put("files", files);
+        return map;
     }
 }

@@ -4,8 +4,9 @@ import com.glos.databaseAPIService.domain.entity.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
-public class CommentFilter
+public class CommentFilter implements EntityFilter
 {
     private Long id;
 
@@ -35,5 +36,14 @@ public class CommentFilter
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        return Map.of(
+                "id",  id,
+                "author", author,
+                "date", date
+        );
     }
 }

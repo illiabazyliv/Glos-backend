@@ -4,10 +4,10 @@ import com.glos.databaseAPIService.domain.entity.AccessType;
 import com.glos.databaseAPIService.domain.entity.File;
 import com.glos.databaseAPIService.domain.entity.User;
 
-public class FileUserAccessTypeFilter
+import java.util.Map;
+
+public class FileUserAccessTypeFilter implements EntityFilter
 {
-
-
     private Long id;
 
     private File file;
@@ -46,5 +46,15 @@ public class FileUserAccessTypeFilter
 
     public void setAccessType(AccessType accessType) {
         this.accessType = accessType;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        return Map.of(
+                "id", id,
+                "file", file,
+                "user", user,
+                "accessType", accessType
+        );
     }
 }
