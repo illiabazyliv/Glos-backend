@@ -15,6 +15,7 @@ import DashboardPage from '../../pages/DashboardPage/DashboardPage.js';
 import FilesPage from '../../pages/FilesPage/FilesPage.js';
 import LandingLayout from '../../layouts/LangingLayout/LangingLayout.js';
 import DashboardLayout from '../../layouts/DashboardLayout/DashboardLayout.js';
+import ProfilePage from '../../pages/ProfilePage/ProfilePage.js';
 
 
 const App = ({ isInitialized, initialize, user }) => {
@@ -39,6 +40,7 @@ const App = ({ isInitialized, initialize, user }) => {
                     <Route path='/dashboard/*' element={<DashboardPage />}>
                         <Route index element={<Navigate to={'/dashboard/all-files'}/>}/>
                         <Route path='all-files' element={<FilesPage />} />
+                        <Route path='profile' element={<ProfilePage />} />
                     </Route>
                 </Route>
             </Routes>
