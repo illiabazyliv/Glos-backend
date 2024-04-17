@@ -10,7 +10,9 @@
 
     import java.util.List;
     import java.util.Optional;
-
+    /**
+     * 	@author - yablonovskydima
+     */
     @org.springframework.stereotype.Repository
     public interface RepositoryRepository extends JpaRepository<Repository, Long>
     {

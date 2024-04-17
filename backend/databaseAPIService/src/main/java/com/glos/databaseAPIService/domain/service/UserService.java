@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
 import com.glos.databaseAPIService.domain.entity.User;
+import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.UserFilter;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
 import com.glos.databaseAPIService.domain.repository.UserRepository;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @Service
-public class UserService
+public class UserService implements CrudService<User, Long>
 {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -22,36 +25,21 @@ public class UserService
         this.userMapper = userMapper;
     }
 
-    public Optional<User> findById(Long id)
-    {
-        return userRepository.findById(id);
-    }
-
     public List<User> findAllByFilter(UserFilter filter)
     {
         return userRepository.findAll();
     }
 
-    public User save(User user)
-    {
-        return userRepository.save(user);
-    }
 
     public void delete(User user)
     {
         userRepository.delete(user);
     }
 
-    public User update(User newUser, Long id)
-    {
-        User user = getUserByIdOrThrow(id);
-        userMapper.transferEntityDto(newUser, user);
-        return userRepository.save(user);
-    }
 
     User getUserByIdOrThrow(Long id)
     {
-        return findById(id).orElseThrow(() -> { return new RuntimeException("User is not found"); });
+        return getById(id).orElseThrow(() -> { return new RuntimeException("User is not found"); });
     }
 
     public Optional<User> findByUsername(String username)
@@ -70,4 +58,35 @@ public class UserService
     }
 
 
+    @Override
+    public User create(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> getAll(EntityFilter filter) {
+        return userRepository.findAllByFilter(filter);
+    }
+
+    @Override
+    public Optional<User> getById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public User update(Long id, User newUser) {
+        User user = getUserByIdOrThrow(id);
+        userMapper.transferEntityDto(newUser, user);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userRepository.delete(userRepository.findById(id).get());
+    }
 }

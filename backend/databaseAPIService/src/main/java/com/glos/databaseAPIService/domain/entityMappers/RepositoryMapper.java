@@ -5,7 +5,9 @@ import com.glos.databaseAPIService.domain.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ResourceBundle;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @Component
 public class RepositoryMapper extends AbstractMapper<Repository, Repository> {
 }

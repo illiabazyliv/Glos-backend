@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @RestController
 @RequestMapping("/users")
 public class UserAPIController
@@ -27,27 +29,27 @@ public class UserAPIController
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id)
     {
-        return ResponseEntity.of(userService.findById(id));
+        return ResponseEntity.of(userService.getById(id));
     }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user)
     {
-        userService.save(user);
+        userService.create(user);
        return ResponseEntity.created(URI.create("/v1/users/"+user.getId())).body(user);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id)
     {
-        userService.delete(userService.findById(id).get());
+        userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@RequestBody User newUser, @PathVariable Long id)
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser)
     {
-        userService.update(newUser, id);
+        userService.update(id, newUser);
         return ResponseEntity.noContent().build();
     }
 
@@ -69,12 +71,16 @@ public class UserAPIController
         return ResponseEntity.of(userService.findByPhoneNumber(phoneNumber));
     }
 
-    @GetMapping()
+    @GetMapping("/filter")
     public List<User> getUsersByFilter(@ModelAttribute UserFilter userFilter)
     {
         return userService.findAllByFilter(userFilter);
     }
 
-
+    @GetMapping
+    public List<User> getAllUsers()
+    {
+        return userService.getAll();
+    }
 
 }

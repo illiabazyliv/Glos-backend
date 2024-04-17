@@ -8,10 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class UserFilter
-{
+/**
+ * 	@author - yablonovskydima
+ */
+public class UserFilter implements EntityFilter {
     private Long id;
 
     private String username;
@@ -143,5 +147,29 @@ public class UserFilter
 
     public Pageable getPageable() {
         return pageable;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("username", username);
+        map.put("email", email);
+        map.put("phone_number", phone_number);
+        map.put("gender", gender);
+        map.put("first_name", first_name);
+        map.put("last_name", last_name);
+        map.put("birthdate", birthdate);
+        map.put("is_account_non_expired", is_account_non_expired);
+        map.put("is_account_non_locked", is_account_non_locked);
+        map.put("is_credentials_non_expired", is_credentials_non_expired);
+        map.put("is_enabled", is_enabled);
+        map.put("is_deleted", is_deleted);
+        map.put("groups", groups);
+        map.put("roles", roles);
+        map.put("pageable", pageable);
+        return map;
     }
 }

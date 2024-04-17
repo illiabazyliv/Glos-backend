@@ -2,6 +2,7 @@ package com.glos.databaseAPIService.domain.repository;
 
 import com.glos.databaseAPIService.domain.entity.Tag;
 import com.glos.databaseAPIService.domain.entity.User;
+import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.UserFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>
 {
@@ -24,22 +27,38 @@ public interface UserRepository extends JpaRepository<User, Long>
 
     @Query(value = """
             SELECT user FROM User user
-            WHERE :#{#userFilter.id} IS NULL OR user.id = :#{#userFilter.id}
-            AND :#{#userFilter.username} IS NULL OR user.username = :#{#userFilter.username}
-            AND :#{#userFilter.email} IS NULL OR user.email = :#{#userFilter.email}
-            AND :#{#userFilter.phone_number} IS NULL OR user.phone_number = :#{#userFilter.phone_number}
-            AND :#{#userFilter.gender} IS NULL OR user.gender = :#{#userFilter.gender}
-            AND :#{#userFilter.first_name} IS NULL OR user.first_name = :#{#userFilter.first_name}
-            AND :#{#userFilter.last_name} IS NULL OR user.last_name = :#{#userFilter.last_name}
-            AND :#{#userFilter.birthdate} IS NULL OR user.birthdate = :#{#userFilter.birthdate}
-            AND :#{#userFilter.is_account_non_expired} IS NULL OR user.is_account_non_expired = :#{#userFilter.is_account_non_expired}
-            AND :#{#userFilter.is_account_non_locked} IS NULL OR user.is_account_non_locked = :#{#userFilter.is_account_non_locked}
-            AND :#{#userFilter.is_credentials_non_expired} IS NULL OR user.is_credentials_non_expired = :#{#userFilter.is_credentials_non_expired}
-            AND :#{#userFilter.is_enabled} IS NULL OR user.is_enabled = :#{#userFilter.is_enabled}
-            AND :#{#userFilter.is_deleted} IS NULL OR user.is_deleted = :#{#userFilter.is_deleted}
-            AND (:#{#userFilter.roles} IS NULL OR ARRAY_INTERSECT(user.roles, :#{#userFilter.roles}) IS NOT NULL)
-            AND (:#{#userFilter.groups} IS NULL OR ARRAY_INTERSECT(user.groups, :#{#userFilter.groups}) IS NOT NULL)
+            WHERE :#{#filter.asMap().id} IS NULL OR user.id = :#{#filter.asMap().id}
+            AND :#{#filter.asMap().username} IS NULL OR user.username = :#{#filter.asMap().username}
+            AND :#{#filter.asMap().email} IS NULL OR user.email = :#{#filter.asMap().email}
+            AND :#{#filter.asMap().phone_number} IS NULL OR user.phone_number = :#{#filter.asMap().phone_number}
+            AND :#{#filter.asMap().gender} IS NULL OR user.gender = :#{#filter.asMap().gender}
+            AND :#{#filter.asMap().first_name} IS NULL OR user.first_name = :#{#filter.asMap().first_name}
+            AND :#{#filter.asMap().last_name} IS NULL OR user.last_name = :#{#filter.asMap().last_name}
+            AND :#{#filter.asMap().birthdate} IS NULL OR user.birthdate = :#{#filter.asMap().birthdate}
+            AND :#{#filter.asMap().is_account_non_expired} IS NULL OR user.is_account_non_expired = :#{#filter.asMap().is_account_non_expired}
+            AND :#{#filter.asMap().is_account_non_locked} IS NULL OR user.is_account_non_locked = :#{#filter.asMap().is_account_non_locked}
+            AND :#{#filter.asMap().is_credentials_non_expired} IS NULL OR user.is_credentials_non_expired = :#{#filter.asMap().is_credentials_non_expired}
+            AND :#{#filter.asMap().is_enabled} IS NULL OR user.is_enabled = :#{#filter.asMap().is_enabled}
+            AND :#{#filter.asMap().is_deleted} IS NULL OR user.is_deleted = :#{#filter.asMap().is_deleted}
+            AND (:#{#filter.asMap().roles} IS NULL OR ARRAY_INTERSECT(user.roles, :#{#filter.asMap().roles}) IS NOT NULL)
+            AND (:#{#filter.asMap().groups} IS NULL OR ARRAY_INTERSECT(user.groups, :#{#filter.asMap().groups}) IS NOT NULL)
             """)
-    public List<User> findAllByFilter(@Param("userFilter") UserFilter userFilter);
+    public List<User> findAllByFilter(@Param("filter") EntityFilter filter);
 
 }
+
+//AND :#{#filter.asMap().username} IS NULL OR user.username = :#{#filter.asMap().username}
+//        AND :#{#filter.asMap().email} IS NULL OR user.email = :#{#filter.asMap().email}
+//        AND :#{#filter.asMap().phone_number} IS NULL OR user.phone_number = :#{#filter.asMap().phone_number}
+//        AND :#{#filter.asMap().gender} IS NULL OR user.gender = :#{#filter.asMap().gender}
+//        AND :#{#filter.asMap().first_name} IS NULL OR user.first_name = :#{#filter.asMap().first_name}
+//        AND :#{#filter.asMap().last_name} IS NULL OR user.last_name = :#{#filter.asMap().last_name}
+//        AND :#{#filter.asMap().birthdate} IS NULL OR user.birthdate = :#{#filter.asMap().birthdate}
+//        AND :#{#filter.asMap().is_account_non_expired} IS NULL OR user.is_account_non_expired = :#{#filter.asMap().is_account_non_expired}
+//        AND :#{#filter.asMap().is_account_non_locked} IS NULL OR user.is_account_non_locked = :#{#filter.asMap().is_account_non_locked}
+//        AND :#{#filter.asMap().is_credentials_non_expired} IS NULL OR user.is_credentials_non_expired = :#{#filter.asMap().is_credentials_non_expired}
+//        AND :#{#filter.asMap().is_enabled} IS NULL OR user.is_enabled = :#{#filter.asMap().is_enabled}
+//        AND :#{#filter.asMap().is_deleted} IS NULL OR user.is_deleted = :#{#filter.asMap().is_deleted}
+//        AND (:#{#filter.asMap().roles} IS NULL OR ARRAY_INTERSECT(user.roles, :#{#filter.asMap().roles}) IS NOT NULL)
+//        AND (:#{#filter.asMap().groups} IS NULL OR ARRAY_INTERSECT(user.groups, :#{#filter.asMap().groups}) IS NOT NULL)
+//        AND :#{#filter.asMap().pageable} IS NULL OR user.pageable = :#{#filter.asMap().pageable}

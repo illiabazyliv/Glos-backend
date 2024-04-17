@@ -3,10 +3,17 @@ package com.glos.databaseAPIService.domain.filters;
 import com.glos.databaseAPIService.domain.entity.AccessType;
 import com.glos.databaseAPIService.domain.entity.File;
 import com.glos.databaseAPIService.domain.entity.User;
+<<<<<<< HEAD
 
 import java.util.Map;
 
 public class FileUserAccessTypeFilter implements EntityFilter
+=======
+/**
+ * 	@author - yablonovskydima
+ */
+public class FileUserAccessTypeFilter
+>>>>>>> 598b04d4c42ec0d109aac54ff9f8595880e639df
 {
     private Long id;
 

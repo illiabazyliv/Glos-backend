@@ -7,9 +7,16 @@ import org.hibernate.annotations.Check;
 
 import java.util.HashMap;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Map;
 
 public class FileFilter implements EntityFilter
+=======
+/**
+ * 	@author - yablonovskydima
+ */
+public class FileFilter
+>>>>>>> 598b04d4c42ec0d109aac54ff9f8595880e639df
 {
     private Long id;
     private String rootPath;

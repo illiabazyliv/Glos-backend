@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @Repository
 public interface FileRepository extends JpaRepository<File, Long>
 {

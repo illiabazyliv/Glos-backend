@@ -5,8 +5,12 @@ import com.glos.databaseAPIService.domain.entity.User;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Map;
 
-public class GroupFilter
+/**
+ * 	@author - yablonovskydima
+ */
+public class GroupFilter implements EntityFilter
 {
     private Long id;
     private User owner;
@@ -45,5 +49,15 @@ public class GroupFilter
 
     public void setAccessTypes(List<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        return Map.of(
+                "id", id,
+                "owner", owner,
+                "users", users,
+                "accessTypes", accessTypes
+        );
     }
 }
