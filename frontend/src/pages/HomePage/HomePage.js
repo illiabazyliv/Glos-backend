@@ -18,7 +18,7 @@ function HomePage() {
                         <div className="col-12 col-md-6 d-flex flex-column justify-content-center align-items-start">
                             <h1>Наша місія - надавати розвиток </h1>
                             <p>Настав час користуватись новими можливостями, а не обмежувати себе, свій бізнес або команду.</p>
-                            <NavLink className="btn btn-primary" to="/">Розпочати</NavLink>
+                            <NavLink className="btn btn-primary" to="/register">Розпочати</NavLink>
                         </div>
                         <div className="col-12 col-md-6 mt-5 mt-md-0">
                             <OfferImg className="offer-img"/>
@@ -35,7 +35,7 @@ function HomePage() {
                     </div>
                     <div className="row pt-3">
                         <div className='col-12 text-center'>
-                            <NavLink className="btn btn-primary" to="/">Дізнатися більше</NavLink>
+                            <NavLink className="btn btn-primary" to="/features">Дізнатися більше</NavLink>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@ function HomePage() {
                             <h1>Зроби СВІЙ крок до успіху разом з "GLOS"</h1>
                             <p>Найважчий завжди перший крок. Проєкт "GLOS" це дієві інструменти для 
                                 навчання, для бізнесу та для життя.</p>
-                            <NavLink className="btn btn-primary" to="/">Розпочати</NavLink>
+                            <NavLink className="btn btn-primary" to="/register">Розпочати</NavLink>
                         </div>
                     </div>
                 </div>
