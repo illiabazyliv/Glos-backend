@@ -26,4 +26,8 @@ public class SecureCode
 
     @Column(name = "expiration_date", nullable = false)
     private LocalDateTime expirationDate;
+
+    public Long getId() {
+        return id;
+    }
 }

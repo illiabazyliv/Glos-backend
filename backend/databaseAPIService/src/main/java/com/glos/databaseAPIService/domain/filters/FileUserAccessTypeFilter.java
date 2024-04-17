@@ -3,7 +3,9 @@ package com.glos.databaseAPIService.domain.filters;
 import com.glos.databaseAPIService.domain.entity.AccessType;
 import com.glos.databaseAPIService.domain.entity.File;
 import com.glos.databaseAPIService.domain.entity.User;
-
+/**
+ * 	@author - yablonovskydima
+ */
 public class FileUserAccessTypeFilter
 {
 

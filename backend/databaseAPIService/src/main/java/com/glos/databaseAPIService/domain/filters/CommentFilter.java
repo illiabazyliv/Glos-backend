@@ -4,7 +4,9 @@ import com.glos.databaseAPIService.domain.entity.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-
+/**
+ * 	@author - yablonovskydima
+ */
 public class CommentFilter
 {
     private Long id;

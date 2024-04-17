@@ -24,4 +24,8 @@ public class RepositoryUserAccessType
     @ManyToOne
     @JoinColumn(name = "access_type_id", nullable = false, foreignKey = @ForeignKey(name = "fk_repositories_users_access_types_types_id"))
     private AccessType accessType;
+
+    public Long getId() {
+        return id;
+    }
 }

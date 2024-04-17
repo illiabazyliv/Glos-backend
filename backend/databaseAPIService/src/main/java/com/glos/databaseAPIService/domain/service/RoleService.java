@@ -3,14 +3,18 @@ package com.glos.databaseAPIService.domain.service;
 import com.glos.databaseAPIService.domain.entity.Role;
 import com.glos.databaseAPIService.domain.entity.Tag;
 import com.glos.databaseAPIService.domain.entityMappers.RoleMapper;
+import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @Service
-public class RoleService
+public class RoleService implements CrudService<Role, Long>
 {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
@@ -22,35 +26,46 @@ public class RoleService
         this.roleMapper = roleMapper;
     }
 
-    public Optional<Role> findById(Long id)
+    Role getRoleByIdOrThrow(Long id)
     {
-        return roleRepository.findById(id);
+        return getById(id).orElseThrow(() -> { return new RuntimeException("Role is not found"); });
     }
 
-    public Role save(Role role)
-    {
+    @Override
+    public Role create(Role role) {
         return roleRepository.save(role);
     }
 
-    public void delete(Role role)
-    {
-        roleRepository.delete(role);
+    @Override
+    public List<Role> getAll() {
+        return null;
     }
 
-    public Role update(Role newRole, Long id)
-    {
+    @Override
+    public List<Role> getAll(EntityFilter filter) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<Role> getById(Long id) {
+        return roleRepository.findById(id);
+    }
+
+    @Override
+    public Role update(Long id, Role newRole) {
+
         Role role = getRoleByIdOrThrow(id);
         roleMapper.transferEntityDto(newRole, role);
         return roleRepository.save(role);
     }
 
+    @Override
+    public void deleteById(Long id) {
+        roleRepository.delete(roleRepository.findById(id).get());
+    }
+
     public Optional<Role> findByName(String name)
     {
         return roleRepository.findByName(name);
-    }
-
-    Role getRoleByIdOrThrow(Long id)
-    {
-        return findById(id).orElseThrow(() -> { return new RuntimeException("Role is not found"); });
     }
 }

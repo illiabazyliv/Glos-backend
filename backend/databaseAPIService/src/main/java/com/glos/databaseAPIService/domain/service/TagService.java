@@ -2,14 +2,18 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.databaseAPIService.domain.entity.Tag;
 import com.glos.databaseAPIService.domain.entityMappers.TagMapper;
+import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @Service
-public class TagService
+public class TagService implements CrudService<Tag, Long>
 {
     private final TagRepository tagRepository;
     private final TagMapper tagMapper;
@@ -20,36 +24,45 @@ public class TagService
         this.tagMapper = tagMapper;
     }
 
-    public Optional<Tag> findById(Long id)
-    {
-        return tagRepository.findById(id);
-    }
-
-    public Tag save(Tag tag)
-    {
-        return tagRepository.save(tag);
-    }
-
-    public void delete(Tag tag)
-    {
-        tagRepository.delete(tag);
-    }
-
-    public Tag update(Tag newTag, Long id)
-    {
-        Tag tag = getTagByIdOrThrow(id);
-        tagMapper.transferEntityDto(newTag, tag);
-        return tagRepository.save(tag);
-    }
-
-    public Optional<Tag> findByName(String name)
+    public Optional<Tag> getByName(String name)
     {
         return tagRepository.findByName(name);
     }
 
     Tag getTagByIdOrThrow(Long id)
     {
-        return findById(id).orElseThrow(() -> { return new RuntimeException("Tag is not found"); });
+        return getById(id).orElseThrow(() -> { return new RuntimeException("Tag is not found"); });
     }
 
+    @Override
+    public Tag create(Tag tag) {
+        return tagRepository.save(tag);
+    }
+
+    @Override
+    public List<Tag> getAll() {
+        return tagRepository.findAll();
+    }
+
+    @Override
+    public List<Tag> getAll(EntityFilter filter) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deleteById(Long id)
+    {
+        tagRepository.delete(tagRepository.findById(id).get());
+    }
+    @Override
+    public Optional<Tag> getById(Long id) {
+        return tagRepository.findById(id);
+    }
+
+    @Override
+    public Tag update(Long id, Tag newTag) {
+        Tag tag = getTagByIdOrThrow(id);
+        tagMapper.transferEntityDto(newTag, tag);
+        return tagRepository.save(tag);
+    }
 }

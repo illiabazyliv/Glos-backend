@@ -36,4 +36,8 @@ public class Group
             foreignKey = @ForeignKey(name = "fk_groups_access_types_groups_id"),
             inverseForeignKey = @ForeignKey(name = "fk_groups_access_types_access_types_id"))
     private List<AccessType> accessTypes;
+
+    public Long getId() {
+        return id;
+    }
 }

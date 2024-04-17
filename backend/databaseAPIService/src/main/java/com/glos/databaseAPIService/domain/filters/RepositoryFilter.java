@@ -5,7 +5,9 @@ import com.glos.databaseAPIService.domain.entity.AccessType;
 import jakarta.persistence.*;
 
 import java.util.List;
-
+/**
+ * 	@author - yablonovskydima
+ */
 public class RepositoryFilter
 {
     private Long id;

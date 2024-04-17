@@ -5,7 +5,12 @@ import com.glos.databaseAPIService.domain.entity.Repository;
 import com.glos.databaseAPIService.domain.entity.User;
 import jakarta.persistence.*;
 
-public class RepositoryUserAccessTypeFilter
+import java.util.Map;
+
+/**
+ * 	@author - yablonovskydima
+ */
+public class RepositoryUserAccessTypeFilter implements EntityFilter
 {
     private Long id;
 
@@ -45,5 +50,15 @@ public class RepositoryUserAccessTypeFilter
 
     public void setAccessType(AccessType accessType) {
         this.accessType = accessType;
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        return Map.of(
+                "id", id,
+                "repository", repository,
+                "user", user,
+                "accessType", accessType
+        );
     }
 }

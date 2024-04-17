@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
 
 import java.util.List;
-
+/**
+ * 	@author - yablonovskydima
+ */
 public class FileFilter
 {
 

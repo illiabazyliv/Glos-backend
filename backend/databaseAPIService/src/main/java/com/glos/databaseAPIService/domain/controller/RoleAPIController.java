@@ -8,7 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
+/**
+ * 	@author - yablonovskydima
+ */
 @RestController
 @RequestMapping("/roles")
 public class RoleAPIController
@@ -23,33 +27,39 @@ public class RoleAPIController
     @GetMapping("/{id}")
     public ResponseEntity<Role> getRoleById(@PathVariable Long id)
     {
-        return ResponseEntity.of(roleService.findById(id));
+        return ResponseEntity.of(roleService.getById(id));
     }
 
     @PostMapping
     public ResponseEntity<Role> createRole(@RequestBody Role role)
     {
-        roleService.save(role);
+        roleService.create(role);
         return ResponseEntity.created(URI.create("/v1/roles/"+role.getId())).body(role);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRole(@PathVariable Long id)
     {
-        roleService.delete(roleService.findById(id).get());
+        roleService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateRole(@RequestBody Role role, @PathVariable Long id)
+    public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody Role newRole)
     {
-        roleService.update(role, id);
+        roleService.update(id, newRole);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<Role> findRoleByName(@PathVariable String name)
+    public ResponseEntity<Role> getRoleByName(@PathVariable String name)
     {
         return ResponseEntity.of(roleService.findByName(name));
+    }
+
+    @GetMapping
+    public List<Role> getAllRoles()
+    {
+        return roleService.getAll();
     }
 }
