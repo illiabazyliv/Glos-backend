@@ -1,8 +1,19 @@
+import { NavLink } from "react-router-dom";
+import ItemMenuDropdown from "../ItemMenuDropdown/ItemMenuDropdown";
 
-function FileItem({}) {
+function FileItem({ file }) {
+    // todo: choode image placeholder based on type of file
     return (
-        <div className="file-item">
-            file item
+        <div class="card card-list-item file-item d-flex flex-row mb-2">
+            <div className="card-img">
+                <img src="https://i0.wp.com/sunrisedaycamp.org/wp-content/uploads/2020/10/placeholder.png?ssl=1" class="img-fluid rounded-start"/>
+            </div>
+            <div class="card-body p-2 d-flex justify-content-between gap-2">
+                <h6 className="fs-6 text-medium card-title p-0 m-0">
+                    <NavLink to={'files/' + file.displayFilename}>{file.displayFilename}</NavLink>
+                </h6>
+                <ItemMenuDropdown/>
+            </div>
         </div>
     );
 }

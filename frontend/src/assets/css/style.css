@@ -8,6 +8,8 @@
 
     --text-accent-color: #012970;
     --faded-bg-color: #f6f9ff;
+
+    --tansition: 0.2s ease;
 }
 
 .accent-bg {
@@ -37,6 +39,10 @@
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: var(--accent-color);
     --bs-btn-disabled-border-color: var(--accent-color);
+}
+
+h6 a {
+    color: inherit;
 }
 
 /* Sidebar styles */
@@ -75,6 +81,34 @@
     width: 40px;
     height: 40px;
     object-fit: cover;
+}
+
+.card-list-item .card-body,
+.card-list-item .card-title {
+    transition: var(--tansition);
+}
+
+.card-list-item:hover .card-body,
+.card-list-item:hover .card-title {
+    color: var(--accent-color);
+}
+
+.card-list-item .card-img {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.card-list-item .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.repository-item .card-img {
+    width: 50px;
+    height: auto;
 }
 
 /* Home page styles */

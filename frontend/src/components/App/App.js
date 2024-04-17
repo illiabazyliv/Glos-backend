@@ -12,10 +12,12 @@ import Loader from '../Loader/Loader';
 import HomePage from '../../pages/HomePage/HomePage';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import DashboardPage from '../../pages/DashboardPage/DashboardPage.js';
-import FilesPage from '../../pages/FilesPage/FilesPage.js';
+import AllFilesPage from '../../pages/AllFilesPage/AllFilesPage.js';
 import LandingLayout from '../../layouts/LangingLayout/LangingLayout.js';
 import DashboardLayout from '../../layouts/DashboardLayout/DashboardLayout.js';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage.js';
+import AllRepositoriesPage from '../../pages/AllRepositoriesPage/AllRepositoriesPage.js';
+import RepositoryFilesPage from '../../pages/RepositoryFilesPage/RepositoryFilesPage.js';
 
 
 const App = ({ isInitialized, initialize, user }) => {
@@ -39,8 +41,10 @@ const App = ({ isInitialized, initialize, user }) => {
                 <Route element={<DashboardLayout/>}>
                     <Route path='/dashboard/*' element={<DashboardPage />}>
                         <Route index element={<Navigate to={'/dashboard/uploaded-files'}/>}/>
-                        <Route path='uploaded-files' element={<FilesPage />} />
+                        <Route path='uploaded-files' element={<AllFilesPage />} />
                         <Route path='profile' element={<ProfilePage />} />
+                        <Route path='repositories' element={<AllRepositoriesPage />}/>
+                        <Route path='repositories/:repositoryName' element={<RepositoryFilesPage />}/>
                     </Route>
                 </Route>
             </Routes>

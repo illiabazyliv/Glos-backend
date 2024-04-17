@@ -1,8 +1,15 @@
+import FileItem from "../FileItem/FileItem";
 
-function FileList({}) {
+function FileList({ files }) {
     return (
         <div className="file-list">
-            file list
+            <div className="row">
+                {
+                    files.map(item => <div className="col-12" key={item.displayFullName} >
+                        <FileItem file={item} />
+                    </div>)
+                }
+            </div>
         </div>
     );
 }
