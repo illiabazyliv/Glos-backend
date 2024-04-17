@@ -9,11 +9,11 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>databaseAPIService</artifactId>
+	<artifactId>database-api-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>databaseAPIService</name>
-	<description>databaseAPIService</description>
+	<name>database-api-service</name>
+	<description>database-api-service</description>
 
 	<dependencies>
 		<dependency>
