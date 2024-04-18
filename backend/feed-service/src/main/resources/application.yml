@@ -1,13 +1,16 @@
 server:
-  port: 808
+  address: ${SERVER_ADDRESS:localhost}
+  port: ${SERVER_PORT:9004}
   servlet:
-    context-path: "/api"
+    context-path: ${SERVER_CONTEXT_PATH:/api}
+
+eureka:
+  instance:
+    hostname: ${APPLICATION_NAME:feed-service}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_DEFAULT_ZONE:http://localhost:9001/api/eureka/}
 
 spring:
   application:
-    name: feed-service
-
-eureka:
-  client:
-    service-url:
-      defaultZone: "http://localhost:8081/api/eureka/"
+    name: ${APPLICATION_NAME:feed-service}
