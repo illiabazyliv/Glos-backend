@@ -17,7 +17,13 @@ function DashboardHeader({ user, userImage, isSidebarVisible, setSidebarVisible 
 							<span className="navbar-toggler-icon"></span>
 						</button>
 					</div>
-					<HeaderProfileDropdown user={user} userImage={userImage}/>
+					<div className='d-flex gap-3'>
+						<a className='btn btn-outline-primary search-btn' href="#" data-bs-toggle="modal" data-bs-target="#searchModal">
+							<i className='bi bi-search'></i>
+						</a>
+						<HeaderProfileDropdown user={user} userImage={userImage}/>
+					</div>
+					
 				</div>
 			</nav>
 		</header>

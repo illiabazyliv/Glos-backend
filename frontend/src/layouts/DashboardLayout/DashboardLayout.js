@@ -9,6 +9,7 @@ import ShareRepositoryModal from '../../components/ShareRepositoryModal/ShareRep
 import ShareFileModal from '../../components/ShareFileModal/ShareFileModal';
 import DeleteFileModal from '../../components/DeleteFileModal/DeleteFileModal';
 import DeleteRepositoryModal from '../../components/DeleteRepositoryModal/DeleteRepositoryModal';
+import SearchModal from '../../components/SearchModal/SearchModal';
 
 function DashboardLayout() {
     const [isSidebarVisible, setSidebarVisible] = useState(window.innerWidth >= 992 ? true : false);
@@ -17,6 +18,7 @@ function DashboardLayout() {
         <div className={isSidebarVisible ? 'toggle-sidebar' : ''}>
             <DashboardHeader isSidebarVisible={isSidebarVisible} setSidebarVisible={setSidebarVisible}/>
             <Outlet/>
+            <SearchModal/>
             <NewFileModal/>
             <NewRepositoryModal/>
             <EditFileModal/>
@@ -25,6 +27,7 @@ function DashboardLayout() {
             <ShareRepositoryModal/>
             <DeleteFileModal/>
             <DeleteRepositoryModal/>
+            
         </div>
         
     );
