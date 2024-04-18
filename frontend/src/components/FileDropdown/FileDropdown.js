@@ -1,5 +1,5 @@
 
-function ItemMenuDropdown({  }) {
+function FileDropdown({  }) {
     return (
         <div className='header-profile'>
             <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
@@ -15,21 +15,21 @@ function ItemMenuDropdown({  }) {
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#shareFileModal">
                         <i className="bi bi-people"></i>
                         <span>Share</span>
                     </a>
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editFileModal">
                         <i className="bi bi-pencil"></i>
-                        <span>Edit</span>
+                        <span>Edit access</span>
                     </a>
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteFileModal">
                         <i className="bi bi-trash"></i>
                         <span>Delete</span>
                     </a>
@@ -39,4 +39,4 @@ function ItemMenuDropdown({  }) {
     );
 }
 
-export default ItemMenuDropdown;
+export default FileDropdown;

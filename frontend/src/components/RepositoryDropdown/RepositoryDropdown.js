@@ -8,21 +8,21 @@ function RepositoryDropdown({  }) {
 
             <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
+                    <a className="dropdown-item d-flex align-items-center" href="#"  data-bs-toggle="modal" data-bs-target="#shareRepositoryModal">
                         <i className="bi bi-people"></i>
                         <span>Share</span>
                     </a>
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editRepositoryModal">
                         <i className="bi bi-pencil"></i>
-                        <span>Edit</span>
+                        <span>Edit access</span>
                     </a>
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteRepositoryModal">
                         <i className="bi bi-trash"></i>
                         <span>Delete</span>
                     </a>
