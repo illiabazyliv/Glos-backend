@@ -19,6 +19,7 @@
   <modules>
     <module>eureka-service</module>
     <module>api-gateway</module>
+    <module>feed-service</module>
   </modules>
 
   <properties>
