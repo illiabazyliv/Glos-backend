@@ -14,7 +14,7 @@ function SearchModal({ repository }) {
                     </div>
                     <div className="modal-body">
                         <form>
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <span class="input-group-text">
                                     <i className='bi bi-search'></i>
                                 </span>
