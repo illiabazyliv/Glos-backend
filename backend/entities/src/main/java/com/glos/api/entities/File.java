@@ -1,4 +1,4 @@
-package com.entities.application.entity;
+package com.glos.api.entities;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
@@ -77,4 +77,8 @@ public class File
             inverseForeignKey = @ForeignKey(name = "fk_files_tags_tags_id")
     )
     private List<Tag> tags;
+
+    public Long getId() {
+        return id;
+    }
 }

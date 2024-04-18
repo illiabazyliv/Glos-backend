@@ -1,4 +1,4 @@
-package com.entities.application.entity;
+package com.glos.api.entities;
 
 import jakarta.persistence.*;
 
@@ -18,4 +18,12 @@ public class Role
 
     @Column(name = "name", nullable = false, length = 20)
     private String name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

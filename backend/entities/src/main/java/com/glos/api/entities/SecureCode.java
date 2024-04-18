@@ -1,4 +1,4 @@
-package com.entities.application.entity;
+package com.glos.api.entities;
 
 import jakarta.persistence.*;
 
@@ -26,4 +26,8 @@ public class SecureCode
 
     @Column(name = "expiration_date", nullable = false)
     private LocalDateTime expirationDate;
+
+    public Long getId() {
+        return id;
+    }
 }

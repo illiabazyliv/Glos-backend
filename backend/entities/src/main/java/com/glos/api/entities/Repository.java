@@ -1,4 +1,4 @@
-package com.entities.application.entity;
+package com.glos.api.entities;
 
 import jakarta.persistence.*;
 
@@ -77,4 +77,8 @@ public class Repository
 
     @OneToMany(mappedBy = "repository")
     private List<File> files;
+
+    public Long getId() {
+        return id;
+    }
 }
