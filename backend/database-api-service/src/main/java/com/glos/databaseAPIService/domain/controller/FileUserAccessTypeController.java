@@ -1,9 +1,8 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entity.Comment;
-import com.glos.databaseAPIService.domain.entity.FileUserAccessType;
+
+import com.glos.api.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
-import com.glos.databaseAPIService.domain.service.CommentService;
 import com.glos.databaseAPIService.domain.service.FileUserAccessTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,9 @@
 package com.glos.databaseAPIService.domain.repository;
 
-import com.glos.databaseAPIService.domain.entity.AccessType;
+import com.glos.api.entities.AccessType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

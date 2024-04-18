@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.entityMappers;
 
-import com.glos.databaseAPIService.domain.entity.FileUserAccessType;
+
+import com.glos.api.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 

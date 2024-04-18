@@ -1,8 +1,7 @@
 package com.glos.databaseAPIService.domain.filters;
 
-import com.glos.databaseAPIService.domain.entity.*;
-import com.glos.databaseAPIService.domain.entity.AccessType;
-import jakarta.persistence.*;
+import com.glos.api.entities.*;
+import jakarta.persistence.AccessType;
 
 import java.util.HashMap;
 import java.util.List;

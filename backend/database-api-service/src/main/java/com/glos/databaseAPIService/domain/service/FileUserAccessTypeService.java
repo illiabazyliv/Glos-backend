@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
-import com.glos.databaseAPIService.domain.entity.Comment;
-import com.glos.databaseAPIService.domain.entity.FileUserAccessType;
+
+import com.glos.api.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.entityMappers.FileUserAccessTypeMapper;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;

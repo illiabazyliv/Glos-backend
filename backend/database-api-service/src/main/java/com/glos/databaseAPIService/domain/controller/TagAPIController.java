@@ -1,9 +1,9 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entity.Tag;
+
+import com.glos.api.entities.Tag;
 import com.glos.databaseAPIService.domain.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

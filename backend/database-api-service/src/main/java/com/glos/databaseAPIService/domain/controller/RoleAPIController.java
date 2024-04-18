@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entity.Role;
-import com.glos.databaseAPIService.domain.entity.Tag;
+
+import com.glos.api.entities.Role;
 import com.glos.databaseAPIService.domain.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

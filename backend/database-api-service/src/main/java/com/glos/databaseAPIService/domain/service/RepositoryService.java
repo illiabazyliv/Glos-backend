@@ -1,14 +1,13 @@
 package com.glos.databaseAPIService.domain.service;
 
-import com.glos.databaseAPIService.domain.entity.Repository;
-import com.glos.databaseAPIService.domain.entity.Tag;
+
+import com.glos.api.entities.Repository;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
 import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
 import com.glos.databaseAPIService.domain.repository.RepositoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.PublicKey;
 import java.util.List;
 import java.util.Optional;
 /**

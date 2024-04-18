@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.repository;
 
 
-import com.glos.databaseAPIService.domain.entity.Tag;
+import com.glos.api.entities.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

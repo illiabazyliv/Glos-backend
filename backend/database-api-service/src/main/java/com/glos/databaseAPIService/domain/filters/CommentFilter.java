@@ -1,7 +1,6 @@
 package com.glos.databaseAPIService.domain.filters;
 
-import com.glos.databaseAPIService.domain.entity.User;
-import jakarta.persistence.*;
+import com.glos.api.entities.User;
 
 import java.time.LocalDateTime;
 import java.util.Map;

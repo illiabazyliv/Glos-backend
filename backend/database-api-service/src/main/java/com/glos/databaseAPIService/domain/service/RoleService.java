@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
-import com.glos.databaseAPIService.domain.entity.Role;
-import com.glos.databaseAPIService.domain.entity.Tag;
+
+import com.glos.api.entities.Role;
 import com.glos.databaseAPIService.domain.entityMappers.RoleMapper;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.RoleRepository;

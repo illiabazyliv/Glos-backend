@@ -1,13 +1,9 @@
 package com.glos.databaseAPIService.domain.service;
 
-import com.glos.databaseAPIService.domain.entity.Group;
-import com.glos.databaseAPIService.domain.entity.RepositoryUserAccessType;
-import com.glos.databaseAPIService.domain.entityMappers.GroupMapper;
+
+import com.glos.api.entities.RepositoryUserAccessType;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryUserAccessTypeMapper;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
-import com.glos.databaseAPIService.domain.filters.GroupFilter;
-import com.glos.databaseAPIService.domain.filters.RepositoryUserAccessTypeFilter;
-import com.glos.databaseAPIService.domain.repository.GroupRepository;
 import com.glos.databaseAPIService.domain.repository.RepositoryUserAccessTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entity.RepositoryUserAccessType;
-import com.glos.databaseAPIService.domain.entity.SecureCode;
+
+import com.glos.api.entities.RepositoryUserAccessType;
 import com.glos.databaseAPIService.domain.filters.RepositoryUserAccessTypeFilter;
 import com.glos.databaseAPIService.domain.service.RepositoryUserAccessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;

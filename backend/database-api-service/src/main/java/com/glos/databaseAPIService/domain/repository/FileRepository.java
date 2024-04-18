@@ -1,10 +1,8 @@
 package com.glos.databaseAPIService.domain.repository;
 
-import com.glos.databaseAPIService.domain.entity.File;
-import com.glos.databaseAPIService.domain.entity.Tag;
+
+import com.glos.api.entities.File;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
-import com.glos.databaseAPIService.domain.filters.FileFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

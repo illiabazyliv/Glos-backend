@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entity.Group;
+
+import com.glos.api.entities.Group;
 import com.glos.databaseAPIService.domain.filters.GroupFilter;
 import com.glos.databaseAPIService.domain.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;

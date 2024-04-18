@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
-import com.glos.databaseAPIService.domain.entity.User;
+
+import com.glos.api.entities.User;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.UserFilter;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;

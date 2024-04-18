@@ -1,12 +1,12 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entity.AccessType;
+import com.glos.api.entities.AccessType;
 import com.glos.databaseAPIService.domain.service.AccessTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -18,6 +18,7 @@ public class AccessTypeAPIController {
 
     private final AccessTypeService accessTypeService;
 
+    @Autowired
     public AccessTypeAPIController(AccessTypeService accessTypeService) {
         this.accessTypeService = accessTypeService;
     }

@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
-import com.glos.databaseAPIService.domain.entity.AccessType;
-import com.glos.databaseAPIService.domain.entity.Comment;
+
+import com.glos.api.entities.Comment;
 import com.glos.databaseAPIService.domain.entityMappers.CommentMapper;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.CommentRepository;

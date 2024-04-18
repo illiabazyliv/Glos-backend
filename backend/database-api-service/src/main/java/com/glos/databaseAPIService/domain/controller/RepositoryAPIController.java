@@ -1,9 +1,8 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entity.Repository;
-import com.glos.databaseAPIService.domain.entity.User;
+
+import com.glos.api.entities.Repository;
 import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
-import com.glos.databaseAPIService.domain.filters.UserFilter;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
