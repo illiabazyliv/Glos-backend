@@ -20,6 +20,7 @@
     <module>eureka-service</module>
     <module>api-gateway</module>
     <module>database-api-service</module>
+    <module>entities</module>
   </modules>
 
   <properties>
