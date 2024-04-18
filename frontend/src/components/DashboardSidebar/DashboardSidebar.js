@@ -65,7 +65,7 @@ function DashboardSidebar() {
                     </NavLink>
                 </li>
                 <li className='nav-item'>
-                    <NavLink className='nav-link collapsed' to='friends'>
+                    <NavLink className='nav-link collapsed' to='groups'>
                         <i className='bi bi-diagram-3'></i>
                         <span>Groups</span>
                     </NavLink>

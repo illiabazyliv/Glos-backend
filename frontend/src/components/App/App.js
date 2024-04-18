@@ -18,7 +18,8 @@ import DashboardLayout from '../../layouts/DashboardLayout/DashboardLayout.js';
 import ProfilePage from '../../pages/ProfilePage/ProfilePage.js';
 import AllRepositoriesPage from '../../pages/AllRepositoriesPage/AllRepositoriesPage.js';
 import RepositoryFilesPage from '../../pages/RepositoryFilesPage/RepositoryFilesPage.js';
-
+import FriendsPage from '../../pages/FriendsPage/FriendsPage.js';
+import GroupsPage from '../../pages/GroupsPage/GroupsPage.js';
 
 const App = ({ isInitialized, initialize, user }) => {
     useEffect(() => {
@@ -45,6 +46,8 @@ const App = ({ isInitialized, initialize, user }) => {
                         <Route path='profile' element={<ProfilePage />} />
                         <Route path='repositories' element={<AllRepositoriesPage />}/>
                         <Route path='repositories/:repositoryName' element={<RepositoryFilesPage />}/>
+                        <Route path='groups' element={<GroupsPage />}/>
+                        <Route path='friends' element={<FriendsPage />}/>
                     </Route>
                 </Route>
             </Routes>
