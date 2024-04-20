@@ -29,6 +29,23 @@ public class RepositoryDTO
 
     private List<Tag> tags;
 
+    public RepositoryDTO() {
+    }
+
+    public RepositoryDTO(Long id, String rootPath, String rootName, String rootFullName, User owner, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Tag> tags) {
+        this.id = id;
+        this.rootPath = rootPath;
+        this.rootName = rootName;
+        this.rootFullName = rootFullName;
+        this.owner = owner;
+        this.displayPath = displayPath;
+        this.displayName = displayName;
+        this.displayFullName = displayFullName;
+        this.description = description;
+        this.accessTypes = accessTypes;
+        this.tags = tags;
+    }
+
     public Long getId() {
         return id;
     }
