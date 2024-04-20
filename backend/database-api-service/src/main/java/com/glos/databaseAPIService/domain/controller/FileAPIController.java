@@ -1,9 +1,14 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.glos.api.entities.AccessType;
 import com.glos.api.entities.File;
+import com.glos.api.entities.Repository;
 import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.service.FileService;
+import com.glos.databaseAPIService.domain.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +35,35 @@ public class FileAPIController
         return ResponseEntity.of(fileService.findById(id));
     }
 
+    @GetMapping("/json")
+    public ResponseEntity<String> getJson(RepositoryService service) {
+        File file = new File(
+                null,
+                "/root/to",
+                "file.txt",
+                "/root/to/file.txt",
+                100,
+                "txt",
+                "/root/to",
+                "file.txt",
+                "/root/to/file.txt",
+                service.findById(1L).get(),
+                List.of(),
+                List.of(),
+                List.of(),
+                List.of()
+        );
+        try {
+            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(file));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> createFile(@RequestBody File file)
     {
+        System.out.println(file);
         fileService.save(file);
         return ResponseEntity.created(URI.create("/v1/files/"+file.getId())).body(file);
     }
