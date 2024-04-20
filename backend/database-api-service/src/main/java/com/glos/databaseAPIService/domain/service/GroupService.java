@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.Group;
 import com.glos.databaseAPIService.domain.entityMappers.GroupMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class GroupService implements CrudService<Group, Long>
 
     Group getGroupByIdOrThrow(Long id)
     {
-        return getById(id).orElseThrow(() -> new RuntimeException("Access type is not found"));
+        return getById(id).orElseThrow(() -> new ResourceNotFoundException("Access type is not found"));
     }
 
     @Override
@@ -54,7 +55,6 @@ public class GroupService implements CrudService<Group, Long>
 
     @Override
     public Group update(Long id, Group newGroup) {
-
         Group group = getGroupByIdOrThrow(id);
         mapper.transferEntityDto(newGroup, group);
         return repository.save(group);
@@ -62,6 +62,7 @@ public class GroupService implements CrudService<Group, Long>
 
     @Override
     public void deleteById(Long id) {
-        repository.delete(repository.findById(id).get());
+        getGroupByIdOrThrow(id);
+        repository.deleteById(id);
     }
 }

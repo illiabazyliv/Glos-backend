@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.Role;
 import com.glos.databaseAPIService.domain.entityMappers.RoleMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class RoleService implements CrudService<Role, Long>
 
     Role getRoleByIdOrThrow(Long id)
     {
-        return getById(id).orElseThrow(() -> { return new RuntimeException("Role is not found"); });
+        return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Role is not found"); });
     }
 
     @Override
@@ -38,7 +39,7 @@ public class RoleService implements CrudService<Role, Long>
 
     @Override
     public List<Role> getAll() {
-        return null;
+        return roleRepository.findAll();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.RepositoryUserAccessType;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryUserAccessTypeMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.RepositoryUserAccessTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
 /**
  * 	@author - yablonovskydima
  */
@@ -27,7 +29,7 @@ public class RepositoryUserAccessTypeService implements CrudService<RepositoryUs
 
     RepositoryUserAccessType getRepositoryUserAccessTypeByIdOrThrow(Long id)
     {
-        return getById(id).orElseThrow(() -> new RuntimeException("Access type is not found"));
+        return getById(id).orElseThrow(() -> new ResourceNotFoundException("Access type is not found"));
     }
     @Override
     public RepositoryUserAccessType create(RepositoryUserAccessType rep) {
@@ -51,7 +53,6 @@ public class RepositoryUserAccessTypeService implements CrudService<RepositoryUs
 
     @Override
     public RepositoryUserAccessType update(Long id, RepositoryUserAccessType newRep) {
-
         RepositoryUserAccessType rep = getRepositoryUserAccessTypeByIdOrThrow(id);
         mapper.transferEntityDto(newRep, rep);
         return repository.save(rep);
@@ -59,6 +60,7 @@ public class RepositoryUserAccessTypeService implements CrudService<RepositoryUs
 
     @Override
     public void deleteById(Long id) {
-        repository.delete(repository.findById(id).get());
+        getRepositoryUserAccessTypeByIdOrThrow(id);
+        repository.deleteById(id);
     }
 }

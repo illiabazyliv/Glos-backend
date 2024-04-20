@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.SecureCode;
 import com.glos.databaseAPIService.domain.entityMappers.SecureCodeMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.SecureCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
 
     SecureCode getSecureCodeByIdOrThrow(Long id)
     {
-        return getById(id).orElseThrow(() -> new RuntimeException("Access type is not found"));
+        return getById(id).orElseThrow(() -> new ResourceNotFoundException("Access type is not found"));
     }
 
     @Override
@@ -51,7 +52,6 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
 
     @Override
     public SecureCode update(Long id, SecureCode newSecureCode) {
-
         SecureCode secureCode = getSecureCodeByIdOrThrow(id);
         mapper.transferEntityDto(newSecureCode, secureCode);
         return repository.save(secureCode);
@@ -59,6 +59,7 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
 
     @Override
     public void deleteById(Long id) {
-        repository.delete(repository.findById(id).get());
+        getSecureCodeByIdOrThrow(id);
+        repository.deleteById(id);
     }
 }

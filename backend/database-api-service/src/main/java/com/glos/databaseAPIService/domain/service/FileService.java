@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.File;
 import com.glos.databaseAPIService.domain.entityMappers.FileMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class FileService
     }
     File getFileByIdOrThrow(Long id)
     {
-        return findById(id).orElseThrow(() -> { return new RuntimeException("Tag is not found"); });
+        return findById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
     }
 
     public List<File> findAllByRepositoryId(Long id)

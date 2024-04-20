@@ -3,8 +3,10 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.Comment;
 import com.glos.databaseAPIService.domain.entityMappers.CommentMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.CommentRepository;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +39,10 @@ public class CommentService implements CrudService<Comment, Long> {
         return commentRepository.findAll();
     }
 
+    public List<Comment> getAll(Comment filter) {
+        return commentRepository.findAll(Example.of(filter));
+    }
+
     @Override
     public List<Comment> getAll(EntityFilter filter) {
         return commentRepository.findAllByFilter(filter);
@@ -51,7 +57,7 @@ public class CommentService implements CrudService<Comment, Long> {
     public Comment update(Long aLong, Comment e) {
         Optional<Comment> commentOpt = getById(aLong);
         Comment found = commentOpt.orElseThrow(() ->
-                new RuntimeException("Not found")
+                new ResourceNotFoundException("Not found")
         );
         commentMapper.transferDtoEntity(e, found);
         return commentRepository.save(found);
@@ -59,6 +65,10 @@ public class CommentService implements CrudService<Comment, Long> {
 
     @Override
     public void deleteById(Long aLong) {
-        commentRepository.deleteById(aLong);
+        Optional<Comment> commentOpt = getById(aLong);
+        Comment found = commentOpt.orElseThrow(() ->
+                new ResourceNotFoundException("Not found")
+        );
+        commentRepository.deleteById(found.getId());
     }
 }

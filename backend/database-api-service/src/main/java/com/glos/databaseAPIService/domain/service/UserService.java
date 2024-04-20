@@ -2,6 +2,7 @@ package com.glos.databaseAPIService.domain.service;
 
 
 import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.UserFilter;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
@@ -40,7 +41,7 @@ public class UserService implements CrudService<User, Long>
 
     User getUserByIdOrThrow(Long id)
     {
-        return getById(id).orElseThrow(() -> { return new RuntimeException("User is not found"); });
+        return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("User is not found"); });
     }
 
     public Optional<User> findByUsername(String username)
@@ -88,6 +89,7 @@ public class UserService implements CrudService<User, Long>
 
     @Override
     public void deleteById(Long id) {
-        userRepository.delete(userRepository.findById(id).get());
+        getUserByIdOrThrow(id);
+        userRepository.deleteById(id);
     }
 }

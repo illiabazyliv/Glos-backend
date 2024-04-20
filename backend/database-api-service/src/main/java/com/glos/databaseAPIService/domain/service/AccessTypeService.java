@@ -2,6 +2,7 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.AccessType;
 import com.glos.databaseAPIService.domain.entityMappers.AccessTypeMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.AccessTypeRepository;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
     public AccessType update(Long id, AccessType e) {
         Optional<AccessType> accessTypeOpt = getById(id);
         AccessType found = accessTypeOpt.orElseThrow(() ->
-                new RuntimeException("Not found")
+                new ResourceNotFoundException("Not found")
         );
         accessTypeMapper.transferDtoEntity(e, found);
         return accessTypeRepository.save(found);
@@ -62,6 +63,10 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
 
     @Override
     public void deleteById(Long id) {
-        accessTypeRepository.deleteById(id);
+        Optional<AccessType> accessTypeOpt = getById(id);
+        AccessType found = accessTypeOpt.orElseThrow(() ->
+                new ResourceNotFoundException("Not found")
+        );
+        accessTypeRepository.deleteById(found.getId());
     }
 }

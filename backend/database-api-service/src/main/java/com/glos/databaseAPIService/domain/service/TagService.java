@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
 import com.glos.databaseAPIService.domain.entityMappers.TagMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class TagService implements CrudService<Tag, Long>
 
     Tag getTagByIdOrThrow(Long id)
     {
-        return getById(id).orElseThrow(() -> { return new RuntimeException("Tag is not found"); });
+        return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
     }
 
     @Override
@@ -52,7 +53,8 @@ public class TagService implements CrudService<Tag, Long>
     @Override
     public void deleteById(Long id)
     {
-        tagRepository.delete(tagRepository.findById(id).get());
+        getTagByIdOrThrow(id);
+        tagRepository.deleteById(id);
     }
     @Override
     public Optional<Tag> getById(Long id) {

@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.entityMappers.FileUserAccessTypeMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
 import com.glos.databaseAPIService.domain.repository.FileUserAccessTypeRepository;
@@ -49,9 +50,8 @@ public class FileUserAccessTypeService implements CrudService<FileUserAccessType
 
     @Override
     public FileUserAccessType update(Long aLong, FileUserAccessType e) {
-        Optional<FileUserAccessType> fileUserAccessTypeOpt = getById(aLong);
-        FileUserAccessType found = fileUserAccessTypeOpt.orElseThrow(() ->
-                new RuntimeException("Not found")
+        FileUserAccessType found = getById(aLong).orElseThrow(() ->
+                new ResourceNotFoundException("Not found")
         );
         fileUserAccessTypeMapper.transferDtoEntity(e, found);
         return fileUserAccessTypeRepository.save(found);
@@ -59,6 +59,9 @@ public class FileUserAccessTypeService implements CrudService<FileUserAccessType
 
     @Override
     public void deleteById(Long aLong) {
+        getById(aLong).orElseThrow(() ->
+                new ResourceNotFoundException("Not found")
+        );
         fileUserAccessTypeRepository.deleteById(aLong);
     }
 }
