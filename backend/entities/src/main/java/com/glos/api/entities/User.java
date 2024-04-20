@@ -58,7 +58,7 @@ public class User
     @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
     private boolean is_enabled;
 
-    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default true")
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
     private boolean is_deleted;
 
     @OneToMany(mappedBy = "owner")

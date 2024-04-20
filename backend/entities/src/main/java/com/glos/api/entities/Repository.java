@@ -79,6 +79,27 @@ public class Repository
     @OneToMany(mappedBy = "repository")
     private List<File> files;
 
+    public Repository() {
+    }
+
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
+        this.id = id;
+        this.rootPath = rootPath;
+        this.rootName = rootName;
+        this.rootFullName = rootFullName;
+        this.owner = owner;
+        this.isDefault = isDefault;
+        this.displayPath = displayPath;
+        this.displayName = displayName;
+        this.displayFullName = displayFullName;
+        this.description = description;
+        this.accessTypes = accessTypes;
+        this.comments = comments;
+        this.secureCodes = secureCodes;
+        this.tags = tags;
+        this.files = files;
+    }
+
     public Long getId() {
         return id;
     }
