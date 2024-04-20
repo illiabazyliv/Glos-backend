@@ -16,6 +16,11 @@ public class ApiGatewayApplication {
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
+                .route("feed-service", r -> r
+                        .path("/api/feed", "/api/feed/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri("http://localhost:9004")
+                )
                 .build();
     }
 }
