@@ -2,19 +2,19 @@ package com.glos.feedservice.domain.DTO;
 
 public class FeedElementDTO
 {
-    private RepositoryDTO repositoryDTO;
+    private RepositoryDTO repository;
 
-    public FeedElementDTO(RepositoryDTO repositoryDTO)
+    public FeedElementDTO(RepositoryDTO repository)
     {
-        this.repositoryDTO = repositoryDTO;
+        this.repository = repository;
     }
 
-    public RepositoryDTO getRepositoryDTO() {
-        return repositoryDTO;
+    public RepositoryDTO getRepository() {
+        return repository;
     }
 
-    public void setRepositoryDTO(RepositoryDTO repositoryDTO) {
-        this.repositoryDTO = repositoryDTO;
+    public void setRepository(RepositoryDTO repository) {
+        this.repository = repository;
     }
 
 }

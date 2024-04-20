@@ -21,7 +21,7 @@ public class FeedController
         FeedDTOList = exampleList();
     }
 
-    @GetMapping
+    @GetMapping("/test")
     public ResponseEntity<List<FeedElementDTO>> getPublicRepos()
     {
         //TODO отримати список із repository
