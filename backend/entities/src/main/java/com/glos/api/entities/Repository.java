@@ -3,6 +3,7 @@ package com.glos.api.entities;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -33,7 +34,7 @@ public class Repository
     private User owner;
 
     @Column(name = "is_default", nullable = true, columnDefinition = "boolean default null")
-    private boolean isDefault;
+    private Boolean isDefault;
 
     @Column(name = "display_path", length = 255)
     private String displayPath;
@@ -48,31 +49,31 @@ public class Repository
     private String description;
 
     @ManyToMany
-    @JoinTable(name = "groups_access_types", joinColumns = @JoinColumn(name = "group_id"),
+    @JoinTable(name = "repositories_access_types", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "access_type_id"),
-            foreignKey = @ForeignKey(name = "fk_groups_access_types_groups_id"),
-            inverseForeignKey = @ForeignKey(name = "fk_groups_access_types_access_types_id"))
+            foreignKey = @ForeignKey(name = "fk_repositories_access_types_repository_id"),
+            inverseForeignKey = @ForeignKey(name = "fk_repositories_access_types_access_types_id"))
     private List<AccessType> accessTypes;
 
     @ManyToMany
     @JoinTable(name = "repositories_comments", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"),
-    foreignKey = @ForeignKey(name = "fk_repositories_comments_repositories_id"),
-    inverseForeignKey = @ForeignKey(name = "fk_repositories_comments_comments_id"))
+            foreignKey = @ForeignKey(name = "fk_repositories_comments_repositories_id"),
+            inverseForeignKey = @ForeignKey(name = "fk_repositories_comments_comments_id"))
     private List<Comment> comments;
 
     @ManyToMany
     @JoinTable(name = "repositories_secure_codes", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "secure_code_id"),
-    foreignKey = @ForeignKey(name = "fk_repositories_secure_codes_repositories_id"),
-    inverseForeignKey = @ForeignKey(name = "fk_repositories_secure_codes_secure_codes_id"))
+            foreignKey = @ForeignKey(name = "fk_repositories_secure_codes_repositories_id"),
+            inverseForeignKey = @ForeignKey(name = "fk_repositories_secure_codes_secure_codes_id"))
     private List<SecureCode> secureCodes;
 
     @ManyToMany
     @JoinTable(name = "repositories_tags", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"),
-    foreignKey = @ForeignKey(name = "fk_repositories_tags_repositories_id"),
-    inverseForeignKey = @ForeignKey(name = "fk_repositories_tags_tags_id"))
+            foreignKey = @ForeignKey(name = "fk_repositories_tags_repositories_id"),
+            inverseForeignKey = @ForeignKey(name = "fk_repositories_tags_tags_id"))
     private List<Tag> tags;
 
     @OneToMany(mappedBy = "repository")
@@ -81,4 +82,134 @@ public class Repository
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getRootPath() {
+        return rootPath;
+    }
+
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
+    }
+
+    public String getRootName() {
+        return rootName;
+    }
+
+    public void setRootName(String rootName) {
+        this.rootName = rootName;
+    }
+
+    public String getRootFullName() {
+        return rootFullName;
+    }
+
+    public void setRootFullName(String rootFullName) {
+        this.rootFullName = rootFullName;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
+
+    public String getDisplayPath() {
+        return displayPath;
+    }
+
+    public void setDisplayPath(String displayPath) {
+        this.displayPath = displayPath;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayFullName() {
+        return displayFullName;
+    }
+
+    public void setDisplayFullName(String displayFullName) {
+        this.displayFullName = displayFullName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<AccessType> getAccessTypes() {
+        return accessTypes;
+    }
+
+    public void setAccessTypes(List<AccessType> accessTypes) {
+        this.accessTypes = accessTypes;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<SecureCode> getSecureCodes() {
+        return secureCodes;
+    }
+
+    public void setSecureCodes(List<SecureCode> secureCodes) {
+        this.secureCodes = secureCodes;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<File> files) {
+        this.files = files;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Repository that = (Repository) o;
+        return isDefault == that.isDefault && Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(secureCodes, that.secureCodes) && Objects.equals(tags, that.tags) && Objects.equals(files, that.files);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, rootPath, rootName, rootFullName, owner, isDefault, displayPath, displayName, displayFullName, description, accessTypes, comments, secureCodes, tags, files);
+    }
 }
+
