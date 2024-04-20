@@ -21,7 +21,8 @@ public class RepositoryFilter implements EntityFilter
 
     private String rootFullName;
 
-    private User owner;
+    private Long ownerId;
+    private String ownerUsername;
 
     private boolean isDefault;
 
@@ -43,9 +44,11 @@ public class RepositoryFilter implements EntityFilter
 
     private List<File> files;
 
+    public RepositoryFilter() {}
+
     public RepositoryFilter(Long id, String rootPath,
                             String rootName, String rootFullName,
-                            User owner, boolean isDefault, String displayPath,
+                            Long ownerId, String ownerUsername, boolean isDefault, String displayPath,
                             String displayName, String displayFullName,
                             String description, List<AccessType> accessTypes,
                             List<Comment> comments, List<SecureCode> secureCodes,
@@ -54,7 +57,8 @@ public class RepositoryFilter implements EntityFilter
         this.rootPath = rootPath;
         this.rootName = rootName;
         this.rootFullName = rootFullName;
-        this.owner = owner;
+        this.ownerId = ownerId;
+        this.ownerUsername = ownerUsername;
         this.isDefault = isDefault;
         this.displayPath = displayPath;
         this.displayName = displayName;
@@ -79,6 +83,22 @@ public class RepositoryFilter implements EntityFilter
         return rootPath;
     }
 
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public String getOwnerUsername() {
+        return ownerUsername;
+    }
+
+    public void setOwnerUsername(String ownerUsername) {
+        this.ownerUsername = ownerUsername;
+    }
+
     public void setRootPath(String rootPath) {
         this.rootPath = rootPath;
     }
@@ -99,13 +119,6 @@ public class RepositoryFilter implements EntityFilter
         this.rootFullName = rootFullName;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
 
     public boolean isDefault() {
         return isDefault;
@@ -194,7 +207,8 @@ public class RepositoryFilter implements EntityFilter
         map.put("rootPath", rootPath);
         map.put("rootName", rootName);
         map.put("rootFullName", rootFullName);
-        map.put("owner", owner);
+        map.put("ownerId", ownerId);
+        map.put("ownerUsername", ownerUsername);
         map.put("isDefault", isDefault);
         map.put("displayPath", displayPath);
         map.put("displayName", displayName);

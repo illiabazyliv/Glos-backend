@@ -1,12 +1,19 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glos.api.entities.Repository;
+import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entityMappers.RepositoryFilterMapper;
+import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
 import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -20,13 +27,17 @@ public class RepositoryAPIController
     private final RepositoryService repositoryService;
 
     @Autowired
-    public RepositoryAPIController(RepositoryService repositoryService) {
+    public RepositoryAPIController(
+            RepositoryService repositoryService
+    ) {
         this.repositoryService = repositoryService;
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Repository> getRepository(@PathVariable Long id)
     {
+
         return ResponseEntity.of(repositoryService.findById(id));
     }
 
@@ -40,7 +51,7 @@ public class RepositoryAPIController
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRepository(@PathVariable Long id)
     {
-        repositoryService.delete(repositoryService.findById(id).get());
+        repositoryService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -65,7 +76,7 @@ public class RepositoryAPIController
     }
 
     @GetMapping()
-    public List<Repository> getRepositoriesByFilter(@ModelAttribute RepositoryFilter filter)
+    public List<Repository> getRepositoriesByFilter(@ModelAttribute Repository filter)
     {
         return repositoryService.findAllByFilter(filter);
     }

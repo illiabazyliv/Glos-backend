@@ -23,8 +23,8 @@ public class CommentAPIController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Comment>> getAll() {
-        return ResponseEntity.ok(commentService.getAll());
+    public ResponseEntity<List<Comment>> getAll(@ModelAttribute Comment filter) {
+        return ResponseEntity.ok(commentService.getAll(filter));
     }
 
     @GetMapping("/{id:\\d}")
