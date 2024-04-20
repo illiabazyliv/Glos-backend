@@ -30,6 +30,11 @@ public abstract class AbstractMapper<E, D>
 
     @Override
     public final D toDto(E entity) {
+        return toDto(entity, false);
+    }
+
+    @Override
+    public final D toDto(E entity, boolean hardSet) {
         try {
             doEntityNull(entity);
         } catch (NullPointerException e) {
@@ -43,25 +48,35 @@ public abstract class AbstractMapper<E, D>
             throw new RuntimeException("Error creating DTO instance", e);
         }
 
-        transferEntityDto(entity, dto);
+        transferEntityDto(entity, dto, hardSet);
 
         return dto;
     }
 
     @Override
     public final Collection<D> toDtoAll(Iterable<E> iterable) {
+        return toDtoAll(iterable, false);
+    }
+
+    @Override
+    public final Collection<D> toDtoAll(Iterable<E> iterable, boolean hardSet) {
         try {
             nonNullOrThrow(iterable);
         } catch (NullPointerException e) {
             return null;
         }
         List<D> dtos = new ArrayList<>();
-        iterable.forEach(x -> dtos.add( toDto(x) ));
+        iterable.forEach(x -> dtos.add( toDto(x, hardSet) ));
         return dtos;
     }
 
     @Override
     public final E toEntity(D dto) {
+        return toEntity(dto, false);
+    }
+
+    @Override
+    public final E toEntity(D dto, boolean hardSet) {
         try {
             doDtoNull(dto);
         } catch (NullPointerException e) {
@@ -75,13 +90,18 @@ public abstract class AbstractMapper<E, D>
             throw new RuntimeException("Error creating DTO instance", e);
         }
 
-        transferDtoEntity(dto, entity);
+        transferDtoEntity(dto, entity, hardSet);
 
         return entity;
     }
 
     @Override
     public final Collection<E> toEntityAll(Iterable<D> iterable) {
+        return toEntityAll(iterable, false);
+    }
+
+    @Override
+    public final Collection<E> toEntityAll(Iterable<D> iterable, boolean hardSet) {
         try {
             nonNullOrThrow(iterable);
         } catch (NullPointerException e) {
@@ -93,28 +113,40 @@ public abstract class AbstractMapper<E, D>
     }
 
     @Override
-    public final void autoCopyDto(D source, D destination) {
-        autoCopy(source, destination);
+    public final void autoCopyDto(D source, D destination, boolean hardSet) {
+        autoCopy(source, destination, hardSet);
     }
 
     @Override
-    public final void autoCopyEntity(E source, E destination) {
-        autoCopy(source, destination);
+    public final void autoCopyEntity(E source, E destination,boolean hardSet) {
+        autoCopy(source, destination, hardSet);
     }
 
     @Override
-    public final void transferDtoEntity(D source, E destination) {
+    public void transferDtoEntity(D source, E destination) {
+        transferDtoEntity(source, destination, false);
+    }
+
+    @Override
+    public final void transferDtoEntity(D source, E destination, boolean hardSet) {
         preEntityCopy(source, destination);
-        copyEntity(source, destination);
+        copyEntity(source, destination, hardSet);
         postEntityCopy(source, destination);
     }
 
     @Override
-    public final void transferEntityDto(E source, D destination) {
+    public void transferEntityDto(E source, D destination) {
+        transferEntityDto(source, destination, false);
+    }
+
+    @Override
+    public final void transferEntityDto(E source, D destination, boolean hardSet) {
         preDtoCopy(source, destination);
-        copyDto(source, destination);
+        copyDto(source, destination, hardSet);
         postDtoCopy(source, destination);
     }
+
+
 
     protected void doDtoNull(D dto) throws NullPointerException  {
         nonNullOrThrow(dto);
@@ -148,15 +180,15 @@ public abstract class AbstractMapper<E, D>
 
     }
 
-    protected void copyDto(E source, D destination) {
-        autoCopy(source, destination);
+    protected void copyDto(E source, D destination, boolean hardSet) {
+        autoCopy(source, destination, hardSet);
     }
 
-    protected void copyEntity(D source, E destination) {
-        autoCopy(source, destination);
+    protected void copyEntity(D source, E destination, boolean hardSet) {
+        autoCopy(source, destination, hardSet);
     }
 
-    protected final <S, DS> void autoCopy(S source, DS destination) {
+    protected final <S, DS> void autoCopy(S source, DS destination, boolean hardSet) {
         Field[] sourceFields = source.getClass().getDeclaredFields();
         Field[] declaredFields = destination.getClass().getDeclaredFields();
 
@@ -167,7 +199,9 @@ public abstract class AbstractMapper<E, D>
                 if (fieldS.getName().equals(fieldDS.getName())
                         && fieldS.getType().equals(fieldDS.getType())) {
                     try {
-                        fieldDS.set(destination, fieldS.get(source));
+                        if (fieldS.get(source) != null || hardSet) {
+                            fieldDS.set(destination, fieldS.get(source));
+                        }
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
