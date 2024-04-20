@@ -2,7 +2,13 @@ package com.glos.feedservice.domain.controllers;
 
 import com.glos.feedservice.domain.DTO.FeedElementDTO;
 import com.glos.feedservice.domain.DTO.RepositoryDTO;
+import com.glos.feedservice.domain.entities.AccessType;
+import com.glos.feedservice.domain.entities.Repository;
 import com.glos.feedservice.domain.entities.User;
+import com.glos.feedservice.domain.filters.RepositoryFilter;
+import com.glos.feedservice.domain.repositories.FeedRepository;
+import com.glos.feedservice.domain.repositories.TestRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,18 +21,16 @@ import java.util.List;
 @RequestMapping("/feed")
 public class FeedController
 {
+
+    private final FeedRepository feedRepository;
+    private final TestRepository testRepository;
     private List<FeedElementDTO> FeedDTOList;
 
-    public FeedController() {
+    @Autowired
+    public FeedController(FeedRepository feedRepository, TestRepository testRepository) {
+        this.feedRepository = feedRepository;
+        this.testRepository = testRepository;
         FeedDTOList = exampleList();
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<List<FeedElementDTO>> getPublicRepos()
-    {
-        //TODO отримати список із repository
-
-        return ResponseEntity.ok(FeedDTOList);
     }
 
     private List<FeedElementDTO> exampleList() {
@@ -54,5 +58,33 @@ public class FeedController
                 List.of()
         )));
         return list;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Repository>> getPublicRepos()
+    {
+        AccessType accessType = new AccessType();
+        accessType.setId(1L);
+        accessType.setName("PUBLIC_R");
+
+        List<AccessType> accessTypeList = new ArrayList<>();
+        accessTypeList.add(accessType);
+
+        RepositoryFilter filter = new RepositoryFilter();
+        filter.setId(null);
+        filter.setAccessTypes(accessTypeList);
+        return ResponseEntity.ok(feedRepository.getPublicRepos(filter));
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers()
+    {
+        return ResponseEntity.ok(testRepository.getUsers());
+    }
+
+    @GetMapping("/is-ok")
+    public ResponseEntity<?> isOk()
+    {
+        return ResponseEntity.ok().build();
     }
 }
