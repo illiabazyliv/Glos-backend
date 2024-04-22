@@ -21,14 +21,12 @@ import static org.springframework.http.HttpMethod.GET;
 @Service
 public class FeedRepository
 {
+
+    private final String serviceURL = "http://localhost:8080/api/v1/repositories";
     public List<Repository> getPublicRepos(RepositoryFilter filter)
     {
-        List<FeedElementDTO> feedElementDTOList = new ArrayList<>();
-        List<RepositoryDTO> repositoryDTOList = new ArrayList<>();
-        String url = "http://localhost:8080/api/v1/repositories";
-
         RestTemplate restTemplate = new RestTemplate();
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceURL)
                 .queryParam("id", filter.getId())
                 .queryParam("rootPath", filter.getRootPath())
                 .queryParam("rootName", filter.getRootName())
@@ -54,5 +52,20 @@ public class FeedRepository
         List<Repository> repositories = response.getBody();
 
         return repositories;
+    }
+
+    public Repository getPublicRepoById(Long id)
+    {
+        RestTemplate restTemplate = new RestTemplate();
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceURL)
+                .queryParam("id", id);
+        ResponseEntity<Repository> response = restTemplate.exchange(
+                builder.toUriString(),
+                GET,
+                null,
+                new ParameterizedTypeReference<Repository>(){}
+        );
+        Repository repository = response.getBody();
+        return repository;
     }
 }

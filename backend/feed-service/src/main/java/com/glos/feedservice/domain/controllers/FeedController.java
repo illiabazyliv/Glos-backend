@@ -1,21 +1,23 @@
 package com.glos.feedservice.domain.controllers;
 
 import com.glos.feedservice.domain.DTO.FeedElementDTO;
+import com.glos.feedservice.domain.DTO.FullRepositoryDTO;
 import com.glos.feedservice.domain.DTO.RepositoryDTO;
 import com.glos.feedservice.domain.entities.AccessType;
 import com.glos.feedservice.domain.entities.Repository;
 import com.glos.feedservice.domain.entities.User;
+import com.glos.feedservice.domain.entityMappers.FullRepositoryDTOMapper;
+import com.glos.feedservice.domain.entityMappers.RepositoryDTOMapper;
 import com.glos.feedservice.domain.filters.RepositoryFilter;
 import com.glos.feedservice.domain.repositories.FeedRepository;
 import com.glos.feedservice.domain.repositories.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/feed")
@@ -23,15 +25,27 @@ public class FeedController
 {
 
     private final FeedRepository feedRepository;
-    private final TestRepository testRepository;
+    private final FullRepositoryDTO fullRepositoryDTO;
+    private final FullRepositoryDTOMapper fullRepositoryDTOMapper;
+    private final RepositoryDTOMapper repositoryDTOMapper;
     private List<FeedElementDTO> FeedDTOList;
 
     @Autowired
-    public FeedController(FeedRepository feedRepository, TestRepository testRepository) {
+    public FeedController(FeedRepository feedRepository,
+                          FullRepositoryDTO fullRepositoryDTO,
+                          FullRepositoryDTOMapper fullRepositoryDTOMapper,
+                          RepositoryDTOMapper repositoryDTOMapper,
+                          List<FeedElementDTO> feedDTOList) {
         this.feedRepository = feedRepository;
-        this.testRepository = testRepository;
-        FeedDTOList = exampleList();
+        this.fullRepositoryDTO = fullRepositoryDTO;
+        this.fullRepositoryDTOMapper = fullRepositoryDTOMapper;
+        this.repositoryDTOMapper = repositoryDTOMapper;
+        FeedDTOList = feedDTOList;
     }
+
+
+
+
 
     private List<FeedElementDTO> exampleList() {
         List<FeedElementDTO> list = new ArrayList<>();
@@ -59,32 +73,51 @@ public class FeedController
         )));
         return list;
     }
-
+    //TODO можливо якось додати логіку розбиття на сторінки, щоб передавати менше даних
     @GetMapping
-    public ResponseEntity<List<Repository>> getPublicRepos()
+    public ResponseEntity<List<FeedElementDTO>> getPublicRepositories()
     {
-        AccessType accessType = new AccessType();
-        accessType.setId(1L);
-        accessType.setName("PUBLIC_R");
-
-        List<AccessType> accessTypeList = new ArrayList<>();
-        accessTypeList.add(accessType);
-
         RepositoryFilter filter = new RepositoryFilter();
-        filter.setId(null);
-        filter.setAccessTypes(accessTypeList);
-        return ResponseEntity.ok(feedRepository.getPublicRepos(filter));
+        List<AccessType> accessTypes = new ArrayList<>();
+
+        accessTypes.add(new AccessType("PUBLIC_R"));
+        accessTypes.add(new AccessType("PUBLIC_RW"));
+        filter.setAccessTypes(accessTypes);
+
+        List<Repository> repositories = feedRepository.getPublicRepos(filter);
+        List<FeedElementDTO> feedElements = new ArrayList<>(repositories.size());
+        for (int i = 0; i < repositories.size(); i++)
+        {
+            RepositoryDTO repositoryDTO = new RepositoryDTO();
+            repositoryDTOMapper.transferEntityDto(repositories.get(i), repositoryDTO);
+            feedElements.get(i).setRepository(repositoryDTO);
+        }
+
+        return ResponseEntity.of(Optional.of(feedElements));
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers()
+    //TODO тут таке саме
+    @GetMapping
+    public ResponseEntity<List<FeedElementDTO>> getPublicReposByFitler(@ModelAttribute RepositoryFilter filter)
     {
-        return ResponseEntity.ok(testRepository.getUsers());
+        List<Repository> repositories = feedRepository.getPublicRepos(filter);
+        List<FeedElementDTO> feedElements = new ArrayList<>(repositories.size());
+        for (int i = 0; i < repositories.size(); i++)
+        {
+            RepositoryDTO repositoryDTO = new RepositoryDTO();
+            repositoryDTOMapper.transferEntityDto(repositories.get(i), repositoryDTO);
+            feedElements.get(i).setRepository(repositoryDTO);
+        }
+
+        return ResponseEntity.of(Optional.of(feedElements));
     }
 
-    @GetMapping("/is-ok")
-    public ResponseEntity<?> isOk()
+    @GetMapping("/{id}")
+    public ResponseEntity<FullRepositoryDTO> getFullPublicRepository(@PathVariable("id") Long id)
     {
-        return ResponseEntity.ok().build();
+        Repository repository = feedRepository.getPublicRepoById(id);
+        FullRepositoryDTO fullRepository = new FullRepositoryDTO();
+        fullRepositoryDTOMapper.transferEntityDto(repository, fullRepository);
+        return ResponseEntity.of(Optional.of(fullRepository));
     }
 }
