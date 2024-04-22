@@ -10,7 +10,6 @@ import com.glos.feedservice.domain.entityMappers.FullRepositoryDTOMapper;
 import com.glos.feedservice.domain.entityMappers.RepositoryDTOMapper;
 import com.glos.feedservice.domain.filters.RepositoryFilter;
 import com.glos.feedservice.domain.repositories.FeedRepository;
-import com.glos.feedservice.domain.repositories.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,26 +17,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 	@author - yablonovskydima
+ */
 @RestController
 @RequestMapping("/feed")
 public class FeedController
 {
 
     private final FeedRepository feedRepository;
-    private final FullRepositoryDTO fullRepositoryDTO;
     private final FullRepositoryDTOMapper fullRepositoryDTOMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
     private List<FeedElementDTO> FeedDTOList;
 
     @Autowired
     public FeedController(FeedRepository feedRepository,
-                          FullRepositoryDTO fullRepositoryDTO,
                           FullRepositoryDTOMapper fullRepositoryDTOMapper,
                           RepositoryDTOMapper repositoryDTOMapper,
                           List<FeedElementDTO> feedDTOList) {
         this.feedRepository = feedRepository;
-        this.fullRepositoryDTO = fullRepositoryDTO;
         this.fullRepositoryDTOMapper = fullRepositoryDTOMapper;
         this.repositoryDTOMapper = repositoryDTOMapper;
         FeedDTOList = feedDTOList;
@@ -98,7 +96,7 @@ public class FeedController
 
     //TODO тут таке саме
     @GetMapping
-    public ResponseEntity<List<FeedElementDTO>> getPublicReposByFitler(@ModelAttribute RepositoryFilter filter)
+    public ResponseEntity<List<FeedElementDTO>> getPublicReposByFilter(@ModelAttribute RepositoryFilter filter)
     {
         List<Repository> repositories = feedRepository.getPublicRepos(filter);
         List<FeedElementDTO> feedElements = new ArrayList<>(repositories.size());

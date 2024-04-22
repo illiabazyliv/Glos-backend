@@ -5,7 +5,9 @@ import com.glos.feedservice.domain.entities.AccessType;
 import jakarta.persistence.*;
 
 import java.util.List;
-
+/**
+ * 	@author - yablonovskydima
+ */
 public class RepositoryDTO
 {
     private Long id;

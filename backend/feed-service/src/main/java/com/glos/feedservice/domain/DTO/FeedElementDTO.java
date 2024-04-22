@@ -1,5 +1,7 @@
 package com.glos.feedservice.domain.DTO;
-
+/**
+ * 	@author - yablonovskydima
+ */
 public class FeedElementDTO
 {
     private RepositoryDTO repository;

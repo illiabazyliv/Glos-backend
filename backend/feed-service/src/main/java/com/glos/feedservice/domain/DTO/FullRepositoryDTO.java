@@ -3,7 +3,9 @@ package com.glos.feedservice.domain.DTO;
 import com.glos.feedservice.domain.entities.*;
 
 import java.util.List;
-
+/**
+ * 	@author - yablonovskydima
+ */
 public class FullRepositoryDTO
 {
     private Long id;
