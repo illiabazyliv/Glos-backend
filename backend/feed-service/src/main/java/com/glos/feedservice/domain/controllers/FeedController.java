@@ -95,7 +95,7 @@ public class FeedController
     }
 
     //TODO тут таке саме
-    @GetMapping
+    @GetMapping("/filter")
     public ResponseEntity<List<FeedElementDTO>> getPublicReposByFilter(@ModelAttribute RepositoryFilter filter)
     {
         List<Repository> repositories = feedRepository.getPublicRepos(filter);
