@@ -1,5 +1,7 @@
+import { connect } from 'react-redux';
+import { setCurrentFile } from '../../store/thunks/fileThunks';
 
-function FileDropdown({  }) {
+function FileDropdown({ fileId, setCurrentFile }) {
     return (
         <div className='header-profile'>
             <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
@@ -22,7 +24,8 @@ function FileDropdown({  }) {
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editFileModal">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editFileModal"
+                        onClick={() => {setCurrentFile(fileId);}}>
                         <i className="bi bi-pencil"></i>
                         <span>Edit access</span>
                     </a>
@@ -39,4 +42,14 @@ function FileDropdown({  }) {
     );
 }
 
-export default FileDropdown;
+const mapStateToProps = (state) => {
+    return {
+        
+    }
+};
+
+const mapDispatchToProps = {
+    setCurrentFile
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)((FileDropdown));

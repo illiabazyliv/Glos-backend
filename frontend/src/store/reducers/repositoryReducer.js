@@ -21,6 +21,12 @@ const repositoryReducer = (state = initialState, action) => {
                 isLoading: false,
                 newRepository: action.payload.repository,
             }
+        case repositoryActionTypes.SET_CURRENT_REPOSITORY:
+            return {
+                ...state,
+                isLoading: false,
+                currentRepository: action.payload.repository,
+            }
         default:
             return state; 
     }

@@ -114,7 +114,7 @@ const FileService = {
     },
 
     async moveFile(username, filename, from, to) { // POST /users/{username}/files/{filename}/files/move
-        return await httpInstance.post(`/users/${username}/files/${filename}/files/`, {from, to})
+        return await httpInstance.post(`/users/${username}/files/${filename}/files/move`, {from, to})
         .then(function (response) {
             // return response.data;
 

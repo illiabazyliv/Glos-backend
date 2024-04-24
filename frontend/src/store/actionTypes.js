@@ -15,4 +15,11 @@ export const authActionTypes = {
 export const repositoryActionTypes = {
     ADD_NEW: 'ADD_NEW',
     SET_LOADING: 'SET_LOADING_REPOSITORY',
+    SET_CURRENT_REPOSITORY: 'SET_CURRENT_REPOSITORY',
+}
+
+export const fileActionTypes = {
+    ADD_NEW: 'ADD_NEW',
+    SET_LOADING: 'SET_LOADING_FILE',
+    SET_CURRENT_FILE: 'SET_CURRENT_FILE',
 }

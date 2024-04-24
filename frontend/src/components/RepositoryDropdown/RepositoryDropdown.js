@@ -1,5 +1,7 @@
+import { connect } from 'react-redux';
+import { setCurrentRepository } from '../../store/thunks/repositoryThunks';
 
-function RepositoryDropdown({  }) {
+function RepositoryDropdown({ repositoryId, setCurrentRepository }) {
     return (
         <div className='header-profile'>
             <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
@@ -15,7 +17,8 @@ function RepositoryDropdown({  }) {
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editRepositoryModal">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editRepositoryModal"
+                        onClick={() => {setCurrentRepository(repositoryId);}}>
                         <i className="bi bi-pencil"></i>
                         <span>Edit access</span>
                     </a>
@@ -32,4 +35,14 @@ function RepositoryDropdown({  }) {
     );
 }
 
-export default RepositoryDropdown;
+const mapStateToProps = (state) => {
+    return {
+        
+    }
+}
+
+const mapDispatchToProps = {
+    setCurrentRepository
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)((RepositoryDropdown));

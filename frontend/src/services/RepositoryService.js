@@ -30,7 +30,7 @@ const RepositoryService = {
         .catch(error => handleHttpError(error))
     },
 
-    async setRepositoryAccess(username, repository) { // POST /users/{username}/repositories
+    async createRepository(username, repository) { // POST /users/{username}/repositories
         return await httpInstance.post(`/users/${username}/repositories`, repository)
         .then(function (response) {
             // return response.data;

@@ -14,3 +14,12 @@ export const setLoadingAC = () => {
         type: repositoryActionTypes.SET_LOADING,
     }
 }
+
+export const setCurrentRepositoryAC = (repository) => {
+    return {
+        type: repositoryActionTypes.SET_CURRENT_REPOSITORY,
+        payload: {
+            repository
+        }
+    }
+}

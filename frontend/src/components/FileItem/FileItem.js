@@ -12,7 +12,7 @@ function FileItem({ file }) {
                 <h6 className="fs-6 text-medium card-title p-0 m-0">
                     <NavLink to={'files/' + file.displayFilename}>{file.displayFilename}</NavLink>
                 </h6>
-                <FileDropdown/>
+                <FileDropdown fileId={file.displayFilename}/>
             </div>
         </div>
     );

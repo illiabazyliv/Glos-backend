@@ -15,7 +15,7 @@ function RepositoryItem({ repository }) {
                     </h6>
                     <small className="text-muted py-1">{repository.description}</small>
                 </div>
-                <RepositoryDropdown/>
+                <RepositoryDropdown repositoryId={repository.displayname}/>
             </div>
         </div>
     );
