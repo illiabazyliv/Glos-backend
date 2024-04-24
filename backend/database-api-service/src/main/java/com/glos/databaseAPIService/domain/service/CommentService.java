@@ -8,6 +8,7 @@ import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.CommentRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ public class CommentService implements CrudService<Comment, Long> {
         this.commentMapper = commentMapper;
     }
 
+    @Transactional
     @Override
     public Comment create(Comment e) {
         return commentRepository.save(e);
@@ -53,6 +55,7 @@ public class CommentService implements CrudService<Comment, Long> {
         return commentRepository.findById(aLong);
     }
 
+    @Transactional
     @Override
     public Comment update(Long aLong, Comment e) {
         Optional<Comment> commentOpt = getById(aLong);
@@ -63,6 +66,7 @@ public class CommentService implements CrudService<Comment, Long> {
         return commentRepository.save(found);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long aLong) {
         Optional<Comment> commentOpt = getById(aLong);

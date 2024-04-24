@@ -8,6 +8,7 @@ import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
 import com.glos.databaseAPIService.domain.repository.FileUserAccessTypeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class FileUserAccessTypeService implements CrudService<FileUserAccessType
         this.fileUserAccessTypeMapper = fileUserAccessTypeMapper;
     }
 
+    @Transactional
     @Override
     public FileUserAccessType create(FileUserAccessType e) {
         return fileUserAccessTypeRepository.save(e);
@@ -48,6 +50,7 @@ public class FileUserAccessTypeService implements CrudService<FileUserAccessType
         return fileUserAccessTypeRepository.findById(aLong);
     }
 
+    @Transactional
     @Override
     public FileUserAccessType update(Long aLong, FileUserAccessType e) {
         FileUserAccessType found = getById(aLong).orElseThrow(() ->
@@ -57,6 +60,7 @@ public class FileUserAccessTypeService implements CrudService<FileUserAccessType
         return fileUserAccessTypeRepository.save(found);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long aLong) {
         getById(aLong).orElseThrow(() ->

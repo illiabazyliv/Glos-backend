@@ -8,6 +8,7 @@ import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,7 @@ public class GroupService implements CrudService<Group, Long>
         return getById(id).orElseThrow(() -> new ResourceNotFoundException("Access type is not found"));
     }
 
+    @Transactional
     @Override
     public Group create(Group group) {
         return repository.save(group);
@@ -53,6 +55,7 @@ public class GroupService implements CrudService<Group, Long>
         return repository.findById(id);
     }
 
+    @Transactional
     @Override
     public Group update(Long id, Group newGroup) {
         Group group = getGroupByIdOrThrow(id);
@@ -60,6 +63,7 @@ public class GroupService implements CrudService<Group, Long>
         return repository.save(group);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
         getGroupByIdOrThrow(id);

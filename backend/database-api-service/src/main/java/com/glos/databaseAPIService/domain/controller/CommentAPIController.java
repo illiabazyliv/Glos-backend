@@ -47,7 +47,7 @@ public class CommentAPIController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comment> create(
+    public ResponseEntity<Comment> update(
             @PathVariable Long id,
             @RequestBody Comment request
     ) {

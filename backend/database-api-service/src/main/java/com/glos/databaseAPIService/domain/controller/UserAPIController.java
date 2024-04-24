@@ -71,16 +71,10 @@ public class UserAPIController
         return ResponseEntity.of(userService.findByPhoneNumber(phoneNumber));
     }
 
-    @GetMapping("/filter")
-    public List<User> getUsersByFilter(@ModelAttribute UserFilter userFilter)
-    {
-        return userService.findAllByFilter(userFilter);
-    }
-
     @GetMapping
-    public List<User> getAllUsers()
+    public List<User> getUsersByFilter(@ModelAttribute User filter)
     {
-        return userService.getAll();
+        return userService.getAll(filter);
     }
 
 }

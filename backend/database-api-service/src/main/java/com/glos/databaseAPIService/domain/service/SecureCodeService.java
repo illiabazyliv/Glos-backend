@@ -8,6 +8,7 @@ import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.SecureCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,7 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
         return getById(id).orElseThrow(() -> new ResourceNotFoundException("Access type is not found"));
     }
 
+    @Transactional
     @Override
     public SecureCode create(SecureCode secureCode) {
         return repository.save(secureCode);
@@ -50,6 +52,7 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
         return repository.findById(id);
     }
 
+    @Transactional
     @Override
     public SecureCode update(Long id, SecureCode newSecureCode) {
         SecureCode secureCode = getSecureCodeByIdOrThrow(id);
@@ -57,6 +60,7 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
         return repository.save(secureCode);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
         getSecureCodeByIdOrThrow(id);

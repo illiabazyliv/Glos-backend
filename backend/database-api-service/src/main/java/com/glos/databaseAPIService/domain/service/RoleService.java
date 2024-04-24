@@ -8,6 +8,7 @@ import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class RoleService implements CrudService<Role, Long>
         return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Role is not found"); });
     }
 
+    @Transactional
     @Override
     public Role create(Role role) {
         return roleRepository.save(role);
@@ -52,6 +54,7 @@ public class RoleService implements CrudService<Role, Long>
         return roleRepository.findById(id);
     }
 
+    @Transactional
     @Override
     public Role update(Long id, Role newRole) {
 
@@ -60,6 +63,7 @@ public class RoleService implements CrudService<Role, Long>
         return roleRepository.save(role);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
         roleRepository.delete(roleRepository.findById(id).get());

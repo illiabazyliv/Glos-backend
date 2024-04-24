@@ -48,33 +48,37 @@ public class Repository
     @Column(name = "description", length = 200)
     private String description;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "repositories_access_types", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "access_type_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_access_types_repository_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_access_types_access_types_id"))
     private List<AccessType> accessTypes;
 
-    @ManyToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "repositories_comments", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_comments_repositories_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_comments_comments_id"))
     private List<Comment> comments;
 
-    @ManyToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "repositories_secure_codes", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "secure_code_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_secure_codes_repositories_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_secure_codes_secure_codes_id"))
     private List<SecureCode> secureCodes;
 
-    @ManyToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "repositories_tags", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_tags_repositories_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_tags_tags_id"))
     private List<Tag> tags;
+
 
     @OneToMany(mappedBy = "repository")
     private List<File> files;
@@ -140,11 +144,11 @@ public class Repository
         this.owner = owner;
     }
 
-    public boolean isDefault() {
+    public Boolean getDefault() {
         return isDefault;
     }
 
-    public void setDefault(boolean aDefault) {
+    public void setDefault(Boolean aDefault) {
         isDefault = aDefault;
     }
 
@@ -225,12 +229,33 @@ public class Repository
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Repository that = (Repository) o;
-        return isDefault == that.isDefault && Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(secureCodes, that.secureCodes) && Objects.equals(tags, that.tags) && Objects.equals(files, that.files);
+        return Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(isDefault, that.isDefault) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(secureCodes, that.secureCodes) && Objects.equals(tags, that.tags) && Objects.equals(files, that.files);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, rootPath, rootName, rootFullName, owner, isDefault, displayPath, displayName, displayFullName, description, accessTypes, comments, secureCodes, tags, files);
+    }
+
+    @Override
+    public String toString() {
+        return "Repository{" +
+                "id=" + id +
+                ", rootPath='" + rootPath + '\'' +
+                ", rootName='" + rootName + '\'' +
+                ", rootFullName='" + rootFullName + '\'' +
+                ", owner=" + owner +
+                ", isDefault=" + isDefault +
+                ", displayPath='" + displayPath + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", displayFullName='" + displayFullName + '\'' +
+                ", description='" + description + '\'' +
+                ", accessTypes=" + accessTypes +
+                ", comments=" + comments +
+                ", secureCodes=" + secureCodes +
+                ", tags=" + tags +
+                ", files=" + files +
+                '}';
     }
 }
 

@@ -3,12 +3,13 @@ package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.User;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
-import com.glos.databaseAPIService.domain.filters.EntityFilter;
-import com.glos.databaseAPIService.domain.filters.UserFilter;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
+import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,12 +28,7 @@ public class UserService implements CrudService<User, Long>
         this.userMapper = userMapper;
     }
 
-    public List<User> findAllByFilter(UserFilter filter)
-    {
-        return userRepository.findAll();
-    }
-
-
+    @Transactional
     public void delete(User user)
     {
         userRepository.delete(user);
@@ -60,6 +56,7 @@ public class UserService implements CrudService<User, Long>
     }
 
 
+    @Transactional
     @Override
     public User create(User user) {
         return userRepository.save(user);
@@ -70,9 +67,13 @@ public class UserService implements CrudService<User, Long>
         return userRepository.findAll();
     }
 
+    public List<User> getAll(User filter) {
+        return userRepository.findAll(Example.of(filter));
+    }
+
     @Override
     public List<User> getAll(EntityFilter filter) {
-        return userRepository.findAllByFilter(filter);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -80,6 +81,7 @@ public class UserService implements CrudService<User, Long>
         return userRepository.findById(id);
     }
 
+    @Transactional
     @Override
     public User update(Long id, User newUser) {
         User user = getUserByIdOrThrow(id);
@@ -87,6 +89,7 @@ public class UserService implements CrudService<User, Long>
         return userRepository.save(user);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
         getUserByIdOrThrow(id);

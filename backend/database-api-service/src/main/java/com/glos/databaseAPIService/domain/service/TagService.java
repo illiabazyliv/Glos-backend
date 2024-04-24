@@ -7,6 +7,7 @@ import com.glos.databaseAPIService.domain.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.glos.api.entities.Tag;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public class TagService implements CrudService<Tag, Long>
         return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
     }
 
+    @Transactional
     @Override
     public Tag create(Tag tag) {
         return tagRepository.save(tag);
@@ -50,6 +52,7 @@ public class TagService implements CrudService<Tag, Long>
         throw new UnsupportedOperationException();
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id)
     {
@@ -61,6 +64,7 @@ public class TagService implements CrudService<Tag, Long>
         return tagRepository.findById(id);
     }
 
+    @Transactional
     @Override
     public Tag update(Long id, Tag newTag) {
         Tag tag = getTagByIdOrThrow(id);

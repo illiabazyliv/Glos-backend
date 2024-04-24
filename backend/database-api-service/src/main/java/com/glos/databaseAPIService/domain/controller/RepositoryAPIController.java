@@ -42,10 +42,11 @@ public class RepositoryAPIController
     }
 
     @PostMapping
-    public ResponseEntity<Repository> createRepository(@RequestBody Repository repository)
-    {
-        repositoryService.save(repository);
-        return ResponseEntity.created(URI.create("/v1/repositories/"+repository.getId())).body(repository);
+    public ResponseEntity<Repository> createRepository(@RequestBody Repository repository) {
+        Repository repo = repositoryService.save(repository);
+        return ResponseEntity
+                .created(URI.create("/v1/repositories/"+repo.getId()))
+                .body(repo);
     }
 
     @DeleteMapping("/{id}")

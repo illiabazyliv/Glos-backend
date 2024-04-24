@@ -8,6 +8,7 @@ import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,16 +33,19 @@ public class FileService
         return fileRepository.findById(id);
     }
 
+    @Transactional
     public File save(File file)
     {
         return fileRepository.save(file);
     }
 
+    @Transactional
     public void delete(File file)
     {
         fileRepository.delete(file);
     }
 
+    @Transactional
     public File update(File newFile, Long id)
     {
         File file = getFileByIdOrThrow(id);
