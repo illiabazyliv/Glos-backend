@@ -20,6 +20,7 @@ import AllRepositoriesPage from '../../pages/AllRepositoriesPage/AllRepositories
 import RepositoryFilesPage from '../../pages/RepositoryFilesPage/RepositoryFilesPage.js';
 import FriendsPage from '../../pages/FriendsPage/FriendsPage.js';
 import GroupsPage from '../../pages/GroupsPage/GroupsPage.js';
+import SearchPage from '../../pages/SearchPage/SearchPage.js';
 
 const App = ({ isInitialized, initialize, user }) => {
     useEffect(() => {
@@ -48,6 +49,7 @@ const App = ({ isInitialized, initialize, user }) => {
                         <Route path='repositories/:repositoryName' element={<RepositoryFilesPage />}/>
                         <Route path='groups' element={<GroupsPage />}/>
                         <Route path='friends' element={<FriendsPage />}/>
+                        <Route path='search' element={<SearchPage />}/>
                     </Route>
                 </Route>
             </Routes>

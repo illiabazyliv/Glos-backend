@@ -23,6 +23,7 @@ function EditFileModal({ isLoading, user, setFileAccess, currentFile }) {
 
     const onFormSubmit = (data) => {
         setFileAccess(user.username, currentFile.displayFilename, data.accessTypes);
+        // todo: add move ability
     };
 
     return (
