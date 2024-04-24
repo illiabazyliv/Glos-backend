@@ -29,7 +29,7 @@ public class CommentRepository
                 builder.toUriString(),
                 POST,
                 requestEntity,
-                new ParameterizedTypeReference<HttpStatus>() {
+                new ParameterizedTypeReference<CommentDTO>() {
                 }
 
         );

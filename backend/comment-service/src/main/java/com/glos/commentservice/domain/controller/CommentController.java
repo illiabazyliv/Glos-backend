@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/comment")
 public class CommentController
@@ -21,9 +23,9 @@ public class CommentController
     }
 
     @PostMapping
-    public ResponseEntity<?> createComment(@RequestBody CommentDTO commentDTO)
+    public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO)
     {
         commentRepository.createComment(commentDTO);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.of(Optional.of(commentDTO));
     }
 }
