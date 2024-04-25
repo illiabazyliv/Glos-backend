@@ -1,19 +1,19 @@
-package com.glos.databaseAPIService;
+package com.glos.databaseAPIService.domain.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.mockito.Mockito.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-class DatabaseApiServiceApplicationTests {
+class AccessTypeAPIControllerTests {
 
 	private MockMvc mockMvc;
 
-	public DatabaseApiServiceApplicationTests(MockMvc mockMvc) {
+	public AccessTypeAPIControllerTests(MockMvc mockMvc) {
 		this.mockMvc = mockMvc;
 	}
 
