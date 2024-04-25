@@ -63,14 +63,14 @@ public class RepositoryAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{ownerId}")
+    @GetMapping("owner-id/{ownerId}")
     public List<Repository> getRepositoriesByOwnerId(@PathVariable Long ownerId)
     {
         return repositoryService.findAllByOwnerId(ownerId);
     }
 
 
-    @GetMapping("/{rootFullName}")
+    @GetMapping("root-full-name/{rootFullName}")
     public ResponseEntity<Repository> getRepositoryByRootFullName(@PathVariable String rootFullName)
     {
         return ResponseEntity.of(repositoryService.findByRootFullName(rootFullName));
