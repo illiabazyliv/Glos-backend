@@ -6,6 +6,8 @@ let initialState = {
     newRepository: null,
     isLoading: false,
     errors: [],
+    sharedToken: '',
+    isSharedTokenLoading: false,
 };
 
 const repositoryReducer = (state = initialState, action) => {
@@ -14,6 +16,17 @@ const repositoryReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: true,
+            }
+        case repositoryActionTypes.SET_TOKEN_LOADING:
+            return {
+                ...state,
+                isSharedTokenLoading: true,
+            }
+        case repositoryActionTypes.SET_TOKEN:
+            return {
+                ...state,
+                isSharedTokenLoading: false,
+                sharedToken: action.payload.sharedToken,
             }
         case repositoryActionTypes.ADD_NEW:
             return {

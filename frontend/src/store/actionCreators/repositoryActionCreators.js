@@ -23,3 +23,18 @@ export const setCurrentRepositoryAC = (repository) => {
         }
     }
 }
+
+export const setTokenLoadingAC = () => {
+    return {
+        type: repositoryActionTypes.SET_TOKEN_LOADING,
+    }
+}
+
+export const setTokenAC = (sharedToken) => {
+    return {
+        type: repositoryActionTypes.SET_TOKEN,
+        payload: {
+            sharedToken
+        }
+    }
+}

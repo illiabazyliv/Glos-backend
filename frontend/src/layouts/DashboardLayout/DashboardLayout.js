@@ -10,6 +10,8 @@ import ShareFileModal from '../../components/ShareFileModal/ShareFileModal';
 import DeleteFileModal from '../../components/DeleteFileModal/DeleteFileModal';
 import DeleteRepositoryModal from '../../components/DeleteRepositoryModal/DeleteRepositoryModal';
 import SearchModal from '../../components/SearchModal/SearchModal';
+import NewFriendModal from '../../components/NewFriendModal/NewFriendModal';
+import NewGroupModal from '../../components/NewGroupModal/NewGroupModal';
 
 function DashboardLayout() {
     const [isSidebarVisible, setSidebarVisible] = useState(window.innerWidth >= 992 ? true : false);
@@ -27,6 +29,8 @@ function DashboardLayout() {
             <ShareRepositoryModal/>
             <DeleteFileModal/>
             <DeleteRepositoryModal/>
+            <NewFriendModal/>
+            <NewGroupModal/>
             
         </div>
         

@@ -4,12 +4,16 @@ import authReducer from "./reducers/authReducer";
 import appReducer from "./reducers/appReducer";
 import repositoryReducer from "./reducers/repositoryReducer";
 import fileReducer from "./reducers/fileReducer";
+import friendReducer from "./reducers/friendReducer";
+import groupReducer from "./reducers/groupReducer";
 
 const reducers = combineReducers({
     appReducer,
     authReducer,
     repositoryReducer,
     fileReducer,
+    friendReducer,
+    groupReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

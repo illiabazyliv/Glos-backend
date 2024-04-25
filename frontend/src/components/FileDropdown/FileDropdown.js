@@ -16,18 +16,18 @@ function FileDropdown({ fileId, setCurrentFile }) {
                     </a>
                 </li>
                 <li><hr className="dropdown-divider" /></li>
-                <li>
+                {/* <li>
                     <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#shareFileModal">
                         <i className="bi bi-people"></i>
                         <span>Share</span>
                     </a>
-                </li>
+                </li> */}
                 <li><hr className="dropdown-divider" /></li>
                 <li>
                     <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#editFileModal"
                         onClick={() => {setCurrentFile(fileId);}}>
                         <i className="bi bi-pencil"></i>
-                        <span>Edit access</span>
+                        <span>Edit</span>
                     </a>
                 </li>
                 <li><hr className="dropdown-divider" /></li>

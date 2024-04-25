@@ -1,5 +1,5 @@
 import RepositoryService from '../../services/RepositoryService';
-import { addNewAC, setLoadingAC, setCurrentRepositoryAC } from '../actionCreators/repositoryActionCreators';
+import { addNewAC, setLoadingAC, setCurrentRepositoryAC, setTokenAC, setTokenLoadingAC } from '../actionCreators/repositoryActionCreators';
 
 export const addNewRepository = (repository) => async (dispatch) => {
     dispatch(setLoadingAC());
@@ -15,8 +15,8 @@ export const setCurrentRepository = (repositoryId) => async (dispatch) => {
 
     let repositoryObj = {
         "displayPath" : "/",
-        "displayname" : "repos1",
-        "displayFullName" : "/repos1",
+        "displayname" : "repos2",
+        "displayFullName" : "/repos2",
         "description" : "some description1",
         "access_types" : ["protected_rw", "public_r"],
         "owner" : "username1"
@@ -46,3 +46,13 @@ export const setRepositoryAccess = (username, repositoryId, accessTypes) => asyn
     }, 500)
 }
 
+export const getRepositoryToken = (repositoryId) => async (dispatch) => {
+    dispatch(setTokenLoadingAC());
+
+    let token = 'fdgfdgfdgfdg';
+
+    // imitate loading
+    setTimeout(() => {
+        dispatch(setTokenAC(token));
+    }, 500)
+}
