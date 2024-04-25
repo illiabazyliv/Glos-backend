@@ -73,7 +73,7 @@ public class FeedController
     }
     //TODO можливо якось додати логіку розбиття на сторінки, щоб передавати менше даних
     @GetMapping
-    public ResponseEntity<List<FeedElementDTO>> getPublicRepositories()
+    public ResponseEntity<?> getPublicRepositories()
     {
         RepositoryFilter filter = new RepositoryFilter();
         List<AccessType> accessTypes = new ArrayList<>();
@@ -91,7 +91,7 @@ public class FeedController
             feedElements.get(i).setRepository(repositoryDTO);
         }
 
-        return ResponseEntity.of(Optional.of(feedElements));
+        return ResponseEntity.ok().build();
     }
 
     //TODO тут таке саме

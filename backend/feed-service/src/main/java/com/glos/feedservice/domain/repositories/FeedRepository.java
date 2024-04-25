@@ -39,10 +39,7 @@ public class FeedRepository
                 .queryParam("displayName", filter.getDisplayName())
                 .queryParam("displayFullName", filter.getDisplayFullName())
                 .queryParam("description", filter.getDescription())
-                .queryParam("accessTypes", filter.getAccessTypes())
-                .queryParam("comments", filter.getComments())
-                .queryParam("secureCodes", filter.getSecureCodes())
-                .queryParam("tags", filter.getTags());
+                .queryParam("accessTypes", filter.getAccessTypes());
 
 
         ResponseEntity<List<Repository>> response = restTemplate.exchange(
