@@ -1,0 +1,39 @@
+export const appActionTypes = {
+    SET_INITIALIZED: 'SET_INITIALIZED',
+}
+
+export const authActionTypes = {
+    SET_LOADING: 'SET_LOADING_AUTH',
+    SET_USER: 'SET_USER',
+    SET_ERROR: 'SET_ERROR',
+    LOG_OUT: 'LOG_OUT',
+    REGISTER: 'REGISTER',
+    UPDATE_USER: 'UPDATE_USER',
+    SET_UPDATE_STATUS: 'SET_UPDATE_STATUS',
+}
+
+export const repositoryActionTypes = {
+    ADD_NEW: 'ADD_NEW_REPOSITORY',
+    SET_LOADING: 'SET_LOADING_REPOSITORY',
+    SET_CURRENT_REPOSITORY: 'SET_CURRENT_REPOSITORY',
+    SET_TOKEN_LOADING: 'SET_TOKEN_LOADING',
+    SET_TOKEN: 'SET_TOKEN',
+}
+
+export const fileActionTypes = {
+    ADD_NEW: 'ADD_NEW_FILE',
+    SET_LOADING: 'SET_LOADING_FILE',
+    SET_CURRENT_FILE: 'SET_CURRENT_FILE',
+}
+
+export const friendActionTypes = {
+    ADD_NEW: 'ADD_NEW_FRIEND',
+    SET_LOADING: 'SET_LOADING_FRIEND',
+    SET_CURRENT_FRIEND: 'SET_CURRENT_FRIEND',
+}
+
+export const groupActionTypes = {
+    ADD_NEW: 'ADD_NEW_GROUP',
+    SET_LOADING: 'SET_LOADING_GROUP',
+    SET_CURRENT_GROUP: 'SET_CURRENT_GROUP',
+}

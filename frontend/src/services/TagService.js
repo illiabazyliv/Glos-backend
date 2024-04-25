@@ -5,7 +5,18 @@ const TagService = {
     async getTags() { // GET /tags
         return await httpInstance.get(`/tags`)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return [
+                {
+                    id: 1,
+                    name: 'tag 1',
+                },
+                {
+                    id: 2,
+                    name: 'tag 2',
+                },
+            ];
         })
         .catch(error => handleHttpError(error))
     },

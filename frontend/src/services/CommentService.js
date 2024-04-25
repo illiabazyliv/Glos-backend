@@ -5,7 +5,16 @@ const CommentService = {
     async getRepositoryComments(username, id) { // GET /users/{username}/repositories/{id}/comments
         return await httpInstance.get(`/users/${username}/repositories/${id}/comments`)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return [
+                {
+                    "id": "1",
+                    "author": "username1",
+                    "text": "text1",
+                    "date": "datetime in ISO format"
+                },
+            ];
         })
         .catch(error => handleHttpError(error))
     },
@@ -13,7 +22,14 @@ const CommentService = {
     async addRepositoryComment(username, id, comment) { // POST /users/{username}/repositories/{id}/comments
         return await httpInstance.post(`/users/${username}/repositories/${id}/comments`, comment)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "id": "1",
+                "author": "username1",
+                "text": "text1",
+                "date": "datetime in ISO format"
+            };
         })
         .catch(error => handleHttpError(error))
     },
@@ -21,7 +37,16 @@ const CommentService = {
     async getFileComments(username, filename) { // GET /users/{username}/files/{filename}/comments
         return await httpInstance.get(`/users/${username}/files/${filename}/comments`)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return [
+                {
+                    "id": "1",
+                    "author": "username1",
+                    "text": "text1",
+                    "date": "datetime in ISO format"
+                },
+            ];
         })
         .catch(error => handleHttpError(error))
     },
@@ -29,7 +54,14 @@ const CommentService = {
     async addFileComment(username, filename, comment) { // POST /users/{username}/files/{filename}/comments
         return await httpInstance.post(`/users/${username}/files/${filename}/comments`, comment)
         .then(function (response) {
-            return response.data;
+            // return response.data;
+
+            return {
+                "id": "1",
+                "author": "username1",
+                "text": "text1",
+                "date": "datetime in ISO format"
+            };
         })
         .catch(error => handleHttpError(error))
     },
