@@ -1,15 +1,14 @@
 package com.glos.databaseAPIService.domain.service;
 
 
-import com.glos.api.entities.Repository;
-import com.glos.api.entities.User;
+import com.glos.api.entities.*;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
-import com.glos.databaseAPIService.domain.repository.RepositoryRepository;
-import com.glos.databaseAPIService.domain.repository.UserRepository;
+import com.glos.databaseAPIService.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +24,27 @@ public class RepositoryService
     private final RepositoryRepository repository;
     private final UserRepository userRepository;
     private final RepositoryMapper repositoryMapper;
+    private final AccessTypeRepository accessTypeRepository;
+    private final CommentRepository commentRepository;
+    private final TagRepository tagRepository;
+    private final FileRepository fileRepository;
 
     @Autowired
     public RepositoryService(RepositoryRepository repository,
                              RepositoryMapper repositoryMapper,
-            UserRepository userRepository
+            UserRepository userRepository,
+                             AccessTypeRepository accessTypeRepository,
+                             CommentRepository commentRepository,
+                             TagRepository tagRepository,
+                             FileRepository fileRepository
     ) {
         this.repository = repository;
         this.repositoryMapper = repositoryMapper;
         this.userRepository = userRepository;
+        this.accessTypeRepository = accessTypeRepository;
+        this.commentRepository = commentRepository;
+        this.tagRepository = tagRepository;
+        this.fileRepository = fileRepository;
     }
 
     public Optional<Repository> findById(Long id)
@@ -44,12 +55,85 @@ public class RepositoryService
     @Transactional
     public Repository save(Repository repository)
     {
+        assignUser(repository);
+        assignComments(repository);
+        assignTags(repository);
+        assignFiles(repository);
+        assignAccessTypes(repository);
+        Repository repo =  this.repository.save(repository);
+        return repo;
+    }
+
+    private Repository assignFiles(Repository repository) {
+        final List<File> files = repository.getFiles();
+        if (files != null) {
+            final List<File> found = repository.getFiles().stream().map(x -> {
+                if (x.getId() != null) {
+                    return fileRepository.findById(x.getId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Id of Repository is not found")
+                    );
+                }
+                return x;
+            }).toList();
+            repository.setFiles(found);
+        }
+        return repository;
+    }
+
+    private Repository assignTags(Repository repository) {
+        final List<Tag> tags = repository.getTags();
+        if (tags != null) {
+            final List<Tag> found = tags.stream().map(x -> {
+                if (x.getId() != null) {
+                    return tagRepository.findById(x.getId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Id of Tag is not found")
+                    );
+                }
+                return x;
+            }).toList();
+            repository.setTags(found);
+        }
+        return repository;
+    }
+
+    private Repository assignComments(Repository repository) {
+        final List<Comment> comments = repository.getComments();
+        if (comments != null) {
+            final List<Comment> found = comments.stream().map(x -> {
+                if (x.getId() != null) {
+                    return commentRepository.findById(x.getId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Comment not found")
+                    );
+                }
+                return x;
+            }).toList();
+            repository.setComments(found);
+        }
+        return repository;
+    }
+
+    private Repository assignUser(Repository repository) {
         Optional<User> userOpt = userRepository.findById(repository.getOwner().getId());
         repository.setOwner(userOpt.orElseThrow(() ->
                 new ResourceNotFoundException("Not found")
         ));
-        Repository repo =  this.repository.save(repository);
-        return repo;
+        return repository;
+    }
+
+    private Repository assignAccessTypes(Repository repository) {
+        final List<AccessType> ats = repository.getAccessTypes();
+        if (ats != null && !ats.isEmpty()) {
+            final List<AccessType> found = ats.stream().map(x -> {
+                if (x.getId() != null) {
+                    return accessTypeRepository.findById(x.getId()).orElseThrow(() ->
+                        new ResourceNotFoundException("Id of AccessType is not found")
+                    );
+                }
+                return x;
+            }).toList();
+            repository.setAccessTypes(found);
+        }
+        return repository;
     }
 
     @Transactional
@@ -62,6 +146,11 @@ public class RepositoryService
     public Repository update(Repository newRepository, Long id)
     {
         Repository repository = getRepositoryByIdOrThrow(id);
+        assignUser(newRepository);
+        assignComments(newRepository);
+        assignTags(newRepository);
+        assignFiles(newRepository);
+        assignAccessTypes(newRepository);
         repositoryMapper.transferEntityDto(newRepository, repository);
         return this.repository.save(repository);
     }

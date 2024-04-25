@@ -47,19 +47,19 @@ public class User
     private LocalDateTime birthdate;
 
     @Column(name = "is_account_non_expired", nullable = false, columnDefinition="boolean default true")
-    private boolean is_account_non_expired;
+    private boolean is_account_non_expired = true;
 
     @Column(name = "is_account_non_locked", nullable = false, columnDefinition = "boolean default true")
-    private boolean is_account_non_locked;
+    private boolean is_account_non_locked = true;
 
     @Column(name = "is_credentials_non_expired", nullable = false, columnDefinition = "boolean default true")
-    private boolean is_credentials_non_expired;
+    private boolean is_credentials_non_expired = true;
 
     @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
-    private boolean is_enabled;
+    private boolean is_enabled = true;
 
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
-    private boolean is_deleted;
+    private boolean is_deleted = false;
 
     @OneToMany(mappedBy = "owner")
     private List<Group> groups;

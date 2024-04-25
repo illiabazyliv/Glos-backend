@@ -85,6 +85,7 @@ public class UserService implements CrudService<User, Long>
     @Override
     public User update(Long id, User newUser) {
         User user = getUserByIdOrThrow(id);
+        newUser.setId(null);
         userMapper.transferEntityDto(newUser, user);
         return userRepository.save(user);
     }

@@ -55,7 +55,7 @@ public class AccessTypeAPIController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccessType> create(
+    public ResponseEntity<AccessType> update(
             @PathVariable Long id,
             @RequestBody AccessType request
     ) {

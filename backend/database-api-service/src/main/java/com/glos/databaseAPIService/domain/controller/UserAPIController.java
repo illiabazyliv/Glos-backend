@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+
 /**
  * 	@author - yablonovskydima
  */
@@ -26,7 +27,7 @@ public class UserAPIController
         this.userMapper = userMapper;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:\\d}")
     public ResponseEntity<User> getUser(@PathVariable Long id)
     {
         return ResponseEntity.of(userService.getById(id));
@@ -39,33 +40,33 @@ public class UserAPIController
        return ResponseEntity.created(URI.create("/v1/users/"+user.getId())).body(user);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id:\\d}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id)
     {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id:\\d}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser)
     {
         userService.update(id, newUser);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/username/{username:\\w}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username)
     {
         return ResponseEntity.of(userService.findByUsername(username));
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email:[\\@\\.\\D]}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email)
     {
         return ResponseEntity.of(userService.findByEmail(email));
     }
 
-    @GetMapping("/{phoneNumber}")
+    @GetMapping("/phone-number/{phoneNumber:[\\+\\d]}")
     public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber)
     {
         return ResponseEntity.of(userService.findByPhoneNumber(phoneNumber));
