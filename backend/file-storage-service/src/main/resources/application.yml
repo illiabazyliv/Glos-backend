@@ -5,13 +5,14 @@ server:
     servlet:
       context-path: ${SERVER_CONTEXT_PATH:/api/v1}
 
-spring:
-  application:
-    name: ${APPLICATION_NAME:file-storage-service}
 
 eureka:
   instance:
-    hostname: ${APPLICATION_NAME:api-gateway}
+    hostname: ${APPLICATION_NAME:file-storage-service}
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_DEFAULT_ZONE:http://localhost:9001/api/eureka/}
+
+      spring:
+        application:
+          name: ${APPLICATION_NAME:file-storage-service}
