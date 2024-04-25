@@ -31,10 +31,12 @@ public class RepositoryDTO
 
     private List<Tag> tags;
 
+    private List<FileDTO> files;
+
     public RepositoryDTO() {
     }
 
-    public RepositoryDTO(Long id, String rootPath, String rootName, String rootFullName, User owner, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Tag> tags) {
+    public RepositoryDTO(Long id, String rootPath, String rootName, String rootFullName, User owner, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Tag> tags, List<FileDTO> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -46,6 +48,15 @@ public class RepositoryDTO
         this.description = description;
         this.accessTypes = accessTypes;
         this.tags = tags;
+        this.files = files;
+    }
+
+    public List<FileDTO> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileDTO> files) {
+        this.files = files;
     }
 
     public Long getId() {

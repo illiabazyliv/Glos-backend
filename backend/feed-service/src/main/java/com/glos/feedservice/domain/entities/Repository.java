@@ -1,5 +1,6 @@
 package com.glos.feedservice.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
                 @UniqueConstraint(columnNames = {"owner_id", "is_default"}, name = "uq_repositories_owner_id_is_default")
         }
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Repository
 {
     @Id

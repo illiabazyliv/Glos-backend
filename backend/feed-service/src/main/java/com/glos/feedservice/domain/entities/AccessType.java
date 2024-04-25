@@ -42,4 +42,7 @@ public class AccessType
     public AccessType(String name) {
         this.name = name;
     }
+
+    public AccessType() {
+    }
 }

@@ -19,4 +19,6 @@ public class FeedElementDTO
         this.repository = repository;
     }
 
+    public FeedElementDTO() {
+    }
 }

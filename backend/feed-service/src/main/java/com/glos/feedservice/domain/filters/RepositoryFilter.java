@@ -22,7 +22,7 @@ public class RepositoryFilter
 
     private User owner;
 
-    private boolean isDefault;
+    private Boolean isDefault;
 
     private String displayPath;
 
@@ -109,11 +109,11 @@ public class RepositoryFilter
         this.owner = owner;
     }
 
-    public boolean isDefault() {
+    public Boolean isDefault() {
         return isDefault;
     }
 
-    public void setDefault(boolean aDefault) {
+    public void setDefault(Boolean aDefault) {
         isDefault = aDefault;
     }
 
