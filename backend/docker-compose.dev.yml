@@ -45,3 +45,17 @@ services:
       SERVER_PORT: 9002
       SERVER_CONTEXT_PATH: /api
       EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    networks:
+      - glos-app-network
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server ~/minio --console-address :9097
+    ports:
+      - '9097:9097'
+      - '9000:9000'
+    volumes:
+      - ./minio-data:/minio
