@@ -51,7 +51,7 @@ public class TagAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Tag> getTagByName(@PathVariable String name)
     {
         return ResponseEntity.of(tagService.getByName(name));
