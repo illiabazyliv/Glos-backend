@@ -19,6 +19,8 @@ public class RepositoryDTO
     private String rootFullName;
 
     private User owner;
+
+    private Boolean isDefault;
     private String displayPath;
 
     private String displayName;
@@ -36,12 +38,25 @@ public class RepositoryDTO
     public RepositoryDTO() {
     }
 
-    public RepositoryDTO(Long id, String rootPath, String rootName, String rootFullName, User owner, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Tag> tags, List<FileDTO> files) {
+    public RepositoryDTO(Long id,
+                         String rootPath,
+                         String rootName,
+                         String rootFullName,
+                         User owner,
+                         Boolean isDefault,
+                         String displayPath,
+                         String displayName,
+                         String displayFullName,
+                         String description,
+                         List<AccessType> accessTypes,
+                         List<Tag> tags,
+                         List<FileDTO> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
         this.rootFullName = rootFullName;
         this.owner = owner;
+        this.isDefault = isDefault;
         this.displayPath = displayPath;
         this.displayName = displayName;
         this.displayFullName = displayFullName;
@@ -99,7 +114,13 @@ public class RepositoryDTO
         this.owner = owner;
     }
 
+    public Boolean getDefault() {
+        return isDefault;
+    }
 
+    public void setDefault(Boolean aDefault) {
+        isDefault = aDefault;
+    }
 
     public String getDisplayPath() {
         return displayPath;

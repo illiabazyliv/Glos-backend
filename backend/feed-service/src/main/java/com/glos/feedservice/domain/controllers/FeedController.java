@@ -2,6 +2,7 @@ package com.glos.feedservice.domain.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.glos.feedservice.domain.DTO.FeedElementDTO;
+import com.glos.feedservice.domain.DTO.PageDTO;
 import com.glos.feedservice.domain.DTO.RepositoryDTO;
 import com.glos.feedservice.domain.entities.AccessType;
 import com.glos.feedservice.domain.entities.Repository;
@@ -25,30 +26,39 @@ public class FeedController
 {
 
     private final FeedRepository feedRepository;
-    private final RepositoryDTOMapper repositoryDTOMapper;
-    private List<FeedElementDTO> FeedDTOList;
+
 
     @Autowired
-    public FeedController(FeedRepository feedRepository,
-                          RepositoryDTOMapper repositoryDTOMapper,
-                          List<FeedElementDTO> feedDTOList) {
+    public FeedController(FeedRepository feedRepository)
+    {
         this.feedRepository = feedRepository;
-        this.repositoryDTOMapper = repositoryDTOMapper;
-        FeedDTOList = feedDTOList;
     }
 
     @GetMapping
-    public ResponseEntity<List<FeedElementDTO>> getPublicRepos(@ModelAttribute RepositoryFilter filter)
+    public ResponseEntity<PageDTO<FeedElementDTO>> getPublicRepos(@ModelAttribute RepositoryFilter filter,
+                                                                  @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
+                                                                  @RequestParam(value = "pageSize", defaultValue = "12") Integer pageSize,
+                                                                  @RequestParam(value = "sort", defaultValue = "id,asc") String sort)
     {
-        List<RepositoryDTO> repositories = feedRepository.getPublicRepos(filter);
-        List<FeedElementDTO> feedElements = new ArrayList<>(repositories.size());
-        for (RepositoryDTO repository : repositories)
+        //List<RepositoryDTO> repositories = feedRepository.getPublicRepos(filter);
+        filter.setPageNumber(pageNumber);
+        filter.setPageSize(pageSize);
+        PageDTO<RepositoryDTO> page = feedRepository.getStaticRepos(filter);
+        List<FeedElementDTO> feedElements = new ArrayList<>(page.getContent().size());
+        for (RepositoryDTO repository : page.getContent())
         {
             FeedElementDTO feedElementDTO = new FeedElementDTO();
             feedElementDTO.setRepository(repository);
             feedElements.add(feedElementDTO);
         }
+        PageDTO<FeedElementDTO> pageDTO = new PageDTO<>();
+        pageDTO.setContent(page.getContent().stream().map((x) -> {return new FeedElementDTO(x);}).toList());
+        pageDTO.setPage(pageNumber);
+        pageDTO.setSize(pageSize);
+        pageDTO.setSort(sort);
+        pageDTO.setTotalSize(pageDTO.getContent().size());
 
-        return ResponseEntity.ok(feedElements);
+        return ResponseEntity.ok(pageDTO);
     }
+
 }

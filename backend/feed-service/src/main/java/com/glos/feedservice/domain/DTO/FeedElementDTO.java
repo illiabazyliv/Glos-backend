@@ -20,5 +20,7 @@ public class FeedElementDTO
     }
 
     public FeedElementDTO() {
+
+
     }
 }

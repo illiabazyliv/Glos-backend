@@ -200,4 +200,38 @@ public class User
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    public User(Long id,
+                String username,
+                String password_hash,
+                String email,
+                String phone_number,
+                String gender,
+                String first_name,
+                String last_name,
+                LocalDateTime birthdate,
+                boolean is_account_non_expired,
+                boolean is_account_non_locked,
+                boolean is_credentials_non_expired,
+                boolean is_enabled,
+                boolean is_deleted,
+                List<Group> groups,
+                List<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password_hash = password_hash;
+        this.email = email;
+        this.phone_number = phone_number;
+        this.gender = gender;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.birthdate = birthdate;
+        this.is_account_non_expired = is_account_non_expired;
+        this.is_account_non_locked = is_account_non_locked;
+        this.is_credentials_non_expired = is_credentials_non_expired;
+        this.is_enabled = is_enabled;
+        this.is_deleted = is_deleted;
+        this.groups = groups;
+        this.roles = roles;
+    }
 }

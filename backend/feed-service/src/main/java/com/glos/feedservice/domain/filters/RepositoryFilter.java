@@ -1,6 +1,9 @@
 package com.glos.feedservice.domain.filters;
 
 import com.glos.feedservice.domain.entities.*;
+import org.hibernate.annotations.Sort;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,13 +45,26 @@ public class RepositoryFilter
 
     private List<File> files;
 
-    public RepositoryFilter(Long id, String rootPath,
-                            String rootName, String rootFullName,
-                            User owner, boolean isDefault, String displayPath,
-                            String displayName, String displayFullName,
-                            String description, List<AccessType> accessTypes,
-                            List<Comment> comments, List<SecureCode> secureCodes,
-                            List<Tag> tags, List<File> files) {
+
+    private Integer pageNumber;
+    private Integer pageSize;
+    private SpringDataWebProperties.Pageable pageable;
+
+    public RepositoryFilter(Long id,
+                            String rootPath,
+                            String rootName,
+                            String rootFullName,
+                            User owner,
+                            Boolean isDefault,
+                            String displayPath,
+                            String displayName,
+                            String displayFullName,
+                            String description,
+                            List<AccessType> accessTypes,
+                            List<Comment> comments,
+                            List<SecureCode> secureCodes,
+                            List<Tag> tags, List<File> files,
+                            Integer pageNumber, Integer pageSize, SpringDataWebProperties.Pageable pageable) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -64,6 +80,9 @@ public class RepositoryFilter
         this.secureCodes = secureCodes;
         this.tags = tags;
         this.files = files;
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+        this.pageable = pageable;
     }
 
     public RepositoryFilter() {
@@ -189,4 +208,27 @@ public class RepositoryFilter
         this.files = files;
     }
 
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public SpringDataWebProperties.Pageable getPageable() {
+        return pageable;
+    }
+
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public void setPageable(SpringDataWebProperties.Pageable pageable) {
+        this.pageable = pageable;
+    }
 }
