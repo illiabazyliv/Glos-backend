@@ -2,90 +2,107 @@ package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.api.entities.Comment;
 import com.glos.databaseAPIService.domain.service.CommentService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.util.UriComponentsBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.awt.*;
+import java.util.Collections;
 import java.util.List;
-import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-public class CommentAPIControllerTest {
+@WebMvcTest(CommentAPIController.class)
+@ExtendWith(MockitoExtension.class)
+class CommentAPIControllerTest {
 
-    @InjectMocks
-    CommentAPIController commentAPIController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
-    CommentService commentService;
-
-    @BeforeEach
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
+    @MockBean
+    private CommentService commentService;
 
     @Test
-    public void getAllTest() {
-        when(commentService.getAll(any(Comment.class))).thenReturn(Arrays.asList(new Comment(), new Comment()));
-        ResponseEntity<List<Comment>> responseEntity = commentAPIController.getAll(new Comment());
-        assertEquals(200, responseEntity.getStatusCodeValue());
-        assertEquals(2, responseEntity.getBody().size());
-    }
-
-    @Test
-    void getByIdTest() {
+    public void getAllTest() throws Exception {
         Comment comment = new Comment();
         comment.setId(1L);
-        when(commentService.getById(1L)).thenReturn(Optional.of(comment));
-        ResponseEntity<Comment> responseEntity = commentAPIController.getById(1L);
-        assertEquals(200, responseEntity.getStatusCodeValue());
-        assertEquals(1L, responseEntity.getBody().getId());
+        comment.setText("Test comment");
+        List<Comment> comments = Collections.singletonList(comment);
+        when(commentService.getAll(any(Comment.class))).thenReturn(comments);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expectedJson = objectMapper.writeValueAsString(comments);
+        mockMvc.perform(MockMvcRequestBuilders.get("/comments")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
     }
 
     @Test
-    void createTest(UriComponentsBuilder uriBuilder) {
+    public void getByIdTest() throws Exception {
+        Long id = 1L;
+        Comment comment = new Comment();
+        comment.setId(id);
+        comment.setText("Test comment");
+        when(commentService.getById(id)).thenReturn(Optional.of(comment));
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expectedJson = objectMapper.writeValueAsString(comment);
+        mockMvc.perform(MockMvcRequestBuilders.get("/comments/" + id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedJson));
+    }
+
+    @Test
+    void createTest() throws Exception {
         Comment request = new Comment();
         request.setText("Test comment");
-        Comment createdComment = new Comment();
-        createdComment.setId(1L);
-        createdComment.setText(request.getText());
-        when(commentService.create(any(Comment.class))).thenReturn(createdComment);
-        ResponseEntity<Comment> responseEntity = commentAPIController.create(request, uriBuilder);
-        assertEquals(201, responseEntity.getStatusCodeValue());
-        assertEquals(createdComment, responseEntity.getBody());
+        Comment created = new Comment();
+        created.setId(1L);
+        created.setText("Comment test num two");
+        when(commentService.create(any(Comment.class))).thenReturn(created);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/comments")
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/comments/" + created.getId()));
     }
 
-
     @Test
-    void updateTest() {
+    public void updateTest() throws Exception {
         Long id = 1L;
         Comment request = new Comment();
         request.setText("Updated comment");
-        when(commentService.update(same(id), any(Comment.class))).thenReturn(request);
-        ResponseEntity<Comment> responseEntity = commentAPIController.update(id , request);
-        assertEquals(204, responseEntity.getStatusCodeValue());
-        verify(commentService, times(1)).update(id, request);
+        Comment updated = new Comment();
+        updated.setId(id);
+        updated.setText("Updated comment");
+        when(commentService.update(id, request)).thenReturn(updated);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String requestJson = objectMapper.writeValueAsString(request);
+        mockMvc.perform(MockMvcRequestBuilders.put("/comments/" + id)
+                        .content(requestJson)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void deleteByIdTest() {
+    public void deleteByIdTest() throws Exception {
         Long id = 1L;
         doNothing().when(commentService).deleteById(id);
-
-        ResponseEntity<?> responseEntity = commentAPIController.deleteById(id);
-
-        assertEquals(204, responseEntity.getStatusCodeValue());
-        verify(commentService, times(1)).deleteById(id);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/comments/" + id))
+                .andExpect(status().isNoContent());
 
     }
 }
