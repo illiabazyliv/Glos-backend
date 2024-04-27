@@ -8,11 +8,11 @@ public class MessageVerificationDTO
 {
     private String to;
     private String subject;
-    private Content text;
-    private Map<String, String> data;
+    private String text;
+    private Map<String, Object> data;
 
 
-    public Content getText() {
+    public String getText() {
         return text;
     }
 
@@ -24,7 +24,7 @@ public class MessageVerificationDTO
         return to;
     }
 
-    public Map<String, String> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
