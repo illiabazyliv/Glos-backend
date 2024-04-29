@@ -54,19 +54,19 @@ public class UserAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/username/{username:\\w}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username)
     {
         return ResponseEntity.of(userService.findByUsername(username));
     }
 
-    @GetMapping("/email/{email:[\\@\\.\\D]}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email)
     {
         return ResponseEntity.of(userService.findByEmail(email));
     }
 
-    @GetMapping("/phone-number/{phoneNumber:[\\+\\d]}")
+    @GetMapping("/phone-number/{phoneNumber}")
     public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber)
     {
         return ResponseEntity.of(userService.findByPhoneNumber(phoneNumber));

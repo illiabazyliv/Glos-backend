@@ -1,10 +1,15 @@
 package com.glos.databaseAPIService.domain.service;
 
 
+import com.glos.api.entities.File;
+import com.glos.api.entities.Group;
+import com.glos.api.entities.Role;
 import com.glos.api.entities.User;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
+import com.glos.databaseAPIService.domain.repository.GroupRepository;
+import com.glos.databaseAPIService.domain.repository.RoleRepository;
 import com.glos.databaseAPIService.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -20,12 +25,21 @@ import java.util.Optional;
 public class UserService implements CrudService<User, Long>
 {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final GroupRepository groupRepository;
     private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(
+            UserRepository userRepository,
+            UserMapper userMapper,
+            RoleRepository roleRepository,
+            GroupRepository groupRepository
+    ) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.roleRepository = roleRepository;
+        this.groupRepository = groupRepository;
     }
 
     @Transactional
@@ -59,7 +73,40 @@ public class UserService implements CrudService<User, Long>
     @Transactional
     @Override
     public User create(User user) {
+        assignRoles(user);
+        assignGroups(user);
         return userRepository.save(user);
+    }
+
+    private User assignRoles(User user) {
+        final List<Role> roles = user.getRoles();
+        if (roles != null) {
+            final List<Role> found = roles.stream().map(x -> {
+                if (x.getId() != null) {
+                    return roleRepository.findById(x.getId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Id of Role is not found")
+                    );
+                }
+                return x;
+            }).toList();
+            user.setRoles(found);
+        }
+        return user;
+    }
+    private User assignGroups(User user) {
+        final List<Group> groups = user.getGroups();
+        if (groups != null) {
+            final List<Group> found = groups.stream().map(x -> {
+                if (x.getId() != null) {
+                    return groupRepository.findById(x.getId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Id of Group is not found")
+                    );
+                }
+                return x;
+            }).toList();
+            user.setGroups(found);
+        }
+        return user;
     }
 
     @Override
