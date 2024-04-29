@@ -1,6 +1,7 @@
-package com.glos.feedservice.domain.entities;
+package com.glos.api.entities;
 
 import jakarta.persistence.*;
+
 
 @Entity
 @Table(

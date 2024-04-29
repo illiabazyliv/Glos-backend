@@ -1,4 +1,4 @@
-package com.glos.feedservice.domain.entities;
+package com.glos.api.entities;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
@@ -31,7 +31,7 @@ public class File
 
     @Column(name = "root_size", nullable = false)
     @Check(constraints = "root_size >= 0")
-    private int rootSize;
+    private Integer rootSize;
 
     @Column(name = "root_format", nullable = false, length = 10)
     private String rootFormat;
