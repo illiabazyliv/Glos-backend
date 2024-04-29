@@ -48,7 +48,7 @@ public class Repository
     @Column(name = "description", length = 200)
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "repositories_access_types", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "access_type_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_access_types_repository_id"),
@@ -72,7 +72,7 @@ public class Repository
     private List<SecureCode> secureCodes;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "repositories_tags", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_tags_repositories_id"),
@@ -80,7 +80,7 @@ public class Repository
     private List<Tag> tags;
 
 
-    @OneToMany(mappedBy = "repository")
+    @OneToMany(mappedBy = "repository", cascade = CascadeType.ALL)
     private List<File> files;
 
     public Repository() {

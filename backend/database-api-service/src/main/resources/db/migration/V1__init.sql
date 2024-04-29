@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS repositories (
     root_path VARCHAR(255) NOT NULL,
     root_name VARCHAR(255) NOT NULL,
     root_full_name VARCHAR(255) NOT NULL,
-    owner_id BIGINT,
+    owner_id BIGINT NOT NULL,
     is_default BOOLEAN DEFAULT NULL,
     display_path NVARCHAR(255),
     display_name NVARCHAR(255),
