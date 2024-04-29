@@ -113,10 +113,30 @@ public class RepositoryService
     }
 
     private Repository assignUser(Repository repository) {
-        Optional<User> userOpt = userRepository.findById(repository.getOwner().getId());
-        repository.setOwner(userOpt.orElseThrow(() ->
-                new ResourceNotFoundException("Not found")
-        ));
+        final User owner = repository.getOwner();
+        if (owner != null) {
+            User user = owner;
+            if (owner.getId() != null) {
+                user = userRepository.findById(owner.getId()).orElseThrow(() ->
+                        new ResourceNotFoundException("Id of User is not found")
+                );
+            } else if (owner.getUsername() != null) {
+                user = userRepository.findByUsername(owner.getUsername()).orElseThrow(() ->
+                        new ResourceNotFoundException("Username of User is not found")
+                );
+            } else if (owner.getEmail() != null) {
+                user = userRepository.findByEmail(owner.getEmail()).orElseThrow(() ->
+                        new ResourceNotFoundException("Email of User is not found")
+                );
+            } else if (owner.getPhone_number() != null) {
+                user = userRepository.findByPhoneNumber(owner.getPhone_number()).orElseThrow(() ->
+                        new ResourceNotFoundException("Phone number of User is not found")
+                );
+            }
+            if (user != null) {
+                repository.setOwner(user);
+            }
+        }
         return repository;
     }
 
