@@ -1,13 +1,9 @@
 package com.glos.feedservice.domain.filters;
 
-import com.glos.feedservice.domain.entities.*;
-import org.hibernate.annotations.Sort;
+import com.glos.api.entities.*;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 	@author - yablonovskydima

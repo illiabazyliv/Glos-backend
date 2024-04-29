@@ -3,11 +3,10 @@ package com.glos.feedservice.domain.repositories;
 import com.glos.feedservice.domain.DTO.FileDTO;
 import com.glos.feedservice.domain.DTO.PageDTO;
 import com.glos.feedservice.domain.DTO.RepositoryDTO;
-import com.glos.feedservice.domain.entities.*;
+import com.glos.api.entities.*;
 import com.glos.feedservice.domain.entityMappers.FileDTOMapper;
 import com.glos.feedservice.domain.filters.RepositoryFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -45,14 +44,14 @@ public class FeedRepository
                 "$~/dir1",
                 "repository96",
                 "$~/dir1$example96",
-                new User(1L,
-                        "user1",
+                new User(2L,
+                        "user2",
                         null,
-                        "email1@gmail.com",
+                        "email2@gmail.com",
                         null,
                         "gender",
-                        "first1",
-                        "last1",
+                        "first2",
+                        "last2",
                         null,
                         false,
                         false,

@@ -1,8 +1,6 @@
 package com.glos.feedservice.domain.DTO;
 
-import com.glos.feedservice.domain.entities.*;
-import com.glos.feedservice.domain.entities.AccessType;
-import jakarta.persistence.*;
+import com.glos.api.entities.*;
 
 import java.util.List;
 /**
