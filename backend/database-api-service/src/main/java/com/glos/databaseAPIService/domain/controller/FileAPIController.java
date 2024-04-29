@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * 	@author - yablonovskydima
  */
@@ -35,35 +37,9 @@ public class FileAPIController
         return ResponseEntity.of(fileService.findById(id));
     }
 
-    @GetMapping("/json")
-    public ResponseEntity<String> getJson(RepositoryService service) {
-        File file = new File(
-                null,
-                "/root/to",
-                "file.txt",
-                "/root/to/file.txt",
-                100,
-                "txt",
-                "/root/to",
-                "file.txt",
-                "/root/to/file.txt",
-                service.findById(1L).get(),
-                List.of(),
-                List.of(),
-                List.of(),
-                List.of()
-        );
-        try {
-            return ResponseEntity.ok(new ObjectMapper().writeValueAsString(file));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @PostMapping
     public ResponseEntity<?> createFile(@RequestBody File file)
     {
-        System.out.println(file);
         fileService.save(file);
         return ResponseEntity.created(URI.create("/v1/files/"+file.getId())).body(file);
     }
@@ -78,7 +54,7 @@ public class FileAPIController
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFile(@PathVariable Long id)
     {
-        fileService.delete(fileService.findById(id).get());
+        fileService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
@@ -88,16 +64,17 @@ public class FileAPIController
         return fileService.findAllByRepositoryId(repositoryId);
     }
 
-    @GetMapping("/{rootFullName}")
+    @GetMapping("/root-fullname/{rootFullName}")
     public ResponseEntity<File> getFileByRootFullName(@PathVariable String rootFullName)
     {
         return ResponseEntity.of(fileService.findByRootFullName(rootFullName));
     }
 
     @GetMapping()
-    public List<File> getFilesByFilter(@ModelAttribute FileFilter filter)
+    public ResponseEntity<List<File>> getFilesByFilter(@ModelAttribute File filter)
     {
-        return fileService.findAllByFilter(filter);
+        List<File> files = fileService.findAllByFilter(filter);
+        return ResponseEntity.ok(files);
     }
 
 }

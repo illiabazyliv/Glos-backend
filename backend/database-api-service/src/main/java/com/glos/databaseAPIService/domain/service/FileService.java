@@ -7,6 +7,7 @@ import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,12 @@ public class FileService
     }
 
     @Transactional
+    public void deleteById(Long id) {
+        File found = getFileByIdOrThrow(id);
+        fileRepository.delete(found);
+    }
+
+    @Transactional
     public File update(File newFile, Long id)
     {
         File file = getFileByIdOrThrow(id);
@@ -54,7 +61,7 @@ public class FileService
     }
     File getFileByIdOrThrow(Long id)
     {
-        return findById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
+        return findById(id).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
     }
 
     public List<File> findAllByRepositoryId(Long id)
@@ -62,9 +69,14 @@ public class FileService
         return fileRepository.findAllByRepositoryId(id);
     }
 
-    public List<File> findAllByFilter(FileFilter filter)
+    public List<File> findAllByFilter(File filter)
     {
-        return fileRepository.findAllByFilter(filter);
+        List<File> files = fileRepository.findAll(Example.of(filter));
+        return files.stream()
+                .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))
+                .filter(x -> filter.getComments() == null || x.getComments().containsAll(filter.getComments()))
+                .filter(x -> filter.getSecureCodes() == null || x.getSecureCodes().containsAll(filter.getSecureCodes()))
+                .toList();
     }
 
     public Optional<File> findByRootFullName(String rootFullName)

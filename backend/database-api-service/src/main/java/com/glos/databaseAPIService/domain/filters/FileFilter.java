@@ -195,4 +195,7 @@ public class FileFilter implements EntityFilter
         map.put("tags", tags);
         return map;
     }
+
+    public FileFilter() {
+    }
 }

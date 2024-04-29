@@ -32,7 +32,7 @@ public class File
 
     @Column(name = "root_size", nullable = false)
     @Check(constraints = "root_size >= 0")
-    private int rootSize;
+    private Integer rootSize;
 
     @Column(name = "root_format", nullable = false, length = 10)
     private String rootFormat;
@@ -83,7 +83,7 @@ public class File
     public File() {
     }
 
-    public File(Long id, String rootPath, String rootFilename, String rootFullName, int rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -132,11 +132,11 @@ public class File
         this.rootFullName = rootFullName;
     }
 
-    public int getRootSize() {
+    public Integer getRootSize() {
         return rootSize;
     }
 
-    public void setRootSize(int rootSize) {
+    public void setRootSize(Integer rootSize) {
         this.rootSize = rootSize;
     }
 
