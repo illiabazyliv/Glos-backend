@@ -9,4 +9,6 @@ VALUES
 (5, 'PUBLIC_RW');
 
 INSERT INTO roles(id, name)
-VALUES (1, 'ROLE_USER');
+VALUES
+(1, 'ROLE_ADMIN'),
+(2, 'ROLE_USER');
