@@ -1,5 +1,6 @@
 package com.glos.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
@@ -49,30 +50,31 @@ public class File
     @ManyToOne
     @JoinColumn(name = "repository_id", nullable = false, foreignKey = @ForeignKey(name = "fk_files_repositories_id"))
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonBackReference
     private Repository repository;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(name = "files_access_types", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "access_type_id"),
             foreignKey = @ForeignKey(name = "fk_files_access_types_files_id"),
     inverseForeignKey = @ForeignKey(name = "fk_files_access_types_access_types_id"))
     private List<AccessType> accessTypes;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "files_comments", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"),
             foreignKey = @ForeignKey(name = "fk_files_comments_files_id"),
     inverseForeignKey = @ForeignKey(name = "fk_files_comments_comments_id"))
     private List<Comment> comments;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "files_secure_codes", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "secure_code_id"),
             foreignKey = @ForeignKey(name = "fk_files_secure_codes_secure_codes_id"),
     inverseForeignKey = @ForeignKey(name = "fk_files_secure_codes_files_id"))
     private List<SecureCode> secureCodes;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
     @JoinTable(name = "files_tags", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"),
             foreignKey = @ForeignKey(name = "fk_files_tags_files_id"),

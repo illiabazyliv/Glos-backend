@@ -23,7 +23,7 @@ public interface FileRepository extends JpaRepository<File, Long>
             """)
     public List<File> findAllByRepositoryId(@Param("repositoryId") Long repositoryId);
 
-@Query("""
+    @Query("""
          SELECT file FROM File file
          WHERE :#{#filter.id} IS NULL OR file.id = :#{#filter.id}
          AND (:#{#filter.rootPath} IS NULL OR file.rootPath = :#{#filter.rootPath})
