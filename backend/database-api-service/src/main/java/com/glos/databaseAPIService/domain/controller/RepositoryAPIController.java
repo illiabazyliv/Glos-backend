@@ -9,6 +9,7 @@ import com.glos.databaseAPIService.domain.entityMappers.RepositoryFilterMapper;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
 import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
+import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,9 @@ public class RepositoryAPIController
 
     @PostMapping
     public ResponseEntity<Repository> createRepository(@RequestBody Repository repository) {
+        PathUtils.ordinalPathsRepository(repository);
         Repository repo = repositoryService.save(repository);
+        PathUtils.normalizePathsRepository(repository);
         return ResponseEntity
                 .created(URI.create("/v1/repositories/"+repo.getId()))
                 .body(repo);
@@ -59,6 +62,7 @@ public class RepositoryAPIController
     @PutMapping("/{id}")
     public ResponseEntity<Repository> updateRepository(@RequestBody Repository newRepository, @PathVariable Long id)
     {
+        PathUtils.ordinalPathsRepository(newRepository);
         repositoryService.update(newRepository, id);
         return ResponseEntity.noContent().build();
     }
@@ -73,12 +77,14 @@ public class RepositoryAPIController
     @GetMapping("root-full-name/{rootFullName}")
     public ResponseEntity<Repository> getRepositoryByRootFullName(@PathVariable String rootFullName)
     {
-        return ResponseEntity.of(repositoryService.findByRootFullName(rootFullName));
+        final String ordinalRootFullName = PathUtils.originalPath(rootFullName);
+        return ResponseEntity.of(repositoryService.findByRootFullName(ordinalRootFullName));
     }
 
     @GetMapping()
     public List<Repository> getRepositoriesByFilter(@ModelAttribute Repository filter)
     {
+        PathUtils.ordinalPathsRepository(filter);
         return repositoryService.findAllByFilter(filter);
     }
 }

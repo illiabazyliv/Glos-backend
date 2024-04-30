@@ -1,21 +1,15 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.glos.api.entities.AccessType;
 import com.glos.api.entities.File;
-import com.glos.api.entities.Repository;
-import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.service.FileService;
-import com.glos.databaseAPIService.domain.service.RepositoryService;
+import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * 	@author - yablonovskydima
@@ -38,15 +32,18 @@ public class FileAPIController
     }
 
     @PostMapping
-    public ResponseEntity<?> createFile(@RequestBody File file)
+    public ResponseEntity<File> createFile(@RequestBody File file)
     {
-        fileService.save(file);
-        return ResponseEntity.created(URI.create("/v1/files/"+file.getId())).body(file);
+        PathUtils.ordinalPathsFile(file);
+        File created = fileService.save(file);
+        PathUtils.normalizePathsFile(created);
+        return ResponseEntity.created(URI.create("/v1/files/"+file.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFile(@RequestBody File newFile, Long id)
+    public ResponseEntity<File> updateFile(@RequestBody File newFile, Long id)
     {
+        PathUtils.ordinalPathsFile(newFile);
         fileService.update(newFile, id);
         return ResponseEntity.noContent().build();
     }
@@ -67,14 +64,15 @@ public class FileAPIController
     @GetMapping("/root-fullname/{rootFullName}")
     public ResponseEntity<File> getFileByRootFullName(@PathVariable String rootFullName)
     {
-        return ResponseEntity.of(fileService.findByRootFullName(rootFullName));
+        String normalizeRootFullName = PathUtils.originalPath(rootFullName);
+        return ResponseEntity.of(fileService.findByRootFullName(normalizeRootFullName));
     }
 
     @GetMapping()
     public ResponseEntity<List<File>> getFilesByFilter(@ModelAttribute File filter)
     {
+        PathUtils.ordinalPathsFile(filter);
         List<File> files = fileService.findAllByFilter(filter);
         return ResponseEntity.ok(files);
     }
-
 }
