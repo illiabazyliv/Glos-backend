@@ -1,7 +1,7 @@
 package com.glos.feedservice.domain.DTO;
 
-import com.glos.feedservice.domain.entities.*;
-import com.glos.feedservice.domain.entities.AccessType;
+import com.glos.api.entities.*;
+import com.glos.api.entities.AccessType;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
 
