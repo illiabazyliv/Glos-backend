@@ -48,7 +48,7 @@ public class File
     private String displayFullName;
 
     @ManyToOne
-    @JoinColumn(name = "repository_id", nullable = false, foreignKey = @ForeignKey(name = "fk_files_repositories_id"))
+    @JoinColumn(name = "repository_id", foreignKey = @ForeignKey(name = "fk_files_repositories_id"))
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonBackReference
     private Repository repository;

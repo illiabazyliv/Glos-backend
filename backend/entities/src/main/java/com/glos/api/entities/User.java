@@ -47,19 +47,19 @@ public class User
     private LocalDateTime birthdate;
 
     @Column(name = "is_account_non_expired", nullable = false, columnDefinition="boolean default true")
-    private boolean is_account_non_expired = true;
+    private Boolean is_account_non_expired = true;
 
     @Column(name = "is_account_non_locked", nullable = false, columnDefinition = "boolean default true")
-    private boolean is_account_non_locked = true;
+    private Boolean is_account_non_locked = true;
 
     @Column(name = "is_credentials_non_expired", nullable = false, columnDefinition = "boolean default true")
-    private boolean is_credentials_non_expired = true;
+    private Boolean is_credentials_non_expired = true;
 
     @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
-    private boolean is_enabled = true;
+    private Boolean is_enabled = true;
 
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
-    private boolean is_deleted = false;
+    private Boolean is_deleted = false;
 
     @OneToMany(mappedBy = "owner")
     private List<Group> groups;
@@ -144,43 +144,43 @@ public class User
         this.birthdate = birthdate;
     }
 
-    public boolean isIs_account_non_expired() {
+    public Boolean getIs_account_non_expired() {
         return is_account_non_expired;
     }
 
-    public void setIs_account_non_expired(boolean is_account_non_expired) {
+    public void setIs_account_non_expired(Boolean is_account_non_expired) {
         this.is_account_non_expired = is_account_non_expired;
     }
 
-    public boolean isIs_account_non_locked() {
+    public Boolean getIs_account_non_locked() {
         return is_account_non_locked;
     }
 
-    public void setIs_account_non_locked(boolean is_account_non_locked) {
+    public void setIs_account_non_locked(Boolean is_account_non_locked) {
         this.is_account_non_locked = is_account_non_locked;
     }
 
-    public boolean isIs_credentials_non_expired() {
+    public Boolean getIs_credentials_non_expired() {
         return is_credentials_non_expired;
     }
 
-    public void setIs_credentials_non_expired(boolean is_credentials_non_expired) {
+    public void setIs_credentials_non_expired(Boolean is_credentials_non_expired) {
         this.is_credentials_non_expired = is_credentials_non_expired;
     }
 
-    public boolean isIs_enabled() {
+    public Boolean getIs_enabled() {
         return is_enabled;
     }
 
-    public void setIs_enabled(boolean is_enabled) {
+    public void setIs_enabled(Boolean is_enabled) {
         this.is_enabled = is_enabled;
     }
 
-    public boolean isIs_deleted() {
+    public Boolean getIs_deleted() {
         return is_deleted;
     }
 
-    public void setIs_deleted(boolean is_deleted) {
+    public void setIs_deleted(Boolean is_deleted) {
         this.is_deleted = is_deleted;
     }
 
@@ -198,5 +198,8 @@ public class User
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public User() {
     }
 }
