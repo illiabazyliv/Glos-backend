@@ -27,7 +27,7 @@ public class CommentAPIController {
         return ResponseEntity.ok(commentService.getAll(filter));
     }
 
-    @GetMapping("/{id:\\d}")
+    @GetMapping("/{id}")
     public ResponseEntity<Comment> getById(
             @PathVariable Long id
     ) {

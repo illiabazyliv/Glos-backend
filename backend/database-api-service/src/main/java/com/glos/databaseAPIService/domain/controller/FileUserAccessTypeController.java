@@ -32,7 +32,7 @@ public class FileUserAccessTypeController {
         return ResponseEntity.ok(fileUserAccessTypeService.getAll(fuatFilter));
     }
 
-    @GetMapping("/{id:\\d}")
+    @GetMapping("/{id}")
     public ResponseEntity<FileUserAccessType> getById(
             @PathVariable Long id
     ) {

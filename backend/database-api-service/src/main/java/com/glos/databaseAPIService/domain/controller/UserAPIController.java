@@ -27,7 +27,7 @@ public class UserAPIController
         this.userService = userService;
     }
 
-    @GetMapping("/{id:\\d}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id)
     {
         return ResponseEntity.of(userService.getById(id));
@@ -40,14 +40,14 @@ public class UserAPIController
         return ResponseEntity.created(URI.create("/v1/users/"+user.getId())).body(user);
     }
 
-    @DeleteMapping("/{id:\\d}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id)
     {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id:\\d}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser)
     {
         userService.update(id, newUser);

@@ -28,7 +28,7 @@ public class AccessTypeAPIController {
         return ResponseEntity.ok(accessTypeService.getAll());
     }
 
-    @GetMapping("/{id:\\d}")
+    @GetMapping("/{id}")
     public ResponseEntity<AccessType> getById(
             @PathVariable Long id
     ) {

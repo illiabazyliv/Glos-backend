@@ -1,0 +1,208 @@
+package com.glos.databaseAPIService.domain.responseDTO;
+
+import com.glos.api.entities.Group;
+import com.glos.api.entities.Role;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class UserDTO
+{
+    private Long id;
+
+    private String username;
+
+    private String password_hash;
+
+    private String email;
+
+    private String phone_number;
+
+    private String gender;
+
+    private String first_name;
+
+    private String last_name;
+
+    private LocalDateTime birthdate;
+
+    private Boolean is_account_non_expired = true;
+
+    private Boolean is_account_non_locked = true;
+
+    private Boolean is_credentials_non_expired = true;
+
+    private Boolean is_enabled = true;
+
+    private Boolean is_deleted = false;
+
+    private List<Group> groups;
+
+    private List<Role> roles;
+
+    public UserDTO(Long id,
+                   String username,
+                   String password_hash,
+                   String email,
+                   String phone_number,
+                   String gender,
+                   String first_name,
+                   String last_name,
+                   LocalDateTime birthdate,
+                   Boolean is_account_non_expired,
+                   Boolean is_account_non_locked,
+                   Boolean is_credentials_non_expired,
+                   Boolean is_enabled,
+                   Boolean is_deleted,
+                   List<Group> groups,
+                   List<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password_hash = password_hash;
+        this.email = email;
+        this.phone_number = phone_number;
+        this.gender = gender;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.birthdate = birthdate;
+        this.is_account_non_expired = is_account_non_expired;
+        this.is_account_non_locked = is_account_non_locked;
+        this.is_credentials_non_expired = is_credentials_non_expired;
+        this.is_enabled = is_enabled;
+        this.is_deleted = is_deleted;
+        this.groups = groups;
+        this.roles = roles;
+    }
+
+    public UserDTO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword_hash() {
+        return password_hash;
+    }
+
+    public void setPassword_hash(String password_hash) {
+        this.password_hash = password_hash;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public LocalDateTime getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(LocalDateTime birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public Boolean getIs_account_non_expired() {
+        return is_account_non_expired;
+    }
+
+    public void setIs_account_non_expired(Boolean is_account_non_expired) {
+        this.is_account_non_expired = is_account_non_expired;
+    }
+
+    public Boolean getIs_account_non_locked() {
+        return is_account_non_locked;
+    }
+
+    public void setIs_account_non_locked(Boolean is_account_non_locked) {
+        this.is_account_non_locked = is_account_non_locked;
+    }
+
+    public Boolean getIs_credentials_non_expired() {
+        return is_credentials_non_expired;
+    }
+
+    public void setIs_credentials_non_expired(Boolean is_credentials_non_expired) {
+        this.is_credentials_non_expired = is_credentials_non_expired;
+    }
+
+    public Boolean getIs_enabled() {
+        return is_enabled;
+    }
+
+    public void setIs_enabled(Boolean is_enabled) {
+        this.is_enabled = is_enabled;
+    }
+
+    public Boolean getIs_deleted() {
+        return is_deleted;
+    }
+
+    public void setIs_deleted(Boolean is_deleted) {
+        this.is_deleted = is_deleted;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+}
