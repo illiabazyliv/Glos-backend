@@ -28,23 +28,23 @@ public class FileAPIController
     @GetMapping("/{id}")
     public ResponseEntity<File> getFileByID(@PathVariable Long id)
     {
-        return ResponseEntity.of(fileService.findById(id));
+        return ResponseEntity.of(fileService.getById(id));
     }
 
     @PostMapping
     public ResponseEntity<File> createFile(@RequestBody File file)
     {
         PathUtils.ordinalPathsFile(file);
-        File created = fileService.save(file);
+        File created = fileService.create(file);
         PathUtils.normalizePathsFile(created);
         return ResponseEntity.created(URI.create("/v1/files/"+file.getId())).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<File> updateFile(@RequestBody File newFile, Long id)
+    public ResponseEntity<File> updateFile(@RequestBody File newFile, @PathVariable("id") Long id)
     {
         PathUtils.ordinalPathsFile(newFile);
-        fileService.update(newFile, id);
+        fileService.update(id, newFile);
         return ResponseEntity.noContent().build();
     }
 

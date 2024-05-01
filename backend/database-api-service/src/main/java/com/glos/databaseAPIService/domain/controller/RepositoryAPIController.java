@@ -39,13 +39,13 @@ public class RepositoryAPIController
     public ResponseEntity<Repository> getRepository(@PathVariable Long id)
     {
 
-        return ResponseEntity.of(repositoryService.findById(id));
+        return ResponseEntity.of(repositoryService.getById(id));
     }
 
     @PostMapping
     public ResponseEntity<Repository> createRepository(@RequestBody Repository repository) {
         PathUtils.ordinalPathsRepository(repository);
-        Repository repo = repositoryService.save(repository);
+        Repository repo = repositoryService.create(repository);
         PathUtils.normalizePathsRepository(repository);
         return ResponseEntity
                 .created(URI.create("/v1/repositories/"+repo.getId()))
@@ -63,7 +63,7 @@ public class RepositoryAPIController
     public ResponseEntity<Repository> updateRepository(@RequestBody Repository newRepository, @PathVariable Long id)
     {
         PathUtils.ordinalPathsRepository(newRepository);
-        repositoryService.update(newRepository, id);
+        repositoryService.update(id, newRepository);
         return ResponseEntity.noContent().build();
     }
 

@@ -82,7 +82,7 @@ public class Repository
 
 
     @OneToMany(mappedBy = "repository", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    //@JsonManagedReference
     private List<File> files;
 
     public Repository() {

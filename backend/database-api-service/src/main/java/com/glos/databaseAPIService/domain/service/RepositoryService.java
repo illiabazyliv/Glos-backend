@@ -4,6 +4,7 @@ package com.glos.databaseAPIService.domain.service;
 import com.glos.api.entities.*;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
+import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
 import com.glos.databaseAPIService.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.Optional;
  * 	@author - yablonovskydima
  */
 @Service
-public class RepositoryService
+public class RepositoryService implements CrudService<Repository, Long>
 {
     private final RepositoryRepository repository;
     private final UserRepository userRepository;
@@ -45,23 +46,6 @@ public class RepositoryService
         this.commentRepository = commentRepository;
         this.tagRepository = tagRepository;
         this.fileRepository = fileRepository;
-    }
-
-    public Optional<Repository> findById(Long id)
-    {
-        return repository.findById(id);
-    }
-
-    @Transactional
-    public Repository save(Repository repository)
-    {
-        assignUser(repository);
-        assignComments(repository);
-        assignTags(repository);
-        assignFiles(repository);
-        assignAccessTypes(repository);
-        Repository repo =  this.repository.save(repository);
-        return repo;
     }
 
     private Repository assignFiles(Repository repository) {
@@ -156,25 +140,6 @@ public class RepositoryService
         return repository;
     }
 
-    @Transactional
-    public void delete(Repository repository)
-    {
-        this.repository.delete(repository);
-    }
-
-    @Transactional
-    public Repository update(Repository newRepository, Long id)
-    {
-        Repository repository = getRepositoryByIdOrThrow(id);
-        assignUser(newRepository);
-        assignComments(newRepository);
-        assignTags(newRepository);
-        assignFiles(newRepository);
-        assignAccessTypes(newRepository);
-        repositoryMapper.transferEntityDto(newRepository, repository);
-        return this.repository.save(repository);
-    }
-
     public List<Repository> findAllByOwnerId(Long ownerId)
     {
         return repository.findByOwnerId(ownerId);
@@ -187,7 +152,7 @@ public class RepositoryService
 
     Repository getRepositoryByIdOrThrow(Long id)
     {
-        return findById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
+        return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
     }
 
     public List<Repository> findAllByFilter(Repository filter) {
@@ -200,6 +165,48 @@ public class RepositoryService
                 .filter(x -> filter.getTags() == null || x.getTags().containsAll(filter.getTags()))
                 .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()))
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public Repository create(Repository repository)
+    {
+        assignUser(repository);
+        assignComments(repository);
+        assignTags(repository);
+        assignFiles(repository);
+        assignAccessTypes(repository);
+        Repository repo =  this.repository.save(repository);
+        return repo;
+    }
+
+    @Override
+    public List<Repository> getAll() {
+        return this.repository.findAll();
+    }
+
+    @Override
+    public List<Repository> getAll(EntityFilter filter) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<Repository> getById(Long id)
+    {
+        return repository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public Repository update(Long id, Repository newRepository) {
+        Repository repository = getRepositoryByIdOrThrow(id);
+        assignUser(newRepository);
+        assignComments(newRepository);
+        assignTags(newRepository);
+        assignFiles(newRepository);
+        assignAccessTypes(newRepository);
+        repositoryMapper.transferEntityDto(newRepository, repository);
+        return this.repository.save(repository);
     }
 
     @Transactional

@@ -49,8 +49,8 @@ public class File
 
     @ManyToOne
     @JoinColumn(name = "repository_id", foreignKey = @ForeignKey(name = "fk_files_repositories_id"))
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonBackReference
+    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    //@JsonBackReference
     private Repository repository;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})

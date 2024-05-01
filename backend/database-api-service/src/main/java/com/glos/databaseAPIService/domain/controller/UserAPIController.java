@@ -4,6 +4,7 @@ import com.glos.api.entities.User;
 import com.glos.databaseAPIService.domain.filters.UserFilter;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
 import com.glos.databaseAPIService.domain.service.UserService;
+import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,11 @@ import java.util.List;
 public class UserAPIController
 {
     private final UserService userService;
-    private final UserMapper userMapper;
 
     @Autowired
-    public UserAPIController(UserService userService, UserMapper userMapper) {
+    public UserAPIController(UserService userService)
+    {
         this.userService = userService;
-        this.userMapper = userMapper;
     }
 
     @GetMapping("/{id:\\d}")
@@ -37,7 +37,7 @@ public class UserAPIController
     public ResponseEntity<User> createUser(@RequestBody User user)
     {
         userService.create(user);
-       return ResponseEntity.created(URI.create("/v1/users/"+user.getId())).body(user);
+        return ResponseEntity.created(URI.create("/v1/users/"+user.getId())).body(user);
     }
 
     @DeleteMapping("/{id:\\d}")

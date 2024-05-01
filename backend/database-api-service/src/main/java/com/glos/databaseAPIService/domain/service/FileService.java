@@ -4,6 +4,7 @@ package com.glos.databaseAPIService.domain.service;
 import com.glos.api.entities.File;
 import com.glos.databaseAPIService.domain.entityMappers.FileMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
+import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.util.Optional;
  * 	@author - yablonovskydima
  */
 @Service
-public class FileService
+public class FileService implements CrudService<File, Long>
 {
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
@@ -29,39 +30,49 @@ public class FileService
         this.fileMapper = fileMapper;
     }
 
-    public Optional<File> findById(Long id)
+    @Override
+    @Transactional
+    public File create(File file)
+    {
+        return fileRepository.save(file);
+    }
+
+    @Override
+    public List<File> getAll() {
+        return fileRepository.findAll();
+    }
+
+    @Override
+    public List<File> getAll(EntityFilter filter) {
+       throw  new UnsupportedOperationException();
+    }
+
+    @Override
+    public Optional<File> getById(Long id)
     {
         return fileRepository.findById(id);
     }
 
     @Transactional
-    public File save(File file)
-    {
-        return fileRepository.save(file);
-    }
-
-    @Transactional
-    public void delete(File file)
-    {
-        fileRepository.delete(file);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
-        File found = getFileByIdOrThrow(id);
-        fileRepository.delete(found);
-    }
-
-    @Transactional
-    public File update(File newFile, Long id)
+    @Override
+    public File update(Long id, File newFile)
     {
         File file = getFileByIdOrThrow(id);
         fileMapper.transferEntityDto(newFile, file);
         return this.fileRepository.save(file);
     }
+
+    @Transactional
+    @Override
+    public void deleteById(Long id)
+    {
+        File found = getFileByIdOrThrow(id);
+        fileRepository.delete(found);
+    }
+
     File getFileByIdOrThrow(Long id)
     {
-        return findById(id).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
+        return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
     }
 
     public List<File> findAllByRepositoryId(Long id)
@@ -83,5 +94,4 @@ public class FileService
     {
         return fileRepository.findByRootFullName(rootFullName);
     }
-
 }
