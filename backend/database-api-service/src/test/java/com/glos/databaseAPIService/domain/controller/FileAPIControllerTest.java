@@ -40,7 +40,7 @@ class FileAPIControllerTest {
         when(fileService.findById(id))
                 .thenReturn(Optional.of(file));
         mockMvc.perform(MockMvcRequestBuilders.
-                get("/v1/files/{id}" , id)
+                get("/files/{id}" , id)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
