@@ -18,7 +18,7 @@ public class ApiGatewayApplication {
         return builder.routes()
                 .route("feed-service", r -> r
                         .path("/api/feed", "/api/feed/**")
-                        .filters(f -> f.stripPrefix(1))
+                        .filters(f -> f.rewritePath("/api", "/api/v1"))
                         .uri("http://localhost:9004")
                 )
                 .build();
