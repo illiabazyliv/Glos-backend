@@ -1,28 +1,25 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
 import com.glos.api.entities.AccessType;
-import com.glos.api.entities.File;
-import com.glos.api.entities.User;
-import jakarta.persistence.*;
 
-public class FileUserAccesTypeDTO
+public class FileUserAccessTypeDTO
 {
     private Long id;
 
-    private File file;
+    private FileDTO file;
 
-    private User user;
+    private UserDTO user;
 
     private AccessType accessType;
 
-    public FileUserAccesTypeDTO(Long id, File file, User user, AccessType accessType) {
+    public FileUserAccessTypeDTO(Long id, FileDTO file, UserDTO user, AccessType accessType) {
         this.id = id;
         this.file = file;
         this.user = user;
         this.accessType = accessType;
     }
 
-    public FileUserAccesTypeDTO() {
+    public FileUserAccessTypeDTO() {
     }
 
     public Long getId() {
@@ -33,19 +30,19 @@ public class FileUserAccesTypeDTO
         this.id = id;
     }
 
-    public File getFile() {
+    public FileDTO getFile() {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(FileDTO file) {
         this.file = file;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 

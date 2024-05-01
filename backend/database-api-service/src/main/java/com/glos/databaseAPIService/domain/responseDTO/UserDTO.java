@@ -37,8 +37,6 @@ public class UserDTO
 
     private Boolean is_deleted = false;
 
-    private List<Group> groups;
-
     private List<Role> roles;
 
     public UserDTO(Long id,
@@ -55,7 +53,6 @@ public class UserDTO
                    Boolean is_credentials_non_expired,
                    Boolean is_enabled,
                    Boolean is_deleted,
-                   List<Group> groups,
                    List<Role> roles) {
         this.id = id;
         this.username = username;
@@ -71,7 +68,6 @@ public class UserDTO
         this.is_credentials_non_expired = is_credentials_non_expired;
         this.is_enabled = is_enabled;
         this.is_deleted = is_deleted;
-        this.groups = groups;
         this.roles = roles;
     }
 
@@ -188,14 +184,6 @@ public class UserDTO
 
     public void setIs_deleted(Boolean is_deleted) {
         this.is_deleted = is_deleted;
-    }
-
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
     }
 
     public List<Role> getRoles() {

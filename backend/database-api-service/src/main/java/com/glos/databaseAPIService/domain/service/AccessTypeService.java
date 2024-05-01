@@ -21,15 +21,15 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
 
     public AccessTypeService(
             AccessTypeRepository accessTypeRepository,
-            AccessTypeMapper accessTypeMapper
-    ) {
+            AccessTypeMapper accessTypeMapper) {
         this.accessTypeRepository = accessTypeRepository;
         this.accessTypeMapper = accessTypeMapper;
     }
 
     @Transactional
     @Override
-    public AccessType create(AccessType accessType) {
+    public AccessType create(AccessType accessType)
+    {
         return accessTypeRepository.save(accessType);
     }
 

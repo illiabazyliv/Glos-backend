@@ -2,13 +2,22 @@ package com.glos.databaseAPIService.domain.controller;
 
 
 import com.glos.api.entities.FileUserAccessType;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
+import com.glos.databaseAPIService.domain.responseDTO.FileDTO;
+import com.glos.databaseAPIService.domain.responseDTO.FileUserAccessTypeDTO;
+import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
+import com.glos.databaseAPIService.domain.responseMappers.FileDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.FileUserAccessTypeDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.FileUserAccessTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mykola Melnyk
@@ -18,41 +27,66 @@ import java.util.List;
 public class FileUserAccessTypeController {
 
     private final FileUserAccessTypeService fileUserAccessTypeService;
+    private final FileUserAccessTypeDTOMapper fileUserAccessTypeDTOMapper;
+    private final FileDTOMapper fileDTOMapper;
+    private final UserDTOMapper userDTOMapper;
 
     public FileUserAccessTypeController(
-            FileUserAccessTypeService fileUserAccessTypeService
-    ) {
+            FileUserAccessTypeService fileUserAccessTypeService,
+            FileUserAccessTypeDTOMapper fileUserAccessTypeDTOMapper, FileDTOMapper fileDTOMapper, UserDTOMapper userDTOMapper) {
         this.fileUserAccessTypeService = fileUserAccessTypeService;
+        this.fileUserAccessTypeDTOMapper = fileUserAccessTypeDTOMapper;
+        this.fileDTOMapper = fileDTOMapper;
+        this.userDTOMapper = userDTOMapper;
     }
 
     @GetMapping
-    public ResponseEntity<List<FileUserAccessType>> getAll(
+    public ResponseEntity<List<FileUserAccessTypeDTO>> getAll(
             @ModelAttribute FileUserAccessTypeFilter fuatFilter
-    ) {
-        return ResponseEntity.ok(fileUserAccessTypeService.getAll(fuatFilter));
+    )
+    {
+        List<FileUserAccessType> fuat = fileUserAccessTypeService.getAll(fuatFilter);
+        List<FileUserAccessTypeDTO> fuatDTO = new ArrayList<>();
+
+        for (FileUserAccessType f: fuat)
+        {
+            FileUserAccessTypeDTO fd = new FileUserAccessTypeDTO();
+            fd = transferEntityDTO(f, fd);
+            fuatDTO.add(fd);
+        }
+
+        return ResponseEntity.ok(fuatDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FileUserAccessType> getById(
+    public ResponseEntity<FileUserAccessTypeDTO> getById(
             @PathVariable Long id
-    ) {
-        return ResponseEntity.of(fileUserAccessTypeService.getById(id));
+    )
+    {
+        FileUserAccessType f = fileUserAccessTypeService.getById(id).orElseThrow(() -> {return new ResourceNotFoundException("File User Access Type is not found");} );
+        FileUserAccessTypeDTO fd = new FileUserAccessTypeDTO();
+        fd = transferEntityDTO(f, fd);
+        return ResponseEntity.of(Optional.of(fd));
     }
 
     @PostMapping
-    public ResponseEntity<FileUserAccessType> create(
+    public ResponseEntity<FileUserAccessTypeDTO> create(
             @RequestBody FileUserAccessType request,
             UriComponentsBuilder uriBuilder
     ) {
         FileUserAccessType created = fileUserAccessTypeService.create(request);
+
+        FileUserAccessTypeDTO fd = new FileUserAccessTypeDTO();
+        fd = transferEntityDTO(created, fd);
+
         return ResponseEntity.created(
-                uriBuilder.path("/comments/{id}")
-                        .build(created.getId())
-        ).body(created);
+                uriBuilder.path("/fuat/{id}")
+                        .build(fd.getId())
+        ).body(fd);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FileUserAccessType> create(
+    public ResponseEntity<?> update(
             @PathVariable Long id,
             @RequestBody FileUserAccessType request
     ) {
@@ -69,4 +103,16 @@ public class FileUserAccessTypeController {
         return ResponseEntity.noContent().build();
     }
 
+    FileUserAccessTypeDTO transferEntityDTO(FileUserAccessType source, FileUserAccessTypeDTO destination)
+    {
+        FileDTO fileDTO = new FileDTO();
+        UserDTO userDTO = new UserDTO();
+        fileDTOMapper.transferEntityDto(source.getFile(), fileDTO);
+        userDTOMapper.transferEntityDto(source.getUser(), userDTO);
+
+        fileUserAccessTypeDTOMapper.transferEntityDto(source, destination);
+        destination.setUser(userDTO);
+        destination.setFile(fileDTO);
+        return destination;
+    }
 }

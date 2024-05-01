@@ -1,23 +1,24 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glos.api.entities.Repository;
-import com.glos.api.entities.User;
-import com.glos.databaseAPIService.domain.entityMappers.RepositoryFilterMapper;
-import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
-import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
+import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
+import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
+import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
+import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
 import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * 	@author - yablonovskydima
  */
@@ -26,30 +27,40 @@ import java.util.List;
 public class RepositoryAPIController
 {
     private final RepositoryService repositoryService;
+    private final RepositoryDTOMapper mapper;
+    private final UserDTOMapper userDTOMapper;
 
     @Autowired
     public RepositoryAPIController(
-            RepositoryService repositoryService
-    ) {
+            RepositoryService repositoryService,
+            RepositoryDTOMapper mapper, UserDTOMapper userDTOMapper) {
         this.repositoryService = repositoryService;
 
+        this.mapper = mapper;
+        this.userDTOMapper = userDTOMapper;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Repository> getRepository(@PathVariable Long id)
+    public ResponseEntity<RepositoryDTO> getRepository(@PathVariable Long id)
     {
-
-        return ResponseEntity.of(repositoryService.getById(id));
+        Repository repository = repositoryService.getById(id).orElseThrow(() -> {return new ResourceNotFoundException("Repository is not found");} );
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO = transferEntityDTO(repository, repositoryDTO);
+        return ResponseEntity.of(Optional.of(repositoryDTO));
     }
 
     @PostMapping
-    public ResponseEntity<Repository> createRepository(@RequestBody Repository repository) {
+    public ResponseEntity<RepositoryDTO> createRepository(@RequestBody Repository repository, UriComponentsBuilder uriBuilder) {
         PathUtils.ordinalPathsRepository(repository);
         Repository repo = repositoryService.create(repository);
         PathUtils.normalizePathsRepository(repository);
+
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO = transferEntityDTO(repo, repositoryDTO);
+
         return ResponseEntity
-                .created(URI.create("/v1/repositories/"+repo.getId()))
-                .body(repo);
+                .created(uriBuilder.path("/repositories/{id}")
+                        .build(repositoryDTO.getId())).body(repositoryDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -60,31 +71,63 @@ public class RepositoryAPIController
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Repository> updateRepository(@RequestBody Repository newRepository, @PathVariable Long id)
+    public ResponseEntity<?> updateRepository(@RequestBody Repository newRepository, @PathVariable("id") Long id)
     {
-        PathUtils.ordinalPathsRepository(newRepository);
+        //PathUtils.ordinalPathsRepository(newRepository);
         repositoryService.update(id, newRepository);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("owner-id/{ownerId}")
-    public List<Repository> getRepositoriesByOwnerId(@PathVariable Long ownerId)
+    public List<RepositoryDTO> getRepositoriesByOwnerId(@PathVariable Long ownerId)
     {
-        return repositoryService.findAllByOwnerId(ownerId);
+        List<Repository> repositories = repositoryService.findAllByOwnerId(ownerId);
+        List<RepositoryDTO> repositoryDTOS = new ArrayList<>();
+
+        for (Repository rep:repositories)
+        {
+            RepositoryDTO repositoryDTO = new RepositoryDTO();
+            repositoryDTO = transferEntityDTO(rep, repositoryDTO);
+            repositoryDTOS.add(repositoryDTO);
+        }
+
+        return repositoryDTOS;
     }
 
 
     @GetMapping("root-full-name/{rootFullName}")
-    public ResponseEntity<Repository> getRepositoryByRootFullName(@PathVariable String rootFullName)
+    public ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName)
     {
         final String ordinalRootFullName = PathUtils.originalPath(rootFullName);
-        return ResponseEntity.of(repositoryService.findByRootFullName(ordinalRootFullName));
+        Repository rep = repositoryService.findByRootFullName(ordinalRootFullName).orElseThrow(() -> {return new ResourceNotFoundException("Repository is not found");} );
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO = transferEntityDTO(rep, repositoryDTO);
+        return ResponseEntity.of(Optional.of(repositoryDTO));
     }
 
     @GetMapping()
-    public List<Repository> getRepositoriesByFilter(@ModelAttribute Repository filter)
+    public List<RepositoryDTO> getRepositoriesByFilter(@ModelAttribute Repository filter)
     {
         PathUtils.ordinalPathsRepository(filter);
-        return repositoryService.findAllByFilter(filter);
+        List<Repository> repositories = repositoryService.findAllByFilter(filter);
+        List<RepositoryDTO> repositoryDTOS = new ArrayList<>();
+
+        for (Repository rep:repositories)
+        {
+            RepositoryDTO repositoryDTO = new RepositoryDTO();
+            repositoryDTO = transferEntityDTO(rep, repositoryDTO);
+            repositoryDTOS.add(repositoryDTO);
+        }
+
+        return repositoryDTOS;
+    }
+
+    RepositoryDTO transferEntityDTO(Repository source, RepositoryDTO destination)
+    {
+        UserDTO owner = new UserDTO();
+        userDTOMapper.transferEntityDto(source.getOwner(), owner);
+        mapper.transferEntityDto(source, destination);
+        destination.setOwner(owner);
+        return destination;
     }
 }

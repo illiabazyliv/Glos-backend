@@ -16,7 +16,7 @@ public class RepositoryDTO
 
     private String rootFullName;
 
-    private User owner;
+    private UserDTO owner;
 
     private Boolean isDefault;
 
@@ -35,12 +35,13 @@ public class RepositoryDTO
     private List<SecureCode> secureCodes;
 
     private List<Tag> tags;
+    //file
 
     public RepositoryDTO(Long id,
                          String rootPath,
                          String rootName,
                          String rootFullName,
-                         User owner,
+                         UserDTO owner,
                          Boolean isDefault,
                          String displayPath,
                          String displayName,
@@ -101,11 +102,11 @@ public class RepositoryDTO
         this.rootFullName = rootFullName;
     }
 
-    public User getOwner() {
+    public UserDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(UserDTO owner) {
         this.owner = owner;
     }
 

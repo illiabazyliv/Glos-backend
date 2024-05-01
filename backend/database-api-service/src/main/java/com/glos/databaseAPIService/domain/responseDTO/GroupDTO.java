@@ -12,11 +12,11 @@ public class GroupDTO
 
     private String name;
 
-    private User owner;
+    private UserDTO owner;
 
     private List<AccessType> accessTypes;
 
-    public GroupDTO(Long id, String name, User owner, List<AccessType> accessTypes) {
+    public GroupDTO(Long id, String name, UserDTO owner, List<AccessType> accessTypes) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -42,11 +42,11 @@ public class GroupDTO
         this.name = name;
     }
 
-    public User getOwner() {
+    public UserDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(UserDTO owner) {
         this.owner = owner;
     }
 

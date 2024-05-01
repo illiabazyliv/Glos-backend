@@ -9,13 +9,13 @@ public class RepositoryUserAccessTypeDTO
 {
     private Long id;
 
-    private Repository repository;
+    private RepositoryDTO repository;
 
-    private User user;
+    private UserDTO user;
 
     private AccessType accessType;
 
-    public RepositoryUserAccessTypeDTO(Long id, Repository repository, User user, AccessType accessType) {
+    public RepositoryUserAccessTypeDTO(Long id, RepositoryDTO repository, UserDTO user, AccessType accessType) {
         this.id = id;
         this.repository = repository;
         this.user = user;
@@ -33,19 +33,19 @@ public class RepositoryUserAccessTypeDTO
         this.id = id;
     }
 
-    public Repository getRepository() {
+    public RepositoryDTO getRepository() {
         return repository;
     }
 
-    public void setRepository(Repository repository) {
+    public void setRepository(RepositoryDTO repository) {
         this.repository = repository;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserDTO user) {
         this.user = user;
     }
 
