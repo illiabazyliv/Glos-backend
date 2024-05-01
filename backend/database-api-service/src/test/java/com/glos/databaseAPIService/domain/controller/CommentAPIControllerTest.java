@@ -35,7 +35,7 @@ class CommentAPIControllerTest {
         Comment comment = new Comment();
         comment.setId(1L);
         comment.setText("Test comment");
-        List<Comment> comments = Collections.singletonList(comment);
+        List<Comment> comments = List.of(comment);
         when(commentService.getAll(any(Comment.class))).thenReturn(comments);
 
         ObjectMapper objectMapper = new ObjectMapper();

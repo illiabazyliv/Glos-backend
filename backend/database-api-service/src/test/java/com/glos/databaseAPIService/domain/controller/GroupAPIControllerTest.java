@@ -70,7 +70,7 @@ class GroupAPIControllerTest {
     void deleteGroup() throws Exception{
         Long id = 1L;
         doNothing().when(groupService).deleteById(id);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/groups/" , id))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/groups/{id}" , id))
                 .andExpect(status().isNoContent());
     }
 
