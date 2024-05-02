@@ -171,11 +171,6 @@ public class RepositoryService implements CrudService<Repository, Long>
     @Transactional
     public Repository create(Repository repository)
     {
-        assignUser(repository);
-        assignComments(repository);
-        assignTags(repository);
-        assignFiles(repository);
-        assignAccessTypes(repository);
         Repository repo =  this.repository.save(repository);
         return repo;
     }
@@ -200,11 +195,6 @@ public class RepositoryService implements CrudService<Repository, Long>
     @Transactional
     public Repository update(Long id, Repository newRepository) {
         Repository repository = getRepositoryByIdOrThrow(id);
-        assignUser(newRepository);
-        assignComments(newRepository);
-        assignTags(newRepository);
-        assignFiles(newRepository);
-        assignAccessTypes(newRepository);
         repositoryMapper.transferEntityDto(newRepository, repository);
         return this.repository.save(repository);
     }

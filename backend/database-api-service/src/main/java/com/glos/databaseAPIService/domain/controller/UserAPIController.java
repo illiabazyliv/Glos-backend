@@ -49,7 +49,7 @@ public class UserAPIController
         mapper.transferEntityDto(user, userDTO);
         return ResponseEntity.created(
                 uriBuilder.path("/repositories/{id}")
-                        .build(userDTO.getId())).body(userDTO);
+                        .build(u.getId())).body(userDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -97,19 +97,6 @@ public class UserAPIController
     public List<UserDTO> getUsersByFilter(@ModelAttribute User filter)
     {
         List<User> users = userService.getAll(filter);
-        List<UserDTO> userDTOS = new ArrayList<>();
-
-//        for (User u:users)
-//        {
-//            UserDTO userDTO = new UserDTO();
-//            mapper.transferEntityDto(u, userDTO);
-//            userDTOS.add(userDTO);
-//        }
-
-        List<UserDTO> u = users.stream().map(mapper::toDto).toList();
-
-        return userDTOS;
+        return users.stream().map(mapper::toDto).toList();
     }
-
-    //GET users not working
 }

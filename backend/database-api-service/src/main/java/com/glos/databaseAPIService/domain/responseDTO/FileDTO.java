@@ -27,7 +27,7 @@ public class FileDTO
 
     private String displayFullName;
 
-    private Repository repository;
+    private RepositoryDTO repository;
 
     private List<AccessType> accessTypes;
 
@@ -44,7 +44,7 @@ public class FileDTO
                    String displayPath,
                    String displayFilename,
                    String displayFullName,
-                   Repository repository,
+                   RepositoryDTO repository,
                    List<AccessType> accessTypes,
                    List<Comment> comments,
                    List<SecureCode> secureCodes,
@@ -140,11 +140,11 @@ public class FileDTO
         this.displayFullName = displayFullName;
     }
 
-    public Repository getRepository() {
+    public RepositoryDTO getRepository() {
         return repository;
     }
 
-    public void setRepository(Repository repository) {
+    public void setRepository(RepositoryDTO repository) {
         this.repository = repository;
     }
 

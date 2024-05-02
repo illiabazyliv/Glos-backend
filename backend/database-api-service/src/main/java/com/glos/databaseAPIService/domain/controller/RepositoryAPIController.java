@@ -60,7 +60,7 @@ public class RepositoryAPIController
 
         return ResponseEntity
                 .created(uriBuilder.path("/repositories/{id}")
-                        .build(repositoryDTO.getId())).body(repositoryDTO);
+                        .build(repo.getId())).body(repositoryDTO);
     }
 
     @DeleteMapping("/{id}")

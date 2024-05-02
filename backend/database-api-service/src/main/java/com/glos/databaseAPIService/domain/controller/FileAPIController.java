@@ -2,17 +2,22 @@ package com.glos.databaseAPIService.domain.controller;
 
 
 import com.glos.api.entities.File;
+import com.glos.api.entities.Repository;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.FileDTO;
+import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
+import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import com.glos.databaseAPIService.domain.responseMappers.FileDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.FileService;
 import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,11 +30,15 @@ public class FileAPIController
 {
     private final FileService fileService;
     private final FileDTOMapper fileDTOMapper;
+    private final RepositoryDTOMapper repositoryDTOMapper;
+    private final UserDTOMapper userDTOMapper;
 
     @Autowired
-    public FileAPIController(FileService fileService, FileDTOMapper fileDTOMapper) {
+    public FileAPIController(FileService fileService, FileDTOMapper fileDTOMapper,  RepositoryDTOMapper repositoryDTOMapper, UserDTOMapper userDTOMapper) {
         this.fileService = fileService;
         this.fileDTOMapper = fileDTOMapper;
+        this.repositoryDTOMapper = repositoryDTOMapper;
+        this.userDTOMapper = userDTOMapper;
     }
 
     @GetMapping("/{id}")
@@ -42,16 +51,19 @@ public class FileAPIController
     }
 
     @PostMapping
-    public ResponseEntity<FileDTO> createFile(@RequestBody File file)
+    public ResponseEntity<FileDTO> createFile(@RequestBody File file, UriComponentsBuilder uriBuilder)
     {
         PathUtils.ordinalPathsFile(file);
         File created = fileService.create(file);
         PathUtils.normalizePathsFile(created);
 
         FileDTO fileDTO = new FileDTO();
-        fileDTOMapper.transferEntityDto(created, fileDTO);
+        fileDTO = transferEntityDTO(file, fileDTO);
 
-        return ResponseEntity.created(URI.create("/files/"+fileDTO.getId())).body(fileDTO);
+
+        return ResponseEntity
+                .created(uriBuilder.path("/files/{id}")
+                        .build(created.getId())).body(fileDTO);
     }
 
     @PutMapping("/{id}")
@@ -70,19 +82,10 @@ public class FileAPIController
     }
 
     @GetMapping("/repository/{repositoryId}")
-    public List<FileDTO> getFilesByRepository(@PathVariable Long repositoryId)
+    public  ResponseEntity<List<FileDTO>> getFilesByRepository(@PathVariable Long repositoryId)
     {
         List<File> files = fileService.findAllByRepositoryId(repositoryId);
-        List<FileDTO> fileDTOS = new ArrayList<>();
-
-        for (File file : files)
-        {
-            FileDTO fileDTO = new FileDTO();
-            fileDTOMapper.transferEntityDto(file, fileDTO);
-            fileDTOS.add(fileDTO);
-        }
-
-        return fileDTOS;
+        return ResponseEntity.of(Optional.of(files.stream().map(fileDTOMapper::toDto).toList()));
     }
 
     @GetMapping("/root-fullname/{rootFullName}")
@@ -100,17 +103,23 @@ public class FileAPIController
     {
         PathUtils.ordinalPathsFile(filter);
         List<File> files = fileService.findAllByFilter(filter);
-        List<FileDTO> fileDTOS = new ArrayList<>();
-
-        for (File file:files)
-        {
-            FileDTO fileDTO = new FileDTO();
-            fileDTOMapper.transferEntityDto(file, fileDTO);
-            fileDTOS.add(fileDTO);
-        }
-
-        return ResponseEntity.ok(fileDTOS);
+        return ResponseEntity.of(Optional.of(files.stream().map(fileDTOMapper::toDto).toList()));
     }
 
-    //everything works
+    FileDTO transferEntityDTO(File source, FileDTO destination)
+    {
+        RepositoryDTO rep = new RepositoryDTO();
+        repositoryDTOMapper.transferEntityDto(source.getRepository(), rep);
+        fileDTOMapper.transferEntityDto(source, destination);
+        destination.setRepository(rep);
+        return destination;
+    }
+    RepositoryDTO transferEntityDTO(Repository source, RepositoryDTO destination)
+    {
+        UserDTO owner = new UserDTO();
+        userDTOMapper.transferEntityDto(source.getOwner(), owner);
+        repositoryDTOMapper.transferEntityDto(source, destination);
+        destination.setOwner(owner);
+        return destination;
+    }
 }
