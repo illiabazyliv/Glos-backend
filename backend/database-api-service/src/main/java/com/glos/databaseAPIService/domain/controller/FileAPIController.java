@@ -109,12 +109,12 @@ public class FileAPIController
     FileDTO transferEntityDTO(File source, FileDTO destination)
     {
         RepositoryDTO rep = new RepositoryDTO();
-        repositoryDTOMapper.transferEntityDto(source.getRepository(), rep);
+        rep = transferEntityDTORep(source.getRepository(), rep);
         fileDTOMapper.transferEntityDto(source, destination);
         destination.setRepository(rep);
         return destination;
     }
-    RepositoryDTO transferEntityDTO(Repository source, RepositoryDTO destination)
+    RepositoryDTO transferEntityDTORep(Repository source, RepositoryDTO destination)
     {
         UserDTO owner = new UserDTO();
         userDTOMapper.transferEntityDto(source.getOwner(), owner);
