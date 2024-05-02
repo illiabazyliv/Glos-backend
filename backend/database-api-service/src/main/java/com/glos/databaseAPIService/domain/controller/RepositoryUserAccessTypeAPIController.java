@@ -74,35 +74,18 @@ public class RepositoryUserAccessTypeAPIController
     }
 
     @GetMapping()
-    public List<RepositoryUserAccessTypeDTO> getAllRUAT()
+    public ResponseEntity<List<RepositoryUserAccessTypeDTO>> getAllRUAT()
     {
         List<RepositoryUserAccessType> ruats = service.getAll();
-        List<RepositoryUserAccessTypeDTO> ruatsDTO = new ArrayList<>();
 
-        for (RepositoryUserAccessType r:ruats)
-        {
-            RepositoryUserAccessTypeDTO rDTO = new RepositoryUserAccessTypeDTO();
-            rDTO = transferEntityDTO(r, rDTO);
-            ruatsDTO.add(rDTO);
-        }
-
-        return ruatsDTO;
+        return ResponseEntity.ok(ruats.stream().map((x) -> {return transferEntityDTO(x, new RepositoryUserAccessTypeDTO());}).toList());
     }
 
     @GetMapping("/filter")
-    public List<RepositoryUserAccessTypeDTO> getRUATByFilter(RepositoryUserAccessTypeFilter filter)
+    public ResponseEntity<List<RepositoryUserAccessTypeDTO>> getRUATByFilter(RepositoryUserAccessTypeFilter filter)
     {
         List<RepositoryUserAccessType> ruats = service.getAll(filter);
-        List<RepositoryUserAccessTypeDTO> ruatsDTO = new ArrayList<>();
-
-        for (RepositoryUserAccessType r:ruats)
-        {
-            RepositoryUserAccessTypeDTO rDTO = new RepositoryUserAccessTypeDTO();
-            rDTO = transferEntityDTO(r, rDTO);
-            ruatsDTO.add(rDTO);
-        }
-
-        return ruatsDTO;
+        return ResponseEntity.ok(ruats.stream().map((x) -> {return transferEntityDTO(x, new RepositoryUserAccessTypeDTO());}).toList());
     }
 
     RepositoryUserAccessTypeDTO transferEntityDTO(RepositoryUserAccessType source, RepositoryUserAccessTypeDTO destination)

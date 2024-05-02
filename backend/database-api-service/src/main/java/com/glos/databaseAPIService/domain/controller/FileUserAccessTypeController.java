@@ -45,17 +45,10 @@ public class FileUserAccessTypeController {
             @ModelAttribute FileUserAccessTypeFilter fuatFilter
     )
     {
-        List<FileUserAccessType> fuat = fileUserAccessTypeService.getAll(fuatFilter);
-        List<FileUserAccessTypeDTO> fuatDTO = new ArrayList<>();
+        List<FileUserAccessType> fuats = fileUserAccessTypeService.getAll(fuatFilter);
 
-        for (FileUserAccessType f: fuat)
-        {
-            FileUserAccessTypeDTO fd = new FileUserAccessTypeDTO();
-            fd = transferEntityDTO(f, fd);
-            fuatDTO.add(fd);
-        }
 
-        return ResponseEntity.ok(fuatDTO);
+        return ResponseEntity.ok(fuats.stream().map((x) -> {return transferEntityDTO(x, new FileUserAccessTypeDTO());}).toList());
     }
 
     @GetMapping("/{id}")

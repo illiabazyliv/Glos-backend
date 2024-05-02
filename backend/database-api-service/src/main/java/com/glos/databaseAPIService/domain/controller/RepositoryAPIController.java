@@ -79,19 +79,12 @@ public class RepositoryAPIController
     }
 
     @GetMapping("owner-id/{ownerId}")
-    public List<RepositoryDTO> getRepositoriesByOwnerId(@PathVariable Long ownerId)
+    public ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId)
     {
         List<Repository> repositories = repositoryService.findAllByOwnerId(ownerId);
         List<RepositoryDTO> repositoryDTOS = new ArrayList<>();
 
-        for (Repository rep:repositories)
-        {
-            RepositoryDTO repositoryDTO = new RepositoryDTO();
-            repositoryDTO = transferEntityDTO(rep, repositoryDTO);
-            repositoryDTOS.add(repositoryDTO);
-        }
-
-        return repositoryDTOS;
+        return ResponseEntity.ok(repositories.stream().map((x) -> {return transferEntityDTO(x, new RepositoryDTO());}).toList());
     }
 
 
@@ -106,20 +99,12 @@ public class RepositoryAPIController
     }
 
     @GetMapping()
-    public List<RepositoryDTO> getRepositoriesByFilter(@ModelAttribute Repository filter)
+    public ResponseEntity<List<RepositoryDTO>> getRepositoriesByFilter(@ModelAttribute Repository filter)
     {
         PathUtils.ordinalPathsRepository(filter);
         List<Repository> repositories = repositoryService.findAllByFilter(filter);
-        List<RepositoryDTO> repositoryDTOS = new ArrayList<>();
 
-        for (Repository rep:repositories)
-        {
-            RepositoryDTO repositoryDTO = new RepositoryDTO();
-            repositoryDTO = transferEntityDTO(rep, repositoryDTO);
-            repositoryDTOS.add(repositoryDTO);
-        }
-
-        return repositoryDTOS;
+        return ResponseEntity.ok(repositories.stream().map((x) -> {return transferEntityDTO(x, new RepositoryDTO());}).toList());
     }
 
     RepositoryDTO transferEntityDTO(Repository source, RepositoryDTO destination)

@@ -73,31 +73,17 @@ public class GroupAPIController
     }
 
     @GetMapping()
-    public List<GroupDTO> getAllGroups()
+    public ResponseEntity<List<GroupDTO>> getAllGroups()
     {
         List<Group> groups = groupService.getAll();
-        List<GroupDTO> groupDTOS = new ArrayList<>();
-        for (Group g :groups)
-        {
-            GroupDTO groupDTO = new GroupDTO();
-            groupDTO = transferEntityDTO(g, groupDTO);
-            groupDTOS.add(groupDTO);
-        }
-        return groupDTOS;
+        return ResponseEntity.ok(groups.stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList());
     }
 
     @GetMapping("/filter")
-    public List<GroupDTO> getGroupsByFilters(@ModelAttribute GroupFilter filter)
+    public ResponseEntity<List<GroupDTO>> getGroupsByFilters(@ModelAttribute GroupFilter filter)
     {
         List<Group> groups = groupService.getAll(filter);
-        List<GroupDTO> groupDTOS = new ArrayList<>();
-        for (Group g :groups)
-        {
-            GroupDTO groupDTO = new GroupDTO();
-            groupDTO = transferEntityDTO(g, groupDTO);
-            groupDTOS.add(groupDTO);
-        }
-        return groupDTOS;
+        return ResponseEntity.ok(groups.stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList());
     }
 
     GroupDTO transferEntityDTO(Group source, GroupDTO destination)

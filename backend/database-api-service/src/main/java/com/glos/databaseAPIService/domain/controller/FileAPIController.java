@@ -46,7 +46,7 @@ public class FileAPIController
     {
         FileDTO fileDTO = new FileDTO();
         File file = fileService.getById(id).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
-        fileDTOMapper.transferEntityDto(file, fileDTO);
+        fileDTO = transferEntityDTO(file, fileDTO);
         return ResponseEntity.of(Optional.of(fileDTO));
     }
 
@@ -85,7 +85,7 @@ public class FileAPIController
     public  ResponseEntity<List<FileDTO>> getFilesByRepository(@PathVariable Long repositoryId)
     {
         List<File> files = fileService.findAllByRepositoryId(repositoryId);
-        return ResponseEntity.of(Optional.of(files.stream().map(fileDTOMapper::toDto).toList()));
+        return ResponseEntity.of(Optional.of(files.stream().map((x) -> {return transferEntityDTO(x, new FileDTO());}).toList()));
     }
 
     @GetMapping("/root-fullname/{rootFullName}")
@@ -94,7 +94,7 @@ public class FileAPIController
         String normalizeRootFullName = PathUtils.originalPath(rootFullName);
         File file = fileService.findByRootFullName(normalizeRootFullName).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
         FileDTO fileDTO = new FileDTO();
-        fileDTOMapper.transferEntityDto(file, fileDTO);
+        fileDTO = transferEntityDTO(file, fileDTO);
         return ResponseEntity.of(Optional.of(fileDTO));
     }
 
@@ -103,7 +103,7 @@ public class FileAPIController
     {
         PathUtils.ordinalPathsFile(filter);
         List<File> files = fileService.findAllByFilter(filter);
-        return ResponseEntity.of(Optional.of(files.stream().map(fileDTOMapper::toDto).toList()));
+        return ResponseEntity.of(Optional.of(files.stream().map((x) -> {return transferEntityDTO(x, new FileDTO());}).toList()));
     }
 
     FileDTO transferEntityDTO(File source, FileDTO destination)
