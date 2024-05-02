@@ -6,6 +6,7 @@ import com.glos.databaseAPIService.domain.service.SecureCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -28,10 +29,12 @@ public class SecureCodeAPIController
     }
 
     @PostMapping
-    public ResponseEntity<?> createSecureCode(@RequestBody SecureCode secureCode)
+    public ResponseEntity<?> createSecureCode(@RequestBody SecureCode secureCode, UriComponentsBuilder uriBuilder)
     {
-        service.create(secureCode);
-        return ResponseEntity.created(URI.create("/v1/groups/"+secureCode.getId())).build();
+        SecureCode s = service.create(secureCode);
+        return ResponseEntity.created(
+                uriBuilder.path("/secure-codes/{id}")
+                        .build(s.getId())).body(s);
     }
 
     @DeleteMapping("/{id}")

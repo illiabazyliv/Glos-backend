@@ -56,7 +56,7 @@ public class RepositoryUserAccessTypeAPIController
         ruatDTO = transferEntityDTO(r, ruatDTO);
         return ResponseEntity.created(
                 uriBuilder.path("/ruat/{id}")
-                        .build(ruatDTO.getId())).body(ruatDTO);
+                        .build(r.getId())).body(ruatDTO);
     }
 
     @DeleteMapping("/{id}")

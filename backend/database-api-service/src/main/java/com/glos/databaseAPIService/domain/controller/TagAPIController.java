@@ -6,6 +6,7 @@ import com.glos.databaseAPIService.domain.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -31,10 +32,12 @@ public class TagAPIController
     }
 
     @PostMapping
-    public ResponseEntity<Tag> createTag(@RequestBody Tag tag)
+    public ResponseEntity<Tag> createTag(@RequestBody Tag tag, UriComponentsBuilder uriBuilder)
     {
-        tagService.create(tag);
-        return ResponseEntity.created(URI.create("/v1/tags/"+tag.getId())).body(tag);
+        Tag t = tagService.create(tag);
+        return ResponseEntity.created(
+                uriBuilder.path("/tags/{id}")
+                        .build(t.getId())).body(t);
     }
 
     @DeleteMapping("/{id}")

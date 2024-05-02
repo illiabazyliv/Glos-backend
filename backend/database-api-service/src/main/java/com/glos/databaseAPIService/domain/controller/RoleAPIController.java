@@ -6,6 +6,7 @@ import com.glos.databaseAPIService.domain.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -31,10 +32,12 @@ public class RoleAPIController
     }
 
     @PostMapping
-    public ResponseEntity<Role> createRole(@RequestBody Role role)
+    public ResponseEntity<Role> createRole(@RequestBody Role role, UriComponentsBuilder uriBuilder)
     {
-        roleService.create(role);
-        return ResponseEntity.created(URI.create("/v1/roles/"+role.getId())).body(role);
+        Role r = roleService.create(role);
+        return ResponseEntity.created(
+                uriBuilder.path("/roles/{id}")
+                        .build(r.getId())).body(r);
     }
 
     @DeleteMapping("/{id}")

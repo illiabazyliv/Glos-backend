@@ -50,12 +50,12 @@ public class GroupAPIController
     @PostMapping
     public ResponseEntity<?> createGroup(@RequestBody Group group, UriComponentsBuilder uriBuilder)
     {
-        groupService.create(group);
+        Group g = groupService.create(group);
         GroupDTO groupDTO = new GroupDTO();
         groupDTO = transferEntityDTO(group, groupDTO);
         return ResponseEntity.created(
                 uriBuilder.path("/groups/{id}")
-                        .build(groupDTO.getId())).body(groupDTO);
+                        .build(g.getId())).body(groupDTO);
     }
 
     @DeleteMapping("/{id}")

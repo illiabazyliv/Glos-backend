@@ -48,7 +48,7 @@ public class UserAPIController
         UserDTO userDTO = new UserDTO();
         mapper.transferEntityDto(user, userDTO);
         return ResponseEntity.created(
-                uriBuilder.path("/repositories/{id}")
+                uriBuilder.path("/users/{id}")
                         .build(u.getId())).body(userDTO);
     }
 

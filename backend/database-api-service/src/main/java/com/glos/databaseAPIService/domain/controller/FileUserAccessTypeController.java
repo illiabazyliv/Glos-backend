@@ -74,7 +74,7 @@ public class FileUserAccessTypeController {
 
         return ResponseEntity.created(
                 uriBuilder.path("/fuat/{id}")
-                        .build(fd.getId())
+                        .build(created.getId())
         ).body(fd);
     }
 
