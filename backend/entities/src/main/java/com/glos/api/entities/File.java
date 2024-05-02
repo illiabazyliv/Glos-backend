@@ -43,7 +43,7 @@ public class File
 
     @Column(name = "display_full_name", length = 255)
     private String displayFullName;
-    @ManyToMany
+    @ManyToOne
     @JoinColumn(name = "repository_id", foreignKey = @ForeignKey(name = "fk_files_repositories_id"))
     private Repository repository;
 
