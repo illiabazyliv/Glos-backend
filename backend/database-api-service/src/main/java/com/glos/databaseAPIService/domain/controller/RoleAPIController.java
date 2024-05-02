@@ -54,7 +54,7 @@ public class RoleAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("name/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Role> getRoleByName(@PathVariable String name)
     {
         return ResponseEntity.of(roleService.findByName(name));
