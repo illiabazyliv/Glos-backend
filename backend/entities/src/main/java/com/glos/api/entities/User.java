@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -47,19 +48,20 @@ public class User
     private LocalDateTime birthdate;
 
     @Column(name = "is_account_non_expired", nullable = false, columnDefinition="boolean default true")
-    private Boolean is_account_non_expired;
+    private Boolean is_account_non_expired = true;
 
     @Column(name = "is_account_non_locked", nullable = false, columnDefinition = "boolean default true")
-    private Boolean is_account_non_locked;
+    private Boolean is_account_non_locked = true;
 
     @Column(name = "is_credentials_non_expired", nullable = false, columnDefinition = "boolean default true")
-    private Boolean is_credentials_non_expired;
+    private Boolean is_credentials_non_expired = true;
 
     @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
-    private Boolean is_enabled;
+    private Boolean is_enabled = true;
 
-    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default true")
-    private Boolean is_deleted;
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private Boolean is_deleted = false;
+
 
     @OneToMany(mappedBy = "owner")
     private List<Group> groups;
@@ -232,5 +234,58 @@ public class User
         this.is_deleted = is_deleted;
         this.groups = groups;
         this.roles = roles;
+    }
+    public User() {
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User that = (User) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(username, that.username) &&
+                Objects.equals(password_hash, that.password_hash) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(phone_number, that.phone_number) &&
+                Objects.equals(gender, that.gender) &&
+                Objects.equals(first_name, that.first_name) &&
+                Objects.equals(last_name, that.last_name) &&
+                Objects.equals(birthdate, that.birthdate) &&
+                Objects.equals(is_account_non_expired, that.is_account_non_expired) &&
+                Objects.equals(is_account_non_locked, that.is_account_non_locked) &&
+                Objects.equals(is_credentials_non_expired, that.is_credentials_non_expired) &&
+                Objects.equals(is_enabled, that.is_enabled) &&
+                Objects.equals(is_deleted, that.is_deleted) &&
+                Objects.equals(groups, that.groups) &&
+                Objects.equals(roles, that.roles);
+    }
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, username, password_hash, email, phone_number, gender, first_name, last_name, birthdate, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled, is_deleted, groups, roles);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password_hash='" + password_hash + '\'' +
+                ", email='" + email + '\'' +
+                ", phone_number='" + phone_number + '\'' +
+                ", gender='" + gender + '\'' +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", birthdate=" + birthdate + '\'' +
+                ", is_account_non_expired=" + is_account_non_expired + '\'' +
+                ", is_account_non_locked=" + is_account_non_locked + '\'' +
+                ", is_credentials_non_expired=" + is_credentials_non_expired + '\'' +
+                ", is_enabled=" + is_enabled + '\'' +
+                ", is_deleted=" + is_deleted + '\'' +
+                ", groups=" + groups +
+                ", roles=" + roles +
+                '}';
     }
 }
