@@ -1,8 +1,15 @@
 import { connect } from 'react-redux';
 import { updateUser } from '../../store/thunks/authThunks';
 import Loader from '../../components/Loader/Loader';
+import GroupList from '../../components/GroupList/GroupList';
+import { loadGroups } from '../../store/thunks/groupThunks';
+import { useEffect } from 'react';
 
-function GroupsPage({isLoading, user, updateUser}) {
+function GroupsPage({isLoading, groups, errors, loadGroups}) {
+    useEffect(() => {
+        loadGroups();
+    }, []);
+
     if(isLoading) {
         return <Loader/>
     }
@@ -16,19 +23,21 @@ function GroupsPage({isLoading, user, updateUser}) {
                     <span>Add new group</span>
                 </a>
             </div>
+            <GroupList groups={groups} errors={errors}/>
         </div>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
-        user: state.authReducer.user,
-        isLoading: state.authReducer.isLoading,
+        groups: state.groupReducer.groups,
+        errors: state.groupReducer.errors,
+        isLoading: state.groupReducer.isLoading,
     }
 }
 
 const mapDispatchToProps = {
-    updateUser
+    loadGroups
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)((GroupsPage));

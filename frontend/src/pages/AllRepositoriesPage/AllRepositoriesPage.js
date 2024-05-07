@@ -2,45 +2,31 @@ import { connect } from 'react-redux';
 import { updateUser } from '../../store/thunks/authThunks';
 import Loader from '../../components/Loader/Loader';
 import SortDropdown from '../../components/SortDropdown/SortDropdown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RepositoryList from '../../components/RepositoryList/RepositoryList';
+import { loadLatestRepositories } from '../../store/thunks/repositoryThunks';
 
-function AllRepositoriesPage({ isLoading, user, updateUser }) {
+function AllRepositoriesPage({ loadLatestRepositories, isLoading, repositories, errors }) {
+    const PAGE_SIZE = 10;
+
     const sortByOptions = [
         { name: 'By name A to Z', value: 'displayFilename,asc' },
         { name: 'By name Z to A', value: 'displayFilename,desc' },
     ];
-
-    const repositories = {   
-        content : [
-            {
-                "displayPath" : "/",
-                "displayname" : "re pos1",
-                "displayFullName" : "/repos1",
-                "description" : "some description1",
-                "owner" : "username1",
-                "access_types" : ["protected_rw", "public_r"]
-            },
-            {
-                "displayPath" : "/",
-                "displayname" : "repos2",
-                "displayFullName" : "/repos2",
-                "description" : "some description2",
-                "owner" : "username1",
-                "access_types" : ["protected_rw", "public_r"]
-            }
-        ],
-        "page": 1,
-        "size": 10,
-        "sort": "username,acs",
-        "totalSize": 15
-    }
 
     const [selectedOption, setSelectedOption] = useState(sortByOptions[0]);
 
     const onSortChange = (newOption) => {
         setSelectedOption(newOption);
         // send request to resort files
+    }
+
+    useEffect(() => {
+        loadLatestRepositories(1, PAGE_SIZE);
+    }, []);
+
+    const onPageChange = (page) => {
+        loadLatestRepositories(page, PAGE_SIZE);
     }
 
     if (isLoading) {
@@ -57,20 +43,21 @@ function AllRepositoriesPage({ isLoading, user, updateUser }) {
                 </div>
             </div>
 
-            <RepositoryList repositories={repositories.content}/>
+            <RepositoryList repositories={repositories} errors={errors} onPageChange={onPageChange}/>
         </div>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
-        user: state.authReducer.user,
-        isLoading: state.authReducer.isLoading,
+        repositories: state.repositoryReducer.repositories,
+        errors: state.repositoryReducer.errors,
+        isLoading: state.repositoryReducer.isLoading,
     }
 }
 
 const mapDispatchToProps = {
-    updateUser
+    loadLatestRepositories
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)((AllRepositoriesPage));

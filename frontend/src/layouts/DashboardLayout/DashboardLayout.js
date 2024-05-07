@@ -12,6 +12,9 @@ import DeleteRepositoryModal from '../../components/DeleteRepositoryModal/Delete
 import SearchModal from '../../components/SearchModal/SearchModal';
 import NewFriendModal from '../../components/NewFriendModal/NewFriendModal';
 import NewGroupModal from '../../components/NewGroupModal/NewGroupModal';
+import EditGroupModal from '../../components/EditGroupModal/EditGroupModal';
+import DeleteGroupModal from '../../components/DeleteGroupModal/DeleteGroupModal';
+import GroupUsersModal from '../../components/GroupUsersModal/GroupUsersModal';
 
 function DashboardLayout() {
     const [isSidebarVisible, setSidebarVisible] = useState(window.innerWidth >= 992 ? true : false);
@@ -31,7 +34,9 @@ function DashboardLayout() {
             <DeleteRepositoryModal/>
             <NewFriendModal/>
             <NewGroupModal/>
-            
+            <EditGroupModal/>
+            <DeleteGroupModal/>
+            <GroupUsersModal/>
         </div>
         
     );

@@ -23,3 +23,30 @@ export const setCurrentFileAC = (file) => {
         }
     }
 }
+
+export const setFilesAC = (files) => {
+    return {
+        type: fileActionTypes.SET_FILES,
+        payload: {
+            files
+        }
+    }
+}
+
+export const setErrorsAC = (errors) => {
+    return {
+        type: fileActionTypes.SET_ERRORS,
+        payload: {
+            errors
+        }
+    }
+}
+
+export const deleteFileAC = (filename) => {
+    return {
+        type: fileActionTypes.DELETE,
+        payload: {
+            filename
+        }
+    }
+}

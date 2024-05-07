@@ -1,27 +1,27 @@
 import { connect } from 'react-redux';
-import { deleteFile, setFileAccess } from "../../store/thunks/fileThunks";
-import Loader from '../../components/Loader/Loader';
+import { deleteGroup, setGroupAccess } from "../../store/thunks/groupThunks";
+import Loader from '../Loader/Loader';
 import { createRef } from 'react';
 
-function DeleteFileModal({ deleteFile, isLoading, currentFile }) {
+function DeleteGroupModal({ deleteGroup, isLoading, currentGroup }) {
     const closeBtn = createRef();
 
     const onDelete = () => {
-        deleteFile(currentFile.displayFilename);
+        deleteGroup(currentGroup.groupName);
         closeBtn.current.click();
     }
 
     return (
-        <div id="deleteFileModal" className="modal" tabIndex="-1">
+        <div id="deleteGroupModal" className="modal" tabIndex="-1">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">Delete file</h5>
+                        <h5 className="modal-title">Delete group</h5>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" ref={closeBtn}></button>
                     </div>
                     <div className="modal-body">
                         {
-                            isLoading ? <Loader /> : <p>Are you sure you want to delete this file?</p>
+                            isLoading ? <Loader /> : <p>Are you sure you want to delete this group?</p>
                         }
                     </div>
                     <div className="modal-footer">
@@ -36,13 +36,13 @@ function DeleteFileModal({ deleteFile, isLoading, currentFile }) {
 
 const mapStateToProps = (state) => {
     return {
-        isLoading: state.fileReducer.isLoading,
-        currentFile: state.fileReducer.currentFile,
+        isLoading: state.groupReducer.isLoading,
+        currentGroup: state.groupReducer.currentGroup,
     }
 };
 
 const mapDispatchToProps = {
-    deleteFile
+    deleteGroup
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)((DeleteFileModal));
+export default connect(mapStateToProps, mapDispatchToProps)((DeleteGroupModal));
