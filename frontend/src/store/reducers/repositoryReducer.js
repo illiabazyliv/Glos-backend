@@ -1,7 +1,7 @@
 import { repositoryActionTypes } from '../actionTypes';
 
 let initialState = {
-    repositories: [],
+    repositories: {},
     currentRepository: null,
     newRepository: null,
     isLoading: false,
@@ -39,6 +39,26 @@ const repositoryReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: false,
                 currentRepository: action.payload.repository,
+            }
+        case repositoryActionTypes.SET_REPOSITORIES:
+            return {
+                ...state,
+                isLoading: false,
+                repositories: action.payload.repositories,
+            }
+        case repositoryActionTypes.SET_ERRORS:
+            return {
+                ...state,
+                isLoading: false,
+                errors: action.payload.errors,
+            }
+        case repositoryActionTypes.DELETE:
+            return {
+                ...state,
+                repositories: {...state.repositories, content: state.repositories?.content.filter(item => {
+                    return item.displayname != action.payload.name
+                })},
+                isLoading: false,
             }
         default:
             return state; 

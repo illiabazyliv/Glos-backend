@@ -27,8 +27,6 @@ const App = ({ isInitialized, initialize, user }) => {
         if (!isInitialized) initialize();
     }, []);
 
-    console.log(user)
-
     if (!isInitialized) {
         return <Loader />
     }

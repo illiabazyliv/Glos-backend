@@ -1,7 +1,7 @@
 import { groupActionTypes } from '../actionTypes';
 
 let initialState = {
-    repositories: [],
+    groups: [],
     currentGroup: null,
     newGroup: null,
     isLoading: false,
@@ -15,6 +15,12 @@ const groupReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: true,
             }
+        case groupActionTypes.SET_GROUPS:
+            return {
+                ...state,
+                groups: action.payload.groups,
+                isLoading: false,
+            }
         case groupActionTypes.ADD_NEW:
             return {
                 ...state,
@@ -26,6 +32,28 @@ const groupReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: false,
                 currentGroup: action.payload.group,
+            }
+        case groupActionTypes.DELETE:
+            return {
+                ...state,
+                groups: state.groups?.filter(item => {
+                    return item.groupName != action.payload.groupName
+                }),
+                isLoading: false,
+            }
+        case groupActionTypes.ADD_USER:
+            return {
+                ...state,
+                isLoading: false,
+                currentGroup:  {...state.currentGroup, users: [action.payload.user, ...state.currentGroup.users]},
+            }
+        case groupActionTypes.REMOVE_USER:
+            return {
+                ...state,
+                isLoading: false,
+                currentGroup:  {...state.currentGroup, 
+                    users: state.currentGroup.users.filter(user => user.username != action.payload.username)
+                },
             }
         default:
             return state; 

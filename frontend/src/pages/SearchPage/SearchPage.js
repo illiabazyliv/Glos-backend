@@ -3,11 +3,15 @@ import { updateUser } from '../../store/thunks/authThunks';
 import Loader from '../../components/Loader/Loader';
 import FileList from '../../components/FileList/FileList';
 import SortDropdown from '../../components/SortDropdown/SortDropdown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import RepositoryList from '../../components/RepositoryList/RepositoryList';
 import { useSearchParams } from 'react-router-dom';
+import { searchFiles } from '../../store/thunks/fileThunks';
+import { searchRepositories } from '../../store/thunks/repositoryThunks';
 
-function SearchPage({ isLoading, user, updateUser }) {
+function SearchPage({ files, filesLoading, repositories, repositoriesLoading, fileErrors, 
+    repositoryErrors, searchFiles, searchRepositories }) {
+    const PAGE_SIZE = 10;
     let [searchParams, setSearchParams] = useSearchParams();
 
     const sortByOptions = [
@@ -15,64 +19,29 @@ function SearchPage({ isLoading, user, updateUser }) {
         { name: 'By name Z to A', value: 'displayFilename,desc' },
     ];
 
-    const files = {
-        content: [
-            {
-                "displayPath": "/dir1/dir2",
-                "displayFilename": "file.txt",
-                "displayFullName": "/dir1/dir2/file.txt",
-                "tags": ["tag1", "tag2"]
-            },
-            {
-                "displayPath": "/dir1/dir2",
-                "displayFilename": "file.txt",
-                "displayFullName": "/dir1/dir2/file.txt",
-                "tags": ["tag1", "tag2"]
-            },
-        ],
-        "page": 1,
-        "size": 10,
-        "sort": "displayFilename,acs",
-        "totalSize": 15
-    }
-
-    const repositories = {   
-        content : [
-            {
-                "displayPath" : "/",
-                "displayname" : "re pos1",
-                "displayFullName" : "/repos1",
-                "description" : "some description1",
-                "owner" : "username1",
-                "access_types" : ["protected_rw", "public_r"]
-            },
-            {
-                "displayPath" : "/",
-                "displayname" : "repos2",
-                "displayFullName" : "/repos2",
-                "description" : "some description2",
-                "owner" : "username1",
-                "access_types" : ["protected_rw", "public_r"]
-            }
-        ],
-        "page": 1,
-        "size": 10,
-        "sort": "username,acs",
-        "totalSize": 15
-    }
-
     const [selectedOption, setSelectedOption] = useState(sortByOptions[0]);
+
+    useEffect(() => {
+        searchFiles(searchParams.get('s'), 1, PAGE_SIZE);
+        searchRepositories(searchParams.get('s'), 1, PAGE_SIZE);
+    }, []);
 
     const onSortChange = (newOption) => {
         setSelectedOption(newOption);
         // send request to resort files
     }
 
-    if (isLoading) {
-        return <Loader />
+    const onFilePageChange = (page) => {
+        searchFiles(searchParams.get('s'), page, PAGE_SIZE);
     }
 
-    console.log(searchParams.get('s'))
+    const onRepositoryPageChange = (page) => {
+        searchRepositories(searchParams.get('s'), page, PAGE_SIZE);
+    }
+
+    if (filesLoading || repositoriesLoading) {
+        return <Loader />
+    }
 
     return (
         <div className="inner-page w-100">
@@ -85,23 +54,28 @@ function SearchPage({ isLoading, user, updateUser }) {
             </div>
 
             <h5>Files</h5>
-            <FileList files={files.content}/>
+            <FileList files={files} errors={fileErrors} onPageChange={onFilePageChange}/>
             <hr className='my-3'/>
             <h5>Repositories</h5>
-            <RepositoryList repositories={repositories.content}/>
+            <RepositoryList repositories={repositories} errors={repositoryErrors} onPageChange={onRepositoryPageChange}/>
         </div>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
-        user: state.authReducer.user,
-        isLoading: state.authReducer.isLoading,
+        files: state.fileReducer.files,
+        filesLoading: state.fileReducer.isLoading,
+        repositories: state.repositoryReducer.repositories,
+        repositoriesLoading: state.repositoryReducer.isLoading,
+        fileErrors: state.fileReducer.errors,
+        repositoryErrors: state.repositoryReducer.errors,
     }
 }
 
 const mapDispatchToProps = {
-    updateUser
+    searchFiles,
+    searchRepositories
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)((SearchPage));

@@ -38,3 +38,30 @@ export const setTokenAC = (sharedToken) => {
         }
     }
 }
+
+export const setRepositoriesAC = (repositories) => {
+    return {
+        type: repositoryActionTypes.SET_REPOSITORIES,
+        payload: {
+            repositories
+        }
+    }
+}
+
+export const setErrorsAC = (errors) => {
+    return {
+        type: repositoryActionTypes.SET_ERRORS,
+        payload: {
+            errors
+        }
+    }
+}
+
+export const deleteRepositoryAC = (name) => {
+    return {
+        type: repositoryActionTypes.DELETE,
+        payload: {
+            name
+        }
+    }
+}

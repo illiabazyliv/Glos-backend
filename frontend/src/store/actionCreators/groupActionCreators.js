@@ -23,3 +23,39 @@ export const setCurrentGroupAC = (group) => {
         }
     }
 }
+
+export const deleteGroupAC = (groupName) => {
+    return {
+        type: groupActionTypes.DELETE,
+        payload: {
+            groupName
+        }
+    }
+}
+
+export const setGroupsAC = (groups) => {
+    return {
+        type: groupActionTypes.SET_GROUPS,
+        payload: {
+            groups
+        }
+    }
+}
+
+export const addUserAC = (user) => {
+    return {
+        type: groupActionTypes.ADD_USER,
+        payload: {
+            user
+        }
+    }
+}
+
+export const removeUserAC = (username) => {
+    return {
+        type: groupActionTypes.REMOVE_USER,
+        payload: {
+            username
+        }
+    }
+}

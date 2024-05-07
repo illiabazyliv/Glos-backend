@@ -33,7 +33,8 @@ function RepositoryDropdown({ repositoryId, setCurrentRepository, currentReposit
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteRepositoryModal">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteRepositoryModal"
+                        onClick={() => {setCurrentRepository(repositoryId);}}>
                         <i className="bi bi-trash"></i>
                         <span>Delete</span>
                     </a>

@@ -32,7 +32,8 @@ function FileDropdown({ fileId, setCurrentFile }) {
                 </li>
                 <li><hr className="dropdown-divider" /></li>
                 <li>
-                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteFileModal">
+                    <a className="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteFileModal"
+                        onClick={() => {setCurrentFile(fileId);}}>
                         <i className="bi bi-trash"></i>
                         <span>Delete</span>
                     </a>

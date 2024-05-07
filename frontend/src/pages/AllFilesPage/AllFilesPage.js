@@ -3,40 +3,29 @@ import { updateUser } from '../../store/thunks/authThunks';
 import Loader from '../../components/Loader/Loader';
 import FileList from '../../components/FileList/FileList';
 import SortDropdown from '../../components/SortDropdown/SortDropdown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { loadLatestFiles } from '../../store/thunks/fileThunks';
 
-function AllFilesPage({ isLoading, user, updateUser }) {
+function AllFilesPage({ files, isLoading, loadLatestFiles, errors, }) {
+    const PAGE_SIZE = 10;
     const sortByOptions = [
         { name: 'By name A to Z', value: 'displayFilename,asc' },
         { name: 'By name Z to A', value: 'displayFilename,desc' },
     ];
-
-    const files = {
-        content: [
-            {
-                "displayPath": "/dir1/dir2",
-                "displayFilename": "file.txt",
-                "displayFullName": "/dir1/dir2/file.txt",
-                "tags": ["tag1", "tag2"]
-            },
-            {
-                "displayPath": "/dir1/dir2",
-                "displayFilename": "file.txt",
-                "displayFullName": "/dir1/dir2/file.txt",
-                "tags": ["tag1", "tag2"]
-            },
-        ],
-        "page": 1,
-        "size": 10,
-        "sort": "displayFilename,acs",
-        "totalSize": 15
-    }
 
     const [selectedOption, setSelectedOption] = useState(sortByOptions[0]);
 
     const onSortChange = (newOption) => {
         setSelectedOption(newOption);
         // send request to resort files
+    }
+
+    useEffect(() => {
+        loadLatestFiles(1, PAGE_SIZE);
+    }, []);
+
+    const onPageChange = (page) => {
+        loadLatestFiles(page, PAGE_SIZE);
     }
 
     if (isLoading) {
@@ -53,27 +42,21 @@ function AllFilesPage({ isLoading, user, updateUser }) {
                 </div>
             </div>
 
-            <FileList files={files.content}/>
-
-
-            {/* page content here <br/>
-            username: {user.username} <br/>
-            <button onClick={() => {
-                updateUser()
-            }}>click me</button> */}
+            <FileList files={files} errors={errors} onPageChange={onPageChange}/>
         </div>
     );
 }
 
 const mapStateToProps = (state) => {
     return {
-        user: state.authReducer.user,
-        isLoading: state.authReducer.isLoading,
+        isLoading: state.fileReducer.isLoading,
+        files: state.fileReducer.files,
+        errors: state.fileReducer.errors,
     }
 }
 
 const mapDispatchToProps = {
-    updateUser
+    loadLatestFiles
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)((AllFilesPage));
