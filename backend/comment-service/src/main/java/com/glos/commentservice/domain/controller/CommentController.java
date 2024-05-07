@@ -29,8 +29,8 @@ public class CommentController
     public ResponseEntity<CommentDTO> createComment(@RequestBody Comment comment)
     {
        Comment created = externalCommentApi.create(comment).getBody();
-        UserDTO userDTO = new UserDTO(created.getAuthor().getId(), created.getAuthor().getUsername());
-       CommentDTO commentDTO = new CommentDTO(comment.getId(), userDTO, created.getText(), created.getDate());
-        return ResponseEntity.ok(commentDTO);
+       UserDTO userDTO = new UserDTO(created.getAuthor().getId());
+       CommentDTO commentDTO = new CommentDTO(created.getId(), userDTO, created.getText(), created.getDate());
+       return ResponseEntity.ok(commentDTO);
     }
 }
