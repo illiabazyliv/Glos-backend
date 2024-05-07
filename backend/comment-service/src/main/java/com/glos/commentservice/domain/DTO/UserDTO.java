@@ -27,4 +27,9 @@ public class UserDTO
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public UserDTO(Long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
 }

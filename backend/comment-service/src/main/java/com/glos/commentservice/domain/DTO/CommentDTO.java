@@ -45,4 +45,11 @@ public class CommentDTO
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    public CommentDTO(Long id, UserDTO author, String text, LocalDateTime date) {
+        this.id = id;
+        this.author = author;
+        this.text = text;
+        this.date = date;
+    }
 }
