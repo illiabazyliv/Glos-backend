@@ -1,17 +1,18 @@
 package com.glos.api.userservice.controllers;
 
 import com.glos.api.entities.Group;
+import com.glos.api.entities.User;
 import com.glos.api.userservice.client.GroupAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
 import com.glos.api.userservice.utils.MapUtil;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping
@@ -26,19 +27,72 @@ public class GroupController
         this.userAPIClient = userAPIClient;
     }
 
-    @GetMapping("/{username}/groups")
-    public List<Group> getUsersGroups(@PathVariable("username") String username)
+    //crud операції яких немає в api карті
+    @GetMapping("groups/{id}")
+    public ResponseEntity<Group> getGroupById(@PathVariable Long id)
     {
-        return userAPIClient.getUserByUsername(username).getBody().getGroups();
+        return groupAPIClient.getGroupById(id);
+    }
+
+
+    @GetMapping("/groups")
+    public ResponseEntity<List<Group>> getAllGroups()
+    {
+        return groupAPIClient.getAllGroups();
+    }
+
+    @GetMapping("/groups")
+    public ResponseEntity<List<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter)
+    {
+        return groupAPIClient.getGroupsByFilters(filter);
+    }
+
+    //ендпоінтb які є в api карті
+    @GetMapping("/{username}/groups")
+    public ResponseEntity<List<Group>> getUsersGroups(@PathVariable("username") String username)
+    {
+        return ResponseEntity.ok(userAPIClient.getUserByUsername(username).getBody().getGroups());
     }
 
     @GetMapping("/{username}/groups/{groupName}")
-    public ResponseEntity<List<Group>> getUsersGroupByName(@PathVariable("username") String username, @PathVariable("groupName") String groupName)
+    public ResponseEntity<List<Group>> getUsersGroupByName(@PathVariable("username") String username,
+                                                           @PathVariable("groupName") String groupName)
     {
         Group filter = new Group();
         filter.setName(groupName);
         filter.setOwner(userAPIClient.getUserByUsername(username).getBody());
         Map<String, Object> map = MapUtil.mapGroupFilter(filter);
-        return ResponseEntity.ok(groupAPIClient.getGroupsByFilters(map).getBody());
+        return groupAPIClient.getGroupsByFilters(map);
+    }
+
+    @PutMapping("/{username}/group")
+    public ResponseEntity<Group> createGroup(@PathVariable("username") String username,
+                                             @PathVariable("groupName") String groupName,
+                                             @RequestBody Group group)
+    {
+        User owner = userAPIClient.getUserByUsername(username).getBody();
+        Group created = groupAPIClient.createGroup(group).getBody();
+        owner.addGroup(created);
+        userAPIClient.updateUser(owner.getId(), owner);
+        return ResponseEntity.ok(created);
+    }
+
+    @DeleteMapping("/{username}/groups/{groupName}")
+    public ResponseEntity<?> deleteGroup(@PathVariable("username") String username,
+                                         @PathVariable("groupName") String groupName)
+    {
+        User owner = userAPIClient.getUserByUsername(username).getBody();
+        Group group = owner.getGroups().stream().filter((x) -> {return x.getName().equals(groupName);}).findFirst().orElseThrow();
+        return groupAPIClient.deleteGroup(group.getId());
+    }
+
+    @PatchMapping("/{username}/groups/{groupName}")
+    public ResponseEntity<?> updateGroup(@PathVariable("username") String username,
+                                         @PathVariable("groupName") String groupName,
+                                         @RequestBody Group newGroup)
+    {
+        User owner = userAPIClient.getUserByUsername(username).getBody();
+        Group group = owner.getGroups().stream().filter((x) -> {return x.getName().equals(groupName);}).findFirst().orElseThrow();
+        return groupAPIClient.updateGroup(group.getId(), newGroup);
     }
 }

@@ -26,7 +26,7 @@ public interface GroupAPIClient
     ResponseEntity<?> updateGroup(@PathVariable Long id, @RequestBody Group newGroup);
 
     @GetMapping()
-    public ResponseEntity<List<Group>> getAllGroups();
+    ResponseEntity<List<Group>> getAllGroups();
 
     @GetMapping("/filter")
     ResponseEntity<List<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
