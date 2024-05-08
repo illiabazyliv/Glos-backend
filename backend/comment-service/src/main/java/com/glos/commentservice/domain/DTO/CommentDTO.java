@@ -52,4 +52,7 @@ public class CommentDTO
         this.text = text;
         this.date = date;
     }
+
+    public CommentDTO() {
+    }
 }
