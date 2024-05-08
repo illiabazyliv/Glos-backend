@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping
 public class UserController
 {
     private final UserAPIClient userAPIClient;
@@ -69,7 +69,6 @@ public class UserController
     public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber)
     {
         ResponseEntity<User> user = userAPIClient.getUserByPhoneNumber(phoneNumber);
-        System.out.println(user.getStatusCode().is2xxSuccessful());
         return user;
     }
 
@@ -78,5 +77,37 @@ public class UserController
     {
         Map<String, Object> map = MapUtil.mapUserFilter(filter);
         return userAPIClient.getUsersByFilter(map);
+    }
+
+    @PutMapping("/{username}/block")
+    public ResponseEntity<?> blockUser(@PathVariable("username") String username)
+    {
+        User user = userAPIClient.getUserByUsername(username).getBody();
+        user.setIs_account_non_locked(Boolean.FALSE);
+        return userAPIClient.updateUser(user.getId(), user);
+    }
+
+    @PutMapping("/{username}/unblock")
+    public ResponseEntity<?> unblockUser(@PathVariable("username") String username)
+    {
+        User user = userAPIClient.getUserByUsername(username).getBody();
+        user.setIs_account_non_locked(Boolean.TRUE);
+        return userAPIClient.updateUser(user.getId(), user);
+    }
+
+    @PutMapping("/{username}/enable")
+    public ResponseEntity<?> enableUser(@PathVariable("username") String username)
+    {
+        User user = userAPIClient.getUserByUsername(username).getBody();
+        user.setIs_enabled(Boolean.TRUE);
+        return userAPIClient.updateUser(user.getId(), user);
+    }
+
+    @PutMapping("/{username}/disable")
+    public ResponseEntity<?> disableUser(@PathVariable("username") String username)
+    {
+        User user = userAPIClient.getUserByUsername(username).getBody();
+        user.setIs_enabled(Boolean.FALSE);
+        return userAPIClient.updateUser(user.getId(), user);
     }
 }

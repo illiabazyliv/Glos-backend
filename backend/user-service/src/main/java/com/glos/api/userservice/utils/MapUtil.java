@@ -1,5 +1,6 @@
 package com.glos.api.userservice.utils;
 
+import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 
 import java.util.HashMap;
@@ -27,6 +28,17 @@ public class MapUtil
         map.put("is_deleted", filter.getIs_deleted());
         map.put("groups", filter.getGroups());
         map.put("roles", filter.getRoles());
+        return map;
+    }
+
+    public static Map<String, Object> mapGroupFilter(Group filter)
+    {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", filter.getId());
+        map.put("name", filter.getName());
+        map.put("owner", filter.getOwner());
+        map.put("users", filter.getUsers());
+        map.put("accessTypes", filter.getAccessTypes());
         return map;
     }
 }

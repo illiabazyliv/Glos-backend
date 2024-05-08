@@ -48,7 +48,7 @@ public class GroupAPIController
     }
 
     @PostMapping
-    public ResponseEntity<?> createGroup(@RequestBody Group group, UriComponentsBuilder uriBuilder)
+    public ResponseEntity<GroupDTO> createGroup(@RequestBody Group group, UriComponentsBuilder uriBuilder)
     {
         Group g = groupService.create(group);
         GroupDTO groupDTO = new GroupDTO();

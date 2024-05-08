@@ -24,17 +24,19 @@ public interface UserAPIClient
     ResponseEntity<?> delete(@PathVariable Long id);
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser);
+    ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser);
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username);
+    ResponseEntity<User> getUserByUsername(@PathVariable String username);
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email);
+    ResponseEntity<User> getUserByEmail(@PathVariable String email);
 
     @GetMapping("/phone-number/{phoneNumber}")
-    public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber);
+    ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber);
 
     @GetMapping
-    public List<User> getUsersByFilter(@SpringQueryMap Map<String, Object> filter);
+    List<User> getUsersByFilter(@SpringQueryMap Map<String, Object> filter);
+
+
 }
