@@ -29,5 +29,5 @@ public interface GroupAPIClient
     ResponseEntity<List<Group>> getAllGroups();
 
     @GetMapping("/filter")
-    ResponseEntity<Stream<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
+    ResponseEntity<List<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
 }

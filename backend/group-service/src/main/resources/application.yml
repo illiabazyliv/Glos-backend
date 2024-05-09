@@ -16,7 +16,5 @@ spring:
     openfeign:
       client:
         config:
-          user:
-            url: http://localhost:8080/api/v1/users
           group:
             url: http://localhost:8080/api/v1/groups

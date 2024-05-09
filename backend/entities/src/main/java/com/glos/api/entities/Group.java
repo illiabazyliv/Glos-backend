@@ -2,6 +2,7 @@ package com.glos.api.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -77,4 +78,21 @@ public class Group
         this.accessTypes = accessTypes;
     }
 
+    public Group()
+    {
+        this.users = new ArrayList<>();
+        this.accessTypes = new ArrayList<>();
+    }
+
+    public Group(Long id,
+                 String name,
+                 User owner,
+                 List<User> users,
+                 List<AccessType> accessTypes) {
+        this.id = id;
+        this.name = name;
+        this.owner = owner;
+        this.users = users;
+        this.accessTypes = accessTypes;
+    }
 }

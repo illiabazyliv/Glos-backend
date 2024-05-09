@@ -3,6 +3,7 @@ package com.glos.api.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -235,7 +236,9 @@ public class User
         this.groups = groups;
         this.roles = roles;
     }
-    public User() {
+    public User()
+    {
+        this.groups = new ArrayList<>();
     }
 
     @Override

@@ -3,16 +3,16 @@ package com.glos.groupservice.controllers;
 import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 import com.glos.groupservice.client.GroupAPIClient;
-import com.glos.groupservice.client.UserAPIClient;
+import com.glos.groupservice.responseDTO.GroupDTO;
+import com.glos.groupservice.responseDTO.UserDTO;
+import com.glos.groupservice.responseMappers.GroupDTOMapper;
+import com.glos.groupservice.responseMappers.UserDTOMapper;
 import com.glos.groupservice.utils.MapUtils;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 @RestController
@@ -20,72 +20,101 @@ import java.util.stream.Stream;
 public class GroupController
 {
     private final GroupAPIClient groupAPIClient;
-    private final UserAPIClient userAPIClient;
+    private final UserDTOMapper userDTOMapper;
+    private final GroupDTOMapper groupDTOMapper;
 
 
-    public GroupController(GroupAPIClient groupAPIClient, UserAPIClient userAPIClient) {
+    public GroupController(GroupAPIClient groupAPIClient,
+                           UserDTOMapper userDTOMapper,
+                           GroupDTOMapper groupDTOMapper) {
         this.groupAPIClient = groupAPIClient;
-        this.userAPIClient = userAPIClient;
+        this.userDTOMapper = userDTOMapper;
+        this.groupDTOMapper = groupDTOMapper;
     }
-
-    //crud операції яких немає в api карті
     @GetMapping("/users/groups/{id}")
-    public ResponseEntity<Group> getGroupById(@PathVariable Long id)
+    public ResponseEntity<GroupDTO> getGroupById(@PathVariable Long id)
     {
-        return groupAPIClient.getGroupById(id);
+        Group group = groupAPIClient.getGroupById(id).getBody();
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO = transferEntityDTO(group, groupDTO);
+        return ResponseEntity.ok(groupDTO);
     }
 
 
     @GetMapping("/users/groups/all")
-    public ResponseEntity<List<Group>> getAllGroups()
+    public ResponseEntity<List<GroupDTO>> getAllGroups()
     {
-        return groupAPIClient.getAllGroups();
+        List<Group> groups = groupAPIClient.getAllGroups().getBody();
+        List<GroupDTO> groupDTOS = groups.stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList();
+        return ResponseEntity.ok(groupDTOS);
     }
 
     @GetMapping("/users/groups")
-    public ResponseEntity<Stream<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter)
+    public ResponseEntity<List<GroupDTO>> getGroupsByFilters(@ModelAttribute Group filter)
     {
-        return groupAPIClient.getGroupsByFilters(filter);
+        Map<String, Object> map = MapUtils.mapGroupFilter(filter);
+        ResponseEntity<List<Group>> groups = groupAPIClient.getGroupsByFilters(map);
+        System.out.println(groups.getStatusCode());
+        List<GroupDTO> groupDTOS = groups.getBody().stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList();
+        return ResponseEntity.ok(groupDTOS);
     }
 
-    //ендпоінти які є в api карті
     @GetMapping("/users/{username}/groups")
-    public ResponseEntity<List<Group>> getUsersGroups(@PathVariable("username") String username)
+    public ResponseEntity<List<GroupDTO>> getUsersGroups(@PathVariable("username") String username)
     {
-        return ResponseEntity.ok(userAPIClient.getUserByUsername(username).getBody().getGroups());
+        User user = new User();
+        user.setUsername(username);
+        Group filter = new Group();
+        filter.setOwner(user);
+        Map<String, Object> map = MapUtils.mapGroupFilter(filter);
+        List<Group> groups = groupAPIClient.getGroupsByFilters(map).getBody();
+        List<GroupDTO> groupDTOS = groups.stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList();
+        return ResponseEntity.ok(groupDTOS);
     }
 
     @GetMapping("/users/{username}/groups/{groupName}")
-    public ResponseEntity<Group> getUsersGroupByName(@PathVariable("username") String username,
-                                                           @PathVariable("groupName") String groupName)
+    public ResponseEntity<GroupDTO> getUsersGroupByName(@PathVariable("username") String username,
+                                                     @PathVariable("groupName") String groupName)
     {
         Group filter = new Group();
         filter.setName(groupName);
-        filter.setOwner(userAPIClient.getUserByUsername(username).getBody());
-
+        User user = new User();
+        user.setUsername(username);
+        filter.setOwner(user);
         Map<String, Object> map = MapUtils.mapGroupFilter(filter);
-        return ResponseEntity.of(groupAPIClient.getGroupsByFilters(map).getBody().findFirst());
+
+        Group group = groupAPIClient.getGroupsByFilters(map).getBody().get(0);
+
+        return ResponseEntity.ok(transferEntityDTO(group, new GroupDTO()));
     }
 
     @PutMapping("/users/{username}/group/{groupName}")
-    public ResponseEntity<Group> createGroup(@PathVariable("username") String username,
+    public ResponseEntity<GroupDTO> createGroup(@PathVariable("username") String username,
                                              @PathVariable("groupName") String groupName,
                                              @RequestBody Group group)
     {
-        group.setName(groupName);
-        User owner = userAPIClient.getUserByUsername(username).getBody();
+        if (group.getName() == null)
+        {
+            group.setName(groupName);
+        }
+        User user = new User();
+        user.setUsername(username);
+        user.addGroup(group);
         Group created = groupAPIClient.createGroup(group).getBody();
-        owner.addGroup(created);
-        userAPIClient.updateUser(owner.getId(), owner);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.ok(transferEntityDTO(created, new GroupDTO()));
     }
 
     @DeleteMapping("/users/{username}/groups/{groupName}")
     public ResponseEntity<?> deleteGroup(@PathVariable("username") String username,
                                          @PathVariable("groupName") String groupName)
     {
-        User owner = userAPIClient.getUserByUsername(username).getBody();
-        Group group = owner.getGroups().stream().filter((x) -> {return x.getName().equals(groupName);}).findFirst().orElseThrow();
+        Group filter = new Group();
+        filter.setName(groupName);
+        User user = new User();
+        user.setUsername(username);
+        filter.setOwner(user);
+        Map<String, Object> map = MapUtils.mapGroupFilter(filter);
+        Group group = groupAPIClient.getGroupsByFilters(map).getBody().get(0);
         return groupAPIClient.deleteGroup(group.getId());
     }
 
@@ -94,8 +123,24 @@ public class GroupController
                                          @PathVariable("groupName") String groupName,
                                          @RequestBody Group newGroup)
     {
-        User owner = userAPIClient.getUserByUsername(username).getBody();
-        Group group = owner.getGroups().stream().filter((x) -> {return x.getName().equals(groupName);}).findFirst().orElseThrow();
+
+
+        Group filter = new Group();
+        filter.setName(groupName);
+        User user = new User();
+        user.setUsername(username);
+        filter.setOwner(user);
+        Map<String, Object> map = MapUtils.mapGroupFilter(filter);
+        Group group = groupAPIClient.getGroupsByFilters(map).getBody().get(0);
         return groupAPIClient.updateGroup(group.getId(), newGroup);
+    }
+
+    GroupDTO transferEntityDTO(Group source, GroupDTO destination)
+    {
+        UserDTO userDTO = new UserDTO();
+        userDTOMapper.transferEntityDto(source.getOwner(), userDTO);
+        groupDTOMapper.transferEntityDto(source, destination);
+        destination.setOwner(userDTO);
+        return destination;
     }
 }
