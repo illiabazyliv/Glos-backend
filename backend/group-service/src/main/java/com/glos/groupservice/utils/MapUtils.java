@@ -8,36 +8,70 @@ import java.util.Map;
 
 public class MapUtils
 {
-    public static Map<String, Object> mapUserFilter(User filter)
+    public static Map<String, Object> mapUserFilter(User filter, String name)
     {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", filter.getId());
-        map.put("username", filter.getUsername());
-        map.put("password_hash", filter.getPassword_hash());
-        map.put("email", filter.getEmail());
-        map.put("phone_number", filter.getPhone_number());
-        map.put("gender", filter.getGender());
-        map.put("first_name", filter.getFirst_name());
-        map.put("last_name", filter.getLast_name());
-        map.put("birthdate", filter.getBirthdate());
-        map.put("is_account_non_expired", filter.getIs_account_non_expired());
-        map.put("is_account_non_locked", filter.getIs_account_non_locked());
-        map.put("is_credentials_non_expired", filter.getIs_credentials_non_expired());
-        map.put("is_enabled", filter.getIs_enabled());
-        map.put("is_deleted", filter.getIs_deleted());
-        map.put("groups", filter.getGroups());
-        map.put("roles", filter.getRoles());
+        if (name == null) {
+            map.put("id", filter.getId());
+            map.put("username", filter.getUsername());
+            map.put("password_hash", filter.getPassword_hash());
+            map.put("email", filter.getEmail());
+            map.put("phone_number", filter.getPhone_number());
+            map.put("gender", filter.getGender());
+            map.put("first_name", filter.getFirst_name());
+            map.put("last_name", filter.getLast_name());
+            map.put("birthdate", filter.getBirthdate());
+            map.put("is_account_non_expired", filter.getIs_account_non_expired());
+            map.put("is_account_non_locked", filter.getIs_account_non_locked());
+            map.put("is_credentials_non_expired", filter.getIs_credentials_non_expired());
+            map.put("is_enabled", filter.getIs_enabled());
+            map.put("is_deleted", filter.getIs_deleted());
+            //map.put("groups", filter.getGroups());
+            //map.put("roles", filter.getRoles());
+        } else {
+            map.put(name+".id", filter.getId());
+            map.put(name+".username", filter.getUsername());
+            map.put(name+".password_hash", filter.getPassword_hash());
+            map.put(name+".email", filter.getEmail());
+            map.put(name+".phone_number", filter.getPhone_number());
+            map.put(name+".gender", filter.getGender());
+            map.put(name+".first_name", filter.getFirst_name());
+            map.put(name+".last_name", filter.getLast_name());
+            map.put(name+".birthdate", filter.getBirthdate());
+            map.put(name+".is_account_non_expired", filter.getIs_account_non_expired());
+            map.put(name+".is_account_non_locked", filter.getIs_account_non_locked());
+            map.put(name+".is_credentials_non_expired", filter.getIs_credentials_non_expired());
+            map.put(name+".is_enabled", filter.getIs_enabled());
+            map.put(name+".is_deleted", filter.getIs_deleted());
+            //map.put(name+".groups", filter.getGroups());
+            //map.put(name+".roles", filter.getRoles());
+        }
+
+        map.entrySet().removeIf((x) -> x.getValue() == null);
+
         return map;
     }
 
     public static Map<String, Object> mapGroupFilter(Group filter)
     {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", filter.getId());
-        map.put("name", filter.getName());
-        map.put("owner", filter.getOwner());
-        map.put("users", filter.getUsers());
-        map.put("accessTypes", filter.getAccessTypes());
+
+        if (filter.getId() != null) {
+            map.put("id", filter.getId());
+        }
+        if (filter.getName() != null) {
+            map.put("name", filter.getName());
+        }
+        if (filter.getAccessTypes() != null && !filter.getAccessTypes().isEmpty()) {
+            map.put("accessTypes", filter.getAccessTypes());
+        }
+        if (filter.getUsers() != null && !filter.getUsers().isEmpty()) {
+            map.put("users", filter.getUsers());
+        }
+        if (filter.getOwner() != null) {
+            map.putAll(mapUserFilter(filter.getOwner(), "owner"));
+        }
+
         return map;
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
@@ -83,9 +84,11 @@ public class GroupController
         filter.setOwner(user);
         Map<String, Object> map = MapUtils.mapGroupFilter(filter);
 
-        Group group = groupAPIClient.getGroupsByFilters(map).getBody().get(0);
+        Optional<GroupDTO> groupOpt = groupAPIClient.getGroupsByFilters(map).getBody().stream()
+                .map(x -> transferEntityDTO(x, new GroupDTO()))
+                .findFirst();
 
-        return ResponseEntity.ok(transferEntityDTO(group, new GroupDTO()));
+        return ResponseEntity.of(groupOpt);
     }
 
     @PutMapping("/users/{username}/group/{groupName}")
