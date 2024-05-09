@@ -78,7 +78,7 @@ public class RepositoryAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("owner-id/{ownerId}")
+    @GetMapping("/owner-id/{ownerId}")
     public ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId)
     {
         List<Repository> repositories = repositoryService.findAllByOwnerId(ownerId);
@@ -88,7 +88,7 @@ public class RepositoryAPIController
     }
 
 
-    @GetMapping("root-full-name/{rootFullName}")
+    @GetMapping("/root-full-name/{rootFullName}")
     public ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName)
     {
         final String ordinalRootFullName = PathUtils.originalPath(rootFullName);
