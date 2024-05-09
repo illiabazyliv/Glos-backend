@@ -29,33 +29,33 @@ public class GroupController
     }
 
     //crud операції яких немає в api карті
-    @GetMapping("/groups/{id}")
+    @GetMapping("/users/groups/{id}")
     public ResponseEntity<Group> getGroupById(@PathVariable Long id)
     {
         return groupAPIClient.getGroupById(id);
     }
 
 
-    @GetMapping("/groups/all")
+    @GetMapping("/users/groups/all")
     public ResponseEntity<List<Group>> getAllGroups()
     {
         return groupAPIClient.getAllGroups();
     }
 
-    @GetMapping("/groups")
+    @GetMapping("/users/groups")
     public ResponseEntity<Stream<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter)
     {
         return groupAPIClient.getGroupsByFilters(filter);
     }
 
     //ендпоінти які є в api карті
-    @GetMapping("/{username}/groups")
+    @GetMapping("/users/{username}/groups")
     public ResponseEntity<List<Group>> getUsersGroups(@PathVariable("username") String username)
     {
         return ResponseEntity.ok(userAPIClient.getUserByUsername(username).getBody().getGroups());
     }
 
-    @GetMapping("/{username}/groups/{groupName}")
+    @GetMapping("/users/{username}/groups/{groupName}")
     public ResponseEntity<Group> getUsersGroupByName(@PathVariable("username") String username,
                                                            @PathVariable("groupName") String groupName)
     {
@@ -67,7 +67,7 @@ public class GroupController
         return ResponseEntity.of(groupAPIClient.getGroupsByFilters(map).getBody().findFirst());
     }
 
-    @PutMapping("/{username}/group/{groupName}")
+    @PutMapping("/users/{username}/group/{groupName}")
     public ResponseEntity<Group> createGroup(@PathVariable("username") String username,
                                              @PathVariable("groupName") String groupName,
                                              @RequestBody Group group)
@@ -80,7 +80,7 @@ public class GroupController
         return ResponseEntity.ok(created);
     }
 
-    @DeleteMapping("/{username}/groups/{groupName}")
+    @DeleteMapping("/users/{username}/groups/{groupName}")
     public ResponseEntity<?> deleteGroup(@PathVariable("username") String username,
                                          @PathVariable("groupName") String groupName)
     {
@@ -89,7 +89,7 @@ public class GroupController
         return groupAPIClient.deleteGroup(group.getId());
     }
 
-    @PatchMapping("/{username}/groups/{groupName}")
+    @PatchMapping("/users/{username}/groups/{groupName}")
     public ResponseEntity<?> updateGroup(@PathVariable("username") String username,
                                          @PathVariable("groupName") String groupName,
                                          @RequestBody Group newGroup)
