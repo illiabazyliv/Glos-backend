@@ -111,3 +111,31 @@ public class UserController
         return userAPIClient.updateUser(user.getId(), user);
     }
 }
+
+/*
+GET /users
+POST /users
+GET /users/{id}
+DELETE /users/{id}
+PUT /users/{id}
+
+GET /users/username/{username}
+GET /users/email/{email}
+GET /users/phone-number/{phoneNumber}
+PUT /users/{username}/block
+PUT /users/{username}/unblock
+PUT /users/{username}/enable
+PUT /users/{username}/disable
+
+/////////////////////////////////////////
+
+GET /users/groups
+GET /users/groups/all
+
+GET /users/groups/{id}
+GET /users/{username}/groups
+GET /users/{username}/groups/{groupName}
+PUT /users/{username}/group/{groupName}
+DELETE /users/{username}/groups/{groupName}
+PATCH /users/{username}/groups/{groupName}
+* */

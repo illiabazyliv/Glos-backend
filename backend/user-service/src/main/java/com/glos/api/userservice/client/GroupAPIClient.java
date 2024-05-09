@@ -9,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @FeignClient(name = "group")
 public interface GroupAPIClient
@@ -29,5 +30,5 @@ public interface GroupAPIClient
     ResponseEntity<List<Group>> getAllGroups();
 
     @GetMapping("/filter")
-    ResponseEntity<List<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
+    ResponseEntity<Stream<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
 }
