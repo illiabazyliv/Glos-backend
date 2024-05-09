@@ -14,3 +14,12 @@ eureka:
 spring:
   application:
     name: ${APPLICATION_NAME:auth-service}
+  cloud:
+    openfeign:
+      client:
+        user:
+          url: http://localhost:9005/api/v1
+
+jwt:
+  secret:
+    key: "583773d0820a96e7b12c0bc72b0e132224552a82ad95953778bfacfa7d5a4f1a"
