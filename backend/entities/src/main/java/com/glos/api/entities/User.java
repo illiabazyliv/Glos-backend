@@ -288,4 +288,9 @@ public class User
                 ", roles=" + roles +
                 '}';
     }
+
+    public void addGroup(Group group)
+    {
+        this.groups.add(group);
+    }
 }
