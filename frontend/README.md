@@ -1,0 +1,1 @@
+# Global Storage Project Frontend
