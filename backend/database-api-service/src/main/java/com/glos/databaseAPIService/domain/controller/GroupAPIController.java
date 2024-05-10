@@ -80,7 +80,7 @@ public class GroupAPIController
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<GroupDTO>> getGroupsByFilters(@ModelAttribute GroupFilter filter)
+    public ResponseEntity<List<GroupDTO>> getGroupsByFilters(@ModelAttribute Group filter)
     {
         List<Group> groups = groupService.getAll(filter);
         return ResponseEntity.ok(groups.stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList());
