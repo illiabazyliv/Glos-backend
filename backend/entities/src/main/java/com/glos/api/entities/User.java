@@ -2,6 +2,7 @@ package com.glos.api.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +46,7 @@ public class User
     private String last_name;
 
     @Column(name = "birthdate")
-    private LocalDateTime birthdate;
+    private LocalDate birthdate;
 
     @Column(name = "is_account_non_expired", nullable = false, columnDefinition="boolean default true")
     private Boolean is_account_non_expired = true;
@@ -138,11 +139,11 @@ public class User
         this.last_name = last_name;
     }
 
-    public LocalDateTime getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(LocalDateTime birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -210,7 +211,7 @@ public class User
                 String gender,
                 String first_name,
                 String last_name,
-                LocalDateTime birthdate,
+                LocalDate birthdate,
                 Boolean is_account_non_expired,
                 Boolean is_account_non_locked,
                 Boolean is_credentials_non_expired,

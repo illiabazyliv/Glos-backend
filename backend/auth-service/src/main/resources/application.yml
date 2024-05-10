@@ -17,8 +17,11 @@ spring:
   cloud:
     openfeign:
       client:
-        user:
-          url: http://localhost:9005/api/v1
+        config:
+#          user:
+#            url: http://localhost:9005/api/v1
+          user-database:
+            url: http://localhost:8080/api/v1
 
 jwt:
   secret:
