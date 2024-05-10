@@ -1,0 +1,1 @@
+# Global Storage API 0.1
