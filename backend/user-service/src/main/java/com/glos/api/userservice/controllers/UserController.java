@@ -1,5 +1,6 @@
 package com.glos.api.userservice.controllers;
 
+import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 import com.glos.api.userservice.client.UserAPIClient;
 import com.glos.api.userservice.responseDTO.UserDTO;
@@ -37,6 +38,8 @@ public class UserController
     @PostMapping
     public ResponseEntity<User> create(@RequestBody User user)
     {
+        Group friends = new Group();
+        user.getGroups().add(friends);
         return userAPIClient.create(user);
     }
 

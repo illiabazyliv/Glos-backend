@@ -55,7 +55,6 @@ public class GroupController
     {
         Map<String, Object> map = MapUtils.mapGroupFilter(filter);
         ResponseEntity<List<Group>> groups = groupAPIClient.getGroupsByFilters(map);
-        System.out.println(groups.getStatusCode());
         List<GroupDTO> groupDTOS = groups.getBody().stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList();
         return ResponseEntity.ok(groupDTOS);
     }
