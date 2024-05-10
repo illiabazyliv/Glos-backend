@@ -2,31 +2,28 @@ package com.glos.api.userservice.controllers;
 
 import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
+import com.glos.api.userservice.client.GroupAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
-import com.glos.api.userservice.responseDTO.UserDTO;
 import com.glos.api.userservice.utils.MapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
 public class UserController
 {
     private final UserAPIClient userAPIClient;
+    private final GroupAPIClient groupAPIClient;
 
 
     @Autowired
-    public UserController(UserAPIClient userAPIClient) {
+    public UserController(UserAPIClient userAPIClient, GroupAPIClient groupAPIClient) {
         this.userAPIClient = userAPIClient;
+        this.groupAPIClient = groupAPIClient;
     }
 
     @GetMapping("/{id}")
@@ -38,9 +35,28 @@ public class UserController
     @PostMapping
     public ResponseEntity<User> create(@RequestBody User user)
     {
-        Group friends = new Group();
-        user.getGroups().add(friends);
-        return userAPIClient.create(user);
+
+        ResponseEntity<User> userResponseEntity = userAPIClient.create(user);
+
+        if (userResponseEntity.getStatusCode().is2xxSuccessful())
+        {
+            Group friends = new Group();
+            friends.setName("friends");
+            User owner = new User();
+            owner.setId(userResponseEntity.getBody().getId());
+            friends.setOwner(owner);
+            ResponseEntity<Group> groupResponseEntity = groupAPIClient.createGroup(userResponseEntity.getBody().getUsername(), "friends", friends);
+        }
+        return userResponseEntity;
+    }
+
+    @PutMapping("/{username}/groups/{groupName}")
+    public ResponseEntity<?> createGroup(@PathVariable("username") String username,
+                                                @PathVariable("groupName") String groupName,
+                                                @RequestBody Group group)
+    {
+
+        return groupAPIClient.createGroup(username, groupName, group);
     }
 
     @DeleteMapping("/{id}")

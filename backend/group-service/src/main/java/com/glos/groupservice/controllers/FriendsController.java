@@ -3,6 +3,7 @@ package com.glos.groupservice.controllers;
 import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 import com.glos.groupservice.client.GroupAPIClient;
+import com.glos.groupservice.exeptions.UserNotFoundException;
 import com.glos.groupservice.mappers.AbstractMapper;
 import com.glos.groupservice.mappers.AutoMapper;
 import com.glos.groupservice.responseDTO.GroupDTO;
@@ -48,7 +49,7 @@ public class FriendsController
         filter.setOwner(user);
         Map<String, Object> map = MapUtils.mapGroupFilter(filter);
         Stream<Group> groups = groupAPIClient.getGroupsByFilters(map).getBody().stream();
-        return ResponseEntity.ok(groups.map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList().getFirst());
+        return ResponseEntity.ok(groups.map((x) -> {return transferEntityDTO(x, new GroupDTO());}).findFirst().orElseThrow(() -> new UserNotFoundException("Item is not found")));
     }
 
     @PutMapping("/users/{username}/friends/{friendUsername}")

@@ -90,7 +90,7 @@ public class GroupController
         return ResponseEntity.of(groupOpt);
     }
 
-    @PutMapping("/users/{username}/group/{groupName}")
+    @PutMapping("/users/{username}/groups/{groupName}")
     public ResponseEntity<GroupDTO> createGroup(@PathVariable("username") String username,
                                              @PathVariable("groupName") String groupName,
                                              @RequestBody Group group)
