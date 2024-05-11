@@ -88,10 +88,9 @@ public class GroupAPIController
 
     GroupDTO transferEntityDTO(Group source, GroupDTO destination)
     {
-        UserDTO userDTO = new UserDTO();
-        userDTOMapper.transferEntityDto(source.getOwner(), userDTO);
+        UserDTO dto = userDTOMapper.toDto(source.getOwner());
         groupDTOMapper.transferEntityDto(source, destination);
-        destination.setOwner(userDTO);
+        destination.setOwner(dto);
         return destination;
     }
 }

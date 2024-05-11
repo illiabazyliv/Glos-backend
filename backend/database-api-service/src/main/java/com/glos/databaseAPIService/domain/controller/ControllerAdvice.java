@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,7 +39,8 @@ public class ControllerAdvice {
             ResourceAlreadyExistsException.class,
             IllegalArgumentException.class,
             IllegalStateException.class,
-            InvocationTargetException.class
+            InvocationTargetException.class,
+            MethodArgumentNotValidException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public InternalExceptionBody handleBadRequest(
