@@ -1,77 +1,115 @@
 package com.glos.groupservice.utils;
 
-import com.glos.api.entities.Group;
-import com.glos.api.entities.User;
-
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MapUtils
 {
-    public static Map<String, Object> mapUserFilter(User filter, String name)
-    {
-        Map<String, Object> map = new HashMap<>();
-        if (name == null) {
-            map.put("id", filter.getId());
-            map.put("username", filter.getUsername());
-            map.put("password_hash", filter.getPassword_hash());
-            map.put("email", filter.getEmail());
-            map.put("phone_number", filter.getPhone_number());
-            map.put("gender", filter.getGender());
-            map.put("first_name", filter.getFirst_name());
-            map.put("last_name", filter.getLast_name());
-            map.put("birthdate", filter.getBirthdate());
-            map.put("is_account_non_expired", filter.getIs_account_non_expired());
-            map.put("is_account_non_locked", filter.getIs_account_non_locked());
-            map.put("is_credentials_non_expired", filter.getIs_credentials_non_expired());
-            map.put("is_enabled", filter.getIs_enabled());
-            map.put("is_deleted", filter.getIs_deleted());
-            //map.put("groups", filter.getGroups());
-            //map.put("roles", filter.getRoles());
+
+    public static Map<String, Object> map(Object obj) {
+        if (obj == null) {
+            throw new NullPointerException("obj is null");
+        }
+        return map(obj, new StringBuilder(), null, new HashMap<>(), new HashMap<>());
+    }
+
+    private static Map<String, Object> map(Object obj, StringBuilder prefix, String name, Map<String, Object> map, Map<Object, Boolean> visited) {
+        if (obj == null) {
+            return map;
+        }
+
+        if (visited.containsKey(obj) && visited.get(obj)) {
+            return map;
+        }
+
+        int start = prefix.length();
+
+
+        if (!prefix.isEmpty() && name != null) {
+            prefix.append('.');
+        }
+
+        if (name != null) {
+            prefix.append(name);
+        }
+
+        if (!isPrimitiveOrStringObject(obj.getClass(), obj)) {
+
+            visited.put(obj, true);
+        }
+
+        if (isPrimitiveOrStringObject(obj.getClass(), obj)) {
+            include(map, prefix.toString(), obj);
+        } else if (isMap(obj.getClass(), obj)) {
+            Map<?, ?> fieldMap = (Map<?, ?>) obj;
+            final StringBuilder prefixBuilder = new StringBuilder(prefix);
+
+            fieldMap.forEach((k, v) -> map(v, new StringBuilder(prefixBuilder).append('.').append(k), null, map, visited));
+        } else if (isInlineIterableObject(obj.getClass(), obj)) {
+            final Iterable<?> iterable = (Iterable<?>) obj;
+            int index = 0;
+            for (Object item : iterable) {
+                map(item, new StringBuilder(prefix).append('[').append(index++).append(']'), null, map, visited);
+            }
+        } else if (isArray(obj.getClass(), obj)) {
+            final int length = java.lang.reflect.Array.getLength(obj);
+            for (int i = 0; i < length; i++) {
+                map(java.lang.reflect.Array.get(obj, i), new StringBuilder(prefix).append('[').append(i).append(']'), null, map, visited);
+            }
         } else {
-            map.put(name+".id", filter.getId());
-            map.put(name+".username", filter.getUsername());
-            map.put(name+".password_hash", filter.getPassword_hash());
-            map.put(name+".email", filter.getEmail());
-            map.put(name+".phone_number", filter.getPhone_number());
-            map.put(name+".gender", filter.getGender());
-            map.put(name+".first_name", filter.getFirst_name());
-            map.put(name+".last_name", filter.getLast_name());
-            map.put(name+".birthdate", filter.getBirthdate());
-            map.put(name+".is_account_non_expired", filter.getIs_account_non_expired());
-            map.put(name+".is_account_non_locked", filter.getIs_account_non_locked());
-            map.put(name+".is_credentials_non_expired", filter.getIs_credentials_non_expired());
-            map.put(name+".is_enabled", filter.getIs_enabled());
-            map.put(name+".is_deleted", filter.getIs_deleted());
-            //map.put(name+".groups", filter.getGroups());
-            //map.put(name+".roles", filter.getRoles());
+            mapFields(obj, prefix, map, visited);
         }
 
-        map.entrySet().removeIf((x) -> x.getValue() == null);
-
+        prefix.delete(start, prefix.length());
         return map;
     }
 
-    public static Map<String, Object> mapGroupFilter(Group filter)
-    {
-        Map<String, Object> map = new HashMap<>();
-
-        if (filter.getId() != null) {
-            map.put("id", filter.getId());
+    private static void mapFields(final Object obj, StringBuilder prefix, final Map<String, Object> map, final Map<Object, Boolean> visited) {
+        try {
+            final Field[] fields = obj.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                final String nameField = field.getName();
+                final Object value = field.get(obj);
+                map(value, prefix, nameField, map, visited);
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
-        if (filter.getName() != null) {
-            map.put("name", filter.getName());
-        }
-        if (filter.getAccessTypes() != null && !filter.getAccessTypes().isEmpty()) {
-            map.put("accessTypes", filter.getAccessTypes());
-        }
-        if (filter.getUsers() != null && !filter.getUsers().isEmpty()) {
-            map.put("users", filter.getUsers());
-        }
-        if (filter.getOwner() != null) {
-            map.putAll(mapUserFilter(filter.getOwner(), "owner"));
-        }
-
-        return map;
     }
+
+    private static boolean isPrimitiveOrStringObject(Class<?> type, Object value) {
+        if (value == null) {
+            return false;
+        }
+        return value.getClass().isPrimitive()
+                || value instanceof Byte
+                || value instanceof Boolean
+                || value instanceof Integer
+                || value instanceof Short
+                || value instanceof Long
+                || value instanceof Float
+                || value instanceof Double
+                || value instanceof Character
+                || value instanceof String;
+    }
+
+    private static boolean isInlineIterableObject(Class<?> type, Object value) {
+        return value instanceof Iterable<?>;
+    }
+
+    private static boolean isArray(Class<?> type, Object value) {
+        return type.isArray();
+    }
+
+    private static boolean isMap(Class<?> type, Object value) {
+        return value instanceof Map<?, ?>;
+    }
+
+    private static Map<String, Object> include(Map<String, Object> target, String key, Object value) {
+        target.put(key, value);
+        return target;
+    }
+
 }

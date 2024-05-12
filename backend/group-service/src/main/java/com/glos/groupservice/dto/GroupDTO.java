@@ -1,8 +1,6 @@
-package com.glos.groupservice.responseDTO;
+package com.glos.groupservice.dto;
 
 import com.glos.api.entities.AccessType;
-import com.glos.api.entities.User;
-import jakarta.persistence.*;
 
 import java.util.List;
 

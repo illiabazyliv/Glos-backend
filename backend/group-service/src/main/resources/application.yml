@@ -18,3 +18,7 @@ spring:
         config:
           group:
             url: http://localhost:8080/api/v1/groups
+          user:
+            url: http://localhost:8080/api/v1/users
+          accessType:
+            url: http://localhost:8080/api/v1/access-types

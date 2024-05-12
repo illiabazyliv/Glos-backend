@@ -1,6 +1,4 @@
-package com.glos.groupservice.responseDTO;
-
-import jakarta.persistence.Column;
+package com.glos.groupservice.dto;
 
 public class UserDTO
 {
