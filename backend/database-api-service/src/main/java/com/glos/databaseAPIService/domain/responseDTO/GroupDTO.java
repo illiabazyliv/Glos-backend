@@ -15,12 +15,22 @@ public class GroupDTO
     private UserDTO owner;
 
     private List<AccessType> accessTypes;
+    private List<UserDTO> users;
 
-    public GroupDTO(Long id, String name, UserDTO owner, List<AccessType> accessTypes) {
+    public GroupDTO(Long id, String name, UserDTO owner, List<AccessType> accessTypes, List<UserDTO> users) {
         this.id = id;
         this.name = name;
         this.owner = owner;
         this.accessTypes = accessTypes;
+        this.users = users;
+    }
+
+    public List<UserDTO> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserDTO> users) {
+        this.users = users;
     }
 
     public GroupDTO() {
