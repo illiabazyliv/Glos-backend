@@ -42,6 +42,7 @@ public class GroupController
     }
 
 
+    //not ok
     @GetMapping("/users/groups/all")
     public ResponseEntity<List<GroupDTO>> getAllGroups()
     {

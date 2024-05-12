@@ -40,6 +40,7 @@ public class FriendsController
         };
     }
 
+    //ok
     @GetMapping("/users/{username}/friends")
     public ResponseEntity<GroupDTO> getFriends(@PathVariable("username") String username)
     {
@@ -52,10 +53,10 @@ public class FriendsController
         return ResponseEntity.ok(groups.map((x) -> {return transferEntityDTO(x, new GroupDTO());}).findFirst().orElseThrow(() -> new UserNotFoundException("Item is not found")));
     }
 
+    //ok
     @PutMapping("/users/{username}/friends/{friendUsername}")
-    public ResponseEntity<GroupDTO> getFriendByUsername(@PathVariable("username") String username,
-                                                       @PathVariable("friendUsername") String friendUsername,
-                                                       @RequestBody User friend
+    public ResponseEntity<GroupDTO> addFriendByUsername(@PathVariable("username") String username,
+                                                       @PathVariable("friendUsername") String friendUsername
                                                        )
     {
         User user = new User();
@@ -64,10 +65,20 @@ public class FriendsController
         filter.setOwner(user);
         Map<String, Object> map = MapUtils.mapGroupFilter(filter);
         Group group = groupAPIClient.getGroupsByFilters(map).getBody().stream().findFirst().get();
-        group.getUsers().add(user);
-        return ResponseEntity.ok(transferEntityDTO(group, new GroupDTO()));
+        //питання чи власника групи присвоювати в її користувачів
+        User friend = new User();
+        friend.setUsername(friendUsername);
+        Group friendFilter = new Group();
+        friendFilter.setOwner(friend);
+        Map<String, Object> friendMap = MapUtils.mapGroupFilter(friendFilter);
+        friend = groupAPIClient.getGroupsByFilters(friendMap).getBody().stream().findFirst().get().getOwner();
+
+        group.getUsers().add(friend);
+        groupAPIClient.updateGroup(group.getId(), group);
+        return ResponseEntity.ok(transferEntityDTO(groupAPIClient.getGroupById(group.getId()).getBody(), new GroupDTO()));
     }
 
+    //ok
     @DeleteMapping("/users/{username}/friends/{friendUsername}")
     public ResponseEntity<?> deleteFriend(@PathVariable("username") String username,
                                           @PathVariable("friendUsername") String friendUsername)
