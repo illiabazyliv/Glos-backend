@@ -4,7 +4,7 @@ import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 import com.glos.api.userservice.client.GroupAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
-import com.glos.api.userservice.utils.MapUtil;
+import com.glos.api.userservice.utils.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +62,30 @@ public class UserController
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id)
     {
+        User userToDelete = userAPIClient.getById(id).getBody();
+        Group ownerFilter = new Group();
+        ownerFilter.setOwner(userToDelete);
+        Map<String, Object> ownerMap = MapUtils.mapGroupFilter(ownerFilter);
+        List<Group> groupsOwner = groupAPIClient.getGroupsByFilters(ownerMap).getBody();
+
+        if(groupsOwner != null)
+        {
+            groupsOwner.stream().forEach(x -> groupAPIClient.deleteGroup(userToDelete.getUsername(), x.getName()));
+        }
+
+        Group userFilter = new Group();
+        ownerFilter.addUsers(userToDelete);//TODO не додається юзер до списку
+        Map<String, Object> usersMap = MapUtils.mapGroupFilter(userFilter);
+        List<Group> usersGroups = groupAPIClient.getGroupsByFilters(usersMap).getBody();
+
+        if (usersGroups != null)
+        {
+            usersGroups.stream().forEach(x -> {
+                x.getUsers().remove(userToDelete);
+                groupAPIClient.updateGroup(x.getOwner().getUsername(), x.getName(), x);
+            });
+        }
+
         return userAPIClient.delete(id);
     }
 
@@ -94,7 +118,7 @@ public class UserController
     @GetMapping
     public List<User> getAllByFilter(@ModelAttribute User filter)
     {
-        Map<String, Object> map = MapUtil.mapUserFilter(filter);
+        Map<String, Object> map = MapUtils.mapUserFilter(filter);
         return userAPIClient.getUsersByFilter(map);
     }
 

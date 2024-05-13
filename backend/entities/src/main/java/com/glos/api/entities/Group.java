@@ -95,4 +95,9 @@ public class Group
         this.users = users;
         this.accessTypes = accessTypes;
     }
+
+    public void addUsers(User user)
+    {
+        users.add(user);
+    }
 }
