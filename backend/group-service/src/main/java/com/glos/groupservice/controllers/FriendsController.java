@@ -4,13 +4,16 @@ import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 import com.glos.groupservice.client.GroupAPIClient;
 import com.glos.groupservice.exeptions.UserNotFoundException;
+import com.glos.groupservice.facade.GroupAPIFacade;
 import com.glos.groupservice.mappers.AbstractMapper;
 import com.glos.groupservice.mappers.AutoMapper;
-import com.glos.groupservice.responseDTO.GroupDTO;
-import com.glos.groupservice.responseDTO.UserDTO;
+import com.glos.groupservice.dto.GroupDTO;
+import com.glos.groupservice.dto.UserDTO;
 import com.glos.groupservice.responseMappers.GroupDTOMapper;
 import com.glos.groupservice.responseMappers.UserDTOMapper;
+import com.glos.groupservice.utils.Constants;
 import com.glos.groupservice.utils.MapUtils;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,85 +24,46 @@ import java.util.stream.Stream;
 @RequestMapping
 public class FriendsController
 {
-    private final GroupAPIClient groupAPIClient;
-    private final UserDTOMapper userDTOMapper;
     private final GroupDTOMapper groupDTOMapper;
-    private final AutoMapper<Group, GroupDTO> mapper;
+    private final GroupAPIFacade groupAPIFacade;
 
-    public FriendsController(GroupAPIClient groupAPIClient,
-                             UserDTOMapper userDTOMapper,
-                             GroupDTOMapper groupDTOMapper) {
-        this.groupAPIClient = groupAPIClient;
-        this.userDTOMapper = userDTOMapper;
+    public FriendsController(
+            GroupDTOMapper groupDTOMapper,
+            GroupAPIFacade groupAPIFacade
+    ) {
         this.groupDTOMapper = groupDTOMapper;
-        this.mapper = new AbstractMapper<Group, GroupDTO>() {
-            @Override
-            protected void postDtoCopy(Group source, GroupDTO destination) {
-                super.postDtoCopy(source, destination);
-            }
-        };
+        this.groupAPIFacade = groupAPIFacade;
     }
 
     //ok
     @GetMapping("/users/{username}/friends")
     public ResponseEntity<GroupDTO> getFriends(@PathVariable("username") String username)
     {
-        User user = new User();
-        user.setUsername(username);
-        Group filter = new Group();
-        filter.setOwner(user);
-        Map<String, Object> map = MapUtils.mapGroupFilter(filter);
-        Stream<Group> groups = groupAPIClient.getGroupsByFilters(map).getBody().stream();
-        return ResponseEntity.ok(groups.map((x) -> {return transferEntityDTO(x, new GroupDTO());}).findFirst().orElseThrow(() -> new UserNotFoundException("Item is not found")));
+        return ResponseEntity.of(
+                groupAPIFacade.getByOwnerAndName(username, Constants.FRIENDS_GROUP_NAME)
+                        .map(groupDTOMapper::toDto)
+        );
     }
 
-    //ok
-    @PutMapping("/users/{username}/friends/{friendUsername}")
-    public ResponseEntity<GroupDTO> addFriendByUsername(@PathVariable("username") String username,
-                                                       @PathVariable("friendUsername") String friendUsername
-                                                       )
+    @PutMapping("/users/{username}/friends/add-user/{friendUsername}")
+    public ResponseEntity<GroupDTO> appendUser(@PathVariable("username") String username,
+                                                       @PathVariable("friendUsername") String friendUsername)
     {
-        User user = new User();
-        user.setUsername(username);
-        Group filter = new Group();
-        filter.setOwner(user);
-        Map<String, Object> map = MapUtils.mapGroupFilter(filter);
-        Group group = groupAPIClient.getGroupsByFilters(map).getBody().stream().findFirst().get();
-        //питання чи власника групи присвоювати в її користувачів
-        User friend = new User();
-        friend.setUsername(friendUsername);
-        Group friendFilter = new Group();
-        friendFilter.setOwner(friend);
-        Map<String, Object> friendMap = MapUtils.mapGroupFilter(friendFilter);
-        friend = groupAPIClient.getGroupsByFilters(friendMap).getBody().stream().findFirst().get().getOwner();
-
-        group.getUsers().add(friend);
-        groupAPIClient.updateGroup(group.getId(), group);
-        return ResponseEntity.ok(transferEntityDTO(groupAPIClient.getGroupById(group.getId()).getBody(), new GroupDTO()));
+        ResponseEntity<Group> response = groupAPIFacade.appendUser(username, Constants.FRIENDS_GROUP_NAME, friendUsername);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.ok(groupDTOMapper.toDto(response.getBody()));
+        }
+        return ResponseEntity.status(response.getStatusCode()).build();
     }
 
-    //ok
-    @DeleteMapping("/users/{username}/friends/{friendUsername}")
-    public ResponseEntity<?> deleteFriend(@PathVariable("username") String username,
-                                          @PathVariable("friendUsername") String friendUsername)
+    @DeleteMapping("/users/{username}/friends/delete-user/{friendUsername}")
+    public ResponseEntity<GroupDTO> deleteUser(@PathVariable("username") String username,
+                                               @PathVariable("friendUsername") String friendUsername)
     {
-        User user = new User();
-        user.setUsername(username);
-        Group filter = new Group();
-        filter.setOwner(user);
-        Map<String, Object> map = MapUtils.mapGroupFilter(filter);
-        Group group = groupAPIClient.getGroupsByFilters(map).getBody().stream().findFirst().get();
-        group.getUsers().removeIf((x) -> {return x.getUsername().equals(friendUsername);});
-        groupAPIClient.updateGroup(group.getId(), group);
-        return ResponseEntity.noContent().build();
-    }
-
-    GroupDTO transferEntityDTO(Group source, GroupDTO destination)
-    {
-        UserDTO userDTO = new UserDTO();
-        userDTOMapper.transferEntityDto(source.getOwner(), userDTO);
-        groupDTOMapper.transferEntityDto(source, destination);
-        destination.setOwner(userDTO);
-        return destination;
+        ResponseEntity<Group> response = groupAPIFacade.removeUser(username, Constants.FRIENDS_GROUP_NAME, friendUsername);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.ok(groupDTOMapper.toDto(response.getBody()));
+        }
+        return ResponseEntity.status(response.getStatusCode()).build();
     }
 }

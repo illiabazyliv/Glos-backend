@@ -1,14 +1,13 @@
 package com.glos.groupservice.client;
 
 import com.glos.api.entities.Group;
+import com.glos.groupservice.dto.Page;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @FeignClient(name = "group")
 public interface GroupAPIClient
@@ -23,11 +22,11 @@ public interface GroupAPIClient
     ResponseEntity<?> deleteGroup(@PathVariable Long id);
 
     @PutMapping("/{id}")
-    ResponseEntity<?> updateGroup(@PathVariable Long id, @RequestBody Group newGroup);
+    ResponseEntity<Group> updateGroup(@PathVariable Long id, @RequestBody Group newGroup);
 
-    @GetMapping()
-    ResponseEntity<List<Group>> getAllGroups();
+    @GetMapping
+    ResponseEntity<Page<Group>> getAllGroups(@SpringQueryMap Map<String, Object> filter);
 
     @GetMapping("/filter")
-    ResponseEntity<List<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
+    ResponseEntity<Page<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
 }

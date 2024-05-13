@@ -1,8 +1,8 @@
-package com.glos.groupservice.responseMappers;
+package com.glos.api.userservice.responseMappers;
 
 import com.glos.api.entities.User;
-import com.glos.groupservice.mappers.AbstractMapper;
-import com.glos.groupservice.dto.UserDTO;
+import com.glos.api.userservice.mappers.AbstractMapper;
+import com.glos.api.userservice.responseDTO.UserDTO;
 import org.springframework.stereotype.Component;
 
 @Component

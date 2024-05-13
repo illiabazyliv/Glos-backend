@@ -118,7 +118,7 @@ public class UserService implements CrudService<User, Long>
         List<User> list = userRepository.findAll(Example.of(filter));
         return list.stream()
                 .filter(x -> filter.getRoles() == null || x.getRoles().containsAll(filter.getRoles()))
-                .filter(x -> filter.getGroups() == null || x.getGroups().containsAll(filter.getRoles()))
+                .filter(x -> filter.getGroups() == null || x.getGroups().containsAll(filter.getGroups()))
                 .toList();
     }
 

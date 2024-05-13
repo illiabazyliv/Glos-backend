@@ -4,8 +4,10 @@ import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 import com.glos.api.userservice.client.GroupAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
+import com.glos.api.userservice.facade.GroupAPIFacade;
+import com.glos.api.userservice.responseDTO.GroupFilterRequest;
+import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.utils.MapUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +19,15 @@ import java.util.Map;
 public class UserController
 {
     private final UserAPIClient userAPIClient;
+    private final GroupAPIFacade groupAPIFacade;
     private final GroupAPIClient groupAPIClient;
 
-
-    @Autowired
-    public UserController(UserAPIClient userAPIClient, GroupAPIClient groupAPIClient) {
+    public UserController(UserAPIClient userAPIClient, GroupAPIFacade groupAPIFacade, GroupAPIClient groupAPIClient) {
         this.userAPIClient = userAPIClient;
+        this.groupAPIFacade = groupAPIFacade;
         this.groupAPIClient = groupAPIClient;
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getById(@PathVariable Long id)
@@ -45,7 +48,7 @@ public class UserController
             User owner = new User();
             owner.setId(userResponseEntity.getBody().getId());
             friends.setOwner(owner);
-            ResponseEntity<Group> groupResponseEntity = groupAPIClient.createGroup(userResponseEntity.getBody().getUsername(), "friends", friends);
+            groupAPIFacade.putGroup(friends, owner.getUsername(), "friends");
         }
         return userResponseEntity;
     }
@@ -56,36 +59,12 @@ public class UserController
                                                 @RequestBody Group group)
     {
 
-        return groupAPIClient.createGroup(username, groupName, group);
+        return groupAPIFacade.putGroup(group, username, groupName);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id)
     {
-        User userToDelete = userAPIClient.getById(id).getBody();
-        Group ownerFilter = new Group();
-        ownerFilter.setOwner(userToDelete);
-        Map<String, Object> ownerMap = MapUtils.mapGroupFilter(ownerFilter);
-        List<Group> groupsOwner = groupAPIClient.getGroupsByFilters(ownerMap).getBody();
-
-        if(groupsOwner != null)
-        {
-            groupsOwner.stream().forEach(x -> groupAPIClient.deleteGroup(userToDelete.getUsername(), x.getName()));
-        }
-
-        Group userFilter = new Group();
-        ownerFilter.addUsers(userToDelete);//TODO не додається юзер до списку
-        Map<String, Object> usersMap = MapUtils.mapGroupFilter(userFilter);
-        List<Group> usersGroups = groupAPIClient.getGroupsByFilters(usersMap).getBody();
-
-        if (usersGroups != null)
-        {
-            usersGroups.stream().forEach(x -> {
-                x.getUsers().remove(userToDelete);
-                groupAPIClient.updateGroup(x.getOwner().getUsername(), x.getName(), x);
-            });
-        }
-
         return userAPIClient.delete(id);
     }
 
@@ -118,7 +97,7 @@ public class UserController
     @GetMapping
     public List<User> getAllByFilter(@ModelAttribute User filter)
     {
-        Map<String, Object> map = MapUtils.mapUserFilter(filter);
+        Map<String, Object> map = MapUtils.map(filter);
         return userAPIClient.getUsersByFilter(map);
     }
 

@@ -1,7 +1,7 @@
 package com.glos.api.userservice.client;
 
 import com.glos.api.entities.Group;
-import com.glos.api.entities.User;
+import com.glos.api.userservice.responseDTO.Page;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +13,21 @@ import java.util.Map;
 @FeignClient(name = "group")
 public interface GroupAPIClient
 {
-    @PutMapping("/users/{username}/groups/{groupName}")
-    ResponseEntity<Group> createGroup(@PathVariable("username") String username,
-                                      @PathVariable("groupName") String groupName,
-                                      @RequestBody Group group);
+    @GetMapping("/{id}")
+    ResponseEntity<Group> getGroupById(@PathVariable Long id);
 
-    @DeleteMapping("/users/{username}/groups/{groupName}")
-    ResponseEntity<?> deleteGroup(@PathVariable("username") String username,
-                                         @PathVariable("groupName") String groupName);
+    @PostMapping
+    ResponseEntity<Group> createGroup(@RequestBody Group group);
 
-    @GetMapping("/users/groups")
-    ResponseEntity<List<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteGroup(@PathVariable Long id);
 
-    @PatchMapping("/users/{username}/groups/{groupName}")
-    ResponseEntity<?> updateGroup(@PathVariable("username") String username,
-                                         @PathVariable("groupName") String groupName,
-                                         @RequestBody Group newGroup);
+    @PutMapping("/{id}")
+    ResponseEntity<Group> updateGroup(@PathVariable Long id, @RequestBody Group newGroup);
+
+    @GetMapping
+    ResponseEntity<Page<Group>> getAllGroups(@SpringQueryMap Map<String, Object> filter);
+
+    @GetMapping("/filter")
+    ResponseEntity<Page<Group>> getGroupsByFilters(@SpringQueryMap Map<String, Object> filter);
 }

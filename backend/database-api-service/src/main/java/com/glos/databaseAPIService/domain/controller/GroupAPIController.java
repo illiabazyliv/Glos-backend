@@ -3,20 +3,18 @@ package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.api.entities.Group;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
-import com.glos.databaseAPIService.domain.filters.GroupFilter;
 import com.glos.databaseAPIService.domain.responseDTO.GroupDTO;
-import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import com.glos.databaseAPIService.domain.responseMappers.GroupDTOMapper;
-import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.GroupService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,21 +27,19 @@ public class GroupAPIController
 {
     private final GroupService groupService;
     private final GroupDTOMapper groupDTOMapper;
-    private final UserDTOMapper userDTOMapper;
 
     @Autowired
-    public GroupAPIController(GroupService groupService, GroupDTOMapper groupDTOMapper, UserDTOMapper userDTOMapper) {
+    public GroupAPIController(GroupService groupService, GroupDTOMapper groupDTOMapper) {
         this.groupService = groupService;
         this.groupDTOMapper = groupDTOMapper;
-        this.userDTOMapper = userDTOMapper;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GroupDTO> getGroupById(@PathVariable Long id)
     {
-        Group g = groupService.getById(id).orElseThrow(() -> {return new ResourceNotFoundException("Group is not found");} );
-        GroupDTO groupDTO = new GroupDTO();
-        groupDTO = transferEntityDTO(g, groupDTO);
+        Group g = groupService.getById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Group is not found"));
+        GroupDTO groupDTO = groupDTOMapper.toDto(g);
         return ResponseEntity.of(Optional.of(groupDTO));
     }
 
@@ -51,8 +47,7 @@ public class GroupAPIController
     public ResponseEntity<GroupDTO> createGroup(@RequestBody Group group, UriComponentsBuilder uriBuilder)
     {
         Group g = groupService.create(group);
-        GroupDTO groupDTO = new GroupDTO();
-        groupDTO = transferEntityDTO(group, groupDTO);
+        GroupDTO groupDTO = groupDTOMapper.toDto(g);
         return ResponseEntity.created(
                 uriBuilder.path("/groups/{id}")
                         .build(g.getId())).body(groupDTO);
@@ -72,32 +67,22 @@ public class GroupAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping()
-    public ResponseEntity<List<GroupDTO>> getAllGroups()
+    @GetMapping
+    public ResponseEntity<Page<GroupDTO>> getAllGroups(
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    )
     {
-        List<Group> groups = groupService.getAll();
-        return ResponseEntity.ok(groups.stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList());
+        Page<Group> groups = groupService.getPage(pageable);
+        Page<GroupDTO> dtos = groups.map(groupDTOMapper::toDto);
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<GroupDTO>> getGroupsByFilters(@ModelAttribute Group filter)
+    public ResponseEntity<Page<GroupDTO>> getGroupsByFilters(
+            @ModelAttribute Group filter,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        List<Group> groups = groupService.getAll(filter);
-        return ResponseEntity.ok(groups.stream().map((x) -> {return transferEntityDTO(x, new GroupDTO());}).toList());
-    }
-
-    GroupDTO transferEntityDTO(Group source, GroupDTO destination)
-    {
-        UserDTO userDTO = new UserDTO();
-        userDTOMapper.transferEntityDto(source.getOwner(), userDTO);
-
-        List<UserDTO> users = source.getUsers().stream().map((x) -> {UserDTO newUser = new UserDTO();
-            userDTOMapper.transferEntityDto(x, newUser);
-            return newUser;}).toList();
-
-        groupDTOMapper.transferEntityDto(source, destination);
-        destination.setOwner(userDTO);
-        destination.setUsers(users);
-        return destination;
+        Page<Group> groups = groupService.getPageByFilter(filter, pageable);
+        return ResponseEntity.ok(groups.map(groupDTOMapper::toDto));
     }
 }

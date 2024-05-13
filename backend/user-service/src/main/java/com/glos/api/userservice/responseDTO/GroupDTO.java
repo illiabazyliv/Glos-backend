@@ -1,31 +1,26 @@
-package com.glos.databaseAPIService.domain.responseDTO;
+package com.glos.api.userservice.responseDTO;
 
 import com.glos.api.entities.AccessType;
-import com.glos.api.entities.User;
-import jakarta.persistence.*;
 
 import java.util.List;
 
 public class GroupDTO
 {
     private Long id;
-
     private String name;
-
     private UserDTO owner;
-
-    private List<AccessType> accessTypes;
     private List<UserDTO> users;
+    private List<AccessType> accessTypes;
 
-    public GroupDTO() {
-    }
-
-    public GroupDTO(Long id, String name, UserDTO owner, List<AccessType> accessTypes, List<UserDTO> users) {
+    public GroupDTO(Long id, String name, UserDTO owner, List<UserDTO> users, List<AccessType> accessTypes) {
         this.id = id;
         this.name = name;
         this.owner = owner;
-        this.accessTypes = accessTypes;
         this.users = users;
+        this.accessTypes = accessTypes;
+    }
+
+    public GroupDTO() {
     }
 
     public Long getId() {
@@ -52,19 +47,19 @@ public class GroupDTO
         this.owner = owner;
     }
 
-    public List<AccessType> getAccessTypes() {
-        return accessTypes;
-    }
-
-    public void setAccessTypes(List<AccessType> accessTypes) {
-        this.accessTypes = accessTypes;
-    }
-
     public List<UserDTO> getUsers() {
         return users;
     }
 
     public void setUsers(List<UserDTO> users) {
         this.users = users;
+    }
+
+    public List<AccessType> getAccessTypes() {
+        return accessTypes;
+    }
+
+    public void setAccessTypes(List<AccessType> accessTypes) {
+        this.accessTypes = accessTypes;
     }
 }
