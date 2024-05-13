@@ -5,8 +5,8 @@ import com.glos.api.entities.User;
 import com.glos.api.userservice.client.GroupAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
 import com.glos.api.userservice.facade.GroupAPIFacade;
-import com.glos.api.userservice.responseDTO.GroupFilterRequest;
-import com.glos.api.userservice.responseDTO.Page;
+import com.glos.api.userservice.responseDTO.UserDTO;
+import com.glos.api.userservice.responseMappers.UserDTOMapper;
 import com.glos.api.userservice.utils.MapUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,25 +21,28 @@ public class UserController
     private final UserAPIClient userAPIClient;
     private final GroupAPIFacade groupAPIFacade;
     private final GroupAPIClient groupAPIClient;
+    private final UserDTOMapper userDTOMapper;
 
-    public UserController(UserAPIClient userAPIClient, GroupAPIFacade groupAPIFacade, GroupAPIClient groupAPIClient) {
+    public UserController(UserAPIClient userAPIClient, GroupAPIFacade groupAPIFacade, GroupAPIClient groupAPIClient, UserDTOMapper userDTOMapper) {
         this.userAPIClient = userAPIClient;
         this.groupAPIFacade = groupAPIFacade;
         this.groupAPIClient = groupAPIClient;
+        this.userDTOMapper = userDTOMapper;
     }
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getById(@PathVariable Long id)
+    public ResponseEntity<UserDTO> getById(@PathVariable Long id)
     {
-        return userAPIClient.getById(id);
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getById(id).getBody()));
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user)
+    public ResponseEntity<UserDTO> create(@RequestBody UserDTO user)
     {
 
-        ResponseEntity<User> userResponseEntity = userAPIClient.create(user);
+        User mapped = userDTOMapper.toEntity(user);
+        ResponseEntity<User> userResponseEntity = userAPIClient.create(mapped);
 
         if (userResponseEntity.getStatusCode().is2xxSuccessful())
         {
@@ -50,48 +53,40 @@ public class UserController
             friends.setOwner(owner);
             groupAPIFacade.putGroup(friends, owner.getUsername(), "friends");
         }
-        return userResponseEntity;
+        return ResponseEntity.ok(userDTOMapper.toDto(userResponseEntity.getBody()));
     }
 
-    @PutMapping("/{username}/groups/{groupName}")
-    public ResponseEntity<?> createGroup(@PathVariable("username") String username,
-                                                @PathVariable("groupName") String groupName,
-                                                @RequestBody Group group)
-    {
-
-        return groupAPIFacade.putGroup(group, username, groupName);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id)
     {
-        return userAPIClient.delete(id);
+        userAPIClient.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser)
     {
-
-        return userAPIClient.updateUser(id, newUser);
+        userAPIClient.updateUser(id, newUser);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<User> getUserByUsername(@PathVariable String username)
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username)
     {
-        return userAPIClient.getUserByUsername(username);
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getUserByUsername(username).getBody()));
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email)
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email)
     {
-        return userAPIClient.getUserByEmail(email);
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getUserByEmail(email).getBody()));
     }
 
     @GetMapping("/phone-number/{phoneNumber}")
-    public ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber)
+    public ResponseEntity<UserDTO> getUserByPhoneNumber(@PathVariable String phoneNumber)
     {
-        ResponseEntity<User> user = userAPIClient.getUserByPhoneNumber(phoneNumber);
-        return user;
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getUserByPhoneNumber(phoneNumber).getBody()));
     }
 
     @GetMapping

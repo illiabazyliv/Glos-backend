@@ -1,5 +1,6 @@
 package com.glos.api.userservice.responseDTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.glos.api.entities.Role;
 
 import java.time.LocalDateTime;
@@ -25,33 +26,21 @@ public class UserDTO
 
     private LocalDateTime birthdate;
 
-    private Boolean is_account_non_expired = true;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY )
+    private Boolean isEnabled = true;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY )
+    private Boolean isDeleted = false;
 
-    private Boolean is_account_non_locked = true;
-
-    private Boolean is_credentials_non_expired = true;
-
-    private Boolean is_enabled = true;
-
-    private Boolean is_deleted = false;
-
-    private List<Role> roles;
+    private List<RoleDTO> roles;
 
     public UserDTO(Long id,
                    String username,
                    String password_hash,
-                   String email,
-                   String phone_number,
-                   String gender,
-                   String first_name,
-                   String last_name,
-                   LocalDateTime birthdate,
-                   Boolean is_account_non_expired,
-                   Boolean is_account_non_locked,
-                   Boolean is_credentials_non_expired,
-                   Boolean is_enabled,
-                   Boolean is_deleted,
-                   List<Role> roles) {
+                   String email, String phone_number,
+                   String gender, String first_name,
+                   String last_name, LocalDateTime birthdate,
+                   Boolean isEnabled, Boolean isDeleted,
+                   List<RoleDTO> roles) {
         this.id = id;
         this.username = username;
         this.password_hash = password_hash;
@@ -61,11 +50,8 @@ public class UserDTO
         this.first_name = first_name;
         this.last_name = last_name;
         this.birthdate = birthdate;
-        this.is_account_non_expired = is_account_non_expired;
-        this.is_account_non_locked = is_account_non_locked;
-        this.is_credentials_non_expired = is_credentials_non_expired;
-        this.is_enabled = is_enabled;
-        this.is_deleted = is_deleted;
+        this.isEnabled = isEnabled;
+        this.isDeleted = isDeleted;
         this.roles = roles;
     }
 
@@ -144,51 +130,27 @@ public class UserDTO
         this.birthdate = birthdate;
     }
 
-    public Boolean getIs_account_non_expired() {
-        return is_account_non_expired;
+    public Boolean getEnabled() {
+        return isEnabled;
     }
 
-    public void setIs_account_non_expired(Boolean is_account_non_expired) {
-        this.is_account_non_expired = is_account_non_expired;
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
     }
 
-    public Boolean getIs_account_non_locked() {
-        return is_account_non_locked;
+    public Boolean getDeleted() {
+        return isDeleted;
     }
 
-    public void setIs_account_non_locked(Boolean is_account_non_locked) {
-        this.is_account_non_locked = is_account_non_locked;
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 
-    public Boolean getIs_credentials_non_expired() {
-        return is_credentials_non_expired;
-    }
-
-    public void setIs_credentials_non_expired(Boolean is_credentials_non_expired) {
-        this.is_credentials_non_expired = is_credentials_non_expired;
-    }
-
-    public Boolean getIs_enabled() {
-        return is_enabled;
-    }
-
-    public void setIs_enabled(Boolean is_enabled) {
-        this.is_enabled = is_enabled;
-    }
-
-    public Boolean getIs_deleted() {
-        return is_deleted;
-    }
-
-    public void setIs_deleted(Boolean is_deleted) {
-        this.is_deleted = is_deleted;
-    }
-
-    public List<Role> getRoles() {
+    public List<RoleDTO> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<RoleDTO> roles) {
         this.roles = roles;
     }
 }
