@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
     `name` VARCHAR(100) NOT NULL,
     owner_id BIGINT NOT NULL,
     CONSTRAINT pk_groups_id PRIMARY KEY(id),
-    CONSTRAINT fk_groups_users_id FOREIGN KEY (owner_id) REFERENCES users(id),
+    CONSTRAINT fk_groups_users_id FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT uq_groups_name_owner_id UNIQUE(`name`, owner_id)
 ) ENGINE=InnoDB;
 
@@ -92,8 +92,8 @@ CREATE TABLE IF NOT EXISTS users_roles (
     user_id BIGINT NOT NULL,
     role_id BIGINT NOT NULL,
     CONSTRAINT pk_users_roles_id PRIMARY KEY(id),
-    CONSTRAINT fk_users_roles_users_id FOREIGN KEY (user_id) REFERENCES users(id),
-    CONSTRAINT fk_users_roles_roles_id FOREIGN KEY (role_id) REFERENCES roles(id)
+    CONSTRAINT fk_users_roles_users_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_users_roles_roles_id FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS groups_users (
@@ -101,8 +101,8 @@ CREATE TABLE IF NOT EXISTS groups_users (
     group_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     CONSTRAINT pk_groups_users_id PRIMARY KEY(id),
-    CONSTRAINT fk_groups_users_groups_id FOREIGN KEY (group_id) REFERENCES `groups`(id),
-    CONSTRAINT fk_groups_users_users_id FOREIGN KEY (user_id) REFERENCES users(id)
+    CONSTRAINT fk_groups_users_groups_id FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
+    CONSTRAINT fk_groups_users_users_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS groups_access_types (
@@ -110,8 +110,8 @@ CREATE TABLE IF NOT EXISTS groups_access_types (
     group_id BIGINT NOT NULL,
     access_type_id BIGINT NOT NULL,
     CONSTRAINT pk_groups_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_groups_access_types_groups_id FOREIGN KEY (group_id) REFERENCES `groups`(id),
-    CONSTRAINT fk_groups_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id)
+    CONSTRAINT fk_groups_access_types_groups_id FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
+    CONSTRAINT fk_groups_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS files (
@@ -136,8 +136,8 @@ CREATE TABLE IF NOT EXISTS files_access_types (
     file_id BIGINT NOT NULL,
     access_type_id BIGINT NOT NULL,
     CONSTRAINT pk_files_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_files_access_types_files_id FOREIGN KEY (file_id) REFERENCES files(id),
-    CONSTRAINT fk_files_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id)
+    CONSTRAINT fk_files_access_types_files_id FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
+    CONSTRAINT fk_files_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS files_user_access_types (
@@ -156,8 +156,8 @@ CREATE TABLE IF NOT EXISTS files_secure_codes (
     file_id BIGINT NOT NULL,
     secure_code_id BIGINT NOT NULL,
     CONSTRAINT pk_files_secure_codes_id PRIMARY KEY(id),
-    CONSTRAINT fk_files_secure_codes_files_id FOREIGN KEY (file_id) REFERENCES files(id),
-    CONSTRAINT fk_files_secure_codes_secure_codes_id FOREIGN KEY (secure_code_id) REFERENCES secure_codes(id),
+    CONSTRAINT fk_files_secure_codes_files_id FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
+    CONSTRAINT fk_files_secure_codes_secure_codes_id FOREIGN KEY (secure_code_id) REFERENCES secure_codes(id) ON DELETE CASCADE,
     CONSTRAINT uq_files_secure_codes_file_id_secure_code_id UNIQUE(file_id, secure_code_id)
 ) ENGINE=InnoDB;
 
@@ -166,8 +166,8 @@ CREATE TABLE IF NOT EXISTS repositories_access_types (
     repository_id BIGINT NOT NULL,
     access_type_id BIGINT NOT NULL,
     CONSTRAINT pk_repositories_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_repositories_access_types_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id),
-    CONSTRAINT fk_repositories_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id)
+    CONSTRAINT fk_repositories_access_types_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
+    CONSTRAINT fk_repositories_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS repositories_users_access_types (
@@ -186,8 +186,8 @@ CREATE TABLE IF NOT EXISTS repositories_secure_codes (
     repository_id BIGINT NOT NULL,
     secure_code_id BIGINT NOT NULL,
     CONSTRAINT pk_repositories_secure_codes_id PRIMARY KEY(id),
-    CONSTRAINT fk_repositories_secure_codes_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id),
-    CONSTRAINT fk_repositories_secure_codes_secure_codes_id FOREIGN KEY (secure_code_id) REFERENCES secure_codes(id),
+    CONSTRAINT fk_repositories_secure_codes_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
+    CONSTRAINT fk_repositories_secure_codes_secure_codes_id FOREIGN KEY (secure_code_id) REFERENCES secure_codes(id) ON DELETE CASCADE,
     CONSTRAINT uq_repositories_secure_codes_repository_id_secure_code_id UNIQUE(repository_id, secure_code_id)
 ) ENGINE=InnoDB;
 
@@ -196,8 +196,8 @@ CREATE TABLE IF NOT EXISTS files_tags (
     file_id BIGINT NOT NULL,
     tag_id BIGINT NOT NULL,
     CONSTRAINT pk_files_tags_id PRIMARY KEY(id),
-    CONSTRAINT fk_files_tags_files_id FOREIGN KEY (file_id) REFERENCES files(id),
-    CONSTRAINT fk_files_tags_tags_id FOREIGN KEY (tag_id) REFERENCES tags(id)
+    CONSTRAINT fk_files_tags_files_id FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
+    CONSTRAINT fk_files_tags_tags_id FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS repositories_tags (
@@ -205,8 +205,8 @@ CREATE TABLE IF NOT EXISTS repositories_tags (
     repository_id BIGINT NOT NULL,
     tag_id BIGINT NOT NULL,
     CONSTRAINT pk_repositories_tags_id PRIMARY KEY(id),
-    CONSTRAINT fk_repositories_tags_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id),
-    CONSTRAINT fk_repositories_tags_tags_id FOREIGN KEY (tag_id) REFERENCES tags(id)
+    CONSTRAINT fk_repositories_tags_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
+    CONSTRAINT fk_repositories_tags_tags_id FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS files_comments (
@@ -214,8 +214,8 @@ CREATE TABLE IF NOT EXISTS files_comments (
     file_id BIGINT NOT NULL,
     comment_id BIGINT NOT NULL,
     CONSTRAINT pk_files_comments_id PRIMARY KEY(id),
-    CONSTRAINT fk_files_comments_files_id FOREIGN KEY (file_id) REFERENCES files(id),
-    CONSTRAINT fk_files_comments_comments_id FOREIGN KEY (comment_id) REFERENCES comments(id)
+    CONSTRAINT fk_files_comments_files_id FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
+    CONSTRAINT fk_files_comments_comments_id FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS repositories_comments (
@@ -223,8 +223,8 @@ CREATE TABLE IF NOT EXISTS repositories_comments (
     repository_id BIGINT NOT NULL,
     comment_id BIGINT NOT NULL,
     CONSTRAINT pk_repositories_comments_id PRIMARY KEY(id),
-    CONSTRAINT fk_repositories_comments_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id),
-    CONSTRAINT fk_repositories_comments_comments_id FOREIGN KEY (comment_id) REFERENCES comments(id)
+    CONSTRAINT fk_repositories_comments_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
+    CONSTRAINT fk_repositories_comments_comments_id FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 
