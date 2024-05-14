@@ -1,0 +1,125 @@
+package com.glos.api.userservice.controllers;
+
+import com.glos.api.entities.User;
+import com.glos.api.userservice.facade.*;
+import com.glos.api.userservice.responseDTO.Page;
+import com.glos.api.userservice.responseDTO.UserDTO;
+import com.glos.api.userservice.responseDTO.UserFilterRequest;
+import com.glos.api.userservice.responseMappers.UserDTOMapper;
+import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+@RestController
+@RequestMapping("/users")
+public class UserController
+{
+    private final UserDTOMapper userDTOMapper;
+    private final UserFilterRequestMapper userFilterRequestMapper;
+    private final UserAPIFacade userAPIFacade;
+
+    public UserController(
+            UserDTOMapper userDTOMapper,
+            UserFilterRequestMapper userFilterRequestMapper,
+            UserAPIFacade userAPIFacade
+    ) {
+        this.userDTOMapper = userDTOMapper;
+        this.userFilterRequestMapper = userFilterRequestMapper;
+        this.userAPIFacade = userAPIFacade;
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getById(@PathVariable Long id)
+    {
+        //return ResponseEntity.ok(userDTOMapper.toDto(getUserById(id)));
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getById(id)));
+    }
+
+    @PostMapping("/{role}")
+    public ResponseEntity<UserDTO> create(
+            @PathVariable String role,
+            @RequestBody UserDTO user,
+            UriComponentsBuilder uriComponentsBuilder)
+    {
+        User mapped = userDTOMapper.toEntity(user);
+        ResponseEntity<User> created = userAPIFacade.create(mapped, role);
+        if (created.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity
+                    .created(uriComponentsBuilder.path("/users/{username}")
+                            .build(created.getBody().getUsername()))
+                    .body(userDTOMapper.toDto(created.getBody()));
+        }
+        return ResponseEntity.status(created.getStatusCode()).build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id)
+    {
+        return userAPIFacade.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO newUser)
+    {
+        User user = userDTOMapper.toEntity(newUser);
+        return userAPIFacade.updateUser(id, user);
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username)
+    {
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getUserByUsername(username)));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email)
+    {
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getEmail(email)));
+    }
+
+    @GetMapping("/phone-number/{phoneNumber}")
+    public ResponseEntity<UserDTO> getUserByPhoneNumber(@PathVariable String phoneNumber)
+    {
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getUserByPhoneNumber(phoneNumber)));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<UserDTO>> getAllByFilter(@ModelAttribute User request,
+                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                        @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
+    {
+        UserFilterRequest filter = userFilterRequestMapper.toDto(request);
+        filter.setPage(page);
+        filter.setSize(size);
+        filter.setSort(sort);
+        Page<User> users = userAPIFacade.getAllByFilter(filter);
+        return ResponseEntity.ok(users.map(userDTOMapper::toDto));
+    }
+
+    @PutMapping("/{username}/block")
+    public ResponseEntity<?> blockUser(@PathVariable("username") String username)
+    {
+        return userAPIFacade.blocked(username, true);
+    }
+
+    @PutMapping("/{username}/unblock")
+    public ResponseEntity<?> unblockUser(@PathVariable("username") String username)
+    {
+        return userAPIFacade.blocked(username, false);
+    }
+
+    @PutMapping("/{username}/enable")
+    public ResponseEntity<?> enableUser(@PathVariable("username") String username)
+    {
+        return userAPIFacade.enabled(username, true);
+    }
+
+    @PutMapping("/{username}/disable")
+    public ResponseEntity<?> disableUser(@PathVariable("username") String username)
+    {
+        return userAPIFacade.enabled(username, false);
+    }
+}

@@ -1,5 +1,7 @@
 package com.glos.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -64,7 +66,7 @@ public class User
     private Boolean is_deleted = false;
 
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Group> groups;
 
     @ManyToMany
@@ -239,6 +241,7 @@ public class User
     public User()
     {
         this.groups = new ArrayList<>();
+        this.roles = new ArrayList<>();
     }
 
     @Override
