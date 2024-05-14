@@ -23,6 +23,7 @@
     <module>entities</module>
     <module>notification-service</module>
     <module>database-api-service</module>
+    <module>auth-service</module>
   </modules>
 
   <properties>

@@ -90,8 +90,14 @@ public class GroupAPIController
     {
         UserDTO userDTO = new UserDTO();
         userDTOMapper.transferEntityDto(source.getOwner(), userDTO);
+
+        List<UserDTO> users = source.getUsers().stream().map((x) -> {UserDTO newUser = new UserDTO();
+            userDTOMapper.transferEntityDto(x, newUser);
+            return newUser;}).toList();
+
         groupDTOMapper.transferEntityDto(source, destination);
         destination.setOwner(userDTO);
+        destination.setUsers(users);
         return destination;
     }
 }
