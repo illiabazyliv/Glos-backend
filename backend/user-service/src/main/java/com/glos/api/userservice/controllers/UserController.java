@@ -1,130 +1,125 @@
 package com.glos.api.userservice.controllers;
 
-import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
-import com.glos.api.userservice.client.GroupAPIClient;
-import com.glos.api.userservice.client.UserAPIClient;
-import com.glos.api.userservice.facade.GroupAPIFacade;
+import com.glos.api.userservice.facade.*;
+import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserDTO;
+import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserDTOMapper;
-import com.glos.api.userservice.utils.MapUtils;
+import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/users")
 public class UserController
 {
-    private final UserAPIClient userAPIClient;
-    private final GroupAPIFacade groupAPIFacade;
-    private final GroupAPIClient groupAPIClient;
     private final UserDTOMapper userDTOMapper;
+    private final UserFilterRequestMapper userFilterRequestMapper;
+    private final UserAPIFacade userAPIFacade;
 
-    public UserController(UserAPIClient userAPIClient, GroupAPIFacade groupAPIFacade, GroupAPIClient groupAPIClient, UserDTOMapper userDTOMapper) {
-        this.userAPIClient = userAPIClient;
-        this.groupAPIFacade = groupAPIFacade;
-        this.groupAPIClient = groupAPIClient;
+    public UserController(
+            UserDTOMapper userDTOMapper,
+            UserFilterRequestMapper userFilterRequestMapper,
+            UserAPIFacade userAPIFacade
+    ) {
         this.userDTOMapper = userDTOMapper;
+        this.userFilterRequestMapper = userFilterRequestMapper;
+        this.userAPIFacade = userAPIFacade;
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id)
     {
-        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getById(id).getBody()));
+        //return ResponseEntity.ok(userDTOMapper.toDto(getUserById(id)));
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getById(id)));
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> create(@RequestBody UserDTO user)
+    @PostMapping("/{role}")
+    public ResponseEntity<UserDTO> create(
+            @PathVariable String role,
+            @RequestBody UserDTO user,
+            UriComponentsBuilder uriComponentsBuilder)
     {
-
         User mapped = userDTOMapper.toEntity(user);
-        ResponseEntity<User> userResponseEntity = userAPIClient.create(mapped);
-
-        if (userResponseEntity.getStatusCode().is2xxSuccessful())
-        {
-            Group friends = new Group();
-            friends.setName("friends");
-            User owner = new User();
-            owner.setId(userResponseEntity.getBody().getId());
-            friends.setOwner(owner);
-            groupAPIFacade.putGroup(friends, owner.getUsername(), "friends");
+        ResponseEntity<User> created = userAPIFacade.create(mapped, role);
+        if (created.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity
+                    .created(uriComponentsBuilder.path("/users/{username}")
+                            .build(created.getBody().getUsername()))
+                    .body(userDTOMapper.toDto(created.getBody()));
         }
-        return ResponseEntity.ok(userDTOMapper.toDto(userResponseEntity.getBody()));
+        return ResponseEntity.status(created.getStatusCode()).build();
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id)
     {
-        userAPIClient.delete(id);
-        return ResponseEntity.noContent().build();
+        return userAPIFacade.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser)
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO newUser)
     {
-        userAPIClient.updateUser(id, newUser);
-        return ResponseEntity.noContent().build();
+        User user = userDTOMapper.toEntity(newUser);
+        return userAPIFacade.updateUser(id, user);
     }
 
     @GetMapping("/username/{username}")
     public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username)
     {
-        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getUserByUsername(username).getBody()));
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getUserByUsername(username)));
     }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email)
     {
-        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getUserByEmail(email).getBody()));
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getEmail(email)));
     }
 
     @GetMapping("/phone-number/{phoneNumber}")
     public ResponseEntity<UserDTO> getUserByPhoneNumber(@PathVariable String phoneNumber)
     {
-        return ResponseEntity.ok(userDTOMapper.toDto(userAPIClient.getUserByPhoneNumber(phoneNumber).getBody()));
+        return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getUserByPhoneNumber(phoneNumber)));
     }
 
     @GetMapping
-    public List<User> getAllByFilter(@ModelAttribute User filter)
+    public ResponseEntity<Page<UserDTO>> getAllByFilter(@ModelAttribute User request,
+                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                        @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
-        Map<String, Object> map = MapUtils.map(filter);
-        return userAPIClient.getUsersByFilter(map);
+        UserFilterRequest filter = userFilterRequestMapper.toDto(request);
+        filter.setPage(page);
+        filter.setSize(size);
+        filter.setSort(sort);
+        Page<User> users = userAPIFacade.getAllByFilter(filter);
+        return ResponseEntity.ok(users.map(userDTOMapper::toDto));
     }
 
     @PutMapping("/{username}/block")
     public ResponseEntity<?> blockUser(@PathVariable("username") String username)
     {
-        User user = userAPIClient.getUserByUsername(username).getBody();
-        user.setIs_account_non_locked(Boolean.FALSE);
-        return userAPIClient.updateUser(user.getId(), user);
+        return userAPIFacade.blocked(username, true);
     }
 
     @PutMapping("/{username}/unblock")
     public ResponseEntity<?> unblockUser(@PathVariable("username") String username)
     {
-        User user = userAPIClient.getUserByUsername(username).getBody();
-        user.setIs_account_non_locked(Boolean.TRUE);
-        return userAPIClient.updateUser(user.getId(), user);
+        return userAPIFacade.blocked(username, false);
     }
 
     @PutMapping("/{username}/enable")
     public ResponseEntity<?> enableUser(@PathVariable("username") String username)
     {
-        User user = userAPIClient.getUserByUsername(username).getBody();
-        user.setIs_enabled(Boolean.TRUE);
-        return userAPIClient.updateUser(user.getId(), user);
+        return userAPIFacade.enabled(username, true);
     }
 
     @PutMapping("/{username}/disable")
     public ResponseEntity<?> disableUser(@PathVariable("username") String username)
     {
-        User user = userAPIClient.getUserByUsername(username).getBody();
-        user.setIs_enabled(Boolean.FALSE);
-        return userAPIClient.updateUser(user.getId(), user);
+        return userAPIFacade.enabled(username, false);
     }
 }

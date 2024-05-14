@@ -1,14 +1,10 @@
 package com.glos.api.userservice.responseDTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.glos.api.entities.Role;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDTO
-{
+public class UserFilterRequest {
     private Long id;
 
     private String username;
@@ -27,18 +23,22 @@ public class UserDTO
 
     private LocalDateTime birthdate;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY )
-    private Boolean isEnabled = true;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY )
-    private Boolean isDeleted = false;
+    private Boolean isEnabled;
 
-    private List<Role> roles;
+    private Boolean isDeleted;
+    private List<String> roles;
+    private List<GroupDTO> groups;
 
-    public UserDTO() {
+    private int page;
+    private int size;
+    private String sort;
+
+    public UserFilterRequest() {
         this.roles = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
 
-    public UserDTO(Long id, String username, String password, String email, String phoneNumber, String gender, String firstName, String lastName, LocalDateTime birthdate, Boolean isEnabled, Boolean isDeleted, List<Role> roles) {
+    public UserFilterRequest(Long id, String username, String password, String email, String phoneNumber, String gender, String firstName, String lastName, LocalDateTime birthdate, Boolean isEnabled, Boolean isDeleted, List<String> roles, List<GroupDTO> groups, int page, int size, String sort) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -51,6 +51,10 @@ public class UserDTO
         this.isEnabled = isEnabled;
         this.isDeleted = isDeleted;
         this.roles = roles;
+        this.groups = groups;
+        this.page = page;
+        this.size = size;
+        this.sort = sort;
     }
 
     public Long getId() {
@@ -141,11 +145,43 @@ public class UserDTO
         isDeleted = deleted;
     }
 
-    public List<Role> getRoles() {
+    public List<GroupDTO> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<GroupDTO> groups) {
+        this.groups = groups;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 }

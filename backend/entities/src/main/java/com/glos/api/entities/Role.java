@@ -19,6 +19,14 @@ public class Role
     @Column(name = "name", nullable = false, length = 20)
     private String name;
 
+    public Role() {
+    }
+
+    public Role(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

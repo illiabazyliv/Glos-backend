@@ -1,11 +1,16 @@
 package com.glos.databaseAPIService.domain.controller;
 
+import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -94,9 +99,12 @@ public class UserAPIController
     }
 
     @GetMapping
-    public List<UserDTO> getUsersByFilter(@ModelAttribute User filter)
-    {
-        List<User> users = userService.getAll(filter);
-        return users.stream().map(mapper::toDto).toList();
+    public ResponseEntity<Page<UserDTO>> getUsersByFilter(
+            @ModelAttribute User filter,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(userService
+                .getPageByFilter(filter, pageable)
+                .map(mapper::toDto));
     }
 }

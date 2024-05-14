@@ -227,4 +227,12 @@ CREATE TABLE IF NOT EXISTS repositories_comments (
     CONSTRAINT fk_repositories_comments_comments_id FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-
+DELIMITER $$
+CREATE TRIGGER IF NOT EXISTS after_insert_users
+    AFTER INSERT ON users
+    FOR EACH ROW
+BEGIN
+    INSERT INTO `groups`(name, owner_id)
+    VALUES ('friends', NEW.id);
+END$$
+DELIMITER ;

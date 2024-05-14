@@ -1,6 +1,7 @@
 package com.glos.api.userservice.client;
 
 import com.glos.api.entities.User;
+import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -27,16 +28,16 @@ public interface UserAPIClient
     ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User newUser);
 
     @GetMapping("/username/{username}")
-    ResponseEntity<User> getUserByUsername(@PathVariable String username);
+    ResponseEntity<User> getUserByUsername(@PathVariable("username") String username);
 
     @GetMapping("/email/{email}")
-    ResponseEntity<User> getUserByEmail(@PathVariable String email);
+    ResponseEntity<User> getUserByEmail(@PathVariable("email") String email);
 
     @GetMapping("/phone-number/{phoneNumber}")
-    ResponseEntity<User> getUserByPhoneNumber(@PathVariable String phoneNumber);
+    ResponseEntity<User> getUserByPhoneNumber(@PathVariable("phoneNumber") String phoneNumber);
 
     @GetMapping
-    List<User> getUsersByFilter(@SpringQueryMap Map<String, Object> filter);
+    ResponseEntity<Page<User>> getUsersByFilter(@SpringQueryMap Map<String, Object> filter);
 
 
 }
