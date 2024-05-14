@@ -7,6 +7,8 @@ import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +44,11 @@ public class RoleService implements CrudService<Role, Long>
     @Override
     public List<Role> getAll() {
         return roleRepository.findAll();
+    }
+
+    public Page<Role> getPage(Pageable page)
+    {
+        return roleRepository.findAll(page);
     }
 
     @Override
