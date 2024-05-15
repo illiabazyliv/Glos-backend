@@ -49,6 +49,11 @@ public class UserAPIFacade {
 
     public ResponseEntity<User> create(User user, String role) {
         user.setRoles(Collections.singletonList(getRole(role)));
+        user.setIs_account_non_expired(Constants.DEFAULT_IS_ACCOUNT_NON_EXPIRED);
+        user.setIs_account_non_locked(Constants.DEFAULT_IS_ACCOUNT_NON_LOCKED);
+        user.setIs_credentials_non_expired(Constants.DEFAULT_IS_CREDENTIALS_NON_EXPIRED);
+        user.setIs_enabled(Constants.DEFAULT_IS_ENABLED);
+        user.setIs_deleted(Constants.DEFAULT_IS_DELETED);
         ResponseEntity<User> userResponseEntity = userAPIClient.create(user);
         return userResponseEntity;
     }
