@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentServiceApplicationTests.class)
 @AutoConfigureMockMvc
@@ -39,8 +40,6 @@ class CommentServiceApplicationTests {
 		comment.setText("Test Text");
 
 		Comment created = new Comment();
-		created.setAuthor(user);
-		created.setText("Test Text");
 
 		when(externalCommentApi.create(Mockito.any(Comment.class))).thenReturn(ResponseEntity.ok(created));
 

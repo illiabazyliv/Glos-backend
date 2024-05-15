@@ -6,9 +6,9 @@ import com.glos.commentservice.domain.DTO.UserDTO;
 import com.glos.commentservice.domain.client.ExternalCommentApi;
 import com.glos.commentservice.domain.client.UserApiClient;
 import com.glos.commentservice.domain.entities.Comment;
+
 import com.glos.commentservice.domain.entities.User;
 import com.glos.commentservice.domain.utils.MapUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
