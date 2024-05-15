@@ -7,6 +7,9 @@ import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +48,22 @@ public class GroupService implements CrudService<Group, Long>
         return repository.findAll();
     }
 
+    public Page<Group> getPage(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    public Page<Group> getPageByFilter(Group group, Pageable pageable) {
+        return repository.findAll(Example.of(group), pageable);
+    }
+
     @Override
     public List<Group> getAll(EntityFilter filter) {
         return repository.findAllByFilter(filter);
+    }
+
+    public List<Group> getAll(Group filter)
+    {
+        return repository.findAll(Example.of(filter));
     }
 
     @Override

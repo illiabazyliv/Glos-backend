@@ -17,23 +17,16 @@ public class GroupDTO
     private List<AccessType> accessTypes;
     private List<UserDTO> users;
 
+
+    public GroupDTO() {
+    }
+
     public GroupDTO(Long id, String name, UserDTO owner, List<AccessType> accessTypes, List<UserDTO> users) {
         this.id = id;
         this.name = name;
         this.owner = owner;
         this.accessTypes = accessTypes;
         this.users = users;
-    }
-
-    public List<UserDTO> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<UserDTO> users) {
-        this.users = users;
-    }
-
-    public GroupDTO() {
     }
 
     public Long getId() {
@@ -66,5 +59,13 @@ public class GroupDTO
 
     public void setAccessTypes(List<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
+    }
+
+    public List<UserDTO> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserDTO> users) {
+        this.users = users;
     }
 }
