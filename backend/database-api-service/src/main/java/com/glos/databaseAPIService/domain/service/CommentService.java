@@ -7,6 +7,8 @@ import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.CommentRepository;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +55,11 @@ public class CommentService implements CrudService<Comment, Long> {
     @Override
     public Optional<Comment> getById(Long aLong) {
         return commentRepository.findById(aLong);
+    }
+
+    public Page<Comment> getPageByFilter(Comment comment, Pageable pageable)
+    {
+        return commentRepository.findAll(Example.of(comment), pageable);
     }
 
     @Transactional
