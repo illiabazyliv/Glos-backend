@@ -6,7 +6,11 @@ import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserDTO;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserDTOMapper;
+import com.glos.api.userservice.responseMappers.UserFilterRequestDTOMapper;
 import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
+import com.glos.api.userservice.utils.Constants;
+import jakarta.ws.rs.Path;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,16 +21,19 @@ public class UserController
 {
     private final UserDTOMapper userDTOMapper;
     private final UserFilterRequestMapper userFilterRequestMapper;
+    private final UserFilterRequestDTOMapper userFilterRequestDTOMapper;
     private final UserAPIFacade userAPIFacade;
 
     public UserController(
             UserDTOMapper userDTOMapper,
             UserFilterRequestMapper userFilterRequestMapper,
-            UserAPIFacade userAPIFacade
+            UserAPIFacade userAPIFacade,
+            UserFilterRequestDTOMapper userFilterRequestDTOMapper
     ) {
         this.userDTOMapper = userDTOMapper;
         this.userFilterRequestMapper = userFilterRequestMapper;
         this.userAPIFacade = userAPIFacade;
+        this.userFilterRequestDTOMapper = userFilterRequestDTOMapper;
     }
 
 
@@ -86,17 +93,22 @@ public class UserController
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserDTO>> getAllByFilter(@ModelAttribute User request,
+    @PageableAsQueryParam
+    public ResponseEntity<Page<UserDTO>> getAllByFilter(@ModelAttribute UserFilterRequest filter,
                                         @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                         @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
-        UserFilterRequest filter = userFilterRequestMapper.toDto(request);
         filter.setPage(page);
         filter.setSize(size);
         filter.setSort(sort);
         Page<User> users = userAPIFacade.getAllByFilter(filter);
         return ResponseEntity.ok(users.map(userDTOMapper::toDto));
+    }
+
+    @GetMapping("/duration-deleted-state")
+    public ResponseEntity<Long> getDurationDeletedState() {
+        return ResponseEntity.ok(Constants.DURATION_DELETED_STATE.toMillis());
     }
 
     @PutMapping("/{username}/block")
@@ -121,5 +133,15 @@ public class UserController
     public ResponseEntity<?> disableUser(@PathVariable("username") String username)
     {
         return userAPIFacade.enabled(username, false);
+    }
+
+    @PutMapping("/{username}/restore")
+    public ResponseEntity<?> restoreUser(@PathVariable("username") String username) {
+        return userAPIFacade.restore(username);
+    }
+
+    @GetMapping("/{id}/destroy")
+    public ResponseEntity<?> destoryUser(@PathVariable Long id) {
+        return userAPIFacade.destroy(id);
     }
 }

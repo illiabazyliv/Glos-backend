@@ -1,5 +1,7 @@
 package com.glos.api.userservice.responseDTO;
 
+import com.glos.api.entities.Role;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,13 @@ public class UserFilterRequest {
 
     private LocalDateTime birthdate;
 
-    private Boolean isEnabled;
+    private Boolean blocked;
 
-    private Boolean isDeleted;
+    private Boolean enabled;
+
+    private Boolean deleted;
     private List<String> roles;
-    private List<GroupDTO> groups;
+    private List<String> groups;
 
     private int page;
     private int size;
@@ -38,7 +42,7 @@ public class UserFilterRequest {
         this.groups = new ArrayList<>();
     }
 
-    public UserFilterRequest(Long id, String username, String password, String email, String phoneNumber, String gender, String firstName, String lastName, LocalDateTime birthdate, Boolean isEnabled, Boolean isDeleted, List<String> roles, List<GroupDTO> groups, int page, int size, String sort) {
+    public UserFilterRequest(Long id, String username, String password, String email, String phoneNumber, String gender, String firstName, String lastName, LocalDateTime birthdate, Boolean blocked, Boolean enabled, Boolean deleted, List<String> roles, List<String> groups, int page, int size, String sort) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -48,8 +52,9 @@ public class UserFilterRequest {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthdate = birthdate;
-        this.isEnabled = isEnabled;
-        this.isDeleted = isDeleted;
+        this.blocked = blocked;
+        this.enabled = enabled;
+        this.deleted = deleted;
         this.roles = roles;
         this.groups = groups;
         this.page = page;
@@ -129,27 +134,43 @@ public class UserFilterRequest {
         this.birthdate = birthdate;
     }
 
+    public Boolean getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
+    }
+
     public Boolean getEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 
     public Boolean getDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
-    public List<GroupDTO> getGroups() {
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public List<String> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<GroupDTO> groups) {
+    public void setGroups(List<String> groups) {
         this.groups = groups;
     }
 
@@ -175,13 +196,5 @@ public class UserFilterRequest {
 
     public void setSort(String sort) {
         this.sort = sort;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
     }
 }

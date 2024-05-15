@@ -1,7 +1,5 @@
 package com.glos.api.userservice.facade;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.Group;
 import com.glos.api.entities.Role;
 import com.glos.api.entities.User;
 import com.glos.api.userservice.client.RoleAPIClient;
@@ -9,14 +7,15 @@ import com.glos.api.userservice.client.UserAPIClient;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
-import com.glos.api.userservice.responseMappers.UserDTOMapper;
-import com.glos.api.userservice.responseMappers.UserMapper;
+import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
 import com.glos.api.userservice.utils.Constants;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.glos.api.userservice.utils.MapUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,14 +23,17 @@ public class UserAPIFacade {
 
     private final UserAPIClient userAPIClient;
     private final RoleAPIClient roleAPIClient;
+    private final UserFilterRequestMapper userFilterRequestMapper;
 
 
     public UserAPIFacade(
             UserAPIClient userAPIClient,
-            RoleAPIClient roleAPIClient
+            RoleAPIClient roleAPIClient,
+            UserFilterRequestMapper userFilterRequestMapper
     ) {
         this.userAPIClient = userAPIClient;
         this.roleAPIClient = roleAPIClient;
+        this.userFilterRequestMapper = userFilterRequestMapper;
     }
 
     public User getById(Long id) {
@@ -68,6 +70,11 @@ public class UserAPIFacade {
 
     public ResponseEntity<?> deleteById(Long id) {
         User user = getById(id);
+        return noContent(deleted(user, true));
+    }
+
+    public ResponseEntity<?> destroy(Long id) {
+        User user = getById(id);
         ResponseEntity<?> response = userAPIClient.delete(user.getId());
         return noContent(response);
     }
@@ -82,22 +89,56 @@ public class UserAPIFacade {
     }
 
     public Page<User> getAllByFilter(UserFilterRequest filter) {
-        Map<String, Object> map = MapUtils.map(filter);
+        User user = userFilterRequestMapper.toEntity(filter);
+        Map<String, Object> map = MapUtils.map(user);
         ResponseEntity<Page<User>> response = userAPIClient.getUsersByFilter(map);
         Page<User> page = response.getBody();
         return page;
     }
 
     public ResponseEntity<?> enabled(String username, boolean isEnabled) {
-        User user = getUserByUsername(username);
-        user.setIs_account_non_locked(isEnabled);
+        return enabled(getUserByUsername(username), isEnabled);
+    }
+
+    public ResponseEntity<?> blocked(String username, boolean blocked) {
+        return blocked(getUserByUsername(username), blocked);
+    }
+
+    private ResponseEntity<?> enabled(User user, boolean isEnabled) {
+        user.setIs_enabled(isEnabled);
+        if (isEnabled) {
+            user.setDisabledDateTime(null);
+        } else {
+            user.setDisabledDateTime(LocalDateTime.now());
+        }
         ResponseEntity<?> response = updateUser(user.getId(), user);
         return noContent(response);
     }
 
-    public ResponseEntity<?> blocked(String username, boolean blocked) {
-        User user = getUserByUsername(username);
+    private ResponseEntity<?> blocked(User user, boolean blocked) {
         user.setIs_account_non_locked(blocked);
+        if (blocked) {
+            user.setDisabledDateTime(LocalDateTime.now());
+        } else {
+            user.setBlockedDateTime(null);
+        }
+        ResponseEntity<?> response = updateUser(user.getId(), user);
+        return noContent(response);
+    }
+
+    public ResponseEntity<?> restore(String username) {
+        User user = getUserByUsername(username);
+        deleted(user, false);
+        return ResponseEntity.ok().build();
+    }
+
+    private ResponseEntity<?> deleted(User user, boolean deleted) {
+        user.setIs_deleted(deleted);
+        if (deleted) {
+            user.setDeletedDateTime(LocalDateTime.now().plus(Constants.DURATION_DELETED_STATE));
+        } else {
+            user.setDeletedDateTime(null);
+        }
         ResponseEntity<?> response = updateUser(user.getId(), user);
         return noContent(response);
     }

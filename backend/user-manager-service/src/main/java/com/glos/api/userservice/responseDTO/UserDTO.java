@@ -2,6 +2,7 @@ package com.glos.api.userservice.responseDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.glos.api.entities.Role;
+import jakarta.persistence.Column;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class UserDTO
 
     private String username;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private String email;
@@ -27,30 +29,34 @@ public class UserDTO
 
     private LocalDateTime birthdate;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY )
-    private Boolean isEnabled = true;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY )
-    private Boolean isDeleted = false;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Boolean blocked;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Boolean enabled;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Boolean deleted;
 
     private List<Role> roles;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime deletedDateTime;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime blockedDateTime;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime disabledDateTime;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime createdDateTime;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime updatedDataTime;
+
     public UserDTO() {
         this.roles = new ArrayList<>();
-    }
-
-    public UserDTO(Long id, String username, String password, String email, String phoneNumber, String gender, String firstName, String lastName, LocalDateTime birthdate, Boolean isEnabled, Boolean isDeleted, List<Role> roles) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.gender = gender;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthdate = birthdate;
-        this.isEnabled = isEnabled;
-        this.isDeleted = isDeleted;
-        this.roles = roles;
     }
 
     public Long getId() {
@@ -125,20 +131,28 @@ public class UserDTO
         this.birthdate = birthdate;
     }
 
+    public Boolean getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
+    }
+
     public Boolean getEnabled() {
-        return isEnabled;
+        return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 
     public Boolean getDeleted() {
-        return isDeleted;
+        return deleted;
     }
 
     public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+        this.deleted = deleted;
     }
 
     public List<Role> getRoles() {
@@ -147,5 +161,45 @@ public class UserDTO
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public LocalDateTime getDeletedDateTime() {
+        return deletedDateTime;
+    }
+
+    public void setDeletedDateTime(LocalDateTime deletedDateTime) {
+        this.deletedDateTime = deletedDateTime;
+    }
+
+    public LocalDateTime getBlockedDateTime() {
+        return blockedDateTime;
+    }
+
+    public void setBlockedDateTime(LocalDateTime blockedDateTime) {
+        this.blockedDateTime = blockedDateTime;
+    }
+
+    public LocalDateTime getDisabledDateTime() {
+        return disabledDateTime;
+    }
+
+    public void setDisabledDateTime(LocalDateTime disabledDateTime) {
+        this.disabledDateTime = disabledDateTime;
+    }
+
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
+    }
+
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
+    }
+
+    public LocalDateTime getUpdatedDataTime() {
+        return updatedDataTime;
+    }
+
+    public void setUpdatedDataTime(LocalDateTime updatedDataTime) {
+        this.updatedDataTime = updatedDataTime;
     }
 }

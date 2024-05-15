@@ -27,33 +27,29 @@ public class UserDTO
 
     private LocalDateTime birthdate;
 
-    private Boolean is_account_non_expired = true;
+    private Boolean is_account_non_expired;
 
-    private Boolean is_account_non_locked = true;
+    private Boolean is_account_non_locked;
 
-    private Boolean is_credentials_non_expired = true;
+    private Boolean is_credentials_non_expired;
 
-    private Boolean is_enabled = true;
+    private Boolean is_enabled;
 
-    private Boolean is_deleted = false;
+    private Boolean is_deleted;
 
     private List<Role> roles;
 
-    public UserDTO(Long id,
-                   String username,
-                   String password_hash,
-                   String email,
-                   String phone_number,
-                   String gender,
-                   String first_name,
-                   String last_name,
-                   LocalDateTime birthdate,
-                   Boolean is_account_non_expired,
-                   Boolean is_account_non_locked,
-                   Boolean is_credentials_non_expired,
-                   Boolean is_enabled,
-                   Boolean is_deleted,
-                   List<Role> roles) {
+    private LocalDateTime deletedDateTime;
+
+    private LocalDateTime blockedDateTime;
+
+    private LocalDateTime disabledDateTime;
+
+    private LocalDateTime createdDateTime;
+
+    private LocalDateTime updatedDataTime;
+
+    public UserDTO(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDateTime birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, List<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
         this.id = id;
         this.username = username;
         this.password_hash = password_hash;
@@ -69,6 +65,11 @@ public class UserDTO
         this.is_enabled = is_enabled;
         this.is_deleted = is_deleted;
         this.roles = roles;
+        this.deletedDateTime = deletedDateTime;
+        this.blockedDateTime = blockedDateTime;
+        this.disabledDateTime = disabledDateTime;
+        this.createdDateTime = createdDateTime;
+        this.updatedDataTime = updatedDataTime;
     }
 
     public UserDTO() {
@@ -192,5 +193,45 @@ public class UserDTO
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public LocalDateTime getDeletedDateTime() {
+        return deletedDateTime;
+    }
+
+    public void setDeletedDateTime(LocalDateTime deletedDateTime) {
+        this.deletedDateTime = deletedDateTime;
+    }
+
+    public LocalDateTime getBlockedDateTime() {
+        return blockedDateTime;
+    }
+
+    public void setBlockedDateTime(LocalDateTime blockedDateTime) {
+        this.blockedDateTime = blockedDateTime;
+    }
+
+    public LocalDateTime getDisabledDateTime() {
+        return disabledDateTime;
+    }
+
+    public void setDisabledDateTime(LocalDateTime disabledDateTime) {
+        this.disabledDateTime = disabledDateTime;
+    }
+
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
+    }
+
+    public void setCreatedDateTime(LocalDateTime createdDateTime) {
+        this.createdDateTime = createdDateTime;
+    }
+
+    public LocalDateTime getUpdatedDataTime() {
+        return updatedDataTime;
+    }
+
+    public void setUpdatedDataTime(LocalDateTime updatedDataTime) {
+        this.updatedDataTime = updatedDataTime;
     }
 }

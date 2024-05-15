@@ -14,6 +14,7 @@ public class UserDTOMapper extends AbstractMapper<User, UserDTO> {
         destination.setFirstName(source.getFirst_name());
         destination.setLastName(source.getLast_name());
         destination.setEnabled(source.getIs_enabled());
+        destination.setBlocked(source.getIs_account_non_locked());
         destination.setDeleted(source.getIs_deleted());
     }
 
@@ -24,6 +25,7 @@ public class UserDTOMapper extends AbstractMapper<User, UserDTO> {
         destination.setFirst_name(source.getFirstName());
         destination.setLast_name(source.getLastName());
         destination.setIs_enabled(source.getEnabled());
+        destination.setIs_account_non_locked(source.getBlocked());
         destination.setIs_deleted(source.getDeleted());
     }
 
