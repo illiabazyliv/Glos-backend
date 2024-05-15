@@ -94,7 +94,7 @@ public class User
     public User() {
     }
 
-    public User(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDateTime birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, List<Group> groups, List<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
+    public User(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDate birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, List<Group> groups, List<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
         this.id = id;
         this.username = username;
         this.password_hash = password_hash;
@@ -248,39 +248,6 @@ public class User
 
     public LocalDateTime getDeletedDateTime() {
         return deletedDateTime;
-
-    public User(Long id,
-                String username,
-                String password_hash,
-                String email,
-                String phone_number,
-                String gender,
-                String first_name,
-                String last_name,
-                LocalDate birthdate,
-                Boolean is_account_non_expired,
-                Boolean is_account_non_locked,
-                Boolean is_credentials_non_expired,
-                Boolean is_enabled,
-                Boolean is_deleted,
-                List<Group> groups,
-                List<Role> roles) {
-        this.id = id;
-        this.username = username;
-        this.password_hash = password_hash;
-        this.email = email;
-        this.phone_number = phone_number;
-        this.gender = gender;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.birthdate = birthdate;
-        this.is_account_non_expired = is_account_non_expired;
-        this.is_account_non_locked = is_account_non_locked;
-        this.is_credentials_non_expired = is_credentials_non_expired;
-        this.is_enabled = is_enabled;
-        this.is_deleted = is_deleted;
-        this.groups = groups;
-        this.roles = roles;
     }
 
     public void setDeletedDateTime(LocalDateTime deletedDateTime) {
@@ -317,19 +284,6 @@ public class User
 
     public void setUpdatedDataTime(LocalDateTime updatedDataTime) {
         this.updatedDataTime = updatedDataTime;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        User user = (User) object;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password_hash, user.password_hash) && Objects.equals(email, user.email) && Objects.equals(phone_number, user.phone_number) && Objects.equals(gender, user.gender) && Objects.equals(first_name, user.first_name) && Objects.equals(last_name, user.last_name) && Objects.equals(birthdate, user.birthdate) && Objects.equals(is_account_non_expired, user.is_account_non_expired) && Objects.equals(is_account_non_locked, user.is_account_non_locked) && Objects.equals(is_credentials_non_expired, user.is_credentials_non_expired) && Objects.equals(is_enabled, user.is_enabled) && Objects.equals(is_deleted, user.is_deleted) && Objects.equals(groups, user.groups) && Objects.equals(roles, user.roles) && Objects.equals(deletedDateTime, user.deletedDateTime) && Objects.equals(blockedDateTime, user.blockedDateTime) && Objects.equals(disabledDateTime, user.disabledDateTime) && Objects.equals(createdDateTime, user.createdDateTime) && Objects.equals(updatedDataTime, user.updatedDataTime);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password_hash, email, phone_number, gender, first_name, last_name, birthdate, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled, is_deleted, groups, roles, deletedDateTime, blockedDateTime, disabledDateTime, createdDateTime, updatedDataTime);
     }
 
     public void addGroup(Group group)
