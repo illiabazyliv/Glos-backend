@@ -13,5 +13,6 @@ spring:
         config:
           comment:
             url: http://localhost:8080/api/v1/comments
-
+          users:
+            url: http://localhost:8080/api/v1/users
 
