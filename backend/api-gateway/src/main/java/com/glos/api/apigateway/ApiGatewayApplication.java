@@ -25,6 +25,11 @@ public class ApiGatewayApplication {
                         .path("/api/auth/**", "/api/auth")
                         .filters(f -> f.rewritePath("/api", "/api/v1"))
                         .uri("http://localhost:9006"))
+                .route("user-manager", r -> r
+                        .path("/api/users", "/api/users/**")
+                        .filters(f -> f.rewritePath("/api", "/api/v1"))
+                        .uri("http://localhost:9005")
+                )
                 .build();
     }
 }
