@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class User
     private String last_name;
 
     @Column(name = "birthdate")
-    private LocalDateTime birthdate;
+    private LocalDate birthdate;
 
     @Column(name = "is_account_non_expired", nullable = false, columnDefinition="boolean default true")
     private Boolean is_account_non_expired;
@@ -181,11 +182,11 @@ public class User
         this.last_name = last_name;
     }
 
-    public LocalDateTime getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(LocalDateTime birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 
@@ -247,6 +248,39 @@ public class User
 
     public LocalDateTime getDeletedDateTime() {
         return deletedDateTime;
+
+    public User(Long id,
+                String username,
+                String password_hash,
+                String email,
+                String phone_number,
+                String gender,
+                String first_name,
+                String last_name,
+                LocalDate birthdate,
+                Boolean is_account_non_expired,
+                Boolean is_account_non_locked,
+                Boolean is_credentials_non_expired,
+                Boolean is_enabled,
+                Boolean is_deleted,
+                List<Group> groups,
+                List<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password_hash = password_hash;
+        this.email = email;
+        this.phone_number = phone_number;
+        this.gender = gender;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.birthdate = birthdate;
+        this.is_account_non_expired = is_account_non_expired;
+        this.is_account_non_locked = is_account_non_locked;
+        this.is_credentials_non_expired = is_credentials_non_expired;
+        this.is_enabled = is_enabled;
+        this.is_deleted = is_deleted;
+        this.groups = groups;
+        this.roles = roles;
     }
 
     public void setDeletedDateTime(LocalDateTime deletedDateTime) {

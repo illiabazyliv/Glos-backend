@@ -17,6 +17,7 @@ public class GroupDTO
     private List<AccessType> accessTypes;
     private List<UserDTO> users;
 
+
     public GroupDTO() {
     }
 

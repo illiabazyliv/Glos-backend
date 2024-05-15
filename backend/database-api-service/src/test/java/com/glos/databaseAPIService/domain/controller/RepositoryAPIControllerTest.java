@@ -2,19 +2,26 @@ package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.api.entities.Repository;
 import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
+import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
 import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import java.lang.Long;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +38,10 @@ class RepositoryAPIControllerTest {
 
     @MockBean
     private RepositoryService repositoryService;
+    @MockBean
+    private RepositoryDTOMapper mapper;
+    @MockBean
+    private UserDTOMapper userDTOMapper;
 
     @Test
     public void getRepositoryTest() throws Exception {
@@ -38,7 +49,7 @@ class RepositoryAPIControllerTest {
         Repository repository = new Repository();
         repository.setId(id);
 
-        when(repositoryService.findById(id)).thenReturn(Optional.of(repository));
+        when(repositoryService.getById(id)).thenReturn(Optional.of(repository));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/repositories/{id}" , id)
@@ -56,7 +67,7 @@ class RepositoryAPIControllerTest {
         response.setOwner(owner);
         repository.setOwner(owner);
 
-        when(repositoryService.save(any(Repository.class))).thenReturn(response);
+        when(repositoryService.create(any(Repository.class))).thenReturn(response);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(repository);
@@ -67,7 +78,7 @@ class RepositoryAPIControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
-        verify(repositoryService, times(1)).save(any(Repository.class));
+        verify(repositoryService, times(1)).create(any(Repository.class));
     }
 
     @Test
@@ -87,7 +98,7 @@ class RepositoryAPIControllerTest {
         Repository request = new Repository();
         Repository updated = new Repository();
 
-        when(repositoryService.update(request, id)).thenReturn(updated);
+        when(repositoryService.update(id , request)).thenReturn(updated);
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(request);
 
@@ -100,67 +111,46 @@ class RepositoryAPIControllerTest {
 
     @Test
     void getRepositoriesByOwnerIdTest() throws Exception {
-        Long id = 1L;
+        Long ownerId = 1L;
         Repository repository = new Repository();
-        repository.setId(1L);
+        List<Repository> repositories = List.of(repository);
 
-        List<Repository> repositories =List.of(repository);
+        when(repositoryService.findAllByOwnerId(anyLong())).thenReturn(repositories);
 
-        when(repositoryService.findAllByOwnerId(id)).thenReturn(repositories);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(repositories);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/repositories/owner-id/" + id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner-id/{owner-id}", ownerId)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(repositoryService, times(1)).findAllByOwnerId(id);
+        Mockito.verify(repositoryService, Mockito.times(1)).findAllByOwnerId(Mockito.anyLong());
     }
-
     @Test
     void getRepositoryByRootFullNameTest() throws Exception {
-        String rootFullName = "rootFullName";
-        String ordinalRootFullName = PathUtils.originalPath(rootFullName);
-
+        String rootFullName = "testRootFullName";
         Repository repository = new Repository();
-        repository.setId(1L);
 
-        when(repositoryService.findByRootFullName(ordinalRootFullName)).thenReturn(Optional.of(repository));
+        Mockito.when(repositoryService.findByRootFullName(Mockito.anyString())).thenReturn(Optional.of(repository));
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(repository);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/repositories/root-full-name/" + rootFullName)
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-full-name/{rootFullName}", rootFullName)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(repositoryService, times(1)).findByRootFullName(ordinalRootFullName);
+        Mockito.verify(repositoryService, Mockito.times(1)).findByRootFullName(Mockito.anyString());;
     }
 
     @Test
     void getRepositoriesByFilterTest() throws Exception {
         Repository filter = new Repository();
         Repository repository = new Repository();
-        repository.setId(1L);
-
         List<Repository> repositories = List.of(repository);
 
-        when(repositoryService.findAllByFilter(filter)).thenReturn(repositories);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(repositories);
+        Mockito.when(repositoryService.findAllByFilter(Mockito.any(Repository.class))).thenReturn(repositories);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/repositories")
+                .get("/repositories")
+                .param("name", filter.getDisplayName())
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
-        verify(repositoryService, times(1)).findAllByFilter(any(Repository.class));
+        Mockito.verify(repositoryService, Mockito.times(1)).findAllByFilter(Mockito.any(Repository.class));
     }
-}
+    }

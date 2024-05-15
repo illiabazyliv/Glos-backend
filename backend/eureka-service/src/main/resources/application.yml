@@ -1,6 +1,6 @@
 server:
   address: ${SERVER_ADDRESS:localhost}
-  port: ${SERVER_PORT:9001}
+  port: ${PORT:9001}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
 
@@ -15,4 +15,4 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      defaultZone: ${EUREKA_CLIENT_DEFAULT_ZONE:http://localhost:9001/api/eureka}
+      defaultZone: ${EUREKA_CLIENT_DEFAULT_ZONE:http://${server.address}:${server.port}${server.servlet.context-path}/eureka}
