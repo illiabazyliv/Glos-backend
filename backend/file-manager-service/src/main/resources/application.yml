@@ -1,0 +1,25 @@
+server:
+  address: ${SERVER_ADDRESS:localhost}
+  port: ${SERVER_PORT:9006}
+  servlet:
+    context-path: ${SERVER_CONTEXT_PATH:/api/v1}
+
+spring:
+  application:
+    name: ${APPLICATION_NAME:file-manager-service}
+
+eureka:
+  instance:
+    hostname: ${APPLICATION_NAME:file-manager-service}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_DEFAULT_ZONE:http://localhost:9001/api/eureka/}
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          files:
+            url: http://localhost:8080/api/v1/files
+          repositories:
+            url: http://localhost:8080/api/v1/repositories
