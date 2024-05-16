@@ -5,7 +5,9 @@ import com.glos.api.entities.File;
 import com.glos.filemanagerservice.DTO.CommentDTO;
 import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.mappers.AbstractMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FileDTOMapper extends AbstractMapper<FileDTO, File>
 {
     private final RepositoryDTOMapper repositoryDTOMapper;
