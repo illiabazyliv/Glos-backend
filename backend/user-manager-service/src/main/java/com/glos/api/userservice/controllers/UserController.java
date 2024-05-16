@@ -47,11 +47,10 @@ public class UserController
     @PostMapping("/{role}")
     public ResponseEntity<UserDTO> create(
             @PathVariable String role,
-            @RequestBody UserDTO user,
+            @RequestBody User user,
             UriComponentsBuilder uriComponentsBuilder)
     {
-        User mapped = userDTOMapper.toEntity(user);
-        ResponseEntity<User> created = userAPIFacade.create(mapped, role);
+        ResponseEntity<User> created = userAPIFacade.create(user, role);
         if (created.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity
                     .created(uriComponentsBuilder.path("/users/{username}")
