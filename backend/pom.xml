@@ -26,6 +26,7 @@
     <module>user-manager-service</module>
     <module>auth-service</module>
     <module>file-manager-service</module>
+    <module>access-service</module>
   </modules>
 
   <properties>
