@@ -38,11 +38,6 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> get() {
-        return userDatabaseAPIClient.getAll();
-    }
-
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(
             @RequestBody SignUpRequest request
