@@ -1,20 +1,23 @@
 package com.glos.api.authservice.controller;
 
-import com.glos.api.authservice.client.UserDatabaseAPIClient;
-import com.glos.api.authservice.dto.SignInRequest;
+import com.glos.api.authservice.client.UserAPIClient;
 import com.glos.api.authservice.dto.SignUpRequest;
 import com.glos.api.authservice.mapper.SignUpRequestMapper;
 import com.glos.api.authservice.service.AuthService;
+import com.glos.api.authservice.util.Constants;
+import com.glos.api.authservice.util.security.JwtRequest;
+import com.glos.api.authservice.util.security.JwtResponse;
+import com.glos.api.authservice.util.security.SimpleAuthService;
+import com.glos.api.authservice.validation.OnCreate;
 import com.glos.api.entities.User;
-import org.springframework.http.HttpRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationManager;;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,59 +25,63 @@ public class AuthController {
 
     private final AuthService authService;
     private final SignUpRequestMapper signUpRequestMapper;
-
-    private final UserDatabaseAPIClient userDatabaseAPIClient;
     private final AuthenticationManager authenticationManager;
+    private final UserAPIClient userAPIClient;
+    private final SimpleAuthService simpleAuthService;
 
     public AuthController(
             AuthService authService,
             SignUpRequestMapper signUpRequestMapper,
-            UserDatabaseAPIClient userDatabaseAPIClient,
-            AuthenticationManager authenticationManager
+            UserAPIClient userAPIClient,
+            AuthenticationManager authenticationManager,
+            SimpleAuthService simpleAuthService
     ) {
         this.authService = authService;
         this.signUpRequestMapper = signUpRequestMapper;
-        this.userDatabaseAPIClient = userDatabaseAPIClient;
+        this.userAPIClient = userAPIClient;
         this.authenticationManager = authenticationManager;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<User>> get() {
-        return userDatabaseAPIClient.getAll();
+        this.simpleAuthService = simpleAuthService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(
-            @RequestBody SignUpRequest request
+    public ResponseEntity<JwtResponse> registerUser(
+            @RequestBody  @Validated(OnCreate.class)  SignUpRequest request
     ) {
         User user = signUpRequestMapper.toEntity(request);
-        return ResponseEntity.ok(authService.create(user));
+        JwtResponse response = new JwtResponse();
+        response.setAccessToken(authService.create(user, Constants.ROLE_USER));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/admin/register")
-    public ResponseEntity<String> registerAdmin(
-            @RequestBody SignUpRequest request
+    public ResponseEntity<JwtResponse> registerAdmin(
+            @RequestBody @Validated(OnCreate.class) SignUpRequest request
     ) {
         User user = signUpRequestMapper.toEntity(request);
-        return ResponseEntity.ok(authService.create(user));
+        JwtResponse response = new JwtResponse();
+        response.setAccessToken(authService.create(user, Constants.ROLE_ADMIN));
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
-            @RequestBody SignInRequest signInRequest
+    public ResponseEntity<JwtResponse> login(
+            @RequestBody @Valid JwtRequest jwtRequest
     ) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok(
-                    authService.generateToken(signInRequest.getUsername())
-            );
+            //TokenResponse response = new TokenResponse();
+            JwtResponse response = new JwtResponse();
+            response.setAccessToken(authService.generateToken(jwtRequest.getUsername()));
+
+            //JwtResponse response = simpleAuthService.authenticate(jwtRequest);
+            return ResponseEntity.ok(response);
         } else {
-            throw new UsernameNotFoundException("invalid access");
+            throw new UsernameNotFoundException("Invalid access");
         }
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<String> validateToken(
+    public ResponseEntity<?> validateToken(
             @RequestParam("token") String token
     ) {
         authService.validateToken(token);
@@ -82,7 +89,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> refresh() {
-        return ResponseEntity.ok(null);
+    public ResponseEntity<JwtResponse> refresh() {
+        JwtResponse response = new JwtResponse();
+        return ResponseEntity.ok(response);
     }
 }

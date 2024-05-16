@@ -18,10 +18,14 @@ spring:
     openfeign:
       client:
         config:
-#          user:
-#            url: http://localhost:9005/api/v1
-          user-database:
-            url: http://localhost:8080/api/v1
+          user:
+            url: http://localhost:9005/api/v1
+
+security:
+  jwt:
+    secret: ${SECURITY_JWT_SECRET:"583773d0820a96e7b12c0bc72b0e132224552a82ad95953778bfacfa7d5a4f1a"}
+    access: ${SECURITY_JWT_ACCESS:3600000}
+    refresh: ${SECURITY_JWT_REFRESH:2592000000}
 
 jwt:
   secret:

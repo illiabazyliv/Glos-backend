@@ -1,7 +1,7 @@
 package com.glos.api.authservice.service;
 
 import com.glos.api.authservice.client.UserAPIClient;
-import com.glos.api.authservice.client.UserDatabaseAPIClient;
+import com.glos.api.entities.Role;
 import com.glos.api.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,26 +14,20 @@ public class AuthService {
     private final UserAPIClient userClient;
     private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService;
-    private final UserDatabaseAPIClient userDatabaseAPIClient;
 
     public AuthService(
             UserAPIClient userClient,
             PasswordEncoder passwordEncoder,
-            JWTService jwtService,
-            UserDetailsService userDetailsService,
-            UserDatabaseAPIClient userDatabaseAPIClient
+            JWTService jwtService
     ) {
         this.userClient = userClient;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-        this.userDatabaseAPIClient = userDatabaseAPIClient;
     }
 
-    public String create(User user) {
+    public String create(User user, Role role) {
         user.setPassword_hash(passwordEncoder.encode(user.getPassword_hash()));
-        ResponseEntity<User> response = userDatabaseAPIClient.create(user);
+        ResponseEntity<User> response = userClient.create(user, role.getName());
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Faild created user");
         }
