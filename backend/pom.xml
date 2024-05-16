@@ -25,6 +25,7 @@
     <module>database-api-service</module>
     <module>user-manager-service</module>
     <module>auth-service</module>
+    <module>file-manager-service</module>
   </modules>
 
   <properties>
