@@ -2,6 +2,7 @@ package com.glos.api.authservice.config;
 
 import com.glos.api.authservice.client.UserAPIClient;
 import com.glos.api.authservice.client.UserDatabaseAPIClient;
+import com.glos.api.authservice.mapper.UserDetailsMapper;
 import com.glos.api.authservice.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,7 +62,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
-
-
 }
