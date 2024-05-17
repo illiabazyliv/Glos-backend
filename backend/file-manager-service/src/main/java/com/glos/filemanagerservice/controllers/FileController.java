@@ -2,6 +2,8 @@ package com.glos.filemanagerservice.controllers;
 
 import com.glos.api.entities.File;
 import com.glos.filemanagerservice.DTO.FileDTO;
+import com.glos.filemanagerservice.facade.FileApiFacade;
+import com.glos.filemanagerservice.facade.RepositoryApiFacade;
 import com.glos.filemanagerservice.requestFilters.FileRequestFilter;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
@@ -26,14 +28,18 @@ public class FileController
     private final FileDTOMapper fileDTOMapper;
     private final FileRequestMapper fileRequestMapper;
 
+    private final FileApiFacade fileApiFacade;
+
 
     public FileController(FileClient fileClient,
                           RepositoryClient repositoryClient,
-                          FileDTOMapper fileDTOMapper, FileRequestMapper fileRequestMapper) {
+                          FileDTOMapper fileDTOMapper, FileRequestMapper fileRequestMapper,
+                          FileApiFacade fileApiFacade) {
         this.fileClient = fileClient;
         this.repositoryClient = repositoryClient;
         this.fileDTOMapper = fileDTOMapper;
         this.fileRequestMapper = fileRequestMapper;
+        this.fileApiFacade = fileApiFacade;
     }
 
     @GetMapping("/{id}")
@@ -78,17 +84,8 @@ public class FileController
                                                          @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort
     )
     {
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryById(repositoryId).getBody();
-        FileDTO fileDTO = new FileDTO();
-        fileDTO.setRepository(repositoryDTO);
-        FileRequestFilter filter = new FileRequestFilter();
-        fileRequestMapper.transferEntityDto(fileDTO, filter);
-        filter.setPage(page);
-        filter.setSize(size);
-        filter.setSort(sort);
 
-        Map<String, Object> map = MapUtils.map(filter);
-        return ResponseEntity.ok(fileClient.getFilesByFilter(map).getBody());
+        return ResponseEntity.ok(fileApiFacade.getFileByRepository(repositoryId, page, size, sort).getBody());
     }
 
     @GetMapping
@@ -98,13 +95,13 @@ public class FileController
                                                      @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort
     )
     {
-        FileDTO fileDTO = fileDTOMapper.toDto(file);
-        FileRequestFilter filter = fileRequestMapper.toDto(fileDTO);
-        filter.setPage(page);
-        filter.setSize(size);
-        filter.setSort(sort);
+        return ResponseEntity.ok(fileApiFacade.getFilesByFilter(file, page, size, sort).getBody());
+    }
 
-        Map<String, Object> map = MapUtils.map(filter);
-        return ResponseEntity.ok(fileClient.getFilesByFilter(map).getBody());
+    @PutMapping("/{rootFullName}/append-access-type/{name}")
+    public ResponseEntity<?> appendAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
+    {
+        fileApiFacade.fileAppendAccessType(rootFullName, name);
+        return ResponseEntity.noContent().build();
     }
 }

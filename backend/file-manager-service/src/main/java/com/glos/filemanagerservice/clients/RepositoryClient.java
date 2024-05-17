@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @FeignClient(name = "repositories")
 public interface RepositoryClient
@@ -31,5 +32,8 @@ public interface RepositoryClient
 
     @GetMapping()
     public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
+
+    @GetMapping("/root-full-name/{rootFullName}")
+    ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);
 
 }

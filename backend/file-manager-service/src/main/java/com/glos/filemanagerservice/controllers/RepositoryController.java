@@ -1,10 +1,10 @@
 package com.glos.filemanagerservice.controllers;
 
 import com.glos.api.entities.Repository;
-import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
 import com.glos.filemanagerservice.DTO.UserDTO;
+import com.glos.filemanagerservice.facade.RepositoryApiFacade;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
@@ -23,11 +23,16 @@ public class RepositoryController
     private final RepositoryClient repositoryClient;
     private  final RepositoryRequestMapper requestMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
+    private final RepositoryApiFacade repositoryApiFacade;
 
-    public RepositoryController(RepositoryClient repositoryClient, RepositoryRequestMapper requestMapper, RepositoryDTOMapper repositoryDTOMapper) {
+    public RepositoryController(RepositoryClient repositoryClient,
+                                RepositoryRequestMapper requestMapper,
+                                RepositoryDTOMapper repositoryDTOMapper,
+                                RepositoryApiFacade repositoryApiFacade) {
         this.repositoryClient = repositoryClient;
         this.requestMapper = requestMapper;
         this.repositoryDTOMapper = repositoryDTOMapper;
+        this.repositoryApiFacade = repositoryApiFacade;
     }
 
     @GetMapping("/{id}")
@@ -65,17 +70,7 @@ public class RepositoryController
                                                             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                             @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(ownerId);
-        RepositoryDTO repositoryDTO = new RepositoryDTO();
-        repositoryDTO.setOwner(userDTO);
-        RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
-        requestFilter.setPage(page);
-        requestFilter.setSize(size);
-        requestFilter.setSort(sort);
-
-        Map<String, Object> map = MapUtils.map(requestFilter);
-        return ResponseEntity.ok(repositoryClient.getRepositoriesByFilter(map).getBody());
+        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByOwnerId(ownerId, page, size, sort).getBody());
     }
 
     @GetMapping
@@ -84,13 +79,13 @@ public class RepositoryController
                                                            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                            @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
-        RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
-        RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
-        requestFilter.setPage(page);
-        requestFilter.setSize(size);
-        requestFilter.setSort(sort);
+        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, page, size, sort).getBody());
+    }
 
-        Map<String, Object> map = MapUtils.map(requestFilter);
-        return ResponseEntity.ok(repositoryClient.getRepositoriesByFilter(map).getBody());
+    @PutMapping("/{rootFullName}/append-access-type/{name}")
+    public ResponseEntity<?> appendAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
+    {
+        repositoryApiFacade.repositoryAppendAccessType(rootFullName, name);
+        return ResponseEntity.noContent().build();
     }
 }
