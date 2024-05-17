@@ -31,7 +31,7 @@ public class FileDTO
 
     private List<AccessType> accessTypes;
 
-    private List<Comment> comments;
+    private List<CommentDTO> comments;
     private List<SecureCode> secureCodes;
     private List<Tag> tags;
 
@@ -46,7 +46,7 @@ public class FileDTO
                    String displayFullName,
                    RepositoryDTO repository,
                    List<AccessType> accessTypes,
-                   List<Comment> comments,
+                   List<CommentDTO> comments,
                    List<SecureCode> secureCodes,
                    List<Tag> tags) {
         this.id = id;
@@ -156,11 +156,11 @@ public class FileDTO
         this.accessTypes = accessTypes;
     }
 
-    public List<Comment> getComments() {
+    public List<CommentDTO> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
     }
 

@@ -2,6 +2,7 @@ package com.glos.api.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,6 +86,11 @@ public class Repository
     private List<File> files;
 
     public Repository() {
+        this.comments = new ArrayList<>();
+        this.files = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.accessTypes = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {

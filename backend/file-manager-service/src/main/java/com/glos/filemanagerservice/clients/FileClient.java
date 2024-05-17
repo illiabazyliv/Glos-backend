@@ -2,6 +2,7 @@ package com.glos.filemanagerservice.clients;
 
 import com.glos.api.entities.File;
 import com.glos.filemanagerservice.DTO.FileDTO;
+import com.glos.filemanagerservice.DTO.Page;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
@@ -15,20 +16,20 @@ import java.util.Map;
 public interface FileClient
 {
     @GetMapping("/{id}")
-    public ResponseEntity<FileDTO> getFileByID(@PathVariable Long id);
+    ResponseEntity<FileDTO> getFileByID(@PathVariable Long id);
 
     @PostMapping
-    public ResponseEntity<FileDTO> createFile(@RequestBody File file);
+    ResponseEntity<FileDTO> createFile(@RequestBody File file);
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFile(@RequestBody File newFile, @PathVariable("id") Long id);
+    ResponseEntity<?> updateFile(@RequestBody File newFile, @PathVariable("id") Long id);
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFile(@PathVariable Long id);
+    ResponseEntity<?> deleteFile(@PathVariable Long id);
 
-    @GetMapping("/repository/{repositoryId}")
-    public  ResponseEntity<List<FileDTO>> getFilesByRepository(@PathVariable Long repositoryId);
+    @GetMapping
+    ResponseEntity<Page<FileDTO>> getFilesByFilter(@SpringQueryMap Map<String, Object> filter);
 
-    @GetMapping()
-    public ResponseEntity<List<FileDTO>> getFilesByFilter(@SpringQueryMap Map<String, Object> filter);
+    @GetMapping("/root-fullname/{rootFullName}")
+    public ResponseEntity<FileDTO> getFileByRootFullName(@PathVariable String rootFullName);
 }

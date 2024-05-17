@@ -1,12 +1,15 @@
-package com.glos.databaseAPIService.domain.responseDTO;
+package com.glos.filemanagerservice.requestFilters;
 
-import com.glos.api.entities.*;
 import com.glos.api.entities.AccessType;
-import jakarta.persistence.*;
+import com.glos.api.entities.SecureCode;
+import com.glos.api.entities.Tag;
+import com.glos.filemanagerservice.DTO.CommentDTO;
+import com.glos.filemanagerservice.DTO.UserDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryDTO
+public class RepositoryRequestFilter
 {
     private Long id;
 
@@ -35,22 +38,12 @@ public class RepositoryDTO
     private List<SecureCode> secureCodes;
 
     private List<Tag> tags;
-    //file
 
-    public RepositoryDTO(Long id,
-                         String rootPath,
-                         String rootName,
-                         String rootFullName,
-                         UserDTO owner,
-                         Boolean isDefault,
-                         String displayPath,
-                         String displayName,
-                         String displayFullName,
-                         String description,
-                         List<AccessType> accessTypes,
-                         List<CommentDTO> comments,
-                         List<SecureCode> secureCodes,
-                         List<Tag> tags) {
+    private int page;
+    private int size;
+    private String sort;
+
+    public RepositoryRequestFilter(Long id, String rootPath, String rootName, String rootFullName, UserDTO owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<CommentDTO> comments, List<SecureCode> secureCodes, List<Tag> tags, int page, int size, String sort) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -65,9 +58,18 @@ public class RepositoryDTO
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
+        this.page = page;
+        this.size = size;
+        this.sort = sort;
     }
 
-    public RepositoryDTO() {
+    public RepositoryRequestFilter()
+    {
+        this.accessTypes = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.tags = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.owner = new UserDTO();
     }
 
     public Long getId() {
@@ -180,5 +182,29 @@ public class RepositoryDTO
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
     }
 }

@@ -13,6 +13,10 @@ import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.FileService;
 import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -82,10 +86,16 @@ public class FileAPIController
     }
 
     @GetMapping("/repository/{repositoryId}")
-    public  ResponseEntity<List<FileDTO>> getFilesByRepository(@PathVariable Long repositoryId)
+    public  ResponseEntity<Page<FileDTO>> getFilesByRepository(
+            @ModelAttribute Repository repository,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    )
     {
-        List<File> files = fileService.findAllByRepositoryId(repositoryId);
-        return ResponseEntity.of(Optional.of(files.stream().map((x) -> {return transferEntityDTO(x, new FileDTO());}).toList()));
+        File filter = new File();
+        filter.setRepository(repository);
+        Page<File> files = fileService.findAllByRepository(filter, pageable);
+        Page<FileDTO> fileDTOS = files.map(fileDTOMapper::toDto);
+        return ResponseEntity.ok(fileDTOS);
     }
 
     @GetMapping("/root-fullname/{rootFullName}")
@@ -99,11 +109,15 @@ public class FileAPIController
     }
 
     @GetMapping()
-    public ResponseEntity<List<FileDTO>> getFilesByFilter(@ModelAttribute File filter)
+    public ResponseEntity<Page<FileDTO>> getFilesByFilter(
+            @ModelAttribute File filter,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    )
     {
         PathUtils.ordinalPathsFile(filter);
-        List<File> files = fileService.findAllByFilter(filter);
-        return ResponseEntity.of(Optional.of(files.stream().map((x) -> {return transferEntityDTO(x, new FileDTO());}).toList()));
+        Page<File> files = fileService.findAllByFilter(filter, pageable);
+        Page<FileDTO> fileDTOS = files.map(fileDTOMapper::toDto);
+        return ResponseEntity.ok(fileDTOS);
     }
 
     FileDTO transferEntityDTO(File source, FileDTO destination)

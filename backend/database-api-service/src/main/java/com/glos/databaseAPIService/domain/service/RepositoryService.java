@@ -9,6 +9,8 @@ import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
 import com.glos.databaseAPIService.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -155,16 +157,17 @@ public class RepositoryService implements CrudService<Repository, Long>
         return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
     }
 
-    public List<Repository> findAllByFilter(Repository filter) {
-        List<Repository> list = repository.findAll(Example.of(filter));
+    public Page<Repository> findAllByFilter(Repository filter, Pageable pageable) {
+        Page<Repository> list = repository.findAll(Example.of(filter), pageable);
 
-        return list.stream()
+        list.stream()
                 .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))
                 .filter(x -> filter.getComments() == null || x.getComments().containsAll(filter.getComments()))
                 .filter(x -> filter.getSecureCodes() == null || x.getSecureCodes().containsAll(filter.getSecureCodes()))
                 .filter(x -> filter.getTags() == null || x.getTags().containsAll(filter.getTags()))
-                .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()))
-                .toList();
+                .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()));
+
+        return list;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.glos.api.entities;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -78,6 +79,11 @@ public class File
     private List<Tag> tags;
 
     public File() {
+        this.repository = new Repository();
+        this.tags = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.accessTypes = new ArrayList<>();
     }
 
     public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {

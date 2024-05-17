@@ -10,22 +10,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentDTOMapper extends AbstractMapper<Comment, CommentDTO>
 {
-    private UserDTOMapper userDTOMapper;
+    private final UserDTOMapper userMapper;
 
-    public CommentDTOMapper(UserDTOMapper userDTOMapper) {
-        this.userDTOMapper = userDTOMapper;
+    public CommentDTOMapper(UserDTOMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
-    @Override
-    protected void postEntityCopy(CommentDTO source, Comment destination)
-    {
-        destination.setAuthor(userDTOMapper.toEntity(source.getAuthor()));
-    }
 
     @Override
     protected void postDtoCopy(Comment source, CommentDTO destination)
     {
-        destination.setAuthor(userDTOMapper.toDto(source.getAuthor()));
+        destination.setAuthor(userMapper.toDto(source.getAuthor()));
+    }
+    @Override
+    protected void postEntityCopy(CommentDTO source, Comment destination)
+    {
+        destination.setAuthor(userMapper.toEntity(source.getAuthor()));
     }
 
 }

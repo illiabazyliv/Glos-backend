@@ -9,6 +9,8 @@ import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,19 +77,19 @@ public class FileService implements CrudService<File, Long>
         return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
     }
 
-    public List<File> findAllByRepositoryId(Long id)
+    public Page<File> findAllByRepository(File filter, Pageable pageable)
     {
-        return fileRepository.findAllByRepositoryId(id);
+        return fileRepository.findAll(Example.of(filter), pageable);
     }
 
-    public List<File> findAllByFilter(File filter)
+    public Page<File> findAllByFilter(File filter, Pageable pageable)
     {
-        List<File> files = fileRepository.findAll(Example.of(filter));
-        return files.stream()
+        Page<File> files = fileRepository.findAll(Example.of(filter), pageable);
+        files.getContent().stream()
                 .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))
                 .filter(x -> filter.getComments() == null || x.getComments().containsAll(filter.getComments()))
-                .filter(x -> filter.getSecureCodes() == null || x.getSecureCodes().containsAll(filter.getSecureCodes()))
-                .toList();
+                .filter(x -> filter.getSecureCodes() == null || x.getSecureCodes().containsAll(filter.getSecureCodes()));
+        return files;
     }
 
     public Optional<File> findByRootFullName(String rootFullName)

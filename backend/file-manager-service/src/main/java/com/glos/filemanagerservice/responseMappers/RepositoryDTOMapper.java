@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class RepositoryDTOMapper extends AbstractMapper<RepositoryDTO, Repository>
+public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDTO>
 {
 
     private final UserDTOMapper userDTOMapper;
@@ -21,16 +21,18 @@ public class RepositoryDTOMapper extends AbstractMapper<RepositoryDTO, Repositor
         this.commentDTOMapper = commentDTOMapper;
     }
 
-    protected void postEntityCopy(RepositoryDTO source, Repository destination)
-    {
-        destination.setOwner(userDTOMapper.toEntity(source.getOwner()));
-        destination.setComments(source.getComments().stream().map(commentDTOMapper::toDto).toList());
-    }
-
+    @Override
 
     protected void postDtoCopy(Repository source, RepositoryDTO destination)
     {
         destination.setOwner(userDTOMapper.toDto(source.getOwner()));
+        destination.setComments(source.getComments().stream().map(commentDTOMapper::toDto).toList());
+    }
+
+    @Override
+    protected void postEntityCopy(RepositoryDTO source, Repository destination)
+    {
+        destination.setOwner(userDTOMapper.toEntity(source.getOwner()));
         destination.setComments(source.getComments().stream().map(commentDTOMapper::toEntity).toList());
     }
 }

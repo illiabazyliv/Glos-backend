@@ -6,5 +6,7 @@ import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDTOMapper extends AbstractMapper<User, UserDTO> {
+public class UserDTOMapper extends AbstractMapper<User, UserDTO>
+{
+
 }

@@ -10,6 +10,10 @@ import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
 import com.glos.databaseAPIService.domain.util.PathUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -99,12 +103,16 @@ public class RepositoryAPIController
     }
 
     @GetMapping()
-    public ResponseEntity<List<RepositoryDTO>> getRepositoriesByFilter(@ModelAttribute Repository filter)
+    public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(
+            @ModelAttribute Repository filter,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
         PathUtils.ordinalPathsRepository(filter);
-        List<Repository> repositories = repositoryService.findAllByFilter(filter);
+        Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable);
+        Page<RepositoryDTO> repositoryDTOS = repositories.map(mapper::toDto);
 
-        return ResponseEntity.ok(repositories.stream().map((x) -> {return transferEntityDTO(x, new RepositoryDTO());}).toList());
+
+        return ResponseEntity.ok(repositoryDTOS);
     }
 
     RepositoryDTO transferEntityDTO(Repository source, RepositoryDTO destination)

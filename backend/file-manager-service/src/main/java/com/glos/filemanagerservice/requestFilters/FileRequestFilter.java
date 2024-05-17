@@ -1,13 +1,14 @@
-package com.glos.filemanagerservice.DTO;
+package com.glos.filemanagerservice.requestFilters;
 
 import com.glos.api.entities.AccessType;
-import com.glos.api.entities.Comment;
 import com.glos.api.entities.SecureCode;
 import com.glos.api.entities.Tag;
+import com.glos.filemanagerservice.DTO.CommentDTO;
+import com.glos.filemanagerservice.DTO.RepositoryDTO;
 
 import java.util.List;
 
-public class FileDTO
+public class FileRequestFilter
 {
     private Long id;
 
@@ -35,20 +36,11 @@ public class FileDTO
     private List<SecureCode> secureCodes;
     private List<Tag> tags;
 
-    public FileDTO(Long id,
-                   String rootPath,
-                   String rootFilename,
-                   String rootFullName,
-                   Integer rootSize,
-                   String rootFormat,
-                   String displayPath,
-                   String displayFilename,
-                   String displayFullName,
-                   RepositoryDTO repository,
-                   List<AccessType> accessTypes,
-                   List<CommentDTO> comments,
-                   List<SecureCode> secureCodes,
-                   List<Tag> tags) {
+    private int page;
+    private int size;
+    private String sort;
+
+    public FileRequestFilter(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, RepositoryDTO repository, List<AccessType> accessTypes, List<CommentDTO> comments, List<SecureCode> secureCodes, List<Tag> tags, int page, int size, String sort) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -63,9 +55,12 @@ public class FileDTO
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
+        this.page = page;
+        this.size = size;
+        this.sort = sort;
     }
 
-    public FileDTO()
+    public FileRequestFilter()
     {
         this.repository = new RepositoryDTO();
     }
@@ -180,5 +175,29 @@ public class FileDTO
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
     }
 }

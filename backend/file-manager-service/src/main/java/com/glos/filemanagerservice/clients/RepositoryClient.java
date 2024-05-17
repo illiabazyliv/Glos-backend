@@ -1,6 +1,7 @@
 package com.glos.filemanagerservice.clients;
 
 import com.glos.api.entities.Repository;
+import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -29,6 +30,6 @@ public interface RepositoryClient
     public ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId);
 
     @GetMapping()
-    public ResponseEntity<List<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
+    public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
 
 }
