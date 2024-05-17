@@ -1,6 +1,6 @@
 package com.glos.api.authservice.service;
 
-import com.glos.api.authservice.config.props.JwtProperties;
+import com.glos.api.authservice.util.security.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

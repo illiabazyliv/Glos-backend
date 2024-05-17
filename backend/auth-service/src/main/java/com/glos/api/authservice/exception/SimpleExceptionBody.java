@@ -17,6 +17,11 @@ public class SimpleExceptionBody implements ExceptionBody {
     }
 
     @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
     public void setMessage(String message) {
         this.message = message;
     }

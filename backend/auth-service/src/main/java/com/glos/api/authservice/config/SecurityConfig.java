@@ -1,7 +1,7 @@
 package com.glos.api.authservice.config;
 
 import com.glos.api.authservice.client.UserAPIClient;
-import com.glos.api.authservice.mapper.UserDetailsMapper;
+import com.glos.api.authservice.client.UserDatabaseAPIClient;
 import com.glos.api.authservice.util.security.UserDetailsServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -59,6 +58,19 @@ public class SecurityConfig {
     }
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(
+            UserAPIClient userAPIClient,
+            UserDatabaseAPIClient userDatabaseAPIClient
+    ) {
+        return new UserDetailsServiceImpl(userAPIClient, userDatabaseAPIClient);
+    }
+
+    @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
@@ -67,20 +79,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService(
-            UserAPIClient userAPIClient,
-            UserDetailsMapper userDetailsMapper
-    ) {
-        return new UserDetailsServiceImpl(userAPIClient, userDetailsMapper);
-    }
-
-    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+
         return config.getAuthenticationManager();
     }
 }

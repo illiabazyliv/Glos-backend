@@ -2,9 +2,7 @@ package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
 import com.glos.api.authservice.client.UserDatabaseAPIClient;
-import com.glos.api.authservice.dto.UserDetailsImpl;
 import com.glos.api.authservice.exception.ResponseEntityException;
-import com.glos.api.authservice.mapper.UserDetailsMapper;
 import com.glos.api.entities.User;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +28,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         ResponseEntity<User> response = userAPIClient.getByUsername(username);
         User u1 = getUser(response);
         User u2 = getUser(userDatabaseAPIClient.getById(u1.getId()));
-        return new UserDetailsImpl(() -> u2);
+        JwtEntity j = new JwtEntity();
+        j.setUser(u2);
+        return j;
     }
 
     private User getUser(ResponseEntity<User> getUserResponse)

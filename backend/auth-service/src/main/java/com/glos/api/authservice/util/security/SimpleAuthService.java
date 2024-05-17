@@ -1,20 +1,20 @@
 package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
-import com.glos.api.authservice.dto.SignInRequest;
 import com.glos.api.authservice.exception.UserAccountStateException;
-import com.glos.api.authservice.mapper.JwtEntityMapper;
+import com.glos.api.entities.Roles;
 import com.glos.api.entities.User;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Service
 public class SimpleAuthService implements AuthService {
@@ -22,40 +22,51 @@ public class SimpleAuthService implements AuthService {
     private final UserAPIClient userAPIClient;
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
-    private final JwtEntityMapper jwtEntityMapper;
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
     public SimpleAuthService(
             UserAPIClient userAPIClient,
             JwtService jwtService,
             AuthenticationManager authManager,
-            JwtEntityMapper jwtEntityMapper
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
     ) {
         this.userAPIClient = userAPIClient;
         this.jwtService = jwtService;
         this.authManager = authManager;
-        this.jwtEntityMapper = jwtEntityMapper;
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public JwtResponse register(JwtEntity jwtEntity) {
+        JwtRequest request = new JwtRequest(jwtEntity.getUsername(), jwtEntity.getPassword());
+        User user = jwtEntity.getUser();
+        create(user, Roles.fromName(user.getRoles().get(0).getName()));
+        return authenticate(request);
+    }
+
+    private User create(User user, Roles role) {
+        user.setPassword_hash(passwordEncoder.encode(user.getPassword_hash()));
+        ResponseEntity<User> response = userAPIClient.create(user, role.name());
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Faild created user");
+        }
+        User created = response.getBody();
+        created.setPassword_hash(user.getPassword_hash());
+        return created;
     }
 
     @Override
     public JwtResponse authenticate(JwtRequest request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated()) {
-            throw new IllegalStateException("Authentication is already done.");
-        }
-
-        User user = getUserByUsername(request.getUsername());
-
-        if (user.getIs_account_non_locked() != null && !user.getIs_account_non_locked()) {
-            throw new UserAccountStateException("Account is blocked.");
-        }
-
-        JwtEntity entity = jwtEntityMapper.toDto(user);
-
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                entity, entity.getPassword(), entity.getAuthorities()
+                request.getUsername(), request.getPassword()
         );
-        System.out.println(authentication);
-        authManager.authenticate(authentication);
+
+        authentication = authManager.authenticate(authentication);
+
+        UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
 
         return createResponse(user);
     }
@@ -70,8 +81,8 @@ public class SimpleAuthService implements AuthService {
         return response.getBody();
     }
 
-    private JwtResponse createResponse(User user) {
-        JwtEntity jwtEntity = jwtEntityMapper.toDto(user);
+    private JwtResponse createResponse(UserDetails user) {
+        JwtEntity jwtEntity = (JwtEntity) user;
 
         String accessToken = jwtService.generateAccessToken(jwtEntity);
         String refreshToken = jwtService.generateRefreshToken(jwtEntity);
@@ -84,8 +95,8 @@ public class SimpleAuthService implements AuthService {
     }
 
     @Override
-    public JwtResponse refresh(String refreshToken) {
-        return jwtService.refreshUserTokens(refreshToken);
+    public JwtResponse refresh(JwtRefreshRequest refreshRequest) {
+        return jwtService.refreshUserTokens(refreshRequest.getRefreshToken());
     }
 
     @Override

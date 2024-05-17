@@ -159,7 +159,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionBody handleAuthentication(final AuthenticationException e) {
         return new SimpleExceptionBody("Authentication failed.", new HashMap<>());
     }

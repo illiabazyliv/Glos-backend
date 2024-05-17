@@ -4,6 +4,7 @@ package com.glos.api.authservice.exception;
 import java.util.Map;
 
 public interface ExceptionBody {
+    String getMessage();
     void setMessage(String message);
     void appendError(String key, String value);
     void removeError(String key);

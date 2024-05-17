@@ -5,9 +5,7 @@ import com.glos.api.authservice.dto.SignUpRequest;
 import com.glos.api.authservice.mapper.SignUpRequestMapper;
 import com.glos.api.authservice.service.AuthService;
 import com.glos.api.authservice.util.Constants;
-import com.glos.api.authservice.util.security.JwtRequest;
-import com.glos.api.authservice.util.security.JwtResponse;
-import com.glos.api.authservice.util.security.SimpleAuthService;
+import com.glos.api.authservice.util.security.*;
 import com.glos.api.authservice.validation.OnCreate;
 import com.glos.api.entities.User;
 import jakarta.validation.Valid;
@@ -25,27 +23,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.http.HttpRequest;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-
-    private final AuthService authService;
     private final SignUpRequestMapper signUpRequestMapper;
-    private final AuthenticationManager authenticationManager;
-    private final UserAPIClient userAPIClient;
     private final SimpleAuthService simpleAuthService;
 
     public AuthController(
-            AuthService authService,
             SignUpRequestMapper signUpRequestMapper,
-            UserAPIClient userAPIClient,
-            AuthenticationManager authenticationManager,
             SimpleAuthService simpleAuthService
     ) {
-        this.authService = authService;
         this.signUpRequestMapper = signUpRequestMapper;
-        this.userAPIClient = userAPIClient;
-        this.authenticationManager = authenticationManager;
         this.simpleAuthService = simpleAuthService;
     }
 
@@ -53,9 +46,12 @@ public class AuthController {
     public ResponseEntity<JwtResponse> registerUser(
             @RequestBody  @Validated(OnCreate.class)  SignUpRequest request
     ) {
-        User user = signUpRequestMapper.toEntity(request);
-        JwtResponse response = new JwtResponse();
-        response.setAccessToken(authService.create(user, Roles.ROLE_USER));
+        JwtEntity jwtEntity = new JwtEntity(() -> {
+            User user = signUpRequestMapper.toEntity(request);
+            user.setRoles(Collections.singletonList(Roles.ROLE_USER.asEntity()));
+            return user;
+        });
+        JwtResponse response = simpleAuthService.register(jwtEntity);
         return ResponseEntity.ok(response);
     }
 
@@ -63,9 +59,12 @@ public class AuthController {
     public ResponseEntity<JwtResponse> registerAdmin(
             @RequestBody @Validated(OnCreate.class) SignUpRequest request
     ) {
-        User user = signUpRequestMapper.toEntity(request);
-        JwtResponse response = new JwtResponse();
-        response.setAccessToken(authService.create(user, Roles.ROLE_ADMIN));
+        JwtEntity jwtEntity = new JwtEntity(() -> {
+            User user = signUpRequestMapper.toEntity(request);
+            user.setRoles(Collections.singletonList(Roles.ROLE_ADMIN.asEntity()));
+            return user;
+        });
+        JwtResponse response = simpleAuthService.register(jwtEntity);
         return ResponseEntity.ok(response);
     }
 
@@ -73,30 +72,39 @@ public class AuthController {
     public ResponseEntity<JwtResponse> login(
             @RequestBody @Valid JwtRequest jwtRequest
     ) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            //TokenResponse response = new TokenResponse();
-            JwtResponse response = new JwtResponse();
-            response.setAccessToken(authService.generateToken(jwtRequest.getUsername()));
-
-            //JwtResponse response = simpleAuthService.authenticate(jwtRequest);
-            return ResponseEntity.ok(response);
-        } else {
-            throw new UsernameNotFoundException("Invalid access");
-        }
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(), jwtRequest.getPassword()));
+//
+//        if (authentication.isAuthenticated()) {
+//            JwtResponse response = new JwtResponse();
+//            response.setAccessToken(authService.generateToken(jwtRequest.getUsername()));
+//
+////            JwtResponse response = simpleAuthService.authenticate(jwtRequest);
+//            return ResponseEntity.ok(response);
+//        }
+//        throw new UsernameNotFoundException("Invalid access");
+        //JwtResponse response = simpleAuthService.authenticate(jwtRequest);
+        //return ResponseEntity.ok(response);
+        return ResponseEntity.ok(simpleAuthService.authenticate(jwtRequest));
     }
 
     @GetMapping("/validate")
     public ResponseEntity<?> validateToken(
             @RequestParam("token") String token
     ) {
-        authService.validateToken(token);
+        simpleAuthService.validate(token);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<JwtResponse> refresh() {
+    public ResponseEntity<JwtResponse> refresh(@RequestBody JwtRefreshRequest refreshRequest) {
+        JwtResponse response = simpleAuthService.refresh(refreshRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<JwtResponse> logout() {
         JwtResponse response = new JwtResponse();
         return ResponseEntity.ok(response);
     }
+
 }

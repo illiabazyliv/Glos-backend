@@ -1,139 +1,166 @@
 package com.glos.api.authservice.util.security;
 
+
+import com.glos.api.authservice.dto.Role;
 import com.glos.api.authservice.util.Constants;
+import com.glos.api.entities.Roles;
+import com.glos.api.entities.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class JwtEntity implements UserDetails {
 
-    private Long id;
-    private String username;
-    private String email;
-    private String phoneNumber;
-    private String password;
-    private Set<? extends GrantedAuthority> authorities;
-    private boolean isAccountNonExpired;
-    private boolean isAccountNonLocked;
-    private boolean isCredentialsNonExpired;
-    private boolean isEnabled;
-    private boolean isDeleted;
+    private User user;
+    private Supplier<User> userSupplier;
 
     public JwtEntity() {
-        this.isAccountNonExpired = Constants.DEFAULT_IS_ACCOUNT_NON_EXPIRED;
-        this.isAccountNonLocked = Constants.DEFAULT_IS_ACCOUNT_NON_LOCKED;
-        this.isCredentialsNonExpired = Constants.DEFAULT_IS_CREDENTIALS_NON_EXPIRED;
-        this.isEnabled = Constants.DEFAULT_IS_ENABLED;
-        this.isDeleted = Constants.DEFAULT_IS_DELETED;
     }
 
-    public JwtEntity(Long id, String username, String email, String phoneNumber, String password, Set<? extends GrantedAuthority> authorities, boolean isAccountNonExpired, boolean isAccountNonLocked, boolean isCredentialsNonExpired, boolean isEnabled, boolean isDeleted) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.password = password;
-        this.authorities = authorities;
-        this.isAccountNonExpired = isAccountNonExpired;
-        this.isAccountNonLocked = isAccountNonLocked;
-        this.isCredentialsNonExpired = isCredentialsNonExpired;
-        this.isEnabled = isEnabled;
-        this.isDeleted = isDeleted;
+    public JwtEntity(Supplier<User> userSupplier) {
+        this.userSupplier = userSupplier;
     }
 
-    public Long getId() {
-        return id;
+    public User getUser() {
+        return ensureUser();
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return ensureUser().getUsername();
     }
 
     public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        ensureUser().setUsername(username);
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return ensureUser().getPassword_hash();
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String passwordHash) {
+        ensureUser().setPassword_hash(passwordHash);
+    }
+
+    public String getEmail() {
+        return ensureUser().getEmail();
+    }
+
+    public void setEmail(String email) {
+        ensureUser().setEmail(email);
+    }
+
+    public String getPhoneNumber() {
+        return ensureUser().getPhone_number();
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        ensureUser().setPhone_number(phoneNumber);
+    }
+
+    public String getGender() {
+        return ensureUser().getGender();
+    }
+
+    public void setGender(String gender) {
+        ensureUser().setGender(gender);
+    }
+
+    public String getFirstName() {
+        return ensureUser().getFirst_name();
+    }
+
+    public void setFirstName(String firstName) {
+        ensureUser().setFirst_name(firstName);
+    }
+
+    public String getLastName() {
+        return ensureUser().getLast_name();
+    }
+
+    public void setLastName(String lastName) {
+        ensureUser().setLast_name(lastName);
+    }
+
+    public LocalDate getBirthdate() {
+        return ensureUser().getBirthdate();
+    }
+
+    public void setBirthdate(LocalDate birthdate) {
+        ensureUser().setBirthdate(birthdate);
     }
 
     @Override
-    public Set<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return ensureUser().getRoles().stream().map( x -> new Role(x.getName())).collect(Collectors.toSet());
     }
 
-    public void setAuthorities(Set<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
+    public void setAuthorities(Set<Roles> roles) {
+        ensureUser().setRoles(roles.stream().map(Roles::asEntity).toList());
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return isAccountNonExpired;
-    }
-
-    public void setAccountNonExpired(boolean accountNonExpired) {
-        isAccountNonExpired = accountNonExpired;
+        return ensureUser().getIs_account_non_expired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isAccountNonLocked;
-    }
-
-    public void setAccountNonLocked(boolean accountNonLocked) {
-        isAccountNonLocked = accountNonLocked;
+        return ensureUser().getIs_account_non_locked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return isCredentialsNonExpired;
-    }
-
-    public void setCredentialsNonExpired(boolean credentialsNonExpired) {
-        isCredentialsNonExpired = credentialsNonExpired;
+        return ensureUser().getIs_credentials_non_expired();
     }
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return ensureUser().getIs_enabled();
     }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+    public Boolean getIs_account_non_expired() {
+        return ensureUser().getIs_account_non_expired();
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
+    public void setIs_account_non_expired(Boolean is_account_non_expired) {
+        ensureUser().setIs_account_non_expired(is_account_non_expired);
     }
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+    public void setIs_account_non_locked(Boolean is_account_non_locked) {
+        ensureUser().setIs_account_non_locked(is_account_non_locked);
+    }
+
+    public void setIs_credentials_non_expired(Boolean is_credentials_non_expired) {
+        ensureUser().setIs_credentials_non_expired(is_credentials_non_expired);
+    }
+
+    public void setIs_enabled(Boolean is_enabled) {
+        ensureUser().setIs_enabled(is_enabled);
+    }
+
+    public Boolean getIs_deleted() {
+        return ensureUser().getIs_deleted();
+    }
+
+    public void setIs_deleted(Boolean is_deleted) {
+        ensureUser().setIs_deleted(is_deleted);
+    }
+
+    private User ensureUser() {
+        if (user == null) user = userSupplier.get();
+        return user;
     }
 }

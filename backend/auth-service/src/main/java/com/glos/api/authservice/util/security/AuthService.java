@@ -4,8 +4,9 @@ import io.jsonwebtoken.Jwt;
 
 public interface AuthService {
 
+    JwtResponse register(JwtEntity jwtEntity);
     JwtResponse authenticate(JwtRequest jwtRequest);
-    JwtResponse refresh(String refreshToken);
+    JwtResponse refresh(JwtRefreshRequest refreshRequest);
     JwtResponse validate(String token);
 
 }
