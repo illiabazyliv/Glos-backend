@@ -1,29 +1,28 @@
 package com.glos.api.authservice.dto;
 
-import com.glos.api.entities.Group;
 import com.glos.api.entities.User;
-import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
 
     private User user;
+    private Supplier<User> userSupplier;
 
     public UserDetailsImpl() {
     }
 
-    public UserDetailsImpl(User user) {
-        this.user = user;
+    public UserDetailsImpl(Supplier<User> userSupplier) {
+        this.userSupplier = userSupplier;
     }
 
     public User getUser() {
-        return user;
+        return ensureUser();
     }
 
     public void setUser(User user) {
@@ -32,92 +31,125 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return ensureUser().getUsername();
     }
 
     public void setUsername(String username) {
-        user.setUsername(username);
+        ensureUser().setUsername(username);
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword_hash();
+        return ensureUser().getPassword_hash();
     }
 
     public void setPassword(String passwordHash) {
-        user.setPassword_hash(passwordHash);
+        ensureUser().setPassword_hash(passwordHash);
     }
 
     public String getEmail() {
-        return user.getEmail();
+        return ensureUser().getEmail();
     }
 
     public void setEmail(String email) {
-        user.setEmail(email);
+        ensureUser().setEmail(email);
     }
 
     public String getPhoneNumber() {
-        return user.getPhone_number();
+        return ensureUser().getPhone_number();
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        user.setPhone_number(phoneNumber);
+        ensureUser().setPhone_number(phoneNumber);
     }
 
     public String getGender() {
-        return user.getGender();
+        return ensureUser().getGender();
     }
 
     public void setGender(String gender) {
-        user.setGender(gender);
+        ensureUser().setGender(gender);
     }
 
     public String getFirstName() {
-        return user.getFirst_name();
+        return ensureUser().getFirst_name();
     }
 
     public void setFirstName(String firstName) {
-        user.setFirst_name(firstName);
+        ensureUser().setFirst_name(firstName);
     }
 
     public String getLastName() {
-        return user.getLast_name();
+        return ensureUser().getLast_name();
     }
 
     public void setLastName(String lastName) {
-       user.setLast_name(lastName);
+        ensureUser().setLast_name(lastName);
     }
 
     public LocalDate getBirthdate() {
-        return user.getBirthdate();
+        return ensureUser().getBirthdate();
     }
 
     public void setBirthdate(LocalDate birthdate) {
-        user.setBirthdate(birthdate);
+        ensureUser().setBirthdate(birthdate);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream().map( x -> new Role(x.getName())).collect(Collectors.toSet());
+        return ensureUser().getRoles().stream().map( x -> new Role(x.getName())).collect(Collectors.toSet());
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return user.getIs_account_non_expired();
+        return ensureUser().getIs_account_non_expired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.getIs_account_non_locked();
+        return ensureUser().getIs_account_non_locked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return user.getIs_credentials_non_expired();
+        return ensureUser().getIs_credentials_non_expired();
     }
 
     @Override
     public boolean isEnabled() {
-        return user.getIs_enabled();
+        return ensureUser().getIs_enabled();
+    }
+
+    public Boolean getIs_account_non_expired() {
+        return ensureUser().getIs_account_non_expired();
+    }
+
+    public void setIs_account_non_expired(Boolean is_account_non_expired) {
+        ensureUser().setIs_account_non_expired(is_account_non_expired);
+    }
+
+    public void setIs_account_non_locked(Boolean is_account_non_locked) {
+        ensureUser().setIs_account_non_locked(is_account_non_locked);
+    }
+
+    public void setIs_credentials_non_expired(Boolean is_credentials_non_expired) {
+        ensureUser().setIs_credentials_non_expired(is_credentials_non_expired);
+    }
+
+    public void setIs_enabled(Boolean is_enabled) {
+        ensureUser().setIs_enabled(is_enabled);
+    }
+
+    public Boolean getIs_deleted() {
+        return ensureUser().getIs_deleted();
+    }
+
+    public void setIs_deleted(Boolean is_deleted) {
+        ensureUser().setIs_deleted(is_deleted);
+    }
+
+    private User ensureUser() {
+        if (user == null) user = userSupplier.get();
+        return user;
     }
 }

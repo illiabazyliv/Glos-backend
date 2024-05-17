@@ -1,9 +1,9 @@
 package com.glos.api.authservice.exception;
 
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
-public class ResponseEntityException extends RuntimeException {
+public class ResponseEntityException extends RuntimeException{
+
     private final ResponseEntity<?> response;
 
     public ResponseEntityException(ResponseEntity<?> response) {

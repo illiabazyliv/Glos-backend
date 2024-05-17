@@ -11,6 +11,12 @@ import com.glos.api.authservice.util.security.SimpleAuthService;
 import com.glos.api.authservice.validation.OnCreate;
 import com.glos.api.entities.User;
 import jakarta.validation.Valid;
+import com.glos.api.authservice.dto.SignInRequest;
+import com.glos.api.authservice.dto.SignUpRequest;
+import com.glos.api.authservice.mapper.SignUpRequestMapper;
+import com.glos.api.authservice.service.AuthService;
+import com.glos.api.entities.Roles;
+import com.glos.api.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,7 +55,7 @@ public class AuthController {
     ) {
         User user = signUpRequestMapper.toEntity(request);
         JwtResponse response = new JwtResponse();
-        response.setAccessToken(authService.create(user, Constants.ROLE_USER));
+        response.setAccessToken(authService.create(user, Roles.ROLE_USER));
         return ResponseEntity.ok(response);
     }
 
@@ -59,7 +65,7 @@ public class AuthController {
     ) {
         User user = signUpRequestMapper.toEntity(request);
         JwtResponse response = new JwtResponse();
-        response.setAccessToken(authService.create(user, Constants.ROLE_ADMIN));
+        response.setAccessToken(authService.create(user, Roles.ROLE_ADMIN));
         return ResponseEntity.ok(response);
     }
 
