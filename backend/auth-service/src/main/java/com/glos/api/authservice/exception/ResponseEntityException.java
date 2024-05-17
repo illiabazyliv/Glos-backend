@@ -3,6 +3,7 @@ package com.glos.api.authservice.exception;
 import org.springframework.http.ResponseEntity;
 
 public class ResponseEntityException extends RuntimeException{
+
     private final ResponseEntity<?> response;
 
     public ResponseEntityException(ResponseEntity<?> response) {
@@ -28,4 +29,9 @@ public class ResponseEntityException extends RuntimeException{
         super(message, cause, enableSuppression, writableStackTrace);
         this.response = response;
     }
+
+    public ResponseEntity<?> getResponse() {
+        return response;
+    }
+
 }

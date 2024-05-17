@@ -1,13 +1,16 @@
 package com.glos.api.authservice.client;
 
+import com.glos.api.authservice.dto.Page;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.glos.api.entities.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Map;
 
 @FeignClient(name = "user")
 public interface UserAPIClient {
@@ -20,5 +23,8 @@ public interface UserAPIClient {
 
     @GetMapping("/users/username/{username}")
     ResponseEntity<User> getByUsername(@PathVariable String username);
+
+    @GetMapping("/users")
+    ResponseEntity<Page<User>> getAll(@SpringQueryMap Map<String, Object> params);
 
 }

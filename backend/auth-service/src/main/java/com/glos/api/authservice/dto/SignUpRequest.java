@@ -1,20 +1,83 @@
 package com.glos.api.authservice.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.glos.api.authservice.validation.OnCreate;
+import com.glos.api.authservice.validation.OnUpdate;
+import com.glos.api.authservice.validation.PasswordConfirm;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
+@PasswordConfirm(groups = OnCreate.class)
 public class SignUpRequest {
 
+    @NotBlank(message = "Username can not be empty.",
+            groups = OnCreate.class)
+    @Length(max = 20,
+            message = "Username must be 20 characters or less.",
+            groups = OnCreate.class)
     private String username;
+
+    @NotBlank(message = "Password can not be empty.", groups = OnCreate.class)
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!?@#$%^&*(),\\.<>\\[\\]{}\"'|\\\\:;`~+\\-*\\/]).{8,}$",
+            message = "Invalid password format.",
+            groups = {OnCreate.class, OnUpdate.class})
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
+    @NotBlank(message = "Password confirm can not be null.",
+            groups = OnCreate.class)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String confirmPassword;
+
+    @NotBlank(message = "Email can not be null.",
+            groups = OnCreate.class)
+    @Email(message = "Incorrect email.",
+            groups = OnCreate.class)
+    @Length(max = 50,
+            message = "Email must be 50 characters or less.",
+            groups = {OnCreate.class, OnUpdate.class})
     private String email;
+
+    @NotBlank(message = "Phone number can not be null.",
+            groups = OnCreate.class)
+    @Pattern(
+            regexp = "(\\+\\d{1,4}[-.\\s]?)(\\(\\d{1,}\\)[-\\s]?|\\d{1,}[-.\\s]?){1,}[0-9\\s]",
+            message = "Incorrect phone number."
+    )
+    @Length(max = 15,
+            message = "Incorrect phone number.",
+            groups = {OnCreate.class, OnUpdate.class})
     private String phoneNumber;
+
+    @NotBlank(message = "Firstname can not be null.",
+            groups = OnCreate.class)
+    @Length(max = 20,
+            message = "Firstname must be 20 characters or less.",
+            groups = {OnCreate.class, OnUpdate.class})
     private String gender;
+
+    @NotBlank(message = "Firstname can not be null.",
+            groups = OnCreate.class)
+    @Length(max = 20,
+            message = "Firstname must be 20 characters or less.",
+            groups = {OnCreate.class, OnUpdate.class})
     private String firstName;
+
+    @NotBlank(message = "Lastname can not be null.",
+            groups = OnCreate.class)
+    @Length(max = 20,
+            message = "Lastname must be 20 characters or less.",
+            groups = {OnCreate.class, OnUpdate.class})
     private String lastName;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthdate;
 
     public SignUpRequest() {}

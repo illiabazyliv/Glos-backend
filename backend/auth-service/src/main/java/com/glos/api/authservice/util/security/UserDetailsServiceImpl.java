@@ -1,8 +1,7 @@
-package com.glos.api.authservice.service;
+package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
 import com.glos.api.authservice.client.UserDatabaseAPIClient;
-import com.glos.api.authservice.dto.UserDetailsImpl;
 import com.glos.api.authservice.exception.ResponseEntityException;
 import com.glos.api.entities.User;
 import org.springframework.http.HttpStatusCode;
@@ -29,17 +28,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         ResponseEntity<User> response = userAPIClient.getByUsername(username);
         User u1 = getUser(response);
         User u2 = getUser(userDatabaseAPIClient.getById(u1.getId()));
-        return new UserDetailsImpl(() -> u2);
+        JwtEntity j = new JwtEntity();
+        j.setUser(u2);
+        return j;
     }
 
-    private User getUser(ResponseEntity<User> response) {
-        if (response.getStatusCode().is2xxSuccessful() && response.hasBody()) {
-            return response.getBody();
-        } else if(response.getStatusCode().is5xxServerError()) {
-            throw new RuntimeException("Internal server error");
-        } else if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(404))) {
+    private User getUser(ResponseEntity<User> getUserResponse)
+            throws UsernameNotFoundException {
+        if (getUserResponse.getStatusCode().is2xxSuccessful()) {
+            return getUserResponse.getBody();
+        } else if (getUserResponse.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(404))) {
             throw new UsernameNotFoundException("Username not found");
+        } else if (getUserResponse.getStatusCode().is5xxServerError()) {
+            throw new RuntimeException("Internal server error");
         }
-        throw new ResponseEntityException(response);
+        throw new ResponseEntityException(getUserResponse);
     }
 }

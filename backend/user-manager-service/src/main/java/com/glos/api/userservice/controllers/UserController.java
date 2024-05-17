@@ -50,6 +50,7 @@ public class UserController
             @RequestBody User user,
             UriComponentsBuilder uriComponentsBuilder)
     {
+        //User mapped = userDTOMapper.toEntity(user);
         ResponseEntity<User> created = userAPIFacade.create(user, role);
         if (created.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity

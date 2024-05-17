@@ -1,19 +1,14 @@
 package com.glos.api.authservice.service;
 
-import com.glos.api.authservice.config.props.JwtProperties;
+import com.glos.api.authservice.util.security.JwtProperties;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.InitBinder;
 
 import javax.crypto.SecretKey;
-import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;

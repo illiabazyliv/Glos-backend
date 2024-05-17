@@ -1,23 +1,30 @@
-package com.glos.api.authservice.dto;
+package com.glos.api.authservice.util.security;
 
+
+import com.glos.api.authservice.dto.Role;
+import com.glos.api.authservice.util.Constants;
+import com.glos.api.entities.Roles;
 import com.glos.api.entities.User;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class UserDetailsImpl implements UserDetails {
+public class JwtEntity implements UserDetails {
 
     private User user;
     private Supplier<User> userSupplier;
 
-    public UserDetailsImpl() {
+    public JwtEntity() {
     }
 
-    public UserDetailsImpl(Supplier<User> userSupplier) {
+    public JwtEntity(Supplier<User> userSupplier) {
         this.userSupplier = userSupplier;
     }
 
@@ -98,6 +105,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return ensureUser().getRoles().stream().map( x -> new Role(x.getName())).collect(Collectors.toSet());
+    }
+
+    public void setAuthorities(Set<Roles> roles) {
+        ensureUser().setRoles(roles.stream().map(Roles::asEntity).toList());
     }
 
     @Override
