@@ -92,6 +92,8 @@ public class User
     private LocalDateTime updatedDataTime;
 
     public User() {
+        this.roles = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
 
     public User(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDate birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, List<Group> groups, List<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
