@@ -1,6 +1,8 @@
 package com.glos.filemanagerservice.controllers;
 
+import com.glos.api.entities.Comment;
 import com.glos.api.entities.File;
+import com.glos.filemanagerservice.DTO.CommentDTO;
 import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.facade.FileApiFacade;
 import com.glos.filemanagerservice.facade.RepositoryApiFacade;
@@ -102,6 +104,41 @@ public class FileController
     public ResponseEntity<?> appendAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
     {
         fileApiFacade.fileAppendAccessType(rootFullName, name);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{rootFullName}/remove-access-type/{name}")
+    public ResponseEntity<?> removeAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
+    {
+        fileApiFacade.fileRemoveAccessType(rootFullName, name);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{rootFullName}/comments")
+    public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable String rootFullName)
+    {
+        return ResponseEntity.ok(fileApiFacade.getFileComments(rootFullName).getBody());
+    }
+
+    @PostMapping("/{rootFullName}/comments")
+    public ResponseEntity<CommentDTO> createComment(@RequestBody Comment comment, @PathVariable String rootFullName)
+    {
+        return ResponseEntity.ok(fileApiFacade.createFileComment(comment ,rootFullName).getBody());
+    }
+
+    @DeleteMapping("/{rootFullName}/comments/{id}")
+    public ResponseEntity<?> deleteComment(@PathVariable("rootFullName") String rootFullName, @PathVariable("id") Long id)
+    {
+        fileApiFacade.deleteComment(rootFullName, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{rootFullName}/comments/{id}")
+    public ResponseEntity<?> updateComment(@PathVariable("rootFullName") String rootFullName,
+                                           @PathVariable("id") Long id,
+                                           @RequestBody Comment comment)
+    {
+        fileApiFacade.updateComment(rootFullName, id, comment);
         return ResponseEntity.noContent().build();
     }
 }
