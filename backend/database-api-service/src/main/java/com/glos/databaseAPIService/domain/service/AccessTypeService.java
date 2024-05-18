@@ -1,10 +1,14 @@
 package com.glos.databaseAPIService.domain.service;
 
 import com.glos.api.entities.AccessType;
+import com.glos.api.entities.User;
 import com.glos.databaseAPIService.domain.entityMappers.AccessTypeMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.AccessTypeRepository;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,5 +76,10 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
                 new ResourceNotFoundException("Not found")
         );
         accessTypeRepository.deleteById(found.getId());
+    }
+
+    public Page<AccessType> getPageByFilter(AccessType accessType, Pageable pageable)
+    {
+        return accessTypeRepository.findAll(Example.of(accessType), pageable);
     }
 }
