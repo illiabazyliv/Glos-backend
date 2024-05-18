@@ -126,6 +126,11 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    public boolean validateToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return true;
+    }
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(key)

@@ -20,3 +20,8 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+    openfeign:
+      client:
+        config:
+          auth:
+            url: http://localhost:9006/api/v1

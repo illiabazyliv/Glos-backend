@@ -100,7 +100,7 @@ public class SimpleAuthService implements AuthService {
     }
 
     @Override
-    public JwtResponse validate(String token) {
-        return null;
+    public boolean validate(String token) {
+        return jwtService.validateToken(token);
     }
 }
