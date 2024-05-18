@@ -24,4 +24,4 @@ spring:
       client:
         config:
           auth:
-            url: http://localhost:9006/api/v1
+            url: ${AUTH_SERVICE_URL:http://localhost:9006/api/v1}
