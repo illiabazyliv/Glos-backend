@@ -12,6 +12,6 @@ FROM amazoncorretto:17
 
 COPY --from=builder /app/api-gateway/target/*.jar /app/app.jar
 
-EXPOSE 9002
+EXPOSE ${PORT:9002}
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
