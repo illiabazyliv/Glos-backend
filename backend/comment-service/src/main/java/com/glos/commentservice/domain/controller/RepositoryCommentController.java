@@ -7,6 +7,8 @@ import com.glos.commentservice.domain.facade.RepositoryApiFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping
 public class RepositoryCommentController
 {
     private final RepositoryApiFacade repositoryApiFacade;
@@ -15,26 +17,26 @@ public class RepositoryCommentController
         this.repositoryApiFacade = repositoryApiFacade;
     }
 
-    @GetMapping("/{rootFullName}/comments")
+    @GetMapping("/repositories/{rootFullName}/comments")
     public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable String rootFullName)
     {
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryComments(rootFullName).getBody());
     }
 
-    @PostMapping("/{rootFullName}/comments")
+    @PostMapping("/repositories/{rootFullName}/comments")
     public ResponseEntity<CommentDTO> createComment(@RequestBody Comment comment , @PathVariable String rootFullName)
     {
         return ResponseEntity.ok(repositoryApiFacade.createRepositoryComment(comment ,rootFullName).getBody());
     }
 
-    @DeleteMapping("/{rootFullName}/comments/{id}")
+    @DeleteMapping("/repositories/{rootFullName}/comments/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable("rootFullName") String rootFullName, @PathVariable("id") Long id)
     {
         repositoryApiFacade.deleteComment(rootFullName, id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{rootFullName}/comments/{id}")
+    @PutMapping("/repositories/{rootFullName}/comments/{id}")
     public ResponseEntity<?> updateComment(@PathVariable("rootFullName") String rootFullName,
                                            @PathVariable("id") Long id,
                                            @RequestBody Comment comment)

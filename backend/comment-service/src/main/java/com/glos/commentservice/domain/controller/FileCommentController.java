@@ -18,26 +18,26 @@ public class FileCommentController
     }
 
 
-    @GetMapping("/{rootFullName}/comments")
+    @GetMapping("/files/{rootFullName}/comments")
     public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable String rootFullName)
     {
         return ResponseEntity.ok(fileApiFacade.getFileComments(rootFullName).getBody());
     }
 
-    @PostMapping("/{rootFullName}/comments")
+    @PostMapping("/files/{rootFullName}/comments")
     public ResponseEntity<CommentDTO> createComment(@RequestBody Comment comment, @PathVariable String rootFullName)
     {
         return ResponseEntity.ok(fileApiFacade.createFileComment(comment ,rootFullName).getBody());
     }
 
-    @DeleteMapping("/{rootFullName}/comments/{id}")
+    @DeleteMapping("/files/{rootFullName}/comments/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable("rootFullName") String rootFullName, @PathVariable("id") Long id)
     {
         fileApiFacade.deleteComment(rootFullName, id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{rootFullName}/comments/{id}")
+    @PutMapping("/files/{rootFullName}/comments/{id}")
     public ResponseEntity<?> updateComment(@PathVariable("rootFullName") String rootFullName,
                                            @PathVariable("id") Long id,
                                            @RequestBody Comment comment)

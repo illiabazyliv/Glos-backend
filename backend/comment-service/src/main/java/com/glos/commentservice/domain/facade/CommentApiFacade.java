@@ -9,10 +9,12 @@ import com.glos.commentservice.domain.client.ExternalCommentApi;
 import com.glos.commentservice.domain.client.UserApiClient;
 import com.glos.commentservice.domain.utils.MapUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Service
 public class CommentApiFacade
 {
     private final ExternalCommentApi externalCommentApi;

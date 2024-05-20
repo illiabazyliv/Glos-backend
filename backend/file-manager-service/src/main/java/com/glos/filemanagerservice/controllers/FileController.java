@@ -99,18 +99,4 @@ public class FileController
     {
         return ResponseEntity.ok(fileApiFacade.getFilesByFilter(file, page, size, sort).getBody());
     }
-
-    @PutMapping("/{rootFullName}/append-access-type/{name}")
-    public ResponseEntity<?> appendAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
-    {
-        fileApiFacade.fileAppendAccessType(rootFullName, name);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{rootFullName}/remove-access-type/{name}")
-    public ResponseEntity<?> removeAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
-    {
-        fileApiFacade.fileRemoveAccessType(rootFullName, name);
-        return ResponseEntity.noContent().build();
-    }
 }

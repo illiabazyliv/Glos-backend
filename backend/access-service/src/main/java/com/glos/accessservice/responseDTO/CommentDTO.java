@@ -1,17 +1,27 @@
-package com.glos.commentservice.domain.DTO;
-
-import jakarta.persistence.*;
+package com.glos.accessservice.responseDTO;
 
 import java.time.LocalDateTime;
 
 public class CommentDTO
 {
+
     private Long id;
+
     private UserDTO author;
 
     private String text;
 
     private LocalDateTime date;
+
+    public CommentDTO() {
+    }
+
+    public CommentDTO(Long id, UserDTO author, String text, LocalDateTime date) {
+        this.id = id;
+        this.author = author;
+        this.text = text;
+        this.date = date;
+    }
 
     public Long getId() {
         return id;
@@ -43,15 +53,5 @@ public class CommentDTO
 
     public void setDate(LocalDateTime date) {
         this.date = date;
-    }
-
-    public CommentDTO(Long id, UserDTO author, String text, LocalDateTime date) {
-        this.id = id;
-        this.author = author;
-        this.text = text;
-        this.date = date;
-    }
-
-    public CommentDTO() {
     }
 }

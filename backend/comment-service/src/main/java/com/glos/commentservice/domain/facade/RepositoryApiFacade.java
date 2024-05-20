@@ -8,7 +8,9 @@ import com.glos.commentservice.domain.DTO.RepositoryDTO;
 import com.glos.commentservice.domain.client.RepositoryApiClient;
 import com.glos.commentservice.domain.responseMappers.RepositoryDTOMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RepositoryApiFacade
 {
     private final RepositoryApiClient repositoryApiClient;

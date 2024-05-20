@@ -89,18 +89,4 @@ public class RepositoryController
     {
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, page, size, sort).getBody());
     }
-
-    @PutMapping("/{rootFullName}/append-access-type/{name}")
-    public ResponseEntity<?> appendAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
-    {
-        repositoryApiFacade.repositoryAppendAccessType(rootFullName, name);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{rootFullName}/remove-access-type/{name}")
-    public ResponseEntity<?> removeAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
-    {
-        repositoryApiFacade.repositoryRemoveAccessType(rootFullName, name);
-        return ResponseEntity.noContent().build();
-    }
 }

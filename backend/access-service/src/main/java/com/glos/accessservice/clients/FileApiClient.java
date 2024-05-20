@@ -1,12 +1,15 @@
-package com.glos.commentservice.domain.client;
+package com.glos.accessservice.clients;
 
+import com.glos.accessservice.responseDTO.FileDTO;
+import com.glos.accessservice.responseDTO.Page;
 import com.glos.api.entities.File;
-import com.glos.commentservice.domain.DTO.FileDTO;
-import com.glos.commentservice.domain.DTO.Page;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Map;
 
 @FeignClient(name = "files")
 public interface FileApiClient

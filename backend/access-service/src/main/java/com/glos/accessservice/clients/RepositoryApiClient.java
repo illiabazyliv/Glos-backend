@@ -1,8 +1,8 @@
-package com.glos.commentservice.domain.client;
+package com.glos.accessservice.clients;
 
+import com.glos.accessservice.responseDTO.Page;
+import com.glos.accessservice.responseDTO.RepositoryDTO;
 import com.glos.api.entities.Repository;
-import com.glos.commentservice.domain.DTO.Page;
-import com.glos.commentservice.domain.DTO.RepositoryDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,5 +16,4 @@ public interface RepositoryApiClient
 
     @GetMapping("/root-fullName/{rootFullName}")
     ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);
-
 }

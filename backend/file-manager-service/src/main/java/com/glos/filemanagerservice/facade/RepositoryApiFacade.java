@@ -1,17 +1,11 @@
 package com.glos.filemanagerservice.facade;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.Comment;
 import com.glos.api.entities.Repository;
-import com.glos.api.entities.User;
 import com.glos.filemanagerservice.DTO.*;
-import com.glos.filemanagerservice.clients.AccessTypeClient;
-import com.glos.filemanagerservice.clients.CommentAPIClient;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
-import com.glos.filemanagerservice.responseMappers.UserDTOMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,20 +18,11 @@ public class RepositoryApiFacade
     private final RepositoryClient repositoryClient;
     private  final RepositoryRequestMapper requestMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
-    private final AccessTypeClient accessTypeClient;
-    private final CommentAPIClient commentAPIClient;
-    private final UserDTOMapper userDTOMapper;
 
-    public RepositoryApiFacade(RepositoryClient repositoryClient,
-                               RepositoryRequestMapper requestMapper,
-                               RepositoryDTOMapper repositoryDTOMapper,
-                               AccessTypeClient accessTypeClient, CommentAPIClient commentAPIClient, UserDTOMapper userDTOMapper) {
+    public RepositoryApiFacade(RepositoryClient repositoryClient, RepositoryRequestMapper requestMapper, RepositoryDTOMapper repositoryDTOMapper) {
         this.repositoryClient = repositoryClient;
         this.requestMapper = requestMapper;
         this.repositoryDTOMapper = repositoryDTOMapper;
-        this.accessTypeClient = accessTypeClient;
-        this.commentAPIClient = commentAPIClient;
-        this.userDTOMapper = userDTOMapper;
     }
 
     public ResponseEntity<Page<RepositoryDTO>> getRepositoryByOwnerId(Long ownerId, int page, int size, String sort)
@@ -65,29 +50,5 @@ public class RepositoryApiFacade
 
         Map<String, Object> map = MapUtils.map(requestFilter);
         return ResponseEntity.ok(repositoryClient.getRepositoriesByFilter(map).getBody());
-    }
-
-    public ResponseEntity<?> repositoryAppendAccessType(String rootFullName, String name)
-    {
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        AccessType accessType = accessTypeClient.getByName(name).getBody();
-        repositoryDTO.getAccessTypes().add(accessType);
-
-        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-
-        repositoryClient.updateRepository(repository, repository.getId());
-        return ResponseEntity.noContent().build();
-    }
-
-    public ResponseEntity<?> repositoryRemoveAccessType(String rootFullName, String name)
-    {
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        AccessType accessType = accessTypeClient.getByName(name).getBody();
-        repositoryDTO.getAccessTypes().remove(accessType);
-
-        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-
-        repositoryClient.updateRepository(repository, repository.getId());
-        return ResponseEntity.noContent().build();
     }
 }
