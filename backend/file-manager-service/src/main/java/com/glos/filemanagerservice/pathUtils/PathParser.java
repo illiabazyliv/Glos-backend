@@ -8,10 +8,61 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
+ * Utility class for parsing a string representation of a path and converting it into a Path object.
  * @author Mykola Melnyk
  */
 public class PathParser {
 
+    /**
+     * Parses the given string representation of a path and returns the corresponding Path object.
+     *
+     * <pre>
+     * Input string: "$user1/dir$repo#archive.zip%file.txt"
+     * Parsed Path object:
+     * {
+     *      "path": "$user1/dir$repo%file.txt",
+     *      "nodes": [
+     *          {
+     *              'rootPath': '',
+     *              'rootName': '$user1',
+     *              'rootFullName': '$user1',
+     *              'type': NodeType.REPOSITORY
+     *          },
+     *          {
+     *              'rootPath': '$user1',
+     *              'rootName': '/dir',
+     *              'rootFullName': '$user1/dir',
+     *              'type': NodeType.DIRECTORY
+     *          },
+     *          {
+     *              'rootPath': '$user1/dir',
+     *              'rootName': '$repo',
+     *              'rootFullName': '$user1/dir$repo',
+     *              'type': NodeType.REPOSITORY
+     *          },
+     *          {
+     *              'rootPath': '$user1/dir$repo',
+     *              'rootName': '#archive.zip',
+     *              'rootFullName': '$user1/dir$repo#archive.zip',
+     *              'rootFormat': 'zip',
+     *              'type': NodeType.ARCHIVE
+     *          },
+     *          {
+     *              'rootPath': '$user1/dir$repo#archive.zip',
+     *              'rootName': '%file.txt',
+     *              'rootFullName': '$user1/dir$repo#archive.zip%file.txt',
+     *              'rootFormat': 'txt',
+     *              'type': NodeType.FILE
+     *          }
+     *      ]
+     * }
+     * </pre>
+     *
+     * @param pathStr The string representation of the path to be parsed.
+     * @return The Path object representing the parsed path. If pathStr is empty then Paths.EMPTY_PATH.
+     * @throws NullArgumentException if the input pathStr is null.
+     * @throws IllegalArgumentException if path has invalid format
+     */
     public Path parse(final String pathStr) {
         if (pathStr == null) {
             throw new NullArgumentException("Argument 'pathStr' is null");
