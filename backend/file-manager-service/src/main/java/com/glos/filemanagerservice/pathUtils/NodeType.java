@@ -5,6 +5,16 @@ import com.glos.filemanagerservice.pathUtils.pathnode.*;
 import java.util.Map;
 import java.util.function.Function;
 
+/**
+ * Enum representing types of nodes in a path.
+ * <pre>
+ * $ - REPOSIOTRY NODE. Default class RepositoryPathNode.
+ * / - DIRECTORY NODE, Default class DirectoryPathNode.
+ * % - FILE NODE, Default class FilePathNode.
+ * # - ARCHIVE NODE, Default class ArchivePathNode.
+ * </pre>
+ * @author Mykola Melnyk
+ */
 public enum NodeType {
     REPOSITORY('$', p ->
             new RepositoryPathNode(
