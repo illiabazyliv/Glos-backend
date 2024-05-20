@@ -97,49 +97,4 @@ public class FileApiFacade
         fileClient.updateFile(file, file.getId());
         return ResponseEntity.noContent().build();
     }
-
-    public ResponseEntity<Page<CommentDTO>> getFileComments(String rootFullName)
-    {
-        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
-        Page<CommentDTO> commentDTOPage = new Page<>();
-        commentDTOPage.setContent(fileDTO.getComments());
-        return ResponseEntity.ok(commentDTOPage);
-    }
-
-    public ResponseEntity<CommentDTO> createFileComment(Comment comment, String rootFullName)
-    {
-        CommentDTO created = commentAPIClient.createComment(comment).getBody();
-        created.getAuthor().setId(comment.getAuthor().getId());
-        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
-        fileDTO.getComments().add(created);
-        File file = fileDTOMapper.toEntity(fileDTO);
-        fileClient.updateFile(file, file.getId());
-        return ResponseEntity.ok(created);
-    }
-
-    public ResponseEntity<?> deleteComment(String rootFullName, Long id)
-    {
-        CommentDTO commentDTO = commentAPIClient.getById(id).getBody();
-        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
-        fileDTO.getComments().remove(commentDTO);
-        fileClient.updateFile(fileDTOMapper.toEntity(fileDTO), fileDTO.getId());
-        commentAPIClient.deleteComment(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    public ResponseEntity<?> updateComment(String rootFullName, Long id, Comment comment)
-    {
-        comment.setId(id);
-        commentAPIClient.updateComment(id, comment);
-        CommentDTO commentDTO = commentAPIClient.getById(id).getBody();
-        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
-        fileDTO.getComments().stream().forEach((x) -> {
-            if(x.getId() == id)
-            {
-                x = commentDTO;
-            }
-        });
-        fileClient.updateFile(fileDTOMapper.toEntity(fileDTO), fileDTO.getId());
-        return ResponseEntity.noContent().build();
-    }
 }

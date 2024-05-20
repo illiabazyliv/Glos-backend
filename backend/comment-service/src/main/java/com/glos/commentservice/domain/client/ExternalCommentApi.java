@@ -1,7 +1,7 @@
 package com.glos.commentservice.domain.client;
 
+import com.glos.api.entities.Comment;
 import com.glos.commentservice.domain.DTO.Page;
-import com.glos.commentservice.domain.entities.Comment;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;

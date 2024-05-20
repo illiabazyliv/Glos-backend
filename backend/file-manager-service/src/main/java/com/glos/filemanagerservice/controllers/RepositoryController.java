@@ -75,6 +75,12 @@ public class RepositoryController
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByOwnerId(ownerId, page, size, sort).getBody());
     }
 
+    @GetMapping("/root-fullName/{rootFullName}")
+    public ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName)
+    {
+        return ResponseEntity.ok(repositoryClient.getRepositoryByRootFullName(rootFullName).getBody());
+    }
+
     @GetMapping
     public ResponseEntity<Page<RepositoryDTO>> getByFilter(@ModelAttribute Repository repository,
                                                            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
@@ -95,34 +101,6 @@ public class RepositoryController
     public ResponseEntity<?> removeAccessType(@PathVariable("rootFullName") String rootFullName, @PathVariable("name") String name)
     {
         repositoryApiFacade.repositoryRemoveAccessType(rootFullName, name);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{rootFullName}/comments")
-    public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable String rootFullName)
-    {
-        return ResponseEntity.ok(repositoryApiFacade.getRepositoryComments(rootFullName).getBody());
-    }
-
-    @PostMapping("/{rootFullName}/comments")
-    public ResponseEntity<CommentDTO> createComment(@RequestBody Comment comment ,@PathVariable String rootFullName)
-    {
-        return ResponseEntity.ok(repositoryApiFacade.createRepositoryComment(comment ,rootFullName).getBody());
-    }
-
-    @DeleteMapping("/{rootFullName}/comments/{id}")
-    public ResponseEntity<?> deleteComment(@PathVariable("rootFullName") String rootFullName, @PathVariable("id") Long id)
-    {
-        repositoryApiFacade.deleteComment(rootFullName, id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{rootFullName}/comments/{id}")
-    public ResponseEntity<?> updateComment(@PathVariable("rootFullName") String rootFullName,
-                                           @PathVariable("id") Long id,
-                                           @RequestBody Comment comment)
-    {
-        repositoryApiFacade.updateComment(rootFullName, id, comment);
         return ResponseEntity.noContent().build();
     }
 }

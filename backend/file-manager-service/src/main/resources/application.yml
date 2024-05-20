@@ -17,8 +17,6 @@ spring:
             url: http://localhost:8080/api/v1/repositories
           accessTypes:
             url : http://localhost:9007/api/v1/access-types
-          comments:
-            url : http://localhost:8083/api/v1/comments
 
 eureka:
   instance:

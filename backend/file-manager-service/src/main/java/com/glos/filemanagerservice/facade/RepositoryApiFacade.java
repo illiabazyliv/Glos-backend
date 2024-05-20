@@ -90,49 +90,4 @@ public class RepositoryApiFacade
         repositoryClient.updateRepository(repository, repository.getId());
         return ResponseEntity.noContent().build();
     }
-
-    public ResponseEntity<Page<CommentDTO>> getRepositoryComments(String rootFullName)
-    {
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        Page<CommentDTO> commentDTOPage = new Page<>();
-        commentDTOPage.setContent(repositoryDTO.getComments());
-        return ResponseEntity.ok(commentDTOPage);
-    }
-
-    public ResponseEntity<CommentDTO> createRepositoryComment(Comment comment, String rootFullName)
-    {
-        CommentDTO created = commentAPIClient.createComment(comment).getBody();
-        created.getAuthor().setId(comment.getAuthor().getId());
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        repositoryDTO.getComments().add(created);
-        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-        repositoryClient.updateRepository(repository, repository.getId());
-        return ResponseEntity.ok(created);
-    }
-
-    public ResponseEntity<?> deleteComment(String rootFullName, Long id)
-    {
-        CommentDTO commentDTO = commentAPIClient.getById(id).getBody();
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        repositoryDTO.getComments().remove(commentDTO);
-        repositoryClient.updateRepository(repositoryDTOMapper.toEntity(repositoryDTO), repositoryDTO.getId());
-        commentAPIClient.deleteComment(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    public ResponseEntity<?> updateComment(String rootFullName, Long id, Comment comment)
-    {
-        comment.setId(id);
-        commentAPIClient.updateComment(id, comment);
-        CommentDTO commentDTO = commentAPIClient.getById(id).getBody();
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        repositoryDTO.getComments().stream().forEach((x) -> {
-            if(x.getId() == id)
-            {
-                x = commentDTO;
-            }
-        });
-        repositoryClient.updateRepository(repositoryDTOMapper.toEntity(repositoryDTO), repositoryDTO.getId());
-        return ResponseEntity.noContent().build();
-    }
 }
