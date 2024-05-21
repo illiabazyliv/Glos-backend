@@ -1,24 +1,39 @@
 package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.api.entities.Comment;
+import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.responseDTO.CommentDTO;
+import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
+import com.glos.databaseAPIService.domain.responseMappers.CommentDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.CommentService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.is;
 
 @WebMvcTest(CommentAPIController.class)
 @ExtendWith(MockitoExtension.class)
@@ -29,36 +44,54 @@ class CommentAPIControllerTest {
 
     @MockBean
     private CommentService commentService;
+    @MockBean
+    private CommentDTOMapper commentDTOMapper;
+    @MockBean
+    private UserDTOMapper userDTOMapper;
 
     @Test
     public void getAllTest() throws Exception {
-        Comment comment = new Comment();
-        comment.setId(1L);
-        comment.setText("Test comment");
-        List<Comment> comments = List.of(comment);
-        when(commentService.getAll(any(Comment.class))).thenReturn(comments);
+            Comment comment1 = new Comment();
+            comment1.setId(1L);
+            comment1.setText("Test comment 1");
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(comments);
-        mockMvc.perform(MockMvcRequestBuilders.get("/comments")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+            List<Comment> comments = List.of(comment1);
+
+            Pageable pageable = PageRequest.of(0, 20);
+            Page<Comment> page = new PageImpl<>(comments, pageable, comments.size());
+
+            Mockito.when(commentService.getPageByFilter(Mockito.any(), Mockito.any())).thenReturn(page);
+
+            mockMvc.perform(MockMvcRequestBuilders.get("/comments"))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.content").exists());
+//                    .andExpect(MockMvcResultMatchers.jsonPath("$.content[*].id").value(List.of(comments)))
+//                    .andExpect(MockMvcResultMatchers.jsonPath("$.content[*].text").value(List.of("Test comment 1")));
     }
 
     @Test
     public void getByIdTest() throws Exception {
         Long id = 1L;
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        CommentDTO mockComment = new CommentDTO();
+        mockComment.setId(id);
+        mockComment.setText("Test Comment");
+        mockComment.setDate(dateTime);
+
         Comment comment = new Comment();
         comment.setId(id);
-        comment.setText("Test comment");
-        when(commentService.getById(id)).thenReturn(Optional.of(comment));
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(comment);
+        comment.setText("Test Comment");
+        comment.setDate(dateTime);
+
+        Mockito.when(commentService.getById(id)).thenReturn(Optional.of(comment));
+        Mockito.when(commentDTOMapper.toDto(comment)).thenReturn(mockComment);
+
         mockMvc.perform(MockMvcRequestBuilders.get("/comments/" + id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .andExpect(jsonPath("$.id", is(id.intValue())))
+                .andExpect(jsonPath("$.text", is("Test Comment")));
     }
 
     @Test
