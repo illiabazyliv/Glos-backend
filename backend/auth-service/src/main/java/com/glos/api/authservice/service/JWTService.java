@@ -1,18 +1,14 @@
 package com.glos.api.authservice.service;
 
+import com.glos.api.authservice.util.security.JwtProperties;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.InitBinder;
 
 import javax.crypto.SecretKey;
-import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,13 +17,16 @@ import java.util.Map;
 @Service
 public class JWTService {
 
-    @Value("${jwt.secret.key}")
-    private String secretKey;
+    private JwtProperties jwtProps;
     private SecretKey key;
+
+    public JWTService(JwtProperties jwtProps) {
+        this.jwtProps = jwtProps;
+    }
 
     @PostConstruct
     public void init() {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.key = Keys.hmacShaKeyFor(jwtProps.getSecret().getBytes());
     }
 
     public boolean validateToken(String token) {
@@ -36,7 +35,6 @@ public class JWTService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-
         return true;
     }
 
@@ -50,13 +48,13 @@ public class JWTService {
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .expiration(new Date(System.currentTimeMillis() + jwtProps.getAccess()))
                 .signWith(key)
                 .compact();
     }
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProps.getSecret());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

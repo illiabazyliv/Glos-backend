@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/roles")
+@RequestMapping("/users/roles")
 public class UserRolesController
 {
     private final RoleAPIClient roleAPIClient;
@@ -29,14 +29,14 @@ public class UserRolesController
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<RoleDTO> getRoleByName(@PathVariable("name") String name)
+    public ResponseEntity<Role> getRoleByName(@PathVariable("name") String name)
     {
         Role role = roleAPIClient.getRoleByName(name).getBody();
-        return ResponseEntity.ok(new RoleDTO(role.getName()));
+        return ResponseEntity.ok(role);
     }
 
     @GetMapping
-    public ResponseEntity<Page<RoleDTO>> getAll(
+    public ResponseEntity<Page<Role>> getAll(
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
             @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort
@@ -47,14 +47,14 @@ public class UserRolesController
         filter.put("size", size);
         filter.put("sort", sort);
         Page<Role> rolePage = roleAPIClient.getPage(filter).getBody();
-        Page<RoleDTO> roleDTOPage = rolePage.map(role -> new RoleDTO(role.getName()));
-        roleDTOPage.setNumber(page);
-        roleDTOPage.setSize(size);
+        //Page<RoleDTO> roleDTOPage = rolePage.map(role -> new RoleDTO(role.getName()));
+        rolePage.setNumber(page);
+        rolePage.setSize(size);
         String[] arr = sort.split(",");
-        roleDTOPage.setSortBy(arr[0]);
-        roleDTOPage.setSortDir(arr[1]);
-        roleDTOPage.setSorted(true);
-        return ResponseEntity.ok(roleDTOPage);
+        rolePage.setSortBy(arr[0]);
+        rolePage.setSortDir(arr[1]);
+        rolePage.setSorted(true);
+        return ResponseEntity.ok(rolePage);
 
     }
  }

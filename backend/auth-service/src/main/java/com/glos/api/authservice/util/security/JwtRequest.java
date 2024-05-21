@@ -1,10 +1,8 @@
-package com.glos.api.authservice.dto;
+package com.glos.api.authservice.util.security;
 
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Objects;
-
-public class SignInRequest {
+public class JwtRequest {
 
     @NotBlank(message = "Username can not be empty.")
     private String username;
@@ -12,9 +10,10 @@ public class SignInRequest {
     @NotBlank(message = "Password can not be empty.")
     private String password;
 
-    public SignInRequest() {}
+    public JwtRequest() {
+    }
 
-    public SignInRequest(String username, String password) {
+    public JwtRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -33,18 +32,5 @@ public class SignInRequest {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SignInRequest that = (SignInRequest) o;
-        return Objects.equals(username, that.username) && Objects.equals(password, that.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(username, password);
     }
 }

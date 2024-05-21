@@ -1,6 +1,6 @@
 server:
   address: ${SERVER_ADDRESS:localhost}
-  port: ${SERVER_PORT:9002}
+  port: ${PORT:9002}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
 
@@ -20,3 +20,8 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+    openfeign:
+      client:
+        config:
+          auth:
+            url: ${AUTH_SERVICE_URL:http://localhost:9006/api/v1}
