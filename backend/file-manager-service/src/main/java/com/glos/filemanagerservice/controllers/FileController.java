@@ -50,14 +50,6 @@ public class FileController
         return ResponseEntity.ok(fileClient.getFileByID(id).getBody());
     }
 
-    @PostMapping
-    public ResponseEntity<FileDTO> createFile(@RequestBody File file, UriComponentsBuilder uriComponentsBuilder)
-    {
-        FileDTO created = fileClient.createFile(file).getBody();
-        return ResponseEntity.created(uriComponentsBuilder.path("/files/{id}")
-                .build(created.getId())).body(created);
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file)
     {

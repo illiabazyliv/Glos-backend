@@ -38,9 +38,10 @@ public class FileApiFacade
 
     public ResponseEntity<?> fileRemoveAccessType(String rootFullName, String name)
     {
+
         FileDTO fileDTO = fileApiClient.getByRootFullName(rootFullName).getBody();
         AccessType accessType = accessTypeApiClient.getByName(name).getBody();
-        fileDTO.getAccessTypes().remove(accessType);
+        fileDTO.getAccessTypes().removeIf((x) -> {return x.getId().equals(accessType.getId());});
 
         File file = fileDTOMapper.toEntity(fileDTO);
 

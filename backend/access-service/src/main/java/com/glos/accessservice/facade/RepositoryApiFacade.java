@@ -38,7 +38,7 @@ public class RepositoryApiFacade
     {
         RepositoryDTO repositoryDTO = repositoryApiClient.getRepositoryByRootFullName(rootFullName).getBody();
         AccessType accessType = accessTypeApiClient.getByName(name).getBody();
-        repositoryDTO.getAccessTypes().remove(accessType);
+        repositoryDTO.getAccessTypes().removeIf((x) -> {return x.getId() == accessType.getId();});
 
         Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
 

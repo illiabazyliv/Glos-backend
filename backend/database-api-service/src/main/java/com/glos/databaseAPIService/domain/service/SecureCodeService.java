@@ -52,6 +52,11 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
         return repository.findById(id);
     }
 
+    public Optional<SecureCode> getByReceiverAndResourcePath(String receiver, String resourcePath)
+    {
+        return repository.getByReceiverAndResourcePath(receiver, resourcePath);
+    }
+
     @Transactional
     @Override
     public SecureCode update(Long id, SecureCode newSecureCode) {

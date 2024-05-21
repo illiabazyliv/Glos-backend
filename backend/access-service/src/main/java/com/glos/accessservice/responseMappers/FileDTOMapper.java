@@ -10,8 +10,6 @@ public class FileDTOMapper extends AbstractMapper<File, FileDTO>
 {
     private final RepositoryDTOMapper repositoryDTOMapper;
     private final CommentDTOMapper commentDTOMapper;
-
-
     public FileDTOMapper(RepositoryDTOMapper repositoryDTOMapper, CommentDTOMapper commentDTOMapper) {
         this.repositoryDTOMapper = repositoryDTOMapper;
         this.commentDTOMapper = commentDTOMapper;
