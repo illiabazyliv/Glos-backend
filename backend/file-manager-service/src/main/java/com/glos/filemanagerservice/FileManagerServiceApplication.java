@@ -1,5 +1,7 @@
 package com.glos.filemanagerservice;
 
+import com.glos.filemanagerservice.pathUtils.Path;
+import com.glos.filemanagerservice.pathUtils.PathParser;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
