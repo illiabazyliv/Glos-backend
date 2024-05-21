@@ -25,13 +25,12 @@ CREATE TABLE IF NOT EXISTS tags (
 CREATE TABLE IF NOT EXISTS secure_codes (
     id BIGINT NOT NULL AUTO_INCREMENT,
     `code` VARCHAR(255) NOT NULL,
-    `receiver` VARCHAR(255) NOT NULL,
     `resource_path` VARCHAR(255) NOT NULL,
     creation_date DATETIME NOT NULL,
     expiration_date DATETIME NOT NULL,
     CONSTRAINT pk_secure_codes_id PRIMARY KEY(id),
-    CONSTRAINT uq_secure_codes_code UNIQUE(`code`)
-    CONSTRAINT uq_secure_codes_receiver_resource_path UNIQUE(`receiver`, `resource_path`)
+    CONSTRAINT uq_secure_codes_code UNIQUE(`code`),
+    CONSTRAINT uq_secure_codes_resource_path UNIQUE(`resource_path`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS users (

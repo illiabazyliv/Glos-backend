@@ -10,7 +10,7 @@ import java.util.Objects;
         name = "secure_codes",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "code", name = "uq_secure_codes_code"),
-                @UniqueConstraint(columnNames = {"resource_path"}, name = "uq_secure_codes_receiver_resource_path")
+                @UniqueConstraint(columnNames = {"resource_path"}, name = "uq_secure_codes_resource_path")
         }
 )
 public class SecureCode
