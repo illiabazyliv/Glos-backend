@@ -11,6 +11,10 @@ public final class Constants {
     public static final boolean DEFAULT_IS_CREDENTIALS_NON_EXPIRED = true;
     public static final boolean DEFAULT_IS_ENABLED = false;
     public static final boolean DEFAULT_IS_DELETED = false;
+    public static final String CLAIM_ROOT_FULL_NAME = "rootFullName";
+    public static final int DEFAULT_EXPIRED_MILLIS = 60 * 10 * 5;
+    public static final String DEFAULT_CODE_SYMBOLS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public static final int DEFAULT_CODE_LENGTH = 6;
 
     private Constants() {}
 }

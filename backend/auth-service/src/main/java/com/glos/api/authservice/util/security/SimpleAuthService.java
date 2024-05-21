@@ -2,6 +2,7 @@ package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
 import com.glos.api.authservice.exception.UserAccountStateException;
+import com.glos.api.authservice.shared.SharedEntity;
 import com.glos.api.entities.Roles;
 import com.glos.api.entities.User;
 import org.springframework.http.HttpStatusCode;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class SimpleAuthService implements AuthService {
@@ -92,6 +95,19 @@ public class SimpleAuthService implements AuthService {
         response.setRefreshToken(refreshToken);
 
         return response;
+    }
+
+    public JwtResponse generateShared(SharedEntity sharedEntity) {
+        JwtResponse response = new JwtResponse();
+        final String token = jwtService.generateShared(sharedEntity);
+        response.setAccessToken(token);
+
+
+        return response;
+    }
+
+    public boolean validateShared(String token) {
+        return jwtService.validateSharedToken(Objects.requireNonNull(token));
     }
 
     @Override

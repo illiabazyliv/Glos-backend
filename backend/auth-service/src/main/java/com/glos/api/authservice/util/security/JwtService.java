@@ -1,6 +1,9 @@
 package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.exception.AccessDeniedException;
+import com.glos.api.authservice.exception.NoSuchClaimException;
+import com.glos.api.authservice.shared.SharedEntity;
+import com.glos.api.authservice.util.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -11,6 +14,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -128,6 +134,34 @@ public class JwtService {
 
     public boolean validateToken(String token) {
         Claims claims = extractAllClaims(token);
+        return true;
+    }
+
+    public String generateShared(SharedEntity sharedEntity) {
+        final Map<String, Object> map = new HashMap<>();
+        final LocalDateTime now = LocalDateTime.now();
+        long expiration = (sharedEntity.getExpired() == null) ? Constants.DEFAULT_EXPIRED_MILLIS : sharedEntity.getExpired();
+        final LocalDateTime expirationDate = now.plus(Duration.ofMillis(expiration));
+        return Jwts.builder()
+                .claims(map)
+                .claim(Constants.CLAIM_ROOT_FULL_NAME, sharedEntity.getRootFullName())
+                .issuedAt(convertLocalDateTimeToDate(now))
+                .expiration(convertLocalDateTimeToDate(expirationDate))
+                .signWith(key)
+                .compact();
+    }
+
+    public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        return Date.from(localDateTime.atZone(zoneId).toInstant());
+    }
+
+    public boolean validateSharedToken(String sharedToken) {
+        Claims claims = extractAllClaims(sharedToken);
+        String rootFullName = claims.get(Constants.CLAIM_ROOT_FULL_NAME, String.class);
+        if (rootFullName == null) {
+            throw new NoSuchClaimException("token not contains rootFullName claim");
+        }
         return true;
     }
 
