@@ -51,10 +51,10 @@ public class SecureCodeAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{receiver}/{path}")
-    public ResponseEntity<SecureCode> getByReceiverAndResourcePath(@PathVariable("receiver") String receiver, @PathVariable("path") String path)
+    @GetMapping("/{rootFullName}")
+    public ResponseEntity<SecureCode> getByReceiverAndResourcePath(@PathVariable("rootFullName") String rootFullName)
     {
-        return ResponseEntity.of(service.getByReceiverAndResourcePath(receiver, path));
+        return ResponseEntity.of(service.getByReceiverAndResourcePath(rootFullName));
     }
 
     @GetMapping()

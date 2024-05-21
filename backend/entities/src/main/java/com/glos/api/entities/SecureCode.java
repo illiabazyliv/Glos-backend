@@ -23,9 +23,6 @@ public class SecureCode
     @Column(name = "code", length = 255, nullable = false, unique = true)
     private String code;
 
-    @Column(name = "receiver", length = 255, nullable = false)
-    private String receiver;
-
     @Column(name = "resource_path", length = 255, nullable = false)
     private String resourcePath;
 
@@ -35,10 +32,9 @@ public class SecureCode
     @Column(name = "expiration_date", nullable = false)
     private LocalDateTime expirationDate;
 
-    public SecureCode(Long id, String code, String receiver, String resourcePath, LocalDateTime creationDate, LocalDateTime expirationDate) {
+    public SecureCode(Long id, String code, String resourcePath, LocalDateTime creationDate, LocalDateTime expirationDate) {
         this.id = id;
         this.code = code;
-        this.receiver = receiver;
         this.resourcePath = resourcePath;
         this.creationDate = creationDate;
         this.expirationDate = expirationDate;
@@ -78,15 +74,6 @@ public class SecureCode
         this.expirationDate = expirationDate;
     }
 
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
     public String getResourcePath() {
         return resourcePath;
     }
@@ -96,15 +83,15 @@ public class SecureCode
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SecureCode that = (SecureCode) o;
-        return Objects.equals(id, that.id) && Objects.equals(code, that.code) && Objects.equals(receiver, that.receiver) && Objects.equals(resourcePath, that.resourcePath) && Objects.equals(creationDate, that.creationDate) && Objects.equals(expirationDate, that.expirationDate);
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        SecureCode that = (SecureCode) object;
+        return Objects.equals(id, that.id) && Objects.equals(code, that.code) && Objects.equals(resourcePath, that.resourcePath) && Objects.equals(creationDate, that.creationDate) && Objects.equals(expirationDate, that.expirationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, receiver, resourcePath, creationDate, expirationDate);
+        return Objects.hash(id, code, resourcePath, creationDate, expirationDate);
     }
 }

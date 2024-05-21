@@ -12,5 +12,5 @@ import java.util.Optional;
 @Repository
 public interface SecureCodeRepository extends JpaRepository<SecureCode, Long>
 {
-    Optional<SecureCode> getByReceiverAndResourcePath(String receiver, String resourcePath);
+    Optional<SecureCode> getByResourcePath(String resourcePath);
 }

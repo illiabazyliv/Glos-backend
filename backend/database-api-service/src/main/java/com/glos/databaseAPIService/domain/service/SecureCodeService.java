@@ -52,9 +52,9 @@ public class SecureCodeService implements CrudService<SecureCode, Long>
         return repository.findById(id);
     }
 
-    public Optional<SecureCode> getByReceiverAndResourcePath(String receiver, String resourcePath)
+    public Optional<SecureCode> getByReceiverAndResourcePath(String resourcePath)
     {
-        return repository.getByReceiverAndResourcePath(receiver, resourcePath);
+        return repository.getByResourcePath(resourcePath);
     }
 
     @Transactional
