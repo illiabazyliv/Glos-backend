@@ -23,14 +23,14 @@ public class SecureCode
     @Column(name = "code", length = 255, nullable = false, unique = true)
     private String code;
 
-    @Column(name = "resource_path", length = 255, nullable = false)
+    @Column(name = "resource_path", length = 255, nullable = false, unique = true)
     private String resourcePath;
-
-    @Column(name = "creation_date", nullable = false)
-    private LocalDateTime creationDate;
 
     @Column(name = "expiration_date", nullable = false)
     private LocalDateTime expirationDate;
+
+    @Column(name = "creation_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime creationDate;
 
     public SecureCode(Long id, String code, String resourcePath, LocalDateTime creationDate, LocalDateTime expirationDate) {
         this.id = id;
