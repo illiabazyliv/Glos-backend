@@ -7,7 +7,7 @@ import jakarta.ws.rs.Path;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping
+@RestController
 public class SharedTokenController {
 
     private final SharedService sharedService;
