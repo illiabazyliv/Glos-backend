@@ -2,8 +2,14 @@ package com.glos.databaseAPIService.domain.controller;
 
 
 import com.glos.api.entities.SecureCode;
+import com.glos.api.entities.User;
 import com.glos.databaseAPIService.domain.service.SecureCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -51,15 +57,17 @@ public class SecureCodeAPIController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{rootFullName}")
-    public ResponseEntity<SecureCode> getByReceiverAndResourcePath(@PathVariable("rootFullName") String rootFullName)
+    @GetMapping("/path/{path}")
+    public ResponseEntity<SecureCode> getByReceiverAndResourcePath(@PathVariable("path") String path)
     {
-        return ResponseEntity.of(service.getByReceiverAndResourcePath(rootFullName));
+        System.out.println(path);
+        return ResponseEntity.of(service.getByResourcePath(path));
     }
 
-    @GetMapping()
-    public List<SecureCode> getAllSecureCode()
+    @GetMapping
+    public ResponseEntity<Page<SecureCode>> getAllSecureCode(@ModelAttribute SecureCode filter,
+                                                             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        return service.getAll();
+        return ResponseEntity.ok(service.getAllByFilter(filter, pageable));
     }
 }
