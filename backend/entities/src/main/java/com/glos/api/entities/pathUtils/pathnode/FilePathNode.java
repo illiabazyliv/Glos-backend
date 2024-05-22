@@ -1,8 +1,8 @@
-package com.glos.filemanagerservice.pathUtils.pathnode;
+package com.glos.api.entities.pathUtils.pathnode;
 
 
-import com.glos.filemanagerservice.pathUtils.AbstractPathNode;
-import com.glos.filemanagerservice.pathUtils.NodeType;
+import com.glos.api.entities.pathUtils.AbstractPathNode;
+import com.glos.api.entities.pathUtils.NodeType;
 
 public class FilePathNode extends AbstractPathNode {
 

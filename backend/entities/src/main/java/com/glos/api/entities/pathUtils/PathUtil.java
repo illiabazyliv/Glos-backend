@@ -1,4 +1,4 @@
-package com.glos.filemanagerservice.pathUtils;
+package com.glos.api.entities.pathUtils;
 
 import java.util.Map;
 

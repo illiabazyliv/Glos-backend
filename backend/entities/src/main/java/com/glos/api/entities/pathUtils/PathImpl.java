@@ -1,6 +1,6 @@
-package com.glos.filemanagerservice.pathUtils;
+package com.glos.api.entities.pathUtils;
 
-import com.glos.filemanagerservice.pathUtils.pathnode.PathNode;
+import com.glos.api.entities.pathUtils.pathnode.PathNode;
 
 import java.util.LinkedList;
 import java.util.List;

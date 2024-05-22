@@ -1,6 +1,6 @@
-package com.glos.filemanagerservice.pathUtils.pathnode;
+package com.glos.api.entities.pathUtils.pathnode;
 
-import com.glos.filemanagerservice.pathUtils.NodeType;
+import com.glos.api.entities.pathUtils.NodeType;
 
 public interface PathNode {
 

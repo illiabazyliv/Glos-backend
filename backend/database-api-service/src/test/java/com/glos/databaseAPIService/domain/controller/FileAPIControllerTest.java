@@ -55,7 +55,7 @@ class FileAPIControllerTest {
         String requestJson = objectMapper.writeValueAsString(file);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/files/")
+                .post("/files")
                 .content(requestJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status()

@@ -1,4 +1,4 @@
-package com.glos.filemanagerservice.pathUtils;
+package com.glos.api.entities.pathUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ public class Constants {
     static {
         SPEC_PATH_CHARS = new HashMap<>();
         SPEC_PATH_CHARS.put("repository", '$');
-        SPEC_PATH_CHARS.put("directory", '/');
+        SPEC_PATH_CHARS.put("directory", '+');
         SPEC_PATH_CHARS.put("file", '%');
     }
 

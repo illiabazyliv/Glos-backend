@@ -1,8 +1,7 @@
-package com.glos.filemanagerservice.pathUtils;
+package com.glos.api.entities.pathUtils;
 
-import com.glos.filemanagerservice.pathUtils.pathnode.PathNode;
-import com.glos.filemanagerservice.pathUtils.pathnode.PathNodeProps;
-import org.apache.commons.lang.NullArgumentException;
+import com.glos.api.entities.pathUtils.pathnode.PathNode;
+import com.glos.api.entities.pathUtils.pathnode.PathNodeProps;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -60,12 +59,12 @@ public class PathParser {
      *
      * @param pathStr The string representation of the path to be parsed.
      * @return The Path object representing the parsed path. If pathStr is empty then Paths.EMPTY_PATH.
-     * @throws NullArgumentException if the input pathStr is null.
+     * @throws NullPointerException if the input pathStr is null.
      * @throws IllegalArgumentException if path has invalid format
      */
     public Path parse(final String pathStr) {
         if (pathStr == null) {
-            throw new NullArgumentException("Argument 'pathStr' is null");
+            throw new NullPointerException("Argument 'pathStr' is null");
         }
         final String pathTrim = pathStr.trim();
 

@@ -1,7 +1,6 @@
-package com.glos.filemanagerservice.pathUtils;
+package com.glos.api.entities.pathUtils;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 public class Paths {
 
