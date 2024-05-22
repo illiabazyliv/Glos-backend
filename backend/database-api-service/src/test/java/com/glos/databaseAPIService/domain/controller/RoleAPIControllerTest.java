@@ -9,11 +9,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +38,23 @@ class RoleAPIControllerTest {
         Long id = 1L;
         Role role = new Role();
         role.setId(id);
+
         when(roleService.getById(id)).thenReturn(Optional.of(role));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/roles/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(role)));
+    }
+
+    @Test
+    void createRole() throws Exception{
+        Long id = 1L;
+        Role role = new Role();
+        role.setId(id);
+
+        when(roleService.create(any(Role.class))).thenReturn(role);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(role);
@@ -42,30 +63,8 @@ class RoleAPIControllerTest {
                         .post("/roles")
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-
-        verify(roleService, times(1)).create(any(Role.class));
-    }
-
-    @Test
-    void createRole() throws Exception{
-        Role role = new Role();
-        Role response = new Role();
-        response.setId(1L);
-
-        when(roleService.create(any(Role.class))).thenReturn(response);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestJson = objectMapper.writeValueAsString(role);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/v1/roles")
-                        .content(requestJson)
-                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/v1/roles/"+response.getId()));
-
-        verify(roleService, times(1)).create(any(Role.class));
+                .andExpect(content().json(objectMapper.writeValueAsString(role)));
     }
 
     @Test
@@ -79,7 +78,6 @@ class RoleAPIControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    //passed
     @Test
     void updateRole() throws Exception{
         Long id =1L;
@@ -96,38 +94,32 @@ class RoleAPIControllerTest {
                         .content(requestJson))
                 .andExpect(status().isNoContent());
     }
-
-    //incorrect request
     @Test
     void getRoleByName() throws Exception{
-        String roleName = "admin";
+        String name = "ADMIN";
         Role role = new Role();
-        role.setName(roleName);
+        role.setName(name);
 
-        when(roleService.findByName(anyString())).thenReturn(Optional.of(role));
+        when(roleService.findByName(name)).thenReturn(Optional.of(role));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/roles/name/{name}" + roleName)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(roleService, times(1)).findByName(roleName);
-    }
-
-    @Test
-    void getAllRoles() throws Exception{
-        Role role = new Role();
-        role.setId(1L);
-        role.setName("admin");
-        List<Role> roles = List.of(role);
-        when(roleService.getAll()).thenReturn(roles);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(roles);
-        mockMvc.perform(MockMvcRequestBuilders.get("/roles")
+                        .get("/roles/name/{name}", name)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(role)));
+    }
+    @Test
+    void getPageTest() throws Exception{
+        Role role = new Role();
+        Page<Role> page = new PageImpl<>(Collections.singletonList(role), PageRequest.of(0, 1), 1);
+
+        when(roleService.getPage(any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/roles")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(page)));
     }
 
 }
