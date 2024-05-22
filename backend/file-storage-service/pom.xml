@@ -35,6 +35,13 @@
 			<version>${minio.version}</version>
 		</dependency>
 
+		<!--Jasypt-->
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>${jasypt.version}</version>
+		</dependency>
+
 		<!--Test-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -42,4 +49,14 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.ulisesbocchio</groupId>
+				<artifactId>jasypt-maven-plugin</artifactId>
+				<version>${jasypt.version}</version>
+			</plugin>
+		</plugins>
+	</build>
 </project>
