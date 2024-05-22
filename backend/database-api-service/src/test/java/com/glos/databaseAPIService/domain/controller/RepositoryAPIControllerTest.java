@@ -15,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import java.lang.Long;
 import org.springframework.test.web.servlet.MockMvc;
@@ -142,15 +145,21 @@ class RepositoryAPIControllerTest {
         Repository filter = new Repository();
         Repository repository = new Repository();
         List<Repository> repositories = List.of(repository);
+        Page<Repository> page = new PageImpl<>(repositories);
 
-        Mockito.when(repositoryService.findAllByFilter(Mockito.any(Repository.class))).thenReturn(repositories);
+        Mockito.when(repositoryService.findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/repositories")
-                .param("name", filter.getDisplayName())
+                        .get("/repositories")
+                        .param("name", filter.getDisplayName())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0]").exists());
 
-        Mockito.verify(repositoryService, Mockito.times(1)).findAllByFilter(Mockito.any(Repository.class));
+        Mockito.verify(repositoryService, Mockito.times(1)).findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class));
     }
     }
