@@ -1,10 +1,12 @@
 server:
-  server:
-    address: ${SERVER_ADDRESS:localhost}
-    port: ${SERVER_PORT:9005}
-    servlet:
-      context-path: ${SERVER_CONTEXT_PATH:/api/v1}
+  address: ${SERVER_ADDRESS:localhost}
+  port: ${SERVER_PORT:9009}
+  servlet:
+    context-path: ${SERVER_CONTEXT_PATH:/api/v1}
 
+spring:
+  application:
+    name: ${APPLICATION_NAME:file-storage-service}
 
 eureka:
   instance:
@@ -13,6 +15,9 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_CLIENT_DEFAULT_ZONE:http://localhost:9001/api/eureka/}
 
-      spring:
-        application:
-          name: ${APPLICATION_NAME:file-storage-service}
+minio:
+  bucket-prefix: ${MINIO_BUCKET_PREFIX}
+  url: ${MINIO_URL}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  shared-expiry: ${MINIO_EXPIRY}

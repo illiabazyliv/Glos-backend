@@ -31,6 +31,8 @@
     <spring-boot.version>3.2.3</spring-boot.version>
     <spring-cloud.version>2023.0.1</spring-cloud.version>
     <spring-colud-eureka>4.1.1</spring-colud-eureka>
+    <!--Minio-->
+    <minio.version>8.5.7</minio.version>
   </properties>
 
   <dependencyManagement>
