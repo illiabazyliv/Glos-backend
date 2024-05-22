@@ -3,16 +3,21 @@ package com.glos.api.authservice.client;
 import com.glos.api.entities.SecureCode;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "secureCodes")
+@Component
+@FeignClient(name = "secureCode")
 public interface SecureCodeClient
 {
 
-    @GetMapping("/{rootFullName}")
-    ResponseEntity<SecureCode> getByResourcePath(@PathVariable("rootFullName") String rootFullName);
+    @GetMapping("/secure-codes/path/{path}")
+    ResponseEntity<SecureCode> getByResourcePath(@PathVariable("path") String path);
+
+    @PostMapping("/secure-codes")
+    ResponseEntity<SecureCode> create(@RequestBody SecureCode code);
+
+    @DeleteMapping("/secure-codes/{id}")
+    ResponseEntity<?> deleteById(@PathVariable Long id);
 
 }

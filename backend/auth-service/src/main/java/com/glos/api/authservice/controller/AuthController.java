@@ -2,11 +2,11 @@ package com.glos.api.authservice.controller;
 
 import com.glos.api.authservice.dto.SignUpRequest;
 import com.glos.api.authservice.mapper.SignUpRequestMapper;
+import com.glos.api.authservice.service.SharedService;
 import com.glos.api.authservice.shared.SharedEntity;
 import com.glos.api.authservice.util.security.*;
 import com.glos.api.authservice.validation.OnCreate;
 import com.glos.api.entities.User;
-import io.jsonwebtoken.Jwt;
 import jakarta.validation.Valid;
 import com.glos.api.entities.Roles;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import java.util.Collections;
 public class AuthController {
     private final SignUpRequestMapper signUpRequestMapper;
     private final SimpleAuthService simpleAuthService;
+
 
 
     public AuthController(
@@ -82,17 +83,4 @@ public class AuthController {
         JwtResponse response = new JwtResponse();
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/sys/generate-shared")
-    public ResponseEntity<JwtResponse> generateToken(@RequestBody SharedEntity request) {
-        JwtResponse response = simpleAuthService.generateShared(request);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/shared/validate")
-    public ResponseEntity<?> validateSharedToken(@RequestParam("token") String token) {
-        simpleAuthService.validateShared(token);
-        return ResponseEntity.ok().build();
-    }
-
 }

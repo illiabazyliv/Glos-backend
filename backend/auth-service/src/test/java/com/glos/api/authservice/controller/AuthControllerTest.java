@@ -1,9 +1,7 @@
 package com.glos.api.authservice.controller;
 
-import com.glos.api.authservice.client.UserDatabaseAPIClient;
 import com.glos.api.authservice.dto.SignUpRequest;
 import com.glos.api.authservice.mapper.SignUpRequestMapper;
-import com.glos.api.authservice.service.AuthService;
 import com.glos.api.authservice.util.security.JwtEntity;
 import com.glos.api.authservice.util.security.JwtRequest;
 import com.glos.api.authservice.util.security.JwtResponse;
@@ -18,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,7 +27,6 @@ import java.util.Collections;
 import static org.mockito.Mockito.verify;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

@@ -97,19 +97,6 @@ public class SimpleAuthService implements AuthService {
         return response;
     }
 
-    public JwtResponse generateShared(SharedEntity sharedEntity) {
-        JwtResponse response = new JwtResponse();
-        final String token = jwtService.generateShared(sharedEntity);
-        response.setAccessToken(token);
-
-
-        return response;
-    }
-
-    public boolean validateShared(String token) {
-        return jwtService.validateSharedToken(Objects.requireNonNull(token));
-    }
-
     @Override
     public JwtResponse refresh(JwtRefreshRequest refreshRequest) {
         return jwtService.refreshUserTokens(refreshRequest.getRefreshToken());

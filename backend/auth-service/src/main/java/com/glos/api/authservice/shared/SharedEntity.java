@@ -5,10 +5,12 @@ public class SharedEntity {
     private Long expired;
 
     private String rootFullName;
+    private String code;
 
-    public SharedEntity(Long expired, String rootFullName) {
+    public SharedEntity(Long expired, String rootFullName, String code) {
         this.expired = expired;
         this.rootFullName = rootFullName;
+        this.code = code;
     }
 
     public SharedEntity() {
@@ -30,4 +32,11 @@ public class SharedEntity {
         this.rootFullName = rootFullName;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

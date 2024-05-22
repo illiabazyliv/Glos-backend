@@ -2,8 +2,8 @@ package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.exception.AccessDeniedException;
 import com.glos.api.authservice.exception.NoSuchClaimException;
-import com.glos.api.authservice.shared.SharedEntity;
 import com.glos.api.authservice.util.Constants;
+import com.glos.api.entities.SecureCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -114,7 +113,7 @@ public class JwtService {
                 !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         final Date now = new Date();
         return extractExpiration(token).before(now);
     }
@@ -137,16 +136,12 @@ public class JwtService {
         return true;
     }
 
-    public String generateShared(SharedEntity sharedEntity) {
-        final Map<String, Object> map = new HashMap<>();
-        final LocalDateTime now = LocalDateTime.now();
-        long expiration = (sharedEntity.getExpired() == null) ? Constants.DEFAULT_EXPIRED_MILLIS : sharedEntity.getExpired();
-        final LocalDateTime expirationDate = now.plus(Duration.ofMillis(expiration));
+    public String generateShared(SecureCode secureCode) {
         return Jwts.builder()
-                .claims(map)
-                .claim(Constants.CLAIM_ROOT_FULL_NAME, sharedEntity.getRootFullName())
-                .issuedAt(convertLocalDateTimeToDate(now))
-                .expiration(convertLocalDateTimeToDate(expirationDate))
+                .claim(Constants.CLAIM_ROOT_FULL_NAME, secureCode.getResourcePath())
+                .claim(Constants.CLAIM_CODE, secureCode.getCode())
+                .issuedAt(convertLocalDateTimeToDate(secureCode.getCreationDate()))
+                .expiration(convertLocalDateTimeToDate(secureCode.getExpirationDate()))
                 .signWith(key)
                 .compact();
     }
@@ -158,9 +153,10 @@ public class JwtService {
 
     public boolean validateSharedToken(String sharedToken) {
         Claims claims = extractAllClaims(sharedToken);
-        String rootFullName = claims.get(Constants.CLAIM_ROOT_FULL_NAME, String.class);
-        if (rootFullName == null) {
-            throw new NoSuchClaimException("token not contains rootFullName claim");
+        final String rootFullName = claims.get(Constants.CLAIM_ROOT_FULL_NAME, String.class);
+        final String code = claims.get(Constants.CLAIM_CODE, String.class);
+        if (rootFullName == null || code == null) {
+            throw new NoSuchClaimException("invalid token claims");
         }
         return true;
     }
