@@ -3,6 +3,9 @@ package com.glos.databaseAPIService.domain.controller;
 import com.glos.api.entities.Comment;
 import com.glos.api.entities.Group;
 import com.glos.databaseAPIService.domain.filters.GroupFilter;
+import com.glos.databaseAPIService.domain.responseDTO.GroupDTO;
+import com.glos.databaseAPIService.domain.responseMappers.GroupDTOMapper;
+import com.glos.databaseAPIService.domain.service.CommentService;
 import com.glos.databaseAPIService.domain.service.GroupService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,19 +38,21 @@ class GroupAPIControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private GroupService groupService;
+    @MockBean
+    private GroupDTOMapper groupDTOMapper;
     @Test
     void getGroupById() throws Exception {
         Long id = 1L;
         Group group = new Group();
+        GroupDTO groupDTO = new GroupDTO();
 
         when(groupService.getById(id)).thenReturn(Optional.of(group));
+        when(groupDTOMapper.toDto(group)).thenReturn(groupDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/groups/{id}",id)
+        mockMvc.perform(MockMvcRequestBuilders.get("/groups/{id}", id)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(groupService, times(1)).getById(id);
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(groupDTO)));
     }
 
     @Test
@@ -93,33 +102,42 @@ class GroupAPIControllerTest {
     @Test
     void getAllGroups() throws  Exception {
         Group group = new Group();
-        group.setId(1L);
+        GroupDTO groupDTO = new GroupDTO();
         List<Group> groups = Collections.singletonList(group);
-        when(groupService.getAll()).thenReturn(groups);
+        Page<Group> page = new PageImpl<>(groups);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String expectedJson = objectMapper.writeValueAsString(groups);
+        when(groupService.getPage(any(Pageable.class))).thenReturn(page);
+        when(groupDTOMapper.toDto(any(Group.class))).thenReturn(groupDTO);
+
+        // When & Then
         mockMvc.perform(MockMvcRequestBuilders.get("/groups")
-                        .accept(MediaType.APPLICATION_JSON))
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content[0]").exists());
     }
 
     @Test
     void getGroupsByFilters() throws Exception {
         Group group = new Group();
-        group.setId(1L);
+        GroupDTO groupDTO = new GroupDTO();
         List<Group> groups = Collections.singletonList(group);
+        Page<Group> page = new PageImpl<>(groups);
 
-        when(groupService.getAll(ArgumentMatchers.any(GroupFilter.class)))
-                .thenReturn(groups);
+        when(groupService.getPageByFilter(any(Group.class), any(Pageable.class))).thenReturn(page);
+        when(groupDTOMapper.toDto(any(Group.class))).thenReturn(groupDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/groups/filter")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        verify(groupService, times(1))
-                .getAll(ArgumentMatchers.any(GroupFilter.class));
+        // When & Then
+        mockMvc.perform(MockMvcRequestBuilders.get("/groups/filter")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content[0]").exists());
     }
 }
