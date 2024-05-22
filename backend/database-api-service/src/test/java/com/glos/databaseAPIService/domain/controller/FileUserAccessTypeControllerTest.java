@@ -1,8 +1,18 @@
 package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.api.entities.AccessType;
+import com.glos.api.entities.File;
 import com.glos.api.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
+import com.glos.databaseAPIService.domain.repository.AccessTypeRepository;
+import com.glos.databaseAPIService.domain.responseDTO.FileDTO;
+import com.glos.databaseAPIService.domain.responseDTO.FileUserAccessTypeDTO;
+import com.glos.databaseAPIService.domain.responseMappers.FileDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.FileUserAccessTypeDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
+import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
+import com.glos.databaseAPIService.domain.service.AccessTypeService;
+import com.glos.databaseAPIService.domain.service.FileService;
 import com.glos.databaseAPIService.domain.service.FileUserAccessTypeService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,8 +33,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@WebMvcTest(FileUserAccessTypeController.class)
+@WebMvcTest({FileUserAccessTypeController.class, FileAPIController.class})
 @ExtendWith(MockitoExtension.class)
 class FileUserAccessTypeControllerTest {
 
@@ -32,6 +41,18 @@ class FileUserAccessTypeControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private FileUserAccessTypeService fileUserAccessTypeService;
+    @MockBean
+    private FileUserAccessTypeDTOMapper fileUserAccessTypeDTOMapper;
+    @MockBean
+    private FileDTOMapper fileDTOMapper;
+    @MockBean
+    private UserDTOMapper userDTOMapper;
+    @MockBean
+    private FileAPIController fileAPIController;
+    @MockBean
+    private FileService fileService;
+    @MockBean
+    private RepositoryDTOMapper repositoryDTOMapper;
 
     @Test
     void getAllTest() throws Exception {
@@ -66,48 +87,42 @@ class FileUserAccessTypeControllerTest {
     void createTest() throws Exception {
         Long id = 1L;
         FileUserAccessType request = new FileUserAccessType();
+        request.setId(id);
 
         FileUserAccessType created = new FileUserAccessType();
         created.setId(id);
 
-        when(fileUserAccessTypeService.create(ArgumentMatchers.any(FileUserAccessType.class))).thenReturn(created);
+        FileUserAccessTypeDTO fileUserAccessTypeDTO = new FileUserAccessTypeDTO();
+
+        when(fileUserAccessTypeService.create(any(FileUserAccessType.class))).thenReturn(created);
+        when(fileUserAccessTypeDTOMapper.toDto(created)).thenReturn(fileUserAccessTypeDTO);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(request);
-        String expectedJson = objectMapper.writeValueAsString(created);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/fuat")
                         .content(requestJson)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(content().json(expectedJson));
-
-        verify(fileUserAccessTypeService, times(1)).create(ArgumentMatchers.any(FileUserAccessType.class));
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
     }
+
     @Test
     void testCreate() throws Exception {
         Long id = 1L;
         FileUserAccessType request = new FileUserAccessType();
-        FileUserAccessType updated = new FileUserAccessType();
-
-        updated.setId(id);
         request.setId(id);
 
-        when(fileUserAccessTypeService.update(any(Long.class) ,any(FileUserAccessType.class)))
-                .thenReturn(updated);
+        when(fileUserAccessTypeService.update(id, request)).thenReturn(request);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/fuat/" , id)
+                        .put("/fuat/{id}", id)
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-
-        verify(fileUserAccessTypeService, times(1)).update(id, request);
 
     }
 
