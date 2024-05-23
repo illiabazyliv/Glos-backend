@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
-import com.glos.api.entities.Group;
+import com.glos.databaseAPIService.domain.entities.Group;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.GroupDTO;
 import com.glos.databaseAPIService.domain.responseMappers.GroupDTOMapper;

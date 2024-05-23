@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.Tag;
+import com.glos.databaseAPIService.domain.entities.Tag;
 import com.glos.databaseAPIService.domain.service.TagService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;

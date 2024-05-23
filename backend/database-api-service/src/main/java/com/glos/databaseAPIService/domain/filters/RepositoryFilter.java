@@ -1,6 +1,9 @@
 package com.glos.databaseAPIService.domain.filters;
 
-import com.glos.api.entities.*;
+import com.glos.databaseAPIService.domain.entities.Comment;
+import com.glos.databaseAPIService.domain.entities.File;
+import com.glos.databaseAPIService.domain.entities.SecureCode;
+import com.glos.databaseAPIService.domain.entities.Tag;
 import jakarta.persistence.AccessType;
 
 import java.util.HashMap;

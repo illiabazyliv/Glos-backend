@@ -1,7 +1,5 @@
 package com.glos.api.userservice.responseDTO;
 
-import com.glos.api.entities.Role;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

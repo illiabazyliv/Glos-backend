@@ -1,7 +1,7 @@
 package com.glos.api.userservice.responseMappers;
 
-import com.glos.api.entities.Role;
-import com.glos.api.entities.User;
+import com.glos.api.userservice.entities.Role;
+import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.mappers.AbstractMapper;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import org.springframework.stereotype.Component;

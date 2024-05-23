@@ -1,11 +1,11 @@
 package com.glos.api.userservice.facade;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.Group;
-import com.glos.api.entities.User;
 import com.glos.api.userservice.client.AccessTypeAPIClient;
 import com.glos.api.userservice.client.GroupAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
+import com.glos.api.userservice.entities.AccessType;
+import com.glos.api.userservice.entities.Group;
+import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
 import com.glos.api.userservice.exeptions.UnsupportedDeleteResourceException;
 import com.glos.api.userservice.responseDTO.GroupFilterRequest;

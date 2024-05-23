@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.filters;
 
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.User;
 import jakarta.persistence.*;
 
 import java.util.List;

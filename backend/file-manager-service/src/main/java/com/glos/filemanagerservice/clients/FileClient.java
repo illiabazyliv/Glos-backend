@@ -1,15 +1,13 @@
 package com.glos.filemanagerservice.clients;
 
-import com.glos.api.entities.File;
 import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.DTO.Page;
+import com.glos.filemanagerservice.entities.File;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "files")

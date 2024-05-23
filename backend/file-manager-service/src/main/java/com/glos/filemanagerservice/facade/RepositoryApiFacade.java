@@ -1,8 +1,8 @@
 package com.glos.filemanagerservice.facade;
 
-import com.glos.api.entities.Repository;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.RepositoryClient;
+import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;

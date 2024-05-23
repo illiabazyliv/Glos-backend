@@ -5,7 +5,6 @@ import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class RepositoryRequestMapper extends AbstractMapper<RepositoryDTO, RepositoryRequestFilter>
 {

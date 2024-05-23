@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
 
-import com.glos.api.entities.Role;
+import com.glos.databaseAPIService.domain.entities.Role;
 import com.glos.databaseAPIService.domain.entityMappers.RoleMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;

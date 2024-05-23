@@ -1,9 +1,8 @@
 package com.glos.filemanagerservice.DTO;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.SecureCode;
-import com.glos.api.entities.Tag;
+import com.glos.filemanagerservice.entities.AccessType;
+import com.glos.filemanagerservice.entities.SecureCode;
+import com.netflix.servo.tag.Tag;
 
 import java.util.List;
 

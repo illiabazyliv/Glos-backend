@@ -1,6 +1,6 @@
 package com.glos.api.authservice.client;
 
-import com.glos.api.entities.SecureCode;
+import com.glos.api.authservice.entities.SecureCode;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

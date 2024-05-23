@@ -1,10 +1,10 @@
 package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
+import com.glos.api.authservice.entities.Roles;
+import com.glos.api.authservice.entities.User;
 import com.glos.api.authservice.exception.UserAccountStateException;
 import com.glos.api.authservice.shared.SharedEntity;
-import com.glos.api.entities.Roles;
-import com.glos.api.entities.User;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

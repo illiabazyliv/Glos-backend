@@ -1,23 +1,17 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.File;
-import com.glos.api.entities.FileUserAccessType;
+import com.glos.databaseAPIService.domain.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
-import com.glos.databaseAPIService.domain.repository.AccessTypeRepository;
-import com.glos.databaseAPIService.domain.responseDTO.FileDTO;
 import com.glos.databaseAPIService.domain.responseDTO.FileUserAccessTypeDTO;
 import com.glos.databaseAPIService.domain.responseMappers.FileDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.FileUserAccessTypeDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
-import com.glos.databaseAPIService.domain.service.AccessTypeService;
 import com.glos.databaseAPIService.domain.service.FileService;
 import com.glos.databaseAPIService.domain.service.FileUserAccessTypeService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

@@ -1,6 +1,6 @@
 package com.glos.api.userservice.utils;
 
-import com.glos.api.entities.Role;
+import com.glos.api.userservice.entities.Role;
 
 import java.time.Duration;
 

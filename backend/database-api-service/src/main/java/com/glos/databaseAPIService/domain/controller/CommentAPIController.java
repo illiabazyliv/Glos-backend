@@ -1,8 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.Comment;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.CommentDTO;
 import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
@@ -17,9 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Mykola Melnyk

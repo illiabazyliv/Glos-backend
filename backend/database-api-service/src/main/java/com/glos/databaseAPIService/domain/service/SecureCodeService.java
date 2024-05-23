@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.service;
 
-import com.glos.api.entities.SecureCode;
+import com.glos.databaseAPIService.domain.entities.SecureCode;
 import com.glos.databaseAPIService.domain.entityMappers.SecureCodeMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;

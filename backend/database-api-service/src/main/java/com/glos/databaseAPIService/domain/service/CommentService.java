@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
 
-import com.glos.api.entities.Comment;
+import com.glos.databaseAPIService.domain.entities.Comment;
 import com.glos.databaseAPIService.domain.entityMappers.CommentMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;

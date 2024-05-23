@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.User;
 import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.UserService;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;

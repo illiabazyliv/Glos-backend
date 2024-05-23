@@ -1,5 +1,5 @@
 package com.glos.databaseAPIService.domain.repository;
-import com.glos.api.entities.Repository;
+import com.glos.databaseAPIService.domain.entities.Repository;
 import com.glos.databaseAPIService.domain.filters.RepositoryFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

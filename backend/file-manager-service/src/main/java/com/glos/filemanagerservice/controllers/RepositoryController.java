@@ -1,22 +1,15 @@
 package com.glos.filemanagerservice.controllers;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.Repository;
-import com.glos.filemanagerservice.DTO.CommentDTO;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
-import com.glos.filemanagerservice.DTO.UserDTO;
+import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.facade.RepositoryApiFacade;
-import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
-import com.glos.filemanagerservice.utils.MapUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/repositories")

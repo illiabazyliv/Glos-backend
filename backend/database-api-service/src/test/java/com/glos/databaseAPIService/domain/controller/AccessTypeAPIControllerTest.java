@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.glos.api.entities.AccessType;
+import com.glos.databaseAPIService.domain.entities.AccessType;
 import com.glos.databaseAPIService.domain.service.AccessTypeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,14 +1,13 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
-import com.glos.api.entities.Tag;
+import com.glos.databaseAPIService.domain.entities.Tag;
 import com.glos.databaseAPIService.domain.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 /**

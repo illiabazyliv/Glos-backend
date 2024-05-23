@@ -1,6 +1,6 @@
 package com.glos.api.authservice.util;
 
-import com.glos.api.entities.Role;
+import com.glos.api.authservice.entities.Role;
 
 public final class Constants {
 

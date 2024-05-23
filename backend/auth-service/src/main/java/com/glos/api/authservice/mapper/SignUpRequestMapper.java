@@ -1,8 +1,8 @@
 package com.glos.api.authservice.mapper;
 
 import com.glos.api.authservice.dto.SignUpRequest;
-import com.glos.api.entities.User;
-import com.glos.api.entities.mappers.AbstractMapper;
+import com.glos.api.authservice.entities.User;
+import com.glos.api.authservice.mapper.base.AbstractMapper;
 import org.springframework.stereotype.Component;
 
 @Component

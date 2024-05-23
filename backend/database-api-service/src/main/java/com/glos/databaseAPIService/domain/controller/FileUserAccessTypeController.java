@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
-import com.glos.api.entities.FileUserAccessType;
+import com.glos.databaseAPIService.domain.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
 import com.glos.databaseAPIService.domain.responseDTO.FileDTO;
@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

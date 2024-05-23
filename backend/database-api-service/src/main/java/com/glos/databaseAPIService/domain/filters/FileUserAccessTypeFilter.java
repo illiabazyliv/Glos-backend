@@ -2,9 +2,9 @@ package com.glos.databaseAPIService.domain.filters;
 
 
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.File;
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.AccessType;
+import com.glos.databaseAPIService.domain.entities.File;
+import com.glos.databaseAPIService.domain.entities.User;
 
 import java.util.Map;
 

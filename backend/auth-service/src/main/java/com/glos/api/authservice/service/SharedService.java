@@ -1,14 +1,13 @@
 package com.glos.api.authservice.service;
 
 import com.glos.api.authservice.client.SecureCodeClient;
+import com.glos.api.authservice.entities.SecureCode;
 import com.glos.api.authservice.shared.SharedEntity;
-import com.glos.api.authservice.util.Constants;
+import com.glos.api.authservice.util.PathUtils;
 import com.glos.api.authservice.util.VerificationCodeGenerator;
 import com.glos.api.authservice.util.security.JwtProperties;
 import com.glos.api.authservice.util.security.JwtResponse;
 import com.glos.api.authservice.util.security.JwtService;
-import com.glos.api.entities.SecureCode;
-import com.glos.api.entities.util.PathUtils;
 import feign.FeignException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;

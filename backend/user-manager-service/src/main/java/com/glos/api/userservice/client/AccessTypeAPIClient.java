@@ -1,6 +1,6 @@
 package com.glos.api.userservice.client;
 
-import com.glos.api.entities.AccessType;
+import com.glos.api.userservice.entities.AccessType;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

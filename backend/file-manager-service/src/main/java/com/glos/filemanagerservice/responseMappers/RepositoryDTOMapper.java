@@ -1,13 +1,9 @@
 package com.glos.filemanagerservice.responseMappers;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.Repository;
-import com.glos.filemanagerservice.DTO.CommentDTO;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
+import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDTO>

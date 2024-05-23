@@ -1,11 +1,8 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.Group;
-import com.glos.databaseAPIService.domain.filters.GroupFilter;
+import com.glos.databaseAPIService.domain.entities.Group;
 import com.glos.databaseAPIService.domain.responseDTO.GroupDTO;
 import com.glos.databaseAPIService.domain.responseMappers.GroupDTOMapper;
-import com.glos.databaseAPIService.domain.service.CommentService;
 import com.glos.databaseAPIService.domain.service.GroupService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
