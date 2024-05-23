@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.repository;
 
-import com.glos.api.entities.FileUserAccessType;
+import com.glos.databaseAPIService.domain.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

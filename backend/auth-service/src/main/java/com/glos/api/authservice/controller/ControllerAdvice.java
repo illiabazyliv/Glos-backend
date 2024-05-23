@@ -3,9 +3,6 @@ package com.glos.api.authservice.controller;
 import com.glos.api.authservice.exception.*;
 import feign.FeignException;
 import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.PersistenceException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +55,6 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(value = {
-            EntityNotFoundException.class,
             NoResourceFoundException.class,
             UsernameNotFoundException.class
     })
@@ -114,15 +110,6 @@ public class ControllerAdvice {
         return exceptionBody;
     }
 
-
-    @ExceptionHandler(OptimisticLockException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ExceptionBody handleOptimisticLockException(
-            OptimisticLockException e
-    ){
-        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
-    }
-
     @ExceptionHandler(ResponseEntityException.class)
     public ExceptionBody handleResponseEntityException(
             ResponseEntityException e
@@ -173,7 +160,6 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler({
-            PersistenceException.class,
             Throwable.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -2,9 +2,6 @@ package com.glos.api.userservice.controllers;
 
 import com.glos.api.userservice.exeptions.*;
 import feign.FeignException;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.PersistenceException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +29,6 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(value = {
-            EntityNotFoundException.class,
             ResourceNotFoundException.class,
             NoResourceFoundException.class
     })
@@ -75,17 +71,7 @@ public class ControllerAdvice {
         return exceptionBody;
     }
 
-
-    @ExceptionHandler(OptimisticLockException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ExceptionBody handleOptimisticLockException(
-            OptimisticLockException e
-    ){
-        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
-    }
-
     @ExceptionHandler({
-            PersistenceException.class,
             Throwable.class
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

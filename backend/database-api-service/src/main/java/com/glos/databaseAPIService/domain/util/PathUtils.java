@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.util;
 
-import com.glos.api.entities.File;
-import com.glos.api.entities.Repository;
+import com.glos.databaseAPIService.domain.entities.File;
+import com.glos.databaseAPIService.domain.entities.Repository;
 
 import java.nio.file.Path;
 

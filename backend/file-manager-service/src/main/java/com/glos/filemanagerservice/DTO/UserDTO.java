@@ -1,7 +1,7 @@
 package com.glos.filemanagerservice.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.glos.api.entities.Role;
+import com.glos.filemanagerservice.entities.Role;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

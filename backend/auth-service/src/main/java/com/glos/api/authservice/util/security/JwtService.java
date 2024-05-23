@@ -1,9 +1,9 @@
 package com.glos.api.authservice.util.security;
 
+import com.glos.api.authservice.entities.SecureCode;
 import com.glos.api.authservice.exception.AccessDeniedException;
 import com.glos.api.authservice.exception.NoSuchClaimException;
 import com.glos.api.authservice.util.Constants;
-import com.glos.api.entities.SecureCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

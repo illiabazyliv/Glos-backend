@@ -1,7 +1,6 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.Group;
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.User;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
@@ -15,10 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**

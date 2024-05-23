@@ -1,8 +1,7 @@
 package com.glos.api.userservice.responseDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.glos.api.entities.Role;
-import jakarta.persistence.Column;
+import com.glos.api.userservice.entities.Role;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.glos.api.userservice.client;
 
-import com.glos.api.entities.Group;
+import com.glos.api.userservice.entities.Group;
 import com.glos.api.userservice.responseDTO.Page;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;

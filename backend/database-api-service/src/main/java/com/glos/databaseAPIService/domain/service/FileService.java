@@ -1,11 +1,10 @@
 package com.glos.databaseAPIService.domain.service;
 
 
-import com.glos.api.entities.File;
+import com.glos.databaseAPIService.domain.entities.File;
 import com.glos.databaseAPIService.domain.entityMappers.FileMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
-import com.glos.databaseAPIService.domain.filters.FileFilter;
 import com.glos.databaseAPIService.domain.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

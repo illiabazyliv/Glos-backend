@@ -1,16 +1,8 @@
 package com.glos.api.userservice.controllers;
 
-import com.glos.api.entities.Group;
-import com.glos.api.entities.Role;
-import com.glos.api.entities.User;
 import com.glos.api.userservice.client.RoleAPIClient;
-import com.glos.api.userservice.client.UserAPIClient;
+import com.glos.api.userservice.entities.Role;
 import com.glos.api.userservice.responseDTO.Page;
-import com.glos.api.userservice.responseDTO.RoleDTO;
-import com.glos.api.userservice.responseDTO.UserDTO;
-import com.glos.api.userservice.responseMappers.UserDTOMapper;
-import com.glos.api.userservice.utils.MapUtils;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

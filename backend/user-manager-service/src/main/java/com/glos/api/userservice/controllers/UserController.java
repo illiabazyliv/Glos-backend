@@ -1,6 +1,6 @@
 package com.glos.api.userservice.controllers;
 
-import com.glos.api.entities.User;
+import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.facade.*;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserDTO;
@@ -9,7 +9,6 @@ import com.glos.api.userservice.responseMappers.UserDTOMapper;
 import com.glos.api.userservice.responseMappers.UserFilterRequestDTOMapper;
 import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
 import com.glos.api.userservice.utils.Constants;
-import jakarta.ws.rs.Path;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

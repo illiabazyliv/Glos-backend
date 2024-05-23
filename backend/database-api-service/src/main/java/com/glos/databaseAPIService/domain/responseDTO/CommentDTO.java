@@ -1,7 +1,5 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
-import com.glos.api.entities.User;
-
 import java.time.LocalDateTime;
 
 public class CommentDTO

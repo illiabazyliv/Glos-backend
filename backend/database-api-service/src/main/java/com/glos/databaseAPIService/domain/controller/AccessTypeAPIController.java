@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.AccessType;
+import com.glos.databaseAPIService.domain.entities.AccessType;
 import com.glos.databaseAPIService.domain.service.AccessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

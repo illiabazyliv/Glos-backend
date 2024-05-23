@@ -1,10 +1,10 @@
 package com.glos.filemanagerservice.requestFilters;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.SecureCode;
-import com.glos.api.entities.Tag;
 import com.glos.filemanagerservice.DTO.CommentDTO;
 import com.glos.filemanagerservice.DTO.UserDTO;
+import com.glos.filemanagerservice.entities.AccessType;
+import com.glos.filemanagerservice.entities.SecureCode;
+import com.glos.filemanagerservice.entities.Tag;
 
 import java.util.ArrayList;
 import java.util.List;

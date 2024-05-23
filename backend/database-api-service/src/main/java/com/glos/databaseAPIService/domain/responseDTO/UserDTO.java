@@ -1,8 +1,6 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
-import com.glos.api.entities.Group;
-import com.glos.api.entities.Role;
-import jakarta.persistence.*;
+import com.glos.databaseAPIService.domain.entities.Role;
 
 import java.time.LocalDateTime;
 import java.util.List;

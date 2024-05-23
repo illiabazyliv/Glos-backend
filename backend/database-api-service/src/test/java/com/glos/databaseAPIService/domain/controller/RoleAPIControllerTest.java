@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.Role;
+import com.glos.databaseAPIService.domain.entities.Role;
 import com.glos.databaseAPIService.domain.service.RoleService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;

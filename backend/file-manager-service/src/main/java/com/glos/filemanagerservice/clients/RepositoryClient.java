@@ -1,17 +1,15 @@
 package com.glos.filemanagerservice.clients;
 
-import com.glos.api.entities.Repository;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
+import com.glos.filemanagerservice.entities.Repository;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @FeignClient(name = "repositories")
 public interface RepositoryClient

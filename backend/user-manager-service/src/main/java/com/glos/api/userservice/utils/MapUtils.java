@@ -1,12 +1,8 @@
 package com.glos.api.userservice.utils;
 
-import com.glos.api.entities.Group;
-import com.glos.api.entities.User;
-
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class MapUtils
 {

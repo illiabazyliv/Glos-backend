@@ -1,6 +1,6 @@
 package com.glos.api.userservice.controllers;
 
-import com.glos.api.entities.Group;
+import com.glos.api.userservice.entities.Group;
 import com.glos.api.userservice.facade.GroupAPIFacade;
 import com.glos.api.userservice.responseDTO.GroupDTO;
 import com.glos.api.userservice.responseDTO.GroupFilterRequest;

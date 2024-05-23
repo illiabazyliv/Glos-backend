@@ -1,8 +1,5 @@
 package com.glos.filemanagerservice.DTO;
 
-import com.glos.api.entities.User;
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 public class CommentDTO

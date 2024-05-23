@@ -1,8 +1,8 @@
 package com.glos.databaseAPIService.domain.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.glos.api.entities.File;
-import com.glos.api.entities.Repository;
+import com.glos.databaseAPIService.domain.entities.File;
+import com.glos.databaseAPIService.domain.entities.Repository;
 import com.glos.databaseAPIService.domain.responseDTO.FileDTO;
 import com.glos.databaseAPIService.domain.responseMappers.FileDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
@@ -13,15 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

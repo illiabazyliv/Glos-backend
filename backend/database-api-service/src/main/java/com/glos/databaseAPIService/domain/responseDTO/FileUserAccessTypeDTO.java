@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
-import com.glos.api.entities.AccessType;
+import com.glos.databaseAPIService.domain.entities.AccessType;
 
 public class FileUserAccessTypeDTO
 {

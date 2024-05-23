@@ -1,8 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
 
-import com.glos.api.entities.Group;
-import com.glos.api.entities.Role;
+import com.glos.databaseAPIService.domain.entities.Role;
 import com.glos.databaseAPIService.domain.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,9 +11,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
-import java.util.List;
 
 /**
  * 	@author - yablonovskydima

@@ -1,9 +1,7 @@
 package com.glos.filemanagerservice.responseMappers;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.File;
-import com.glos.filemanagerservice.DTO.CommentDTO;
 import com.glos.filemanagerservice.DTO.FileDTO;
+import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
