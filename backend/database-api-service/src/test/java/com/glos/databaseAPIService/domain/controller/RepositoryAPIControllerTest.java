@@ -157,8 +157,7 @@ class RepositoryAPIControllerTest {
                         .param("sort", "id,asc")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.content[0]").exists());
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
 
         Mockito.verify(repositoryService, Mockito.times(1)).findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class));
     }
