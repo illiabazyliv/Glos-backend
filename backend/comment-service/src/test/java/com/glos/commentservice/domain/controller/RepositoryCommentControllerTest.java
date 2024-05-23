@@ -58,36 +58,36 @@ class RepositoryCommentControllerTest {
 //                .andReturn();
 //
 //    }
-    @Disabled
-    @Test
-    void createCommentTest() throws Exception{
-        String rootFullName = "repo/name";
-        Comment comment = new Comment();
-        CommentDTO commentDTO = new CommentDTO();
-        when(repositoryApiFacade.createRepositoryComment(any(Comment.class), eq(rootFullName)))
-                .thenReturn(ResponseEntity.ok(commentDTO));
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/repositories/{rootFullName}/comments", rootFullName)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"content\": \"Test comment\"}"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-
-        verify(repositoryApiFacade, times(1)).createRepositoryComment(any(Comment.class), eq(rootFullName));
-    }
-    @Disabled
-    @Test
-    void deleteCommentTest() throws Exception{
-        String rootFullName = "repoName";
-        Long id = 1L;
-
-        when(repositoryApiFacade.deleteComment(rootFullName , id)).thenReturn(null);
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/repositories/{rootFullName}/comments/{id}", rootFullName, id))
-                .andExpect(status().isNoContent());
-
-        verify(repositoryApiFacade, times(1)).deleteComment(rootFullName, id);
-    }
+//    @Disabled
+//    @Test
+//    void createCommentTest() throws Exception{
+//        String rootFullName = "repo/name";
+//        Comment comment = new Comment();
+//        CommentDTO commentDTO = new CommentDTO();
+//        when(repositoryApiFacade.createRepositoryComment(any(Comment.class), eq(rootFullName)))
+//                .thenReturn(ResponseEntity.ok(commentDTO));
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/repositories/{rootFullName}/comments", rootFullName)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"content\": \"Test comment\"}"))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+//
+//        verify(repositoryApiFacade, times(1)).createRepositoryComment(any(Comment.class), eq(rootFullName));
+//    }
+//    @Disabled
+//    @Test
+//    void deleteCommentTest() throws Exception{
+//        String rootFullName = "repoName";
+//        Long id = 1L;
+//
+//        when(repositoryApiFacade.deleteComment(rootFullName , id)).thenReturn(null);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.delete("/repositories/{rootFullName}/comments/{id}", rootFullName, id))
+//                .andExpect(status().isNoContent());
+//
+//        verify(repositoryApiFacade, times(1)).deleteComment(rootFullName, id);
+//    }
 
 //    @Test
 //    void updateCommentTest() throws Exception{
