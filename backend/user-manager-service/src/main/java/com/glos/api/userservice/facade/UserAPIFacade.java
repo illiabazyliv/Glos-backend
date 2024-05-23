@@ -1,9 +1,9 @@
 package com.glos.api.userservice.facade;
 
-import com.glos.api.entities.Role;
-import com.glos.api.entities.User;
 import com.glos.api.userservice.client.RoleAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
+import com.glos.api.userservice.entities.Role;
+import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
@@ -15,7 +15,6 @@ import com.glos.api.userservice.utils.MapUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service

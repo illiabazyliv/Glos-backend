@@ -1,16 +1,13 @@
 package com.glos.api.userservice.client;
 
-import com.glos.api.entities.User;
+import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.responseDTO.Page;
-import com.glos.api.userservice.responseDTO.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @FeignClient(name = "user")
 public interface UserAPIClient

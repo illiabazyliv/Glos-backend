@@ -1,7 +1,7 @@
 package com.glos.api.userservice.responseDTO;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.User;
+import com.glos.api.userservice.entities.AccessType;
+import com.glos.api.userservice.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
