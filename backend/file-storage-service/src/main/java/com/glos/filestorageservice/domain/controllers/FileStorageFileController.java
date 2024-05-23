@@ -1,40 +1,50 @@
 package com.glos.filestorageservice.domain.controllers;
 
-import com.glos.filestorageservice.domain.DTO.MoveDTO;
+import com.glos.filestorageservice.domain.DTO.*;
+import com.glos.filestorageservice.domain.services.FileStorageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/file-storage/files")
+@RequestMapping("/storage")
 public class FileStorageFileController
 {
-    @PostMapping
-    public ResponseEntity<?> uploadFile()
-    {
-        return ResponseEntity.ok().build();
+
+    private final FileStorageService fileStorageService;
+
+    public FileStorageFileController(FileStorageService fileStorageService) {
+        this.fileStorageService = fileStorageService;
     }
 
-    @GetMapping
-    public ResponseEntity<?> downloadFile()
-    {
-        return ResponseEntity.ok().build();
+    @PostMapping("/upload")
+    public ResponseEntity<List<FileAndStatus>> uploadFiles(@RequestBody UploadRequest request) {
+
+        return ResponseEntity.ok(fileStorageService.upload(request.getFiles()));
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateFile()
+    @GetMapping("/download")
+    public ResponseEntity<List<FileWithPath>> downloadFile(@RequestBody DownloadRequest request)
     {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(fileStorageService.download(request.getFilenames()));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateFile(@RequestBody UpdateRequest request)
+    {
+        return ResponseEntity.ok(fileStorageService.update(request.getFiles()));
     }
 
     @PostMapping("/move")
-    public ResponseEntity<?> moveFile(@RequestBody MoveDTO move)
+    public ResponseEntity<?> moveFile(@RequestBody MoveRequest request)
     {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(fileStorageService.move(request.getMoves()));
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteFile()
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteFile(@RequestBody DeleteRequest request)
     {
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileStorageService.delete(request.getFilenames()));
     }
 }

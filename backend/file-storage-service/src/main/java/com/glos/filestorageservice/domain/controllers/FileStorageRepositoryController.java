@@ -1,11 +1,13 @@
 package com.glos.filestorageservice.domain.controllers;
 
-import com.glos.filestorageservice.domain.DTO.MoveDTO;
+import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/file-storage/repositories")
+@RequestMapping("/storage/repositories")
 public class FileStorageRepositoryController
 {
     @PostMapping
@@ -27,7 +29,7 @@ public class FileStorageRepositoryController
     }
 
     @PostMapping("/move")
-    public ResponseEntity<?> moveRepository(@RequestBody MoveDTO move)
+    public ResponseEntity<?> moveRepository(@RequestBody List<MoveRequest.MoveNode> moves)
     {
         return ResponseEntity.ok().build();
     }
