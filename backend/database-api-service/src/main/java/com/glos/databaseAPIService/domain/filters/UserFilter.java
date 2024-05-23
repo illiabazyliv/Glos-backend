@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.filters;
 
-import com.glos.api.entities.Group;
-import com.glos.api.entities.Role;
+import com.glos.databaseAPIService.domain.entities.Group;
+import com.glos.databaseAPIService.domain.entities.Role;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

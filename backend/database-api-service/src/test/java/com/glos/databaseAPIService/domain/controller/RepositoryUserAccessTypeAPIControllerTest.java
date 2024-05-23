@@ -1,11 +1,10 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.Repository;
-import com.glos.api.entities.RepositoryUserAccessType;
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.AccessType;
+import com.glos.databaseAPIService.domain.entities.Repository;
+import com.glos.databaseAPIService.domain.entities.RepositoryUserAccessType;
+import com.glos.databaseAPIService.domain.entities.User;
 import com.glos.databaseAPIService.domain.filters.RepositoryUserAccessTypeFilter;
-import com.glos.databaseAPIService.domain.responseDTO.RepositoryUserAccessTypeDTO;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryUserAccessTypeDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
@@ -13,7 +12,6 @@ import com.glos.databaseAPIService.domain.service.RepositoryUserAccessTypeServic
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

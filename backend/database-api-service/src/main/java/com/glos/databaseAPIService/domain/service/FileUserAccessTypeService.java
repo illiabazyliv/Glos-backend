@@ -1,7 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
 
-import com.glos.api.entities.FileUserAccessType;
+import com.glos.databaseAPIService.domain.entities.FileUserAccessType;
 import com.glos.databaseAPIService.domain.entityMappers.FileUserAccessTypeMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;

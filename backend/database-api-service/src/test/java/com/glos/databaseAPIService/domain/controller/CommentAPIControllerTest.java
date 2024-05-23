@@ -1,9 +1,7 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.Comment;
 import com.glos.databaseAPIService.domain.responseDTO.CommentDTO;
-import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import com.glos.databaseAPIService.domain.responseMappers.CommentDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.CommentService;
@@ -21,13 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

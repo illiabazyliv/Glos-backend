@@ -1,10 +1,9 @@
 package com.glos.databaseAPIService.domain.service;
 
 
-import com.glos.api.entities.File;
-import com.glos.api.entities.Group;
-import com.glos.api.entities.Role;
-import com.glos.api.entities.User;
+import com.glos.databaseAPIService.domain.entities.Group;
+import com.glos.databaseAPIService.domain.entities.Role;
+import com.glos.databaseAPIService.domain.entities.User;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

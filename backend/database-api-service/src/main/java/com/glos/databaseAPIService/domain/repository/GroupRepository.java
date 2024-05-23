@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.repository;
 
-import com.glos.api.entities.Group;
+import com.glos.databaseAPIService.domain.entities.Group;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
