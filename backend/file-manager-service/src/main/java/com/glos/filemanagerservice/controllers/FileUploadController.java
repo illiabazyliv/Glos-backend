@@ -1,8 +1,8 @@
 package com.glos.filemanagerservice.controllers;
 
-import com.glos.api.entities.File;
 import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.clients.FileClient;
+import com.glos.filemanagerservice.entities.File;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;

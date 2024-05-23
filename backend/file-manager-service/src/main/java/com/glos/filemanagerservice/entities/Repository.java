@@ -1,49 +1,36 @@
-package com.glos.filemanagerservice.requestFilters;
-
-import com.glos.filemanagerservice.DTO.CommentDTO;
-import com.glos.filemanagerservice.DTO.UserDTO;
-import com.glos.filemanagerservice.entities.AccessType;
-import com.glos.filemanagerservice.entities.SecureCode;
-import com.glos.filemanagerservice.entities.Tag;
+package com.glos.filemanagerservice.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class RepositoryRequestFilter
+public class Repository
 {
     private Long id;
-
     private String rootPath;
-
     private String rootName;
-
     private String rootFullName;
-
-    private UserDTO owner;
-
+    private User owner;
     private Boolean isDefault;
-
     private String displayPath;
-
     private String displayName;
-
     private String displayFullName;
-
     private String description;
-
     private List<AccessType> accessTypes;
-
-    private List<CommentDTO> comments;
-
+    private List<Comment> comments;
     private List<SecureCode> secureCodes;
-
     private List<Tag> tags;
+    private List<File> files;
 
-    private int page;
-    private int size;
-    private String sort;
+    public Repository() {
+        this.comments = new ArrayList<>();
+        this.files = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.accessTypes = new ArrayList<>();
+        this.tags = new ArrayList<>();
+    }
 
-    public RepositoryRequestFilter(Long id, String rootPath, String rootName, String rootFullName, UserDTO owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<CommentDTO> comments, List<SecureCode> secureCodes, List<Tag> tags, int page, int size, String sort) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -58,18 +45,7 @@ public class RepositoryRequestFilter
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
-        this.page = page;
-        this.size = size;
-        this.sort = sort;
-    }
-
-    public RepositoryRequestFilter()
-    {
-        this.accessTypes = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
-        this.tags = new ArrayList<>();
-        this.comments = new ArrayList<>();
-        this.owner = new UserDTO();
+        this.files = files;
     }
 
     public Long getId() {
@@ -104,11 +80,11 @@ public class RepositoryRequestFilter
         this.rootFullName = rootFullName;
     }
 
-    public UserDTO getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(UserDTO owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
@@ -160,11 +136,11 @@ public class RepositoryRequestFilter
         this.accessTypes = accessTypes;
     }
 
-    public List<CommentDTO> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentDTO> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -184,27 +160,48 @@ public class RepositoryRequestFilter
         this.tags = tags;
     }
 
-    public int getPage() {
-        return page;
+    public List<File> getFiles() {
+        return files;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setFiles(List<File> files) {
+        this.files = files;
     }
 
-    public int getSize() {
-        return size;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Repository that = (Repository) o;
+        return Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(isDefault, that.isDefault) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(secureCodes, that.secureCodes) && Objects.equals(tags, that.tags) && Objects.equals(files, that.files);
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, rootPath, rootName, rootFullName, owner, isDefault, displayPath, displayName, displayFullName, description, accessTypes, comments, secureCodes, tags, files);
     }
 
-    public String getSort() {
-        return sort;
+    @Override
+    public String toString() {
+        return "Repository{" +
+                "id=" + id +
+                ", rootPath='" + rootPath + '\'' +
+                ", rootName='" + rootName + '\'' +
+                ", rootFullName='" + rootFullName + '\'' +
+                ", owner=" + owner +
+                ", isDefault=" + isDefault +
+                ", displayPath='" + displayPath + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", displayFullName='" + displayFullName + '\'' +
+                ", description='" + description + '\'' +
+                ", accessTypes=" + accessTypes +
+                ", comments=" + comments +
+                ", secureCodes=" + secureCodes +
+                ", tags=" + tags +
+                ", files=" + files +
+                '}';
     }
 
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
+
 }
+

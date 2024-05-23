@@ -1,27 +1,16 @@
-package com.glos.filemanagerservice.DTO;
+package com.glos.filemanagerservice.entities;
 
 import java.time.LocalDateTime;
 
-public class CommentDTO
+public class Comment
 {
-
     private Long id;
 
-    private UserDTO author;
+    private User author;
 
     private String text;
 
     private LocalDateTime date;
-
-    public CommentDTO() {
-    }
-
-    public CommentDTO(Long id, UserDTO author, String text, LocalDateTime date) {
-        this.id = id;
-        this.author = author;
-        this.text = text;
-        this.date = date;
-    }
 
     public Long getId() {
         return id;
@@ -31,11 +20,11 @@ public class CommentDTO
         this.id = id;
     }
 
-    public UserDTO getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(UserDTO author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 

@@ -1,46 +1,34 @@
-package com.glos.filemanagerservice.requestFilters;
+package com.glos.filemanagerservice.entities;
 
-import com.glos.filemanagerservice.DTO.CommentDTO;
-import com.glos.filemanagerservice.DTO.RepositoryDTO;
-import com.glos.filemanagerservice.entities.AccessType;
-import com.glos.filemanagerservice.entities.SecureCode;
-import com.glos.filemanagerservice.entities.Tag;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class FileRequestFilter
+public class File
 {
     private Long id;
-
     private String rootPath;
-
     private String rootFilename;
-
     private String rootFullName;
-
     private Integer rootSize;
-
     private String rootFormat;
-
     private String displayPath;
-
     private String displayFilename;
-
     private String displayFullName;
-
-    private RepositoryDTO repository;
-
+    private Repository repository;
     private List<AccessType> accessTypes;
-
-    private List<CommentDTO> comments;
+    private List<Comment> comments;
     private List<SecureCode> secureCodes;
     private List<Tag> tags;
 
-    private int page;
-    private int size;
-    private String sort;
+    public File() {
+        this.repository = new Repository();
+        this.tags = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.accessTypes = new ArrayList<>();
+    }
 
-    public FileRequestFilter(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, RepositoryDTO repository, List<AccessType> accessTypes, List<CommentDTO> comments, List<SecureCode> secureCodes, List<Tag> tags, int page, int size, String sort) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -55,14 +43,6 @@ public class FileRequestFilter
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
-        this.page = page;
-        this.size = size;
-        this.sort = sort;
-    }
-
-    public FileRequestFilter()
-    {
-        this.repository = new RepositoryDTO();
     }
 
     public Long getId() {
@@ -137,11 +117,11 @@ public class FileRequestFilter
         this.displayFullName = displayFullName;
     }
 
-    public RepositoryDTO getRepository() {
+    public Repository getRepository() {
         return repository;
     }
 
-    public void setRepository(RepositoryDTO repository) {
+    public void setRepository(Repository repository) {
         this.repository = repository;
     }
 
@@ -153,11 +133,11 @@ public class FileRequestFilter
         this.accessTypes = accessTypes;
     }
 
-    public List<CommentDTO> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentDTO> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -177,27 +157,23 @@ public class FileRequestFilter
         this.tags = tags;
     }
 
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
+    @Override
+    public String toString() {
+        return "File{" +
+                "id=" + id +
+                ", rootPath='" + rootPath + '\'' +
+                ", rootFilename='" + rootFilename + '\'' +
+                ", rootFullName='" + rootFullName + '\'' +
+                ", rootSize=" + rootSize +
+                ", rootFormat='" + rootFormat + '\'' +
+                ", displayPath='" + displayPath + '\'' +
+                ", displayFilename='" + displayFilename + '\'' +
+                ", displayFullName='" + displayFullName + '\'' +
+                ", repository=" + repository +
+                ", accessTypes=" + accessTypes +
+                ", comments=" + comments +
+                ", secureCodes=" + secureCodes +
+                ", tags=" + tags +
+                '}';
     }
 }
