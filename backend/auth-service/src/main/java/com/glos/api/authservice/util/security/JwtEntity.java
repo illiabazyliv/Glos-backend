@@ -1,17 +1,13 @@
 package com.glos.api.authservice.util.security;
 
-
 import com.glos.api.authservice.dto.Role;
-import com.glos.api.authservice.util.Constants;
-import com.glos.api.entities.Roles;
-import com.glos.api.entities.User;
+import com.glos.api.authservice.entities.Roles;
+import com.glos.api.authservice.entities.User;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;

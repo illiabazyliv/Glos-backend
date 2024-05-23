@@ -1,13 +1,10 @@
 package com.glos.api.authservice.controller;
 
 import com.glos.api.authservice.dto.SignUpRequest;
+import com.glos.api.authservice.entities.Roles;
+import com.glos.api.authservice.entities.User;
 import com.glos.api.authservice.mapper.SignUpRequestMapper;
-import com.glos.api.authservice.util.security.JwtEntity;
-import com.glos.api.authservice.util.security.JwtRequest;
-import com.glos.api.authservice.util.security.JwtResponse;
-import com.glos.api.authservice.util.security.SimpleAuthService;
-import com.glos.api.entities.Roles;
-import com.glos.api.entities.User;
+import com.glos.api.authservice.util.security.*;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;

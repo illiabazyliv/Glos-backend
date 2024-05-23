@@ -2,8 +2,8 @@ package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
 import com.glos.api.authservice.client.UserDatabaseAPIClient;
+import com.glos.api.authservice.entities.User;
 import com.glos.api.authservice.exception.ResponseEntityException;
-import com.glos.api.entities.User;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,14 +1,12 @@
 package com.glos.api.authservice.controller;
 
 import com.glos.api.authservice.dto.SignUpRequest;
+import com.glos.api.authservice.entities.Roles;
+import com.glos.api.authservice.entities.User;
 import com.glos.api.authservice.mapper.SignUpRequestMapper;
-import com.glos.api.authservice.service.SharedService;
-import com.glos.api.authservice.shared.SharedEntity;
 import com.glos.api.authservice.util.security.*;
 import com.glos.api.authservice.validation.OnCreate;
-import com.glos.api.entities.User;
 import jakarta.validation.Valid;
-import com.glos.api.entities.Roles;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
