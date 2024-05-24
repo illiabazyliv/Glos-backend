@@ -1,9 +1,9 @@
 package com.glos.feedservice.domain.DTO;
 
-import com.glos.api.entities.*;
-import com.glos.api.entities.AccessType;
-import jakarta.persistence.*;
-import org.hibernate.annotations.Check;
+
+import com.glos.feedservice.domain.entities.AccessType;
+import com.glos.feedservice.domain.entities.Comment;
+import com.glos.feedservice.domain.entities.Tag;
 
 import java.util.List;
 
@@ -11,13 +11,9 @@ public class FileDTO
 {
     private Long id;
     private Integer rootSize;
-
     private String rootFormat;
-
     private String displayPath;
-
     private String displayFilename;
-
     private String displayFullName;
     private List<AccessType> accessTypes;
     private List<Comment> comments;

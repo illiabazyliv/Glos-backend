@@ -1,8 +1,11 @@
 package com.glos.feedservice.domain.DTO;
 
-import com.glos.api.entities.*;
+import com.glos.feedservice.domain.entities.AccessType;
+import com.glos.feedservice.domain.entities.Tag;
+import com.glos.feedservice.domain.entities.User;
 
 import java.util.List;
+
 /**
  * 	@author - yablonovskydima
  */

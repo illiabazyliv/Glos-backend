@@ -1,66 +1,36 @@
-package com.glos.feedservice.domain.filters;
+package com.glos.feedservice.domain.entities;
 
-import com.glos.feedservice.domain.entities.*;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * 	@author - yablonovskydima
- */
-
-public class RepositoryFilter
+public class Repository
 {
     private Long id;
-
     private String rootPath;
-
     private String rootName;
-
     private String rootFullName;
-
     private User owner;
-
     private Boolean isDefault;
-
     private String displayPath;
-
     private String displayName;
-
     private String displayFullName;
-
     private String description;
-
     private List<AccessType> accessTypes;
-
     private List<Comment> comments;
-
     private List<SecureCode> secureCodes;
-
     private List<Tag> tags;
-
     private List<File> files;
 
+    public Repository() {
+        this.comments = new ArrayList<>();
+        this.files = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.accessTypes = new ArrayList<>();
+        this.tags = new ArrayList<>();
+    }
 
-    private Integer pageNumber;
-    private Integer pageSize;
-    private SpringDataWebProperties.Pageable pageable;
-
-    public RepositoryFilter(Long id,
-                            String rootPath,
-                            String rootName,
-                            String rootFullName,
-                            User owner,
-                            Boolean isDefault,
-                            String displayPath,
-                            String displayName,
-                            String displayFullName,
-                            String description,
-                            List<AccessType> accessTypes,
-                            List<Comment> comments,
-                            List<SecureCode> secureCodes,
-                            List<Tag> tags, List<File> files,
-                            Integer pageNumber, Integer pageSize, SpringDataWebProperties.Pageable pageable) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -76,12 +46,6 @@ public class RepositoryFilter
         this.secureCodes = secureCodes;
         this.tags = tags;
         this.files = files;
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
-        this.pageable = pageable;
-    }
-
-    public RepositoryFilter() {
     }
 
     public Long getId() {
@@ -124,7 +88,7 @@ public class RepositoryFilter
         this.owner = owner;
     }
 
-    public Boolean isDefault() {
+    public Boolean getDefault() {
         return isDefault;
     }
 
@@ -204,27 +168,40 @@ public class RepositoryFilter
         this.files = files;
     }
 
-    public Integer getPageNumber() {
-        return pageNumber;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Repository that = (Repository) o;
+        return Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(isDefault, that.isDefault) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(secureCodes, that.secureCodes) && Objects.equals(tags, that.tags) && Objects.equals(files, that.files);
     }
 
-    public Integer getPageSize() {
-        return pageSize;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, rootPath, rootName, rootFullName, owner, isDefault, displayPath, displayName, displayFullName, description, accessTypes, comments, secureCodes, tags, files);
     }
 
-    public SpringDataWebProperties.Pageable getPageable() {
-        return pageable;
+    @Override
+    public String toString() {
+        return "Repository{" +
+                "id=" + id +
+                ", rootPath='" + rootPath + '\'' +
+                ", rootName='" + rootName + '\'' +
+                ", rootFullName='" + rootFullName + '\'' +
+                ", owner=" + owner +
+                ", isDefault=" + isDefault +
+                ", displayPath='" + displayPath + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", displayFullName='" + displayFullName + '\'' +
+                ", description='" + description + '\'' +
+                ", accessTypes=" + accessTypes +
+                ", comments=" + comments +
+                ", secureCodes=" + secureCodes +
+                ", tags=" + tags +
+                ", files=" + files +
+                '}';
     }
 
-    public void setPageNumber(Integer pageNumber) {
-        this.pageNumber = pageNumber;
-    }
 
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public void setPageable(SpringDataWebProperties.Pageable pageable) {
-        this.pageable = pageable;
-    }
 }
+

@@ -3,7 +3,7 @@ package com.glos.feedservice.domain.repositories;
 import com.glos.feedservice.domain.DTO.FileDTO;
 import com.glos.feedservice.domain.DTO.PageDTO;
 import com.glos.feedservice.domain.DTO.RepositoryDTO;
-import com.glos.api.entities.*;
+import com.glos.feedservice.domain.entities.*;
 import com.glos.feedservice.domain.entityMappers.FileDTOMapper;
 import com.glos.feedservice.domain.filters.RepositoryFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.*;
 
 import static org.springframework.http.HttpMethod.GET;
+
 /**
  * 	@author - yablonovskydima
  */
