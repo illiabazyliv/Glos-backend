@@ -2,10 +2,10 @@ package com.glos.accessservice.entities;
 
 import java.time.LocalDateTime;
 
+
 public class Comment
 {
     private Long id;
-
     private User author;
 
     private String text;

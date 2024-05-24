@@ -1,15 +1,22 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Group
 {
+
     private Long id;
 
     private String name;
+
     private User owner;
+
     private List<User> users;
+
     private List<AccessType> accessTypes;
 
     public Long getId() {

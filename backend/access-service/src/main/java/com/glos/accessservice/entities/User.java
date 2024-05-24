@@ -1,22 +1,33 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class User
 {
     private Long id;
+
     private String username;
+
     private String password_hash;
+
     private String email;
+
     private String phone_number;
+
     private String gender;
+
     private String first_name;
+
     private String last_name;
 
     private LocalDate birthdate;
+
     private Boolean is_account_non_expired;
 
     private Boolean is_account_non_locked;

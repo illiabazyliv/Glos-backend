@@ -1,6 +1,7 @@
 package com.glos.accessservice.responseDTO;
 
 
+
 import com.glos.accessservice.entities.AccessType;
 import com.glos.accessservice.entities.SecureCode;
 import com.glos.accessservice.entities.Tag;

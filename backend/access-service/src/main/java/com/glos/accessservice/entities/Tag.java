@@ -1,8 +1,12 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
+
+
 
 public class Tag
 {
+
     private Long id;
 
     private String name;

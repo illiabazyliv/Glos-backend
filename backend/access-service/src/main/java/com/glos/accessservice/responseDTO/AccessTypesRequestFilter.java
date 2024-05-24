@@ -1,6 +1,5 @@
 package com.glos.accessservice.responseDTO;
 
-
 public class AccessTypesRequestFilter
 {
     private Long id;

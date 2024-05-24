@@ -1,8 +1,10 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
 
 public class Role
 {
+
     private Long id;
 
     private String name;

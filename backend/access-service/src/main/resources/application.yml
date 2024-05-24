@@ -20,7 +20,7 @@ spring:
           secureCodes:
             url : http://localhost:8080/api/v1/secure-codes
           auth:
-            url : http://localhost:9006/api/v1/
+            url : http://localhost:9006/api/v1
 
 eureka:
   instance:

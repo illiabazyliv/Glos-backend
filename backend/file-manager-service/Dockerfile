@@ -12,6 +12,6 @@ FROM amazoncorretto:17
 
 COPY --from=builder /app/file-manager-service/target/*.jar /app/app.jar
 
-EXPOSE 9006
+EXPOSE 9010
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

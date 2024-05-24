@@ -1,6 +1,4 @@
 package com.glos.accessservice.entities;
-
-
 public class AccessType
 {
     private Long id;

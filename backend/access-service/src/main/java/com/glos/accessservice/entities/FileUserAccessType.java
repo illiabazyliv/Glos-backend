@@ -1,10 +1,18 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
+
+
+
 public class FileUserAccessType
 {
+
     private Long id;
+
     private File file;
+
     private User user;
+
     private AccessType accessType;
 
     public Long getId() {

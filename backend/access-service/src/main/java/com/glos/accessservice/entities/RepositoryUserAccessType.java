@@ -1,8 +1,10 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
 
 public class RepositoryUserAccessType
 {
+
     private Long id;
 
     private Repository repository;
@@ -40,15 +42,5 @@ public class RepositoryUserAccessType
 
     public void setAccessType(AccessType accessType) {
         this.accessType = accessType;
-    }
-
-    public RepositoryUserAccessType(Long id, Repository repository, User user, AccessType accessType) {
-        this.id = id;
-        this.repository = repository;
-        this.user = user;
-        this.accessType = accessType;
-    }
-
-    public RepositoryUserAccessType() {
     }
 }

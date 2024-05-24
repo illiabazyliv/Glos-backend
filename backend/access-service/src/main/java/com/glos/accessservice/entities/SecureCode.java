@@ -1,17 +1,23 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
+
 
 
 public class SecureCode
 {
     private Long id;
+
     private String code;
+
     private String resourcePath;
-    private LocalDateTime expirationDate;
 
     private LocalDateTime creationDate;
+
+    private LocalDateTime expirationDate;
 
     public SecureCode(Long id, String code, String resourcePath, LocalDateTime creationDate, LocalDateTime expirationDate) {
         this.id = id;
@@ -54,6 +60,7 @@ public class SecureCode
     public void setExpirationDate(LocalDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
+
 
     public String getResourcePath() {
         return resourcePath;

@@ -1,5 +1,7 @@
 package com.glos.accessservice.entities;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,11 +31,8 @@ public class Repository
     private String description;
 
     private List<AccessType> accessTypes;
-
     private List<Comment> comments;
-
     private List<SecureCode> secureCodes;
-
     private List<Tag> tags;
 
     private List<File> files;
