@@ -1,10 +1,10 @@
 package com.glos.commentservice.domain.requestFilters;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.SecureCode;
-import com.glos.api.entities.Tag;
 import com.glos.commentservice.domain.DTO.CommentDTO;
 import com.glos.commentservice.domain.DTO.UserDTO;
+import com.glos.commentservice.entities.AccessType;
+import com.glos.commentservice.entities.SecureCode;
+import com.glos.commentservice.entities.Tag;
 
 
 import java.util.ArrayList;

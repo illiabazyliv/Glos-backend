@@ -1,13 +1,11 @@
-package com.glos.commentservice.domain.DTO;
+package com.glos.commentservice.entities;
 
-import com.glos.commentservice.entities.AccessType;
-import com.glos.commentservice.entities.SecureCode;
-import com.glos.commentservice.entities.Tag;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class FileDTO
+public class File
 {
+
     private Long id;
 
     private String rootPath;
@@ -26,28 +24,26 @@ public class FileDTO
 
     private String displayFullName;
 
-    private RepositoryDTO repository;
+    private Repository repository;
 
     private List<AccessType> accessTypes;
 
-    private List<CommentDTO> comments;
+    private List<Comment> comments;
+
+
     private List<SecureCode> secureCodes;
+
     private List<Tag> tags;
 
-    public FileDTO(Long id,
-                   String rootPath,
-                   String rootFilename,
-                   String rootFullName,
-                   Integer rootSize,
-                   String rootFormat,
-                   String displayPath,
-                   String displayFilename,
-                   String displayFullName,
-                   RepositoryDTO repository,
-                   List<AccessType> accessTypes,
-                   List<CommentDTO> comments,
-                   List<SecureCode> secureCodes,
-                   List<Tag> tags) {
+    public File() {
+        this.repository = new Repository();
+        this.tags = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.accessTypes = new ArrayList<>();
+    }
+
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -62,11 +58,6 @@ public class FileDTO
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
-    }
-
-    public FileDTO()
-    {
-        this.repository = new RepositoryDTO();
     }
 
     public Long getId() {
@@ -141,11 +132,11 @@ public class FileDTO
         this.displayFullName = displayFullName;
     }
 
-    public RepositoryDTO getRepository() {
+    public Repository getRepository() {
         return repository;
     }
 
-    public void setRepository(RepositoryDTO repository) {
+    public void setRepository(Repository repository) {
         this.repository = repository;
     }
 
@@ -157,11 +148,11 @@ public class FileDTO
         this.accessTypes = accessTypes;
     }
 
-    public List<CommentDTO> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentDTO> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
@@ -179,5 +170,25 @@ public class FileDTO
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public String toString() {
+        return "File{" +
+                "id=" + id +
+                ", rootPath='" + rootPath + '\'' +
+                ", rootFilename='" + rootFilename + '\'' +
+                ", rootFullName='" + rootFullName + '\'' +
+                ", rootSize=" + rootSize +
+                ", rootFormat='" + rootFormat + '\'' +
+                ", displayPath='" + displayPath + '\'' +
+                ", displayFilename='" + displayFilename + '\'' +
+                ", displayFullName='" + displayFullName + '\'' +
+                ", repository=" + repository +
+                ", accessTypes=" + accessTypes +
+                ", comments=" + comments +
+                ", secureCodes=" + secureCodes +
+                ", tags=" + tags +
+                '}';
     }
 }

@@ -1,12 +1,12 @@
 package com.glos.commentservice.domain.facade;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.Repository;
 import com.glos.commentservice.domain.DTO.CommentDTO;
 import com.glos.commentservice.domain.DTO.Page;
 import com.glos.commentservice.domain.DTO.RepositoryDTO;
 import com.glos.commentservice.domain.client.RepositoryApiClient;
 import com.glos.commentservice.domain.responseMappers.RepositoryDTOMapper;
+import com.glos.commentservice.entities.Comment;
+import com.glos.commentservice.entities.Repository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

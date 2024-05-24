@@ -1,6 +1,6 @@
 package com.glos.commentservice.domain.client;
 
-import com.glos.api.entities.User;
+import com.glos.commentservice.entities.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
