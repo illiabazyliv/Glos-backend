@@ -1,6 +1,6 @@
 server:
   address: ${SERVER_ADDRESS:localhost}
-  port: ${SERVER_PORT:9003}
+  port: ${PORT:9003}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api/v1}
 
@@ -10,8 +10,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: global.storage.info@gmail.com
-    password: tbhboaibjuvjvdpf
+    username: ${EMAIL_USERNAME:global.storage.info@gmail.com}
+    password: ${EMAIL_PASSWORD:tbhboaibjuvjvdpf}
     properties:
       mail:
         smtp:
