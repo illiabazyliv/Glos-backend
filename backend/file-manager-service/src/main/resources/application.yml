@@ -1,6 +1,6 @@
 server:
   address: ${SERVER_ADDRESS:localhost}
-  port: ${SERVER_PORT:9006}
+  port: ${SERVER_PORT:9009}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api/v1}
 
