@@ -22,6 +22,14 @@ import java.util.List;
  */
 public interface Path {
 
+     static PathBuilder builder() {
+          return new PathBuilder();
+     }
+
+     static PathBuilder builder(String path) {
+          return new PathBuilder(path);
+     }
+
      String getPath();
      List<PathNode> getNodes();
      PathNode getFirst();
