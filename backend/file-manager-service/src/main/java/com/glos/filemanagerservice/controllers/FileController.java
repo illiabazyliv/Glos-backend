@@ -11,6 +11,8 @@ import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/files")
 public class FileController
@@ -44,6 +46,7 @@ public class FileController
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file)
     {
+        file.setUpdateDate(LocalDateTime.now());
         file.setId(id);
         fileClient.updateFile(file, id);
         return ResponseEntity.noContent().build();
