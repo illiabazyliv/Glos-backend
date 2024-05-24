@@ -80,7 +80,6 @@ CREATE TABLE IF NOT EXISTS repositories (
     display_full_name NVARCHAR(255),
     description NVARCHAR(500),
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_repositories_id PRIMARY KEY(id),
     CONSTRAINT uq_repositories_owner_id_root_full_name UNIQUE(owner_id, root_full_name),
@@ -246,5 +245,7 @@ CREATE TRIGGER IF NOT EXISTS after_insert_users
 BEGIN
     INSERT INTO `groups`(name, owner_id)
     VALUES ('friends', NEW.id);
+    INSERT INTO repositories(root_path, root_name, root_full_name, owner_id, is_default)
+    VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE);
 END$$
 DELIMITER ;

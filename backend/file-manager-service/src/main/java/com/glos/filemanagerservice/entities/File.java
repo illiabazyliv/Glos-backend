@@ -15,13 +15,13 @@ public class File
     private String displayPath;
     private String displayFilename;
     private String displayFullName;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
     private Repository repository;
     private List<AccessType> accessTypes;
     private List<Comment> comments;
     private List<SecureCode> secureCodes;
     private List<Tag> tags;
-    private LocalDateTime creationDate;
-    private LocalDateTime updateDate;
 
     public File() {
         this.repository = new Repository();
@@ -31,7 +31,7 @@ public class File
         this.accessTypes = new ArrayList<>();
     }
 
-    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, LocalDateTime creationDate, LocalDateTime updateDate) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, LocalDateTime creationDate, LocalDateTime updateDate, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -41,13 +41,13 @@ public class File
         this.displayPath = displayPath;
         this.displayFilename = displayFilename;
         this.displayFullName = displayFullName;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
         this.repository = repository;
         this.accessTypes = accessTypes;
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
-        this.creationDate = creationDate;
-        this.updateDate = updateDate;
     }
 
     public LocalDateTime getCreationDate() {
