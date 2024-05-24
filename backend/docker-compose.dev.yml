@@ -163,3 +163,41 @@ services:
       - '9000:9000'
     volumes:
       - ./minio-data:/minio
+  user-manager-service:
+    build:
+      context: .
+      dockerfile: ./user-manager-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image: user-manager-service
+    container_name: user-manager-service
+    restart: always
+    ports:
+      - "9005:9005"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: user-manager-service
+      SERVER_PORT: 9005
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image: auth-service
+    container_name: auth-service
+    restart: always
+    ports:
+      - "9006:9006"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: user-manager-service
+      SERVER_PORT: 9005
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
