@@ -1,6 +1,8 @@
 package com.glos.databaseAPIService.domain.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,10 +52,12 @@ public class Repository
     @Column(name = "description", length = 200)
     private String description;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
     private LocalDateTime creationDate;
 
-    @Column(name = "update_date")
+    @Column(name = "update_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})

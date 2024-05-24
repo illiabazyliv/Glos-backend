@@ -1,6 +1,8 @@
 package com.glos.databaseAPIService.domain.entities;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,7 +21,6 @@ public class File
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
 
     @Column(name = "root_path", nullable = false, length = 255)
     private String rootPath;
@@ -46,10 +47,12 @@ public class File
     @Column(name = "display_full_name", length = 255)
     private String displayFullName;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
     private LocalDateTime creationDate;
 
-    @Column(name = "update_date")
+    @Column(name = "update_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 
     @ManyToOne
