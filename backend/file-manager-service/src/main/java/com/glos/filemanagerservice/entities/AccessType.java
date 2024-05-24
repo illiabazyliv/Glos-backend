@@ -24,4 +24,9 @@ public class AccessType
     }
     public AccessType() {
     }
+
+    public AccessType(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

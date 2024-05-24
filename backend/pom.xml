@@ -19,7 +19,6 @@
   <modules>
     <module>eureka-service</module>
     <module>api-gateway</module>
-    <module>feed-service</module>
     <module>notification-service</module>
     <module>database-api-service</module>
     <module>user-manager-service</module>
