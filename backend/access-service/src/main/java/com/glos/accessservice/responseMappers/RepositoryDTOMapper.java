@@ -1,8 +1,8 @@
 package com.glos.accessservice.responseMappers;
 
+import com.glos.accessservice.entities.Repository;
+import com.glos.accessservice.mappers.AbstractMapper;
 import com.glos.accessservice.responseDTO.RepositoryDTO;
-import com.glos.api.entities.Repository;
-import com.glos.api.entities.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
 @Component
