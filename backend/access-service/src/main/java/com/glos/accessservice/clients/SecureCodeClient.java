@@ -1,6 +1,6 @@
 package com.glos.accessservice.clients;
 
-import com.glos.api.entities.SecureCode;
+import com.glos.accessservice.entities.SecureCode;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,7 @@ public interface SecureCodeClient
 {
     @GetMapping("/{receiver}/{path}")
     ResponseEntity<SecureCode> getByReceiverAndResourcePath(@PathVariable("receiver") String receiver,
-                                                                   @PathVariable("path") String path);
+                                                            @PathVariable("path") String path);
 
     @PostMapping
     ResponseEntity<?> createSecureCode(@RequestBody SecureCode secureCode);

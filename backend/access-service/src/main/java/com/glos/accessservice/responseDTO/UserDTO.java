@@ -1,7 +1,7 @@
 package com.glos.accessservice.responseDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.glos.api.entities.Role;
+import com.glos.accessservice.entities.Role;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

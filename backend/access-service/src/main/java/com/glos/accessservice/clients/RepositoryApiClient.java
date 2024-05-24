@@ -1,12 +1,10 @@
 package com.glos.accessservice.clients;
 
-import com.glos.accessservice.responseDTO.Page;
+import com.glos.accessservice.entities.Repository;
 import com.glos.accessservice.responseDTO.RepositoryDTO;
-import com.glos.api.entities.Repository;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @FeignClient(name = "repositories")
 public interface RepositoryApiClient

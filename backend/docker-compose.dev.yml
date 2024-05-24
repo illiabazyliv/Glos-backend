@@ -45,6 +45,46 @@ services:
       SERVER_PORT: 9002
       SERVER_CONTEXT_PATH: /api
       EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  file-manager-service:
+    build:
+      context: .
+      dockerfile: ./file-manager-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image:
+      file-manager-service
+    container_name: file-manager-service
+    restart: always
+    ports:
+      - "9010:9010"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: file-manager-service
+      SERVER_PORT: 9010
+      SERVER_CONTEXT_PATH : /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  access-service:
+    build:
+      context: .
+      dockerfile: ./access-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image:
+      access-service
+    container_name: access-service
+    restart: always
+    ports:
+      - "9011:9011"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: access-service
+      SERVER_PORT: 9011
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
   minio:
     image: minio/minio:latest
     container_name: minio

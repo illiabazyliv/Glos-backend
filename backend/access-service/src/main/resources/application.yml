@@ -1,6 +1,6 @@
 server:
   address: ${SERVER_ADDRESS:localhost}
-  port: ${SERVER_PORT:9007}
+  port: ${SERVER_PORT:9011}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api/v1}
 
@@ -14,11 +14,13 @@ spring:
           accessTypes:
             url: http://localhost:8080/api/v1/access-types
           files:
-            url: http://localhost:9006/api/v1/files
+            url: http://localhost:9010/api/v1/files
           repositories:
-            url: http://localhost:9006/api/v1/repositories
+            url: http://localhost:9010/api/v1/repositories
           secureCodes:
             url : http://localhost:8080/api/v1/secure-codes
+          auth:
+            url : http://localhost:9006/api/v1/
 
 eureka:
   instance:

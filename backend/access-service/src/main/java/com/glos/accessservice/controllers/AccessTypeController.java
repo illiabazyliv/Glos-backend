@@ -1,10 +1,10 @@
 package com.glos.accessservice.controllers;
 
 import com.glos.accessservice.clients.AccessTypeApiClient;
+import com.glos.accessservice.entities.AccessType;
 import com.glos.accessservice.responseDTO.AccessTypesRequestFilter;
 import com.glos.accessservice.responseDTO.Page;
 import com.glos.accessservice.utils.MapUtils;
-import com.glos.api.entities.AccessType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
