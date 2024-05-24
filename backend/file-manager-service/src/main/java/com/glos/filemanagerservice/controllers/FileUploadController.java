@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+
 public class FileUploadController
 {
     private final FileClient fileClient;
@@ -20,6 +22,7 @@ public class FileUploadController
     @PutMapping("/files/{filename}/upload")
     public ResponseEntity<FileDTO> uploadFile(@RequestBody File file, UriComponentsBuilder uriComponentsBuilder)
     {
+        file.setCreationDate(LocalDateTime.now());
         FileDTO created = fileClient.createFile(file).getBody();
         return ResponseEntity.created(uriComponentsBuilder.path("/files/{id}")
                 .build(created.getId())).body(created);

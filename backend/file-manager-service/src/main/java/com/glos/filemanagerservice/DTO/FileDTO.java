@@ -4,6 +4,7 @@ import com.glos.filemanagerservice.entities.AccessType;
 import com.glos.filemanagerservice.entities.SecureCode;
 import com.netflix.servo.tag.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileDTO
@@ -33,6 +34,8 @@ public class FileDTO
     private List<CommentDTO> comments;
     private List<SecureCode> secureCodes;
     private List<Tag> tags;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
 
     public FileDTO(Long id,
                    String rootPath,
@@ -47,7 +50,9 @@ public class FileDTO
                    List<AccessType> accessTypes,
                    List<CommentDTO> comments,
                    List<SecureCode> secureCodes,
-                   List<Tag> tags) {
+                   List<Tag> tags,
+                   LocalDateTime creationDate,
+                   LocalDateTime updateDate) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -62,6 +67,8 @@ public class FileDTO
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
     }
 
     public FileDTO()

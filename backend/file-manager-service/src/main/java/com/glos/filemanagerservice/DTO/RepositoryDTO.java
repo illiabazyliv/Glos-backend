@@ -4,6 +4,7 @@ import com.glos.filemanagerservice.entities.AccessType;
 import com.glos.filemanagerservice.entities.SecureCode;
 import com.glos.filemanagerservice.entities.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class RepositoryDTO
@@ -35,7 +36,8 @@ public class RepositoryDTO
     private List<SecureCode> secureCodes;
 
     private List<Tag> tags;
-    //file
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
 
     public RepositoryDTO(Long id,
                          String rootPath,
@@ -50,7 +52,9 @@ public class RepositoryDTO
                          List<AccessType> accessTypes,
                          List<CommentDTO> comments,
                          List<SecureCode> secureCodes,
-                         List<Tag> tags) {
+                         List<Tag> tags,
+                         LocalDateTime creationDate,
+                         LocalDateTime updateDate) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -65,9 +69,27 @@ public class RepositoryDTO
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
     }
 
     public RepositoryDTO() {
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Long getId() {

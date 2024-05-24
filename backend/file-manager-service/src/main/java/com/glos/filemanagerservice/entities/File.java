@@ -1,5 +1,6 @@
 package com.glos.filemanagerservice.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class File
     private List<Comment> comments;
     private List<SecureCode> secureCodes;
     private List<Tag> tags;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
 
     public File() {
         this.repository = new Repository();
@@ -28,7 +31,7 @@ public class File
         this.accessTypes = new ArrayList<>();
     }
 
-    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, LocalDateTime creationDate, LocalDateTime updateDate) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -43,6 +46,24 @@ public class File
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Long getId() {
