@@ -1,7 +1,10 @@
 package com.glos.databaseAPIService.domain.entities;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,6 @@ public class File
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
 
     @Column(name = "root_path", nullable = false, length = 255)
     private String rootPath;
@@ -44,6 +46,15 @@ public class File
 
     @Column(name = "display_full_name", length = 255)
     private String displayFullName;
+
+    @Column(name = "creation_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+
+    @Column(name = "update_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @UpdateTimestamp
+    private LocalDateTime updateDate;
+
     @ManyToOne
     @JoinColumn(name = "repository_id", foreignKey = @ForeignKey(name = "fk_files_repositories_id"))
     private Repository repository;
@@ -86,7 +97,7 @@ public class File
         this.accessTypes = new ArrayList<>();
     }
 
-    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, LocalDateTime creationDate, LocalDateTime updateDate, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -96,11 +107,29 @@ public class File
         this.displayPath = displayPath;
         this.displayFilename = displayFilename;
         this.displayFullName = displayFullName;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
         this.repository = repository;
         this.accessTypes = accessTypes;
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Long getId() {

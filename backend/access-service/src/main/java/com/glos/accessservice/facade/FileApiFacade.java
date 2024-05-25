@@ -2,10 +2,10 @@ package com.glos.accessservice.facade;
 
 import com.glos.accessservice.clients.AccessTypeApiClient;
 import com.glos.accessservice.clients.FileApiClient;
+import com.glos.accessservice.entities.AccessType;
+import com.glos.accessservice.entities.File;
 import com.glos.accessservice.responseDTO.FileDTO;
 import com.glos.accessservice.responseMappers.FileDTOMapper;
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.File;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

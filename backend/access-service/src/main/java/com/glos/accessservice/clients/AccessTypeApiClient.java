@@ -1,7 +1,7 @@
 package com.glos.accessservice.clients;
 
+import com.glos.accessservice.entities.AccessType;
 import com.glos.accessservice.responseDTO.Page;
-import com.glos.api.entities.AccessType;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;

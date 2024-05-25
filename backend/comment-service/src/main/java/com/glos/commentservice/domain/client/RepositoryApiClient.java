@@ -1,12 +1,11 @@
 package com.glos.commentservice.domain.client;
 
-import com.glos.api.entities.Repository;
-import com.glos.commentservice.domain.DTO.Page;
 import com.glos.commentservice.domain.DTO.RepositoryDTO;
+import com.glos.commentservice.entities.Repository;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+
 
 @FeignClient(name = "repositories")
 public interface RepositoryApiClient

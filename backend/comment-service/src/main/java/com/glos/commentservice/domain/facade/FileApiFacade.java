@@ -1,7 +1,5 @@
 package com.glos.commentservice.domain.facade;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.File;
 import com.glos.commentservice.domain.DTO.CommentDTO;
 import com.glos.commentservice.domain.DTO.FileDTO;
 import com.glos.commentservice.domain.DTO.Page;
@@ -12,6 +10,8 @@ import com.glos.commentservice.domain.responseMappers.CommentDTOMapper;
 import com.glos.commentservice.domain.responseMappers.FileDTOMapper;
 import com.glos.commentservice.domain.responseMappers.FileRequestMapper;
 import com.glos.commentservice.domain.responseMappers.UserDTOMapper;
+import com.glos.commentservice.entities.Comment;
+import com.glos.commentservice.entities.File;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

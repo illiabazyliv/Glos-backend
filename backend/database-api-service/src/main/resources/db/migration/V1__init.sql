@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS repositories (
     display_name NVARCHAR(255),
     display_full_name NVARCHAR(255),
     description NVARCHAR(500),
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_repositories_id PRIMARY KEY(id),
     CONSTRAINT uq_repositories_owner_id_root_full_name UNIQUE(owner_id, root_full_name),
     CONSTRAINT uq_repositories_owner_id_is_default UNIQUE(owner_id, is_default),
@@ -131,6 +133,8 @@ CREATE TABLE IF NOT EXISTS files (
     display_path NVARCHAR(255),
     display_filename NVARCHAR(255),
     display_full_name NVARCHAR(255),
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     repository_id BIGINT,
     CONSTRAINT pk_files_id PRIMARY KEY(id),
     CONSTRAINT fk_files_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id),
@@ -241,5 +245,7 @@ CREATE TRIGGER IF NOT EXISTS after_insert_users
 BEGIN
     INSERT INTO `groups`(name, owner_id)
     VALUES ('friends', NEW.id);
+    INSERT INTO repositories(root_path, root_name, root_full_name, owner_id, is_default)
+    VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE);
 END$$
 DELIMITER ;

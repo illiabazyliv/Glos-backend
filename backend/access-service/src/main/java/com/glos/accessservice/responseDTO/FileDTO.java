@@ -1,8 +1,10 @@
 package com.glos.accessservice.responseDTO;
 
-import com.glos.api.entities.AccessType;
-import com.glos.api.entities.SecureCode;
-import com.glos.api.entities.Tag;
+
+
+import com.glos.accessservice.entities.AccessType;
+import com.glos.accessservice.entities.SecureCode;
+import com.glos.accessservice.entities.Tag;
 
 import java.util.ArrayList;
 import java.util.List;

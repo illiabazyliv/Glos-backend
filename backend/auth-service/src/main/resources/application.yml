@@ -1,6 +1,6 @@
 server:
   address: ${SERVER_ADDRESS:localhost}
-  port: ${SERVER_PORT:9006}
+  port: ${PORT:9006}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api/v1}
 
@@ -19,11 +19,11 @@ spring:
       client:
         config:
           user:
-            url: http://localhost:9005/api/v1
+            url: ${USER_SERVICE_URL:http://localhost:9005/api/v1}
           user-database:
-            url: http://localhost:8080/api/v1
+            url: ${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}
           secureCode:
-            url: http://localhost:8080/api/v1
+            url: ${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}
 
 security:
   jwt:

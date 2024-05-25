@@ -1,6 +1,6 @@
 server:
   address: ${SERVER_ADDRESS:localhost}
-  port: ${SERVER_PORT:9005}
+  port: ${PORT:9005}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api/v1}
 
@@ -19,10 +19,10 @@ spring:
       client:
         config:
           user:
-            url: http://localhost:8080/api/v1/users
+            url: "${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}/users"
           group:
-            url: http://localhost:8080/api/v1/groups
+            url: "${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}/groups"
           roles:
-            url: http://localhost:8080/api/v1/roles
+            url: "${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}/roles"
           accessType:
-            url: http://localhost:8080/api/v1/access-types
+            url: "${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}/access-types"

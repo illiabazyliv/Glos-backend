@@ -1,12 +1,9 @@
 package com.glos.commentservice.domain.controller;
 
-import com.glos.api.entities.Comment;
-import com.glos.api.entities.User;
 import com.glos.commentservice.domain.DTO.CommentDTO;
 import com.glos.commentservice.domain.DTO.Page;
-import com.glos.commentservice.domain.DTO.UserDTO;
 import com.glos.commentservice.domain.facade.CommentApiFacade;
-import com.glos.commentservice.domain.utils.MapUtils;
+import com.glos.commentservice.entities.Comment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

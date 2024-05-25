@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/repositories")
 public class RepositoryController
@@ -39,6 +41,7 @@ public class RepositoryController
     @PostMapping
     public ResponseEntity<RepositoryDTO> create(@RequestBody Repository repository, UriComponentsBuilder uriComponentsBuilder)
     {
+        repository.setCreationDate(LocalDateTime.now());
         RepositoryDTO created = repositoryClient.createRepository(repository).getBody();
         return ResponseEntity.created(uriComponentsBuilder.path("/repositories/{id}")
                 .build(created.getId())).body(created);
@@ -48,6 +51,7 @@ public class RepositoryController
     public ResponseEntity<?> update(@PathVariable Long id ,@RequestBody Repository repository)
     {
         repository.setId(id);
+        repository.setUpdateDate(LocalDateTime.now());
         repositoryClient.updateRepository(repository, repository.getId());
         return ResponseEntity.noContent().build();
     }

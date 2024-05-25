@@ -45,6 +45,110 @@ services:
       SERVER_PORT: 9002
       SERVER_CONTEXT_PATH: /api
       EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  file-manager-service:
+    build:
+      context: .
+      dockerfile: ./file-manager-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image:
+      file-manager-service
+    container_name: file-manager-service
+    restart: always
+    ports:
+      - "9010:9010"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: file-manager-service
+      SERVER_PORT: 9010
+      SERVER_CONTEXT_PATH : /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  access-service:
+    build:
+      context: .
+      dockerfile: ./access-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image:
+      access-service
+    container_name: access-service
+    restart: always
+    ports:
+      - "9011:9011"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: access-service
+      SERVER_PORT: 9011
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./notification-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image:
+      notification-service
+    container_name: notification-service
+    restart: always
+    ports:
+      - "9003:9003"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: notification-service
+      SERVER_PORT: 9003
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+
+  database-api-service:
+    build:
+      context: .
+      dockerfile: ./database-api-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image:
+      database-api-service
+    container_name: database-api-service
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: database-api-service
+      SERVER_PORT: 8080
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/glos_database
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: glos_database
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+    ports:
+      - "3307:3306"
+    networks:
+      - glos-app-network
+
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -59,3 +163,41 @@ services:
       - '9000:9000'
     volumes:
       - ./minio-data:/minio
+  user-manager-service:
+    build:
+      context: .
+      dockerfile: ./user-manager-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image: user-manager-service
+    container_name: user-manager-service
+    restart: always
+    ports:
+      - "9005:9005"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: user-manager-service
+      SERVER_PORT: 9005
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./auth-service/Dockerfile
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    image: auth-service
+    container_name: auth-service
+    restart: always
+    ports:
+      - "9006:9006"
+    networks:
+      - glos-app-network
+    environment:
+      SERVER_ADDRESS: user-manager-service
+      SERVER_PORT: 9005
+      SERVER_CONTEXT_PATH: /api/v1
+      EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/

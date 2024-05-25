@@ -1,7 +1,10 @@
 package com.glos.databaseAPIService.domain.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +52,14 @@ public class Repository
     @Column(name = "description", length = 200)
     private String description;
 
+    @Column(name = "creation_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @CreationTimestamp
+    private LocalDateTime creationDate;
+
+    @Column(name = "update_date", columnDefinition = "DEFAULT CURRENT_TIMESTAMP")
+    @UpdateTimestamp
+    private LocalDateTime updateDate;
+
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(name = "repositories_access_types", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "access_type_id"),
@@ -93,7 +104,7 @@ public class Repository
         this.tags = new ArrayList<>();
     }
 
-    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, LocalDateTime creationDate, LocalDateTime updateDate, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -104,6 +115,8 @@ public class Repository
         this.displayName = displayName;
         this.displayFullName = displayFullName;
         this.description = description;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
         this.accessTypes = accessTypes;
         this.comments = comments;
         this.secureCodes = secureCodes;
@@ -229,6 +242,22 @@ public class Repository
 
     public void setFiles(List<File> files) {
         this.files = files;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override

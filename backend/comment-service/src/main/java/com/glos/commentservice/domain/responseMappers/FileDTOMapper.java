@@ -1,8 +1,8 @@
 package com.glos.commentservice.domain.responseMappers;
 
-import com.glos.api.entities.File;
-import com.glos.api.entities.mappers.AbstractMapper;
 import com.glos.commentservice.domain.DTO.FileDTO;
+import com.glos.commentservice.entities.File;
+import com.glos.commentservice.entities.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
 @Component

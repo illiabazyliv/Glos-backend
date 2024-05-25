@@ -1,10 +1,10 @@
 package com.glos.commentservice.domain.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.glos.api.entities.Comment;
 import com.glos.commentservice.domain.DTO.CommentDTO;
 import com.glos.commentservice.domain.DTO.Page;
 import com.glos.commentservice.domain.facade.CommentApiFacade;
+import com.glos.commentservice.entities.Comment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

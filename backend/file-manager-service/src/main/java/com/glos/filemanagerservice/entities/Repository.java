@@ -1,5 +1,6 @@
 package com.glos.filemanagerservice.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +17,8 @@ public class Repository
     private String displayName;
     private String displayFullName;
     private String description;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
     private List<AccessType> accessTypes;
     private List<Comment> comments;
     private List<SecureCode> secureCodes;
@@ -30,7 +33,7 @@ public class Repository
         this.tags = new ArrayList<>();
     }
 
-    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, LocalDateTime creationDate, LocalDateTime updateDate, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -41,6 +44,8 @@ public class Repository
         this.displayName = displayName;
         this.displayFullName = displayFullName;
         this.description = description;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
         this.accessTypes = accessTypes;
         this.comments = comments;
         this.secureCodes = secureCodes;
@@ -166,6 +171,22 @@ public class Repository
 
     public void setFiles(List<File> files) {
         this.files = files;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override
