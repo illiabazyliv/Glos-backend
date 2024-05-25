@@ -1,7 +1,6 @@
 package com.glos.accessservice.controllers;
 
 import com.glos.accessservice.clients.AccessTypeApiClient;
-import com.glos.accessservice.responseDTO.AccessTypesRequestFilter;
 import com.glos.accessservice.responseDTO.Page;
 import com.glos.api.entities.AccessType;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,14 +61,13 @@ class AccessTypeControllerTest {
 
     @Test
     public void testGetByFilter() throws Exception {
-        AccessTypesRequestFilter filter = new AccessTypesRequestFilter();
         Page<AccessType> page = new Page<>();
         page.setContent(Collections.singletonList(new AccessType()));
         page.setTotalElements(1);
         page.setSize(10);
         page.setNumber(0);
 
-        when(accessTypeApiClient.getByFilter(ArgumentMatchers.any(Map.class))).thenReturn(ResponseEntity.ok(page));
+        when(accessTypeApiClient.getByFilter(any(Map.class))).thenReturn(ResponseEntity.ok(page));
 
         mockMvc.perform(get("/access-types")
                         .param("page", "0")
