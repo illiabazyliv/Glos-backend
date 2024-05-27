@@ -1,11 +1,10 @@
 package com.glos.accessservice.controllers;
 
 import com.glos.accessservice.clients.AccessTypeApiClient;
+import com.glos.accessservice.entities.AccessType;
 import com.glos.accessservice.responseDTO.Page;
-import com.glos.api.entities.AccessType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
