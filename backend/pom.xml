@@ -26,6 +26,7 @@
     <module>file-manager-service</module>
     <module>access-service</module>
     <module>comment-service</module>
+    <module>file-storage-service</module>
   </modules>
 
   <properties>
@@ -37,11 +38,11 @@
     <spring-boot.version>3.2.3</spring-boot.version>
     <spring-cloud.version>2023.0.1</spring-cloud.version>
     <spring-colud-eureka>4.1.1</spring-colud-eureka>
-    <!--JWT-->
     <jsonwebtoken.version>0.12.3</jsonwebtoken.version>
-    <!--Validation-->
     <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
     <jakarta-validation.version>3.0.2</jakarta-validation.version>
+    <minio.version>8.5.7</minio.version>
+    <jasypt.version>3.0.5</jasypt.version>
   </properties>
 
   <dependencyManagement>

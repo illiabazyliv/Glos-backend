@@ -24,3 +24,17 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    networks:
+      - glos-app-network
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    command: server ~/minio --console-address :9097
+    ports:
+      - '9097:9097'
+      - '9000:9000'
+    volumes:
+      - ./minio-data:/minio
