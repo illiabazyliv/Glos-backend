@@ -2,9 +2,13 @@ package com.glos.filestorageservice.domain.controllers;
 
 import com.glos.filestorageservice.domain.DTO.*;
 import com.glos.filestorageservice.domain.services.FileStorageService;
+import io.minio.errors.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RestController
@@ -19,7 +23,7 @@ public class FileStorageFileController
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<List<FileAndStatus>> uploadFiles(@RequestBody UploadRequest request) {
+    public ResponseEntity<List<FileAndStatus>> uploadFiles(@ModelAttribute UploadRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
 
         return ResponseEntity.ok(fileStorageService.upload(request.getFiles()));
     }
