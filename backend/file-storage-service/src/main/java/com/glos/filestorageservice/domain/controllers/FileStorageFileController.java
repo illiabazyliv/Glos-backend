@@ -2,7 +2,13 @@ package com.glos.filestorageservice.domain.controllers;
 
 import com.glos.filestorageservice.domain.DTO.*;
 import com.glos.filestorageservice.domain.services.FileStorageService;
+import com.glos.filestorageservice.domain.utils.ZipUtil;
 import io.minio.errors.*;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +35,35 @@ public class FileStorageFileController
     }
 
     @GetMapping("/download")
-    public ResponseEntity<List<FileWithPath>> downloadFile(@RequestBody DownloadRequest request)
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
     {
-        return ResponseEntity.ok(fileStorageService.download(request.getFilenames()));
+        try
+        {
+            List<byte[]> filesData = fileStorageService.download(request.getFilenames());
+
+            //TODO імплементувати парсер
+            List<String> fileNames = request.getFilenames().stream()
+                    .map(path -> path.substring(path.lastIndexOf("/") + 1))
+                    .toList();
+            //TODO імплементувати парсер
+
+            byte[] zipData = ZipUtil.createZip(filesData, fileNames);
+
+            ByteArrayResource resource = new ByteArrayResource(zipData);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
+
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateFile(@RequestBody UpdateRequest request)
+    public ResponseEntity<?> updateFile(@ModelAttribute UpdateRequest request)
     {
         return ResponseEntity.ok(fileStorageService.update(request.getFiles()));
     }
@@ -47,7 +75,7 @@ public class FileStorageFileController
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteFile(@RequestBody DeleteRequest request)
+    public ResponseEntity<List<FileAndStatus>> deleteFile(@RequestBody DeleteRequest request)
     {
         return ResponseEntity.ok(fileStorageService.delete(request.getFilenames()));
     }

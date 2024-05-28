@@ -4,6 +4,7 @@ import com.glos.filestorageservice.domain.DTO.FileAndStatus;
 import com.glos.filestorageservice.domain.DTO.FileWithPath;
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import io.minio.errors.*;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -14,7 +15,7 @@ public interface FileStorageService {
 
     List<FileAndStatus> upload(List<FileWithPath> files) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 
-    List<FileWithPath> download(List<String> filenames);
+    List<byte[]> download(List<String> filenames) throws Exception;
 
     List<FileAndStatus> update(List<FileWithPath> files);
 

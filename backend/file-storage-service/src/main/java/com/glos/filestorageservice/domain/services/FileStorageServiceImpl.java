@@ -4,26 +4,42 @@ import com.glos.filestorageservice.domain.DTO.FileAndStatus;
 import com.glos.filestorageservice.domain.DTO.FileOperationStatus;
 import com.glos.filestorageservice.domain.DTO.FileWithPath;
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
-import com.glos.filestorageservice.domain.controllers.FileStorageFileController;
+import com.netflix.discovery.converters.Auto;
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.errors.*;
+import org.apache.commons.compress.utils.IOUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
     private static final Logger logger = Logger.getLogger("FileStorageServiceImpl");
 
     @Autowired
-    private MinioClient minioClient;
+    private  MinioClient minioClient;
+
 
     @Override
     public List<FileAndStatus> upload(List<FileWithPath> files) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
@@ -55,19 +71,59 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public List<FileWithPath> download(List<String> filenames) {
+    public List<byte[]> download(List<String> filenames) throws Exception {
         logger.info("Downloading files");
-        // TODO: write download files
+
+        List<byte[]> filesData = new ArrayList<>();
+        for (String path : filenames)
+        {
+            try (InputStream stream = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket("test")
+                            .object(path)
+                            .build())) {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                IOUtils.copy(stream, buffer);
+                filesData.add(buffer.toByteArray());
+            } catch (MinioException e) {
+                e.printStackTrace();
+                throw new Exception("Error while downloading file: " + path, e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         logger.info("Success downloading files");
-        return List.of();
+        return filesData;
     }
 
+    //TODO не працюж до кінця коректно
     @Override
     public List<FileAndStatus> update(List<FileWithPath> files) {
         logger.info("Updating files");
-        // TODO: write update files
+        String bucketName = "test";
+
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        for (FileWithPath file : files)
+        {
+            try {
+                minioClient.putObject(
+                        PutObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(file.getFilePath())
+                                .stream(file.getFile().getInputStream(), file.getFile().getSize(), -1)
+                                .contentType(file.getFile().getContentType())
+                                .build()
+                );
+                fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.SAVED, "Successfully updated file"));
+            } catch (Exception e) {
+                logger.info("Failed to update file: " + file.getFilePath());
+                fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.FAILED, e.getMessage()));
+            }
+        }
+
         logger.info("Success updating files");
-        return List.of();
+        return fileAndStatuses;
     }
 
     @Override
@@ -81,8 +137,26 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public List<FileAndStatus> delete(List<String> filenames) {
         logger.info("Delete files");
-        // TODO: write delete files
+        String bucketName = "test";
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        for (String filename:filenames)
+        {
+            try {
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(filename)
+                                .build()
+                );
+                fileAndStatuses.add(new FileAndStatus(filename, FileOperationStatus.DELETED, "File deleted successfully"));
+
+            } catch (Exception e) {
+                logger.info("Failed to delete file: " + filename);
+                fileAndStatuses.add(new FileAndStatus(filename, FileOperationStatus.FAILED, e.getMessage()));
+            }
+        }
+
         logger.info("Success delete files");
-        return List.of();
+        return fileAndStatuses;
     }
 }
