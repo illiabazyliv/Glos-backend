@@ -69,8 +69,9 @@ public class FileStorageFileController
     }
 
     @PostMapping("/move")
-    public ResponseEntity<?> moveFile(@RequestBody MoveRequest request)
+    public ResponseEntity<List<FileAndStatus>> moveFile(@RequestBody MoveRequest request) throws Exception
     {
+
         return ResponseEntity.ok(fileStorageService.move(request.getMoves()));
     }
 

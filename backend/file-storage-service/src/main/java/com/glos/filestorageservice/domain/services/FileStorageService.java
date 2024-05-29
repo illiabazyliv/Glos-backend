@@ -19,7 +19,7 @@ public interface FileStorageService {
 
     List<FileAndStatus> update(List<FileWithPath> files);
 
-    List<FileAndStatus> move(List<MoveRequest.MoveNode> moves);
+    List<FileAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception;
 
     List<FileAndStatus> delete(List<String> filenames);
 

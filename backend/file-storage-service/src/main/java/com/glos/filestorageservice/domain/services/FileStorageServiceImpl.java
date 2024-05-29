@@ -5,10 +5,7 @@ import com.glos.filestorageservice.domain.DTO.FileOperationStatus;
 import com.glos.filestorageservice.domain.DTO.FileWithPath;
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import com.netflix.discovery.converters.Auto;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
+import io.minio.*;
 import io.minio.errors.*;
 import org.apache.commons.compress.utils.IOUtils;
 import org.checkerframework.checker.units.qual.A;
@@ -97,7 +94,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         return filesData;
     }
 
-    //TODO не працюж до кінця коректно
     @Override
     public List<FileAndStatus> update(List<FileWithPath> files) {
         logger.info("Updating files");
@@ -106,7 +102,16 @@ public class FileStorageServiceImpl implements FileStorageService {
         List<FileAndStatus> fileAndStatuses = new ArrayList<>();
         for (FileWithPath file : files)
         {
-            try {
+            try
+            {
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(file.getFilePath())
+                                .build()
+                );
+
+                //TODO імплементувати парсер
                 minioClient.putObject(
                         PutObjectArgs.builder()
                                 .bucket(bucketName)
@@ -115,8 +120,10 @@ public class FileStorageServiceImpl implements FileStorageService {
                                 .contentType(file.getFile().getContentType())
                                 .build()
                 );
-                fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.SAVED, "Successfully updated file"));
-            } catch (Exception e) {
+
+                fileAndStatuses.add(new FileAndStatus((file.getFilePath()), FileOperationStatus.UPDATED, "File updated successfully"));
+            }
+            catch (Exception e) {
                 logger.info("Failed to update file: " + file.getFilePath());
                 fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.FAILED, e.getMessage()));
             }
@@ -127,11 +134,42 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public List<FileAndStatus> move(List<MoveRequest.MoveNode> moves) {
+    public List<FileAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception {
         logger.info("Move files");
-        // TODO: write move files
+        String bucket = "test";
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        for (var move:moves)
+        {
+            try
+            {
+                minioClient.copyObject(
+                        CopyObjectArgs.builder()
+                                .bucket(bucket)
+                                .object(move.getTo())
+                                .source(CopySource.builder()
+                                        .bucket(bucket)
+                                        .object(move.getFrom())
+                                        .build())
+                                .build()
+                );
+
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucket)
+                                .object(move.getFrom())
+                                .build()
+                );
+                fileAndStatuses.add(new FileAndStatus(move.getFrom(), FileOperationStatus.MOVED, "File moved successful"));
+            }
+            catch (Exception e)
+            {
+                logger.info("Failed to move file");
+                fileAndStatuses.add(new FileAndStatus(move.getFrom(), FileOperationStatus.FAILED, "File to move file"));
+            }
+        }
+
         logger.info("Success move files");
-        return List.of();
+        return fileAndStatuses;
     }
 
     @Override
