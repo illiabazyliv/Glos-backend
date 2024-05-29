@@ -3,4 +3,4 @@
  *
  * @author Mykola Melnyk
  */
-package com.glos.filemanagerservice.utils.pathUtils;
+package com.pathtools;

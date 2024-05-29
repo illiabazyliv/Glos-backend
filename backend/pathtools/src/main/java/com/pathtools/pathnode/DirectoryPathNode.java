@@ -1,7 +1,7 @@
-package com.glos.filemanagerservice.utils.pathUtils.pathnode;
+package com.pathtools.pathnode;
 
-import com.glos.filemanagerservice.utils.pathUtils.AbstractPathNode;
-import com.glos.filemanagerservice.utils.pathUtils.NodeType;
+import com.pathtools.AbstractPathNode;
+import com.pathtools.NodeType;
 
 public class DirectoryPathNode extends AbstractPathNode {
 

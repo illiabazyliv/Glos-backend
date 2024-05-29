@@ -1,18 +1,12 @@
-package com.glos.filemanagerservice.utils.pathUtils;
+package com.pathtools;
 
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.ArchivePathNode;
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.FilePathNode;
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNode;
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNodeProps;
+import com.pathtools.pathnode.ArchivePathNode;
+import com.pathtools.pathnode.FilePathNode;
+import com.pathtools.pathnode.PathNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class PathBuilder {
-
-    private static final PathParser parser = new PathParser();
 
     private final StringBuilder builder;
 
@@ -100,7 +94,7 @@ public class PathBuilder {
     }
 
     public Path build() {
-        return parser.parse(builder.toString());
+        return PathParser.getInstance().parse(builder.toString());
     }
 
 }

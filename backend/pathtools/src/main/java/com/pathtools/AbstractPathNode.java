@@ -1,7 +1,7 @@
-package com.glos.filemanagerservice.utils.pathUtils;
+package com.pathtools;
 
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNode;
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNodeProps;
+import com.pathtools.pathnode.PathNode;
+import com.pathtools.pathnode.PathNodeProps;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,8 +45,6 @@ public abstract class AbstractPathNode implements PathNode {
         setRootFullName(rootFullName);
     }
 
-
-
     @Override
     public String getRootPath() {
         return this.props.get(PathNodeProps.ROOT_PATH);
@@ -63,6 +61,15 @@ public abstract class AbstractPathNode implements PathNode {
 
     public void setRootName(String rootName) {
         setRootProp(PathNodeProps.ROOT_NAME, rootName);
+    }
+
+    @Override
+    public String getSimpleName() {
+        String name = getRootName();
+        if (name.isEmpty()) {
+            throw new RuntimeException("Name is empty");
+        }
+        return name.substring(1);
     }
 
     @Override

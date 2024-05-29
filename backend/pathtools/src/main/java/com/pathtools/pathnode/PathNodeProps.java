@@ -1,4 +1,4 @@
-package com.glos.filemanagerservice.utils.pathUtils.pathnode;
+package com.pathtools.pathnode;
 
 public final class PathNodeProps {
 

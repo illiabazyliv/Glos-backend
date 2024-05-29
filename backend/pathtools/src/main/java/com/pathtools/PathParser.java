@@ -1,16 +1,27 @@
-package com.glos.filemanagerservice.utils.pathUtils;
+package com.pathtools;
 
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNode;
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNodeProps;
+import com.pathtools.pathnode.PathNode;
+import com.pathtools.pathnode.PathNodeProps;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 /**
  * Utility class for parsing a string representation of a path and converting it into a Path object.
  * @author Mykola Melnyk
  */
-public class PathParser {
+public final class PathParser {
+
+    private static PathParser INSTANCE;
+
+    public static PathParser getInstance() {
+        if (INSTANCE == null)
+            INSTANCE = new PathParser();
+        return INSTANCE;
+    }
+
+    private PathParser() {}
 
     /**
      * Parses the given string representation of a path and returns the corresponding Path object.
@@ -119,6 +130,15 @@ public class PathParser {
                 PathNodeProps.ROOT_NAME, rootName,
                 PathNodeProps.ROOT_FULL_NAME, rootFullName
         ));
+    }
+
+    public String parseString(Path path, String sep) {
+        String str = path.getPath();
+        for (NodeType type : NodeType.values()) {
+            final String regex = "\\" + type.nodeChar();
+            str = str.replaceAll(regex, Matcher.quoteReplacement(sep));
+        }
+        return str;
     }
 
 }

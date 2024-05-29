@@ -1,6 +1,7 @@
-package com.glos.filemanagerservice.utils.pathUtils;
+package com.pathtools;
 
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNode;
+import com.pathtools.pathnode.PathNode;
+import com.pathtools.reader.PathReader;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  *
  * @author Mykola Melnyk
  */
-public interface Path {
+public interface Path extends Iterable<PathNode> {
 
      static PathBuilder builder() {
           return new PathBuilder();
@@ -34,5 +35,7 @@ public interface Path {
      List<PathNode> getNodes();
      PathNode getFirst();
      PathNode getLast();
+     int length();
+     PathReader reader();
 
 }

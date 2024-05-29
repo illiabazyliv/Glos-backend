@@ -1,6 +1,6 @@
-package com.glos.filemanagerservice.utils.pathUtils;
+package com.pathtools;
 
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.*;
+import com.pathtools.pathnode.*;
 
 import java.util.Map;
 import java.util.function.Function;

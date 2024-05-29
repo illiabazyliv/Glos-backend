@@ -1,9 +1,13 @@
-package com.glos.filemanagerservice.utils.pathUtils;
+package com.pathtools;
 
-import com.glos.filemanagerservice.utils.pathUtils.pathnode.PathNode;
+import com.pathtools.pathnode.PathNode;
+import com.pathtools.reader.PathReader;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 public class PathImpl implements Path {
 
@@ -38,5 +42,30 @@ public class PathImpl implements Path {
     @Override
     public String toString() {
         return path;
+    }
+
+    @Override
+    public Iterator<PathNode> iterator() {
+        return nodes.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super PathNode> action) {
+        nodes.forEach(action);
+    }
+
+    @Override
+    public Spliterator<PathNode> spliterator() {
+        return nodes.spliterator();
+    }
+
+    @Override
+    public int length() {
+        return nodes.size();
+    }
+
+    @Override
+    public PathReader reader() {
+        return new PathNodeReader(this);
     }
 }

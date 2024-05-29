@@ -1,12 +1,13 @@
-package com.glos.filemanagerservice.utils.pathUtils.pathnode;
+package com.pathtools.pathnode;
 
-import com.glos.filemanagerservice.utils.pathUtils.NodeType;
+import com.pathtools.NodeType;
 
 public interface PathNode {
 
     String getRootPath();
     String getRootName();
     String getRootFullName();
+    String getSimpleName();
     NodeType getType();
     String getRootProp(String prop);
 
