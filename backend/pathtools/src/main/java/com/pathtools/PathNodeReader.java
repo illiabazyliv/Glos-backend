@@ -1,12 +1,13 @@
 package com.pathtools;
 
 import com.pathtools.pathnode.PathNode;
+import com.pathtools.reader.PathReader;
 
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class PathNodeReader {
+public class PathNodeReader implements PathReader {
 
     private final Path path;
 
@@ -18,10 +19,12 @@ public class PathNodeReader {
         this.path = path;
     }
 
+    @Override
     public PathNode first() {
         return path.getFirst();
     }
 
+    @Override
     public PathNode first(int index) {
         checkIndex(index, path.length(), false);
         int i = 0;
@@ -33,6 +36,7 @@ public class PathNodeReader {
         return null;
     }
 
+    @Override
     public PathNode first(String rootFullName) {
         Objects.requireNonNull(rootFullName);
         if (Paths.isRootName(rootFullName)) {
@@ -51,6 +55,7 @@ public class PathNodeReader {
         return null;
     }
 
+    @Override
     public PathNode first(NodeType type) {
         Iterator<PathNode> iter = path.iterator();
         while(iter.hasNext()){
@@ -62,10 +67,12 @@ public class PathNodeReader {
         return null;
     }
 
+    @Override
     public PathNode last() {
         return path.getLast();
     }
 
+    @Override
     public PathNode last(int index) {
         checkIndex(index, path.length(), false);
         int i = path.length() - 1;
@@ -77,6 +84,7 @@ public class PathNodeReader {
         return null;
     }
 
+    @Override
     public PathNode last(String rootFullName) {
         Objects.requireNonNull(rootFullName);
         if (!Paths.isRootName(rootFullName)) {
@@ -103,24 +111,28 @@ public class PathNodeReader {
         return path.getNodes().subList(start, end);
     }
 
+    @Override
     public List<PathNode> range(String rootNameStart, String rootNameEnd) {
         int start = indexOf(rootNameStart);
         int end = indexOf(rootNameEnd);
         return path.getNodes().subList(start, end);
     }
 
+    @Override
     public List<PathNode> range(NodeType type, String rootName) {
         int start = indexOf(type);
         int end = indexOf(rootName);
         return path.getNodes().subList(start, end);
     }
 
+    @Override
     public List<PathNode> range(String rootName, NodeType type) {
         int start = indexOf(rootName);
         int end = indexOf(type);
         return path.getNodes().subList(start, end);
     }
 
+    @Override
     public PathNode last(NodeType type) {
         Iterator<PathNode> iter = ((LinkedList<PathNode>)path.getNodes()).descendingIterator();
         while(iter.hasNext()){
@@ -132,10 +144,12 @@ public class PathNodeReader {
         return null;
     }
 
-    public Stream<PathNode> asStream() {
+    @Override
+    public Stream<PathNode> stream() {
         return StreamSupport.stream(path.spliterator(), false);
     }
 
+    @Override
     public Path parent() {
         if (path.length() < 2) {
             return null;
@@ -145,6 +159,7 @@ public class PathNodeReader {
         return new PathImpl(list.getLast().getRootFullName(), list);
     }
 
+    @Override
     public Path parent(NodeType type) {
         if (path.length() < 2) {
             return null;
@@ -161,10 +176,12 @@ public class PathNodeReader {
         return null;
     }
 
+    @Override
     public int indexOf(PathNode node) {
         return indexOf(node.getRootFullName());
     }
 
+    @Override
     public int indexOf(String rootName) {
         Objects.requireNonNull(rootName);
         if (rootName.isEmpty()) {
@@ -180,6 +197,7 @@ public class PathNodeReader {
         return -1;
     }
 
+    @Override
     public int indexOf(NodeType type) {
         int i = 0;
         for (PathNode node : path) {
@@ -190,10 +208,12 @@ public class PathNodeReader {
         return -1;
     }
 
+    @Override
     public int lastIndexOf(PathNode node) {
         return lastIndexOf(node.getRootFullName());
     }
 
+    @Override
     public int lastIndexOf(String rootName) {
         Objects.requireNonNull(rootName);
         if (rootName.isEmpty()) {
@@ -209,6 +229,7 @@ public class PathNodeReader {
         return -1;
     }
 
+    @Override
     public int lastIndexOf(NodeType type) {
         int i = path.length() - 1;
         Iterator<PathNode> iter = ((LinkedList<PathNode>)path.getNodes()).descendingIterator();
@@ -222,33 +243,39 @@ public class PathNodeReader {
         return -1;
     }
 
-    public List<PathNode> getAll() {
+    @Override
+    public List<PathNode> range() {
         return path.getNodes();
     }
 
-    public List<PathNode> getAllByType(NodeType type) {
-        return asStream()
+    @Override
+    public List<PathNode> rangeByType(NodeType type) {
+        return stream()
                 .filter(x -> x.getType() == type)
                 .toList();
     }
 
-    public List<PathNode> getAllByProp(String prop, String value) {
-        return asStream()
+    @Override
+    public List<PathNode> rangeByProp(String prop, String value) {
+        return stream()
                 .filter(x -> x.getRootProp(prop) != null && x.getRootProp(prop).equals(value))
                 .toList();
     }
 
-    public List<PathNode> getAllAfter(int index) {
+    @Override
+    public List<PathNode> rangeAfter(int index) {
         checkIndex(index, path.length(), false);
         return path.getNodes().subList(index, path.length() - 1);
     }
 
-    public List<PathNode> getAllBefore(int index) {
+    @Override
+    public List<PathNode> rangeBefore(int index) {
         checkIndex(index, path.length(), false);
         return path.getNodes().subList(0, index);
     }
 
-    public List<PathNode> getAllAfterByProp(String prop, String value) {
+    @Override
+    public List<PathNode> rangeAfterByProp(String prop, String value) {
         Objects.requireNonNull(prop);
         Objects.requireNonNull(value);
         if (prop.isEmpty()) {
@@ -265,7 +292,8 @@ public class PathNodeReader {
         return nodes;
     }
 
-    public List<PathNode> getAllBefore(String rootName) {
+    @Override
+    public List<PathNode> rangeBefore(String rootName) {
         Objects.requireNonNull(rootName);
         if (rootName.isEmpty())
             throw new IllegalArgumentException("rootName is empty");
@@ -280,7 +308,8 @@ public class PathNodeReader {
         return nodes;
     }
 
-    public List<PathNode> getAllBeforeByProp(String prop) {
+    @Override
+    public List<PathNode> rangeBeforeByProp(String prop) {
         Objects.requireNonNull(prop);
         if (prop.isEmpty())
             throw new IllegalArgumentException("prop is empty");

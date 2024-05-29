@@ -5,6 +5,7 @@ import com.pathtools.pathnode.PathNodeProps;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 /**
  * Utility class for parsing a string representation of a path and converting it into a Path object.
@@ -129,6 +130,15 @@ public final class PathParser {
                 PathNodeProps.ROOT_NAME, rootName,
                 PathNodeProps.ROOT_FULL_NAME, rootFullName
         ));
+    }
+
+    public String parseString(Path path, String sep) {
+        String str = path.getPath();
+        for (NodeType type : NodeType.values()) {
+            final String regex = "\\" + type.nodeChar();
+            str = str.replaceAll(regex, Matcher.quoteReplacement(sep));
+        }
+        return str;
     }
 
 }

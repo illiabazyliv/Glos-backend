@@ -1,6 +1,7 @@
 package com.pathtools;
 
 import com.pathtools.pathnode.PathNode;
+import com.pathtools.reader.PathReader;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -61,5 +62,10 @@ public class PathImpl implements Path {
     @Override
     public int length() {
         return nodes.size();
+    }
+
+    @Override
+    public PathReader reader() {
+        return new PathNodeReader(this);
     }
 }

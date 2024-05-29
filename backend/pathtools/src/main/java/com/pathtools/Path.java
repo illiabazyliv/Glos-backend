@@ -1,6 +1,7 @@
 package com.pathtools;
 
 import com.pathtools.pathnode.PathNode;
+import com.pathtools.reader.PathReader;
 
 import java.util.List;
 
@@ -35,5 +36,6 @@ public interface Path extends Iterable<PathNode> {
      PathNode getFirst();
      PathNode getLast();
      int length();
+     PathReader reader();
 
 }
