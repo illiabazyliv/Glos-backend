@@ -5,10 +5,7 @@ import com.glos.filestorageservice.domain.DTO.FileOperationStatus;
 import com.glos.filestorageservice.domain.DTO.FileWithPath;
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import com.netflix.discovery.converters.Auto;
-import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.RemoveObjectArgs;
+import io.minio.*;
 import io.minio.errors.*;
 import org.apache.commons.compress.utils.IOUtils;
 import org.checkerframework.checker.units.qual.A;
@@ -127,11 +124,42 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public List<FileAndStatus> move(List<MoveRequest.MoveNode> moves) {
+    public List<FileAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception {
         logger.info("Move files");
-        // TODO: write move files
+        String bucket = "test";
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        for (var move:moves)
+        {
+            try
+            {
+                minioClient.copyObject(
+                        CopyObjectArgs.builder()
+                                .bucket(bucket)
+                                .object(move.getTo())
+                                .source(CopySource.builder()
+                                        .bucket(bucket)
+                                        .object(move.getFrom())
+                                        .build())
+                                .build()
+                );
+
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucket)
+                                .object(move.getFrom())
+                                .build()
+                );
+                fileAndStatuses.add(new FileAndStatus(move.getFrom(), FileOperationStatus.MOVED, "File moved successful"));
+            }
+            catch (Exception e)
+            {
+                logger.info("Failed to move file");
+                fileAndStatuses.add(new FileAndStatus(move.getFrom(), FileOperationStatus.FAILED, "File to move file"));
+            }
+        }
+
         logger.info("Success move files");
-        return List.of();
+        return fileAndStatuses;
     }
 
     @Override
