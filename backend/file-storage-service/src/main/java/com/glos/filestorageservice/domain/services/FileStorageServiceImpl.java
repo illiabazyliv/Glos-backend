@@ -94,7 +94,6 @@ public class FileStorageServiceImpl implements FileStorageService {
         return filesData;
     }
 
-    //TODO не працюж до кінця коректно
     @Override
     public List<FileAndStatus> update(List<FileWithPath> files) {
         logger.info("Updating files");
@@ -103,7 +102,16 @@ public class FileStorageServiceImpl implements FileStorageService {
         List<FileAndStatus> fileAndStatuses = new ArrayList<>();
         for (FileWithPath file : files)
         {
-            try {
+            try
+            {
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(file.getFilePath())
+                                .build()
+                );
+
+                //TODO імплементувати парсер
                 minioClient.putObject(
                         PutObjectArgs.builder()
                                 .bucket(bucketName)
@@ -112,8 +120,10 @@ public class FileStorageServiceImpl implements FileStorageService {
                                 .contentType(file.getFile().getContentType())
                                 .build()
                 );
-                fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.SAVED, "Successfully updated file"));
-            } catch (Exception e) {
+
+                fileAndStatuses.add(new FileAndStatus((file.getFilePath()), FileOperationStatus.UPDATED, "File updated successfully"));
+            }
+            catch (Exception e) {
                 logger.info("Failed to update file: " + file.getFilePath());
                 fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.FAILED, e.getMessage()));
             }
