@@ -10,30 +10,22 @@ import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
 import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/files")
 public class FileController
 {
     private final FileClient fileClient;
-    private final RepositoryClient repositoryClient;
-
-    private final FileDTOMapper fileDTOMapper;
-    private final FileRequestMapper fileRequestMapper;
-
     private final FileApiFacade fileApiFacade;
 
 
     public FileController(FileClient fileClient,
-                          RepositoryClient repositoryClient,
-                          FileDTOMapper fileDTOMapper, FileRequestMapper fileRequestMapper,
                           FileApiFacade fileApiFacade) {
         this.fileClient = fileClient;
-        this.repositoryClient = repositoryClient;
-        this.fileDTOMapper = fileDTOMapper;
-        this.fileRequestMapper = fileRequestMapper;
         this.fileApiFacade = fileApiFacade;
     }
 
@@ -44,18 +36,16 @@ public class FileController
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file)
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file, @ModelAttribute MultipartFile filesData)
     {
-        file.setUpdateDate(LocalDateTime.now());
-        file.setId(id);
-        fileClient.updateFile(file, id);
+        fileApiFacade.update(id, file, filesData);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id)
+    @DeleteMapping()
+    public ResponseEntity<?> delete(@RequestBody List<Long> ids)
     {
-        fileClient.deleteFile(id);
+        fileApiFacade.deleteFiles(ids);
         return ResponseEntity.noContent().build();
     }
 

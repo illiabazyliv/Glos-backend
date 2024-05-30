@@ -18,17 +18,11 @@ import java.time.LocalDateTime;
 public class RepositoryController
 {
     private final RepositoryClient repositoryClient;
-    private  final RepositoryRequestMapper requestMapper;
-    private final RepositoryDTOMapper repositoryDTOMapper;
     private final RepositoryApiFacade repositoryApiFacade;
 
     public RepositoryController(RepositoryClient repositoryClient,
-                                RepositoryRequestMapper requestMapper,
-                                RepositoryDTOMapper repositoryDTOMapper,
                                 RepositoryApiFacade repositoryApiFacade) {
         this.repositoryClient = repositoryClient;
-        this.requestMapper = requestMapper;
-        this.repositoryDTOMapper = repositoryDTOMapper;
         this.repositoryApiFacade = repositoryApiFacade;
     }
 
@@ -41,8 +35,7 @@ public class RepositoryController
     @PostMapping
     public ResponseEntity<RepositoryDTO> create(@RequestBody Repository repository, UriComponentsBuilder uriComponentsBuilder)
     {
-        repository.setCreationDate(LocalDateTime.now());
-        RepositoryDTO created = repositoryClient.createRepository(repository).getBody();
+        RepositoryDTO created = repositoryApiFacade.create(repository).getBody();
         return ResponseEntity.created(uriComponentsBuilder.path("/repositories/{id}")
                 .build(created.getId())).body(created);
     }
@@ -50,16 +43,15 @@ public class RepositoryController
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id ,@RequestBody Repository repository)
     {
-        repository.setId(id);
-        repository.setUpdateDate(LocalDateTime.now());
-        repositoryClient.updateRepository(repository, repository.getId());
+
+        repositoryApiFacade.update(id, repository);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id)
     {
-        repositoryClient.deleteRepository(id);
+        repositoryApiFacade.delete(id);
         return ResponseEntity.noContent().build();
     }
 

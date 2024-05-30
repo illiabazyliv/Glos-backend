@@ -1,9 +1,8 @@
 package com.glos.filemanagerservice.facade;
 
-import com.glos.filemanagerservice.DTO.FileDTO;
-import com.glos.filemanagerservice.DTO.Page;
-import com.glos.filemanagerservice.DTO.RepositoryDTO;
+import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.FileClient;
+import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.requestFilters.FileRequestFilter;
@@ -12,7 +11,11 @@ import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,15 +26,96 @@ public class FileApiFacade
 
     private final FileDTOMapper fileDTOMapper;
     private final FileRequestMapper fileRequestMapper;
+    private final FileStorageClient fileStorageClient;
 
     public FileApiFacade(FileClient fileClient,
                          RepositoryClient repositoryClient,
                          FileDTOMapper fileDTOMapper,
-                         FileRequestMapper fileRequestMapper) {
+                         FileRequestMapper fileRequestMapper, FileStorageClient fileStorageClient) {
         this.fileClient = fileClient;
         this.repositoryClient = repositoryClient;
         this.fileDTOMapper = fileDTOMapper;
         this.fileRequestMapper = fileRequestMapper;
+        this.fileStorageClient = fileStorageClient;
+    }
+
+    public ResponseEntity<List<FileDTO>> uploadFiles(List<File> files, List<MultipartFile> filesData)
+    {
+        if (files.size() != filesData.size())
+        {
+            throw new RuntimeException("Number of entities and file data must be equal");
+        }
+
+        List<FileDTO> fileDTOS = new ArrayList<>();
+        UploadRequest request = new UploadRequest();
+
+        List<FileWithPath> fileWithPaths = new ArrayList<>();
+        for (int i = 0; i < files.size(); i++)
+        {
+            fileWithPaths.add(new FileWithPath());
+        }
+
+        try
+        {
+            for (int i = 0; i < files.size(); i++)
+            {
+                File temp = files.get(i);
+                temp.setCreationDate(LocalDateTime.now());
+                FileDTO fileDTO = fileClient.createFile(temp).getBody();
+                fileDTOS.add(fileDTO);
+                fileWithPaths.get(i).setFilePath(temp.getRootFullName());
+                fileWithPaths.get(i).setFile(filesData.get(i));
+            }
+            request.setFiles(fileWithPaths);
+            fileStorageClient.uploadFiles(request);
+
+        }
+        catch (Exception e)
+        {
+            throw  new RuntimeException(e.getMessage());
+        }
+        return ResponseEntity.ok(fileDTOS);
+    }
+
+    public ResponseEntity<?> update(Long id, File file, MultipartFile fileData)
+    {
+
+        try
+        {
+            file.setUpdateDate(LocalDateTime.now());
+            file.setId(id);
+            fileClient.updateFile(file, id);
+            FileWithPath fileWithPath = new FileWithPath(file.getRootFullName(), fileData);
+            fileStorageClient.updateFile(fileWithPath);
+        }
+        catch (Exception e)
+        {
+            throw  new RuntimeException(e.getMessage());
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
+    public ResponseEntity<?> deleteFiles(List<Long> ids)
+    {
+        List<String> rootFullNames = new ArrayList<>();
+        try
+        {
+            for (Long id:ids)
+            {
+                rootFullNames.add(fileClient.getFileByID(id).getBody().getRootFullName());
+                fileClient.deleteFile(id);
+            }
+
+            DeleteRequest request = new DeleteRequest(rootFullNames);
+            fileStorageClient.deleteFile(request);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
+        return ResponseEntity.noContent().build();
+
     }
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)

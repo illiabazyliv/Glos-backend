@@ -1,36 +1,50 @@
 package com.glos.filemanagerservice.controllers;
 
+import com.glos.filemanagerservice.DTO.DownloadRequest;
 import com.glos.filemanagerservice.DTO.FileDTO;
-import com.glos.filemanagerservice.clients.FileClient;
+import com.glos.filemanagerservice.clients.FileStorageClient;
+import com.glos.filemanagerservice.clients.RepositoryStorageClient;
 import com.glos.filemanagerservice.entities.File;
+import com.glos.filemanagerservice.facade.FileApiFacade;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 public class FileUploadController
 {
-    private final FileClient fileClient;
+    private final FileApiFacade fileClient;
+    private final FileStorageClient fileStorageClient;
+    private final RepositoryStorageClient repositoryStorageClient;
 
-    public FileUploadController(FileClient fileClient) {
+    public FileUploadController(FileApiFacade fileClient, FileStorageClient fileStorageClient, RepositoryStorageClient repositoryStorageClient) {
         this.fileClient = fileClient;
+        this.fileStorageClient = fileStorageClient;
+        this.repositoryStorageClient = repositoryStorageClient;
     }
 
-    @PutMapping("/files/{filename}/upload")
-    public ResponseEntity<FileDTO> uploadFile(@RequestBody File file, UriComponentsBuilder uriComponentsBuilder)
+
+    @PutMapping("/files/upload")
+    public ResponseEntity<List<FileDTO>> uploadFile(@RequestBody List<File> files, @ModelAttribute List<MultipartFile> filesData, UriComponentsBuilder uriComponentsBuilder)
     {
-        file.setCreationDate(LocalDateTime.now());
-        FileDTO created = fileClient.createFile(file).getBody();
-        return ResponseEntity.created(uriComponentsBuilder.path("/files/{id}")
-                .build(created.getId())).body(created);
+
+        List<FileDTO> created = fileClient.uploadFiles(files, filesData).getBody();
+        return ResponseEntity.ok(created);
     }
 
-    @GetMapping("/files/{filename}/download")
-    public ResponseEntity<?> downloadFile()
+    @GetMapping("/files/download")
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
     {
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileStorageClient.downloadFile(request).getBody());
     }
+
+    @GetMapping("/repositories/{rootFullName}/download")
+    public ResponseEntity<ByteArrayResource> downloadRepository(@PathVariable String rootFullName)
+    {
+        return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
+    }
+
 }
