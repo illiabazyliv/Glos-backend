@@ -10,12 +10,13 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Map;
 
 public interface RepositoryStorageService
 {
     RepositoryOperationStatus create(String rootFullName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 
-    List<byte[]> download(String rootFullName) throws Exception;
+    Map<String, Object> download(String rootFullName) throws Exception;
 
     RepositoryOperationStatus rename(String rootFullName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 

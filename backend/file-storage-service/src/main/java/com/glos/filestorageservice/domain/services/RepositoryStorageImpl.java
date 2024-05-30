@@ -13,7 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 @Service
@@ -53,8 +56,43 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     }
 
     @Override
-    public List<byte[]> download(String rootFullName) throws Exception
+    public Map<String, Object> download(String rootFullName) throws Exception
     {
+        Map<String, Object> filesAndNames = new HashMap<>();
+        try
+        {
+            if (!rootFullName.endsWith("/")) {
+                rootFullName += "/";
+            }
+
+            Iterable<Result<Item>> resultsList = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucket)
+                            .prefix(rootFullName)
+                            .recursive(true)
+                            .build()
+            );
+
+            for (Result<Item> result : resultsList) {
+                Item item = result.get();
+                String objectName = item.objectName();
+
+                try (InputStream stream = minioClient.getObject(
+                        GetObjectArgs.builder()
+                                .bucket(bucket)
+                                .object(objectName)
+                                .build())) {
+                    byte[] content = stream.readAllBytes();
+                    filesAndNames.put(objectName, content);
+                }
+            }
+            logger.info("Repository downloaded successfully");
+            return filesAndNames;
+        }
+        catch (Exception e)
+        {
+            logger.info("Failed to download repository");
+        }
         return null;
     }
 

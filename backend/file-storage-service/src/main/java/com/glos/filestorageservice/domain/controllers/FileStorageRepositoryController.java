@@ -2,14 +2,21 @@ package com.glos.filestorageservice.domain.controllers;
 
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import com.glos.filestorageservice.domain.services.RepositoryStorageService;
+import com.glos.filestorageservice.domain.utils.ZipUtil;
 import io.minio.errors.*;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/storage/repositories")
@@ -27,10 +34,31 @@ public class FileStorageRepositoryController
         return ResponseEntity.ok(repositoryStorageService.create(rootFullName));
     }
 
-    @GetMapping
-    public ResponseEntity<?> getRepository()
+    @GetMapping("/download/{rootFullName}")
+    public ResponseEntity<ByteArrayResource> getRepository(@PathVariable String rootFullName) throws Exception
     {
-        return ResponseEntity.ok().build();
+       try {
+           Map<String, Object> filesData = repositoryStorageService.download(rootFullName);
+           Map<String, String> fileNames = new HashMap<>();
+
+           for (String key: filesData.keySet())
+           {
+               fileNames.put(key, key.substring(rootFullName.length() + 1));
+           }
+
+           byte[] zipFile = ZipUtil.createRepositoryZip(filesData, fileNames);
+           ByteArrayResource resource = new ByteArrayResource(zipFile);
+
+           HttpHeaders headers = new HttpHeaders();
+           headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + rootFullName + ".zip");
+           headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
+
+           return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+       }
+       catch (Exception e)
+       {
+           return ResponseEntity.internalServerError().build();
+       }
     }
 
     @PutMapping("/{rootFullName}/{newName}")
