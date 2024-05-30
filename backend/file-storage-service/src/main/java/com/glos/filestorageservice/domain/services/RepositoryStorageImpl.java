@@ -1,6 +1,7 @@
 package com.glos.filestorageservice.domain.services;
 
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
+import com.glos.filestorageservice.domain.DTO.RepositoryAndStatus;
 import com.glos.filestorageservice.domain.DTO.RepositoryOperationStatus;
 import io.minio.*;
 import io.minio.errors.*;
@@ -29,8 +30,9 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     private static final String bucket = "test";
 
     @Override
-    public RepositoryOperationStatus create(String rootFullName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
+    public List<RepositoryAndStatus> create(String rootFullName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
     {
+        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
         try
         {
             if (!rootFullName.endsWith("/"))
@@ -46,13 +48,14 @@ public class RepositoryStorageImpl implements RepositoryStorageService
                             .build()
             );
             logger.info("Repository created successfully");
-            return RepositoryOperationStatus.CREATED;
+            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.CREATED, "Repository created successfully"));
         }
         catch (Exception e)
         {
             logger.info("Failed to create repository");
-            return RepositoryOperationStatus.FAILED;
+            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to create repository " + e.getMessage()));
         }
+        return repositoryAndStatuses;
     }
 
     @Override
@@ -97,7 +100,10 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     }
 
     @Override
-    public RepositoryOperationStatus rename(String rootFullName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public List<RepositoryAndStatus> rename(String rootFullName, String newName)
+    {
+
+        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
         try {
             //TODO поки так, імплементувати парсер
             if (!rootFullName.endsWith("/")) rootFullName += "/";
@@ -142,22 +148,25 @@ public class RepositoryStorageImpl implements RepositoryStorageService
                             .build()
             );
             logger.info("Repository renamed successfully");
-            return RepositoryOperationStatus.RENAMED;
+            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.RENAMED, "Repository renamed successfully"));
         }
         catch (Exception e)
         {
             logger.info("Failed to rename repository");
-            return RepositoryOperationStatus.FAILED;
+            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to rename repository " + e.getMessage()));
+
         }
+        return repositoryAndStatuses;
     }
 
     @Override
-    public RepositoryOperationStatus move(List<MoveRequest.MoveNode> moves) throws Exception
+    public List<RepositoryAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception
     {
-        try
+        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
+
+        for (var move:moves)
         {
-            for (var move:moves)
-            {
+            try {
                 String from = move.getFrom();
                 String to = move.getTo();
 
@@ -181,11 +190,10 @@ public class RepositoryStorageImpl implements RepositoryStorageService
                 );
 
 
-
                 for (Result<Item> result : resultsList) {
                     Item item = result.get();
                     String sourceObject = item.objectName();
-                    String destinationObject = to + "/" + sourceObject.substring(from.length() + 1);
+                    String destinationObject = to + "/" + sourceObject.substring(from.length());
 
                     minioClient.copyObject(
                             CopyObjectArgs.builder()
@@ -214,19 +222,22 @@ public class RepositoryStorageImpl implements RepositoryStorageService
                 );
 
                 logger.info("Repository moved successfully");
-                return RepositoryOperationStatus.MOVED;
+                repositoryAndStatuses.add(new RepositoryAndStatus("From " + move.getFrom() + " \nto " + move.getTo(), RepositoryOperationStatus.MOVED, "Repository moved successfully"));
+
+            }
+            catch (Exception e)
+            {
+                logger.info("Failed to move repository");
+                repositoryAndStatuses.add(new RepositoryAndStatus(move.getFrom(), RepositoryOperationStatus.FAILED, "Failed to move repository"));
             }
         }
-        catch (Exception e)
-        {
-            logger.info("Failed to move repository");
-            return RepositoryOperationStatus.FAILED;
-        }
-        return RepositoryOperationStatus.FAILED;
+        return repositoryAndStatuses;
     }
 
     @Override
-    public RepositoryOperationStatus delete(String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public List<RepositoryAndStatus> delete(String rootFullName)
+    {
+        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
         try
         {
             if (!rootFullName.endsWith("/")) {
@@ -239,12 +250,13 @@ public class RepositoryStorageImpl implements RepositoryStorageService
                             .build()
             );
             logger.info("Repository deleted successfully");
-            return RepositoryOperationStatus.DELETED;
+            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.DELETED, "Repository deleted successfully"));
         }
         catch (Exception e)
         {
             logger.info("Failed to delete repository");
-            return RepositoryOperationStatus.FAILED;
+            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to delete repository"));
         }
+        return repositoryAndStatuses;
     }
 }

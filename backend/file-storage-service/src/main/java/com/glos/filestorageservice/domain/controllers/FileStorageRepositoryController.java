@@ -1,6 +1,7 @@
 package com.glos.filestorageservice.domain.controllers;
 
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
+import com.glos.filestorageservice.domain.DTO.RepositoryAndStatus;
 import com.glos.filestorageservice.domain.services.RepositoryStorageService;
 import com.glos.filestorageservice.domain.utils.ZipUtil;
 import io.minio.errors.*;
@@ -29,7 +30,7 @@ public class FileStorageRepositoryController
     }
 
     @PostMapping("/{rootFullName}")
-    public ResponseEntity<?> createRepository(@PathVariable String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
+    public ResponseEntity<List<RepositoryAndStatus>> createRepository(@PathVariable String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
     {
         return ResponseEntity.ok(repositoryStorageService.create(rootFullName));
     }
@@ -62,18 +63,18 @@ public class FileStorageRepositoryController
     }
 
     @PutMapping("/{rootFullName}/{newName}")
-    public ResponseEntity<?> updateRepository(@PathVariable("rootFullName") String rootFullName, @PathVariable("newName") String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
+    public ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName, @PathVariable("newName") String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
     {
         return ResponseEntity.ok(repositoryStorageService.rename(rootFullName, newName));
     }
 
     @PostMapping("/move")
-    public ResponseEntity<?> moveRepository(@RequestBody MoveRequest moves) throws Exception {
+    public ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves) throws Exception {
         return ResponseEntity.ok(repositoryStorageService.move(moves.getMoves()));
     }
 
     @DeleteMapping("/{rootFullName}")
-    public ResponseEntity<?> deleteFile(@PathVariable String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public ResponseEntity<List<RepositoryAndStatus>> deleteRepository(@PathVariable String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         return ResponseEntity.ok(repositoryStorageService.delete(rootFullName));
     }
 }

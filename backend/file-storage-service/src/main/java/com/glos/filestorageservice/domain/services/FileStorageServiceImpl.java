@@ -95,38 +95,40 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public List<FileAndStatus> update(List<FileWithPath> files) {
+    public FileAndStatus update(FileWithPath file) {
         logger.info("Updating files");
         String bucketName = "test";
 
-        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
-        for (FileWithPath file : files)
+        FileAndStatus fileAndStatuses;
+        try
         {
-            try
-            {
-                minioClient.removeObject(
-                        RemoveObjectArgs.builder()
-                                .bucket(bucketName)
-                                .object(file.getFilePath())
-                                .build()
-                );
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(file.getFilePath())
+                            .build()
+            );
 
-                //TODO імплементувати парсер
-                minioClient.putObject(
-                        PutObjectArgs.builder()
-                                .bucket(bucketName)
-                                .object(file.getFilePath())
-                                .stream(file.getFile().getInputStream(), file.getFile().getSize(), -1)
-                                .contentType(file.getFile().getContentType())
-                                .build()
-                );
+                /*
+                dir1/test.txt
+                dir1/test2.docx
+                * */
 
-                fileAndStatuses.add(new FileAndStatus((file.getFilePath()), FileOperationStatus.UPDATED, "File updated successfully"));
-            }
-            catch (Exception e) {
-                logger.info("Failed to update file: " + file.getFilePath());
-                fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.FAILED, e.getMessage()));
-            }
+            //TODO імплементувати парсер
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(file.getFilePath())
+                            .stream(file.getFile().getInputStream(), file.getFile().getSize(), -1)
+                            .contentType(file.getFile().getContentType())
+                            .build()
+            );
+
+            fileAndStatuses = new FileAndStatus((file.getFilePath()), FileOperationStatus.UPDATED, "File updated successfully");
+        }
+        catch (Exception e) {
+            logger.info("Failed to update file: " + file.getFilePath());
+            fileAndStatuses = new FileAndStatus(file.getFilePath(), FileOperationStatus.FAILED, e.getMessage());
         }
 
         logger.info("Success updating files");

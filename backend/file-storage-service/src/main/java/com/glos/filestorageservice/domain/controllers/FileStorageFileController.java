@@ -63,9 +63,9 @@ public class FileStorageFileController
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateFile(@ModelAttribute UpdateRequest request)
+    public ResponseEntity<?> updateFile(@ModelAttribute FileWithPath request)
     {
-        return ResponseEntity.ok(fileStorageService.update(request.getFiles()));
+        return ResponseEntity.ok(fileStorageService.update(request));
     }
 
     @PostMapping("/move")

@@ -17,7 +17,7 @@ public interface FileStorageService {
 
     List<byte[]> download(List<String> filenames) throws Exception;
 
-    List<FileAndStatus> update(List<FileWithPath> files);
+    FileAndStatus update(FileWithPath file);
 
     List<FileAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception;
 
