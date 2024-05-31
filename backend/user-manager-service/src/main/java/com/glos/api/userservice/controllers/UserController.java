@@ -6,8 +6,6 @@ import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserDTO;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserDTOMapper;
-import com.glos.api.userservice.responseMappers.UserFilterRequestDTOMapper;
-import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
 import com.glos.api.userservice.utils.Constants;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.http.ResponseEntity;
@@ -19,27 +17,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class UserController
 {
     private final UserDTOMapper userDTOMapper;
-    private final UserFilterRequestMapper userFilterRequestMapper;
-    private final UserFilterRequestDTOMapper userFilterRequestDTOMapper;
     private final UserAPIFacade userAPIFacade;
 
     public UserController(
             UserDTOMapper userDTOMapper,
-            UserFilterRequestMapper userFilterRequestMapper,
-            UserAPIFacade userAPIFacade,
-            UserFilterRequestDTOMapper userFilterRequestDTOMapper
+            UserAPIFacade userAPIFacade
     ) {
         this.userDTOMapper = userDTOMapper;
-        this.userFilterRequestMapper = userFilterRequestMapper;
         this.userAPIFacade = userAPIFacade;
-        this.userFilterRequestDTOMapper = userFilterRequestDTOMapper;
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id)
     {
-        //return ResponseEntity.ok(userDTOMapper.toDto(getUserById(id)));
         return ResponseEntity.ok(userDTOMapper.toDto(userAPIFacade.getById(id)));
     }
 
@@ -49,7 +40,6 @@ public class UserController
             @RequestBody User user,
             UriComponentsBuilder uriComponentsBuilder)
     {
-        //User mapped = userDTOMapper.toEntity(user);
         ResponseEntity<User> created = userAPIFacade.create(user, role);
         if (created.getStatusCode().is2xxSuccessful()) {
             return ResponseEntity

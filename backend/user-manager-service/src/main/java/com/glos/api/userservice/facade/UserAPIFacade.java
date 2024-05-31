@@ -1,6 +1,7 @@
 package com.glos.api.userservice.facade;
 
 import com.glos.api.userservice.client.RoleAPIClient;
+import com.glos.api.userservice.client.StorageClient;
 import com.glos.api.userservice.client.UserAPIClient;
 import com.glos.api.userservice.entities.Role;
 import com.glos.api.userservice.entities.User;
@@ -23,16 +24,18 @@ public class UserAPIFacade {
     private final UserAPIClient userAPIClient;
     private final RoleAPIClient roleAPIClient;
     private final UserFilterRequestMapper userFilterRequestMapper;
+    private final StorageClient storageClient;
 
 
     public UserAPIFacade(
             UserAPIClient userAPIClient,
             RoleAPIClient roleAPIClient,
-            UserFilterRequestMapper userFilterRequestMapper
-    ) {
+            UserFilterRequestMapper userFilterRequestMapper,
+            StorageClient storageClient) {
         this.userAPIClient = userAPIClient;
         this.roleAPIClient = roleAPIClient;
         this.userFilterRequestMapper = userFilterRequestMapper;
+        this.storageClient = storageClient;
     }
 
     public User getById(Long id) {
@@ -56,6 +59,8 @@ public class UserAPIFacade {
         user.setIs_enabled(Constants.DEFAULT_IS_ENABLED);
         user.setIs_deleted(Constants.DEFAULT_IS_DELETED);
         ResponseEntity<User> userResponseEntity = userAPIClient.create(user);
+        storageClient.create(user.getUsername());
+
         return userResponseEntity;
     }
 
@@ -75,6 +80,7 @@ public class UserAPIFacade {
     public ResponseEntity<?> destroy(Long id) {
         User user = getById(id);
         ResponseEntity<?> response = userAPIClient.delete(user.getId());
+        storageClient.delete(user.getUsername());
         return noContent(response);
     }
 
@@ -84,6 +90,12 @@ public class UserAPIFacade {
                         .map(x -> roleAPIClient.getByName(x.getName()).getBody())
                         .toList());
         ResponseEntity<?> response = userAPIClient.updateUser(user.getId(), newUser);
+
+        if (!user.getUsername().equals(newUser.getUsername()))
+        {
+            storageClient.update(user.getUsername(), newUser.getUsername());
+        }
+
         return noContent(response);
     }
 

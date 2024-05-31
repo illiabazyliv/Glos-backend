@@ -25,8 +25,8 @@ public interface RepositoryStorageClient
     @GetMapping("/download/{rootFullName}")
     ResponseEntity<ByteArrayResource> getRepository(@PathVariable String rootFullName);
 
-    @PutMapping("/{rootFullName}/{newName}")
-    ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName, @PathVariable("newName") String newName);
+//    @PutMapping("/{rootFullName}/{newName}")
+//    ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName, @PathVariable("newName") String newName);
 
     @PostMapping("/move")
     ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves);

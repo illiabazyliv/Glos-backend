@@ -9,6 +9,7 @@ import com.glos.filemanagerservice.requestFilters.FileRequestFilter;
 import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
 import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,8 +86,25 @@ public class FileApiFacade
             file.setUpdateDate(LocalDateTime.now());
             file.setId(id);
             fileClient.updateFile(file, id);
-            FileWithPath fileWithPath = new FileWithPath(file.getRootFullName(), fileData);
-            fileStorageClient.updateFile(fileWithPath);
+            String oldRootFullName = fileClient.getFileByID(id).getBody().getRootFullName();
+
+            if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
+            {
+                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, fileData);
+                fileStorageClient.updateFile(fileWithPath);
+
+                MoveRequest moveRequest = new MoveRequest();
+                moveRequest.getMoves().add(new MoveRequest.MoveNode(oldRootFullName, file.getRootFullName()));
+
+                fileStorageClient.moveFile(moveRequest);
+            }
+            else
+            {
+                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, fileData);
+                fileStorageClient.updateFile(fileWithPath);
+            }
+
+
         }
         catch (Exception e)
         {
@@ -116,6 +134,12 @@ public class FileApiFacade
         }
         return ResponseEntity.noContent().build();
 
+    }
+
+    public ResponseEntity<ByteArrayResource> downloadFiles(List<String> rootFullNames)
+    {
+        DownloadRequest request = new DownloadRequest(rootFullNames);
+        return ResponseEntity.ok(fileStorageClient.downloadFile(request).getBody());
     }
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)

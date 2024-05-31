@@ -15,7 +15,7 @@ public interface RepositoryStorageService
 
     Map<String, Object> download(String rootFullName) throws Exception;
 
-    List<RepositoryAndStatus> rename(String rootFullName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
+    //List<RepositoryAndStatus> rename(String rootFullName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 
     List<RepositoryAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception;
 

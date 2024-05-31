@@ -17,12 +17,10 @@ import java.util.List;
 public class FileUploadController
 {
     private final FileApiFacade fileClient;
-    private final FileStorageClient fileStorageClient;
     private final RepositoryStorageClient repositoryStorageClient;
 
-    public FileUploadController(FileApiFacade fileClient, FileStorageClient fileStorageClient, RepositoryStorageClient repositoryStorageClient) {
+    public FileUploadController(FileApiFacade fileClient, RepositoryStorageClient repositoryStorageClient) {
         this.fileClient = fileClient;
-        this.fileStorageClient = fileStorageClient;
         this.repositoryStorageClient = repositoryStorageClient;
     }
 
@@ -36,9 +34,9 @@ public class FileUploadController
     }
 
     @GetMapping("/files/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody List<String> rootFullNames)
     {
-        return ResponseEntity.ok(fileStorageClient.downloadFile(request).getBody());
+        return ResponseEntity.ok(fileClient.downloadFiles(rootFullNames).getBody());
     }
 
     @GetMapping("/repositories/{rootFullName}/download")

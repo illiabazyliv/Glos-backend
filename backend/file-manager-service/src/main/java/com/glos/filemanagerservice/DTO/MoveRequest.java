@@ -1,6 +1,7 @@
 package com.glos.filemanagerservice.DTO;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoveRequest
@@ -36,8 +37,9 @@ public class MoveRequest
 
     private List<MoveNode> moves;
 
-    public MoveRequest() {
-
+    public MoveRequest()
+    {
+        this.moves = new ArrayList<>();
     }
 
     public MoveRequest(List<MoveNode> moves) {

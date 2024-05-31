@@ -4,16 +4,11 @@ import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import com.glos.filestorageservice.domain.DTO.RepositoryAndStatus;
 import com.glos.filestorageservice.domain.DTO.RepositoryOperationStatus;
 import io.minio.*;
-import io.minio.errors.*;
 import io.minio.messages.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +25,7 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     private static final String bucket = "test";
 
     @Override
-    public List<RepositoryAndStatus> create(String rootFullName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
+    public List<RepositoryAndStatus> create(String rootFullName)
     {
         List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
         try
@@ -99,65 +94,65 @@ public class RepositoryStorageImpl implements RepositoryStorageService
         return null;
     }
 
-    @Override
-    public List<RepositoryAndStatus> rename(String rootFullName, String newName)
-    {
-
-        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
-        try {
-            //TODO поки так, імплементувати парсер
-            if (!rootFullName.endsWith("/")) rootFullName += "/";
-            if (!newName.endsWith("/")) newName += "/";
-
-            Iterable<Result<Item>> resultsList = minioClient.listObjects(
-                    ListObjectsArgs.builder()
-                            .bucket(bucket)
-                            .prefix(rootFullName)
-                            .recursive(true)
-                            .build()
-            );
-
-            for (Result<Item> result : resultsList) {
-                Item item = result.get();
-                String oldObjectName = item.objectName();
-                String newObjectName = newName + oldObjectName.substring(rootFullName.length());
-
-                minioClient.copyObject(
-                        CopyObjectArgs.builder()
-                                .bucket(bucket)
-                                .object(newObjectName)
-                                .source(CopySource.builder()
-                                        .bucket(bucket)
-                                        .object(oldObjectName)
-                                        .build())
-                                .build()
-                );
-
-                minioClient.removeObject(
-                        RemoveObjectArgs.builder()
-                                .bucket(bucket)
-                                .object(oldObjectName)
-                                .build()
-                );
-            }
-
-            minioClient.removeObject(
-                    RemoveObjectArgs.builder()
-                            .bucket(bucket)
-                            .object(rootFullName)
-                            .build()
-            );
-            logger.info("Repository renamed successfully");
-            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.RENAMED, "Repository renamed successfully"));
-        }
-        catch (Exception e)
-        {
-            logger.info("Failed to rename repository");
-            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to rename repository " + e.getMessage()));
-
-        }
-        return repositoryAndStatuses;
-    }
+//    @Override
+//    public List<RepositoryAndStatus> rename(String rootFullName, String newName)
+//    {
+//
+//        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
+//        try {
+//            //TODO поки так, імплементувати парсер
+//            if (!rootFullName.endsWith("/")) rootFullName += "/";
+//            if (!newName.endsWith("/")) newName += "/";
+//
+//            Iterable<Result<Item>> resultsList = minioClient.listObjects(
+//                    ListObjectsArgs.builder()
+//                            .bucket(bucket)
+//                            .prefix(rootFullName)
+//                            .recursive(true)
+//                            .build()
+//            );
+//
+//            for (Result<Item> result : resultsList) {
+//                Item item = result.get();
+//                String oldObjectName = item.objectName();
+//                String newObjectName = newName + oldObjectName.substring(rootFullName.length());
+//
+//                minioClient.copyObject(
+//                        CopyObjectArgs.builder()
+//                                .bucket(bucket)
+//                                .object(newObjectName)
+//                                .source(CopySource.builder()
+//                                        .bucket(bucket)
+//                                        .object(oldObjectName)
+//                                        .build())
+//                                .build()
+//                );
+//
+//                minioClient.removeObject(
+//                        RemoveObjectArgs.builder()
+//                                .bucket(bucket)
+//                                .object(oldObjectName)
+//                                .build()
+//                );
+//            }
+//
+//            minioClient.removeObject(
+//                    RemoveObjectArgs.builder()
+//                            .bucket(bucket)
+//                            .object(rootFullName)
+//                            .build()
+//            );
+//            logger.info("Repository renamed successfully");
+//            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.RENAMED, "Repository renamed successfully"));
+//        }
+//        catch (Exception e)
+//        {
+//            logger.info("Failed to rename repository");
+//            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to rename repository " + e.getMessage()));
+//
+//        }
+//        return repositoryAndStatuses;
+//    }
 
     @Override
     public List<RepositoryAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception

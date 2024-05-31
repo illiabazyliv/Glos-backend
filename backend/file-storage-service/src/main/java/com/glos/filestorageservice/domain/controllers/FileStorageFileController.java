@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,9 +30,20 @@ public class FileStorageFileController
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<List<FileAndStatus>> uploadFiles(@ModelAttribute UploadRequest request) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public ResponseEntity<List<FileAndStatus>> uploadFiles(@ModelAttribute UploadRequest request)
+    {
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
 
-        return ResponseEntity.ok(fileStorageService.upload(request.getFiles()));
+        try
+        {
+            fileAndStatuses = fileStorageService.upload(request.getFiles());
+        }
+        catch (Exception e)
+        {
+             throw new RuntimeException(e.getMessage());
+        }
+
+        return ResponseEntity.ok(fileAndStatuses);
     }
 
     @GetMapping("/download")
@@ -71,7 +83,6 @@ public class FileStorageFileController
     @PostMapping("/move")
     public ResponseEntity<List<FileAndStatus>> moveFile(@RequestBody MoveRequest request) throws Exception
     {
-
         return ResponseEntity.ok(fileStorageService.move(request.getMoves()));
     }
 

@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/storage/repositories")
@@ -30,9 +27,20 @@ public class FileStorageRepositoryController
     }
 
     @PostMapping("/{rootFullName}")
-    public ResponseEntity<List<RepositoryAndStatus>> createRepository(@PathVariable String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
+    public ResponseEntity<List<RepositoryAndStatus>> createRepository(@PathVariable String rootFullName)
     {
-        return ResponseEntity.ok(repositoryStorageService.create(rootFullName));
+        List<RepositoryAndStatus> repositoryAndStatuses;
+
+        try
+        {
+            repositoryAndStatuses = repositoryStorageService.create(rootFullName);
+        }
+        catch (Exception e)
+        {
+            throw  new RuntimeException(e.getMessage());
+        }
+
+        return ResponseEntity.ok(repositoryAndStatuses);
     }
 
     @GetMapping("/download/{rootFullName}")
@@ -62,11 +70,23 @@ public class FileStorageRepositoryController
        }
     }
 
-    @PutMapping("/{rootFullName}/{newName}")
-    public ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName, @PathVariable("newName") String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException
-    {
-        return ResponseEntity.ok(repositoryStorageService.rename(rootFullName, newName));
-    }
+//    @PutMapping("/{rootFullName}/{newName}")
+//    public ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName,
+//                                                                      @PathVariable("newName") String newName)
+//    {
+//        List<RepositoryAndStatus> repositoryAndStatuses;
+//
+//        try
+//        {
+//            repositoryAndStatuses = repositoryStorageService.rename(rootFullName, newName);
+//        }
+//        catch (Exception e)
+//        {
+//            throw  new RuntimeException(e.getMessage());
+//        }
+//
+//        return ResponseEntity.ok(repositoryAndStatuses);
+//    }
 
     @PostMapping("/move")
     public ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves) throws Exception {
@@ -74,7 +94,19 @@ public class FileStorageRepositoryController
     }
 
     @DeleteMapping("/{rootFullName}")
-    public ResponseEntity<List<RepositoryAndStatus>> deleteRepository(@PathVariable String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        return ResponseEntity.ok(repositoryStorageService.delete(rootFullName));
+    public ResponseEntity<List<RepositoryAndStatus>> deleteRepository(@PathVariable String rootFullName)
+    {
+        List<RepositoryAndStatus> repositoryAndStatuses;
+
+        try
+        {
+            repositoryAndStatuses = repositoryStorageService.delete(rootFullName);
+        }
+        catch (Exception e)
+        {
+            throw  new RuntimeException(e.getMessage());
+        }
+
+        return ResponseEntity.ok(repositoryAndStatuses);
     }
 }

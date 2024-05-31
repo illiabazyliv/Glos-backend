@@ -39,7 +39,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 
 
     @Override
-    public List<FileAndStatus> upload(List<FileWithPath> files) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public List<FileAndStatus> upload(List<FileWithPath> files)
+    {
         String bucketName = "test";
         logger.info("Uploading files");
         List<FileAndStatus> fileAndStatuses = new ArrayList<>();
@@ -76,7 +77,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         {
             try (InputStream stream = minioClient.getObject(
                     GetObjectArgs.builder()
-                            .bucket("test")
+                            .bucket("user3")
                             .object(path)
                             .build())) {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();

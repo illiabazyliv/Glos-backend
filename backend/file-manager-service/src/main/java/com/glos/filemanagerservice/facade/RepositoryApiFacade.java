@@ -52,7 +52,15 @@ public class RepositoryApiFacade
             repository.setUpdateDate(LocalDateTime.now());
             String rootFullName = repositoryClient.getRepositoryById(id).getBody().getRootFullName();
             repositoryClient.updateRepository(repository, id);
-            repositoryStorageClient.updateRepository(rootFullName, repository.getRootFullName());
+
+
+            if (repository.getRootFullName() != null && !rootFullName.equals(repository.getRootFullName()))
+            {
+                MoveRequest moveRequest = new MoveRequest();
+                moveRequest.getMoves().add(new MoveRequest.MoveNode(rootFullName, repository.getDisplayFullName()));
+                repositoryStorageClient.moveRepository(moveRequest);
+            }
+
         }
         catch (Exception e)
         {
