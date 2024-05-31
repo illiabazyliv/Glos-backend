@@ -1,5 +1,6 @@
 package com.pathtools;
 
+import com.pathtools.exception.InvalidPathFormatException;
 import com.pathtools.pathnode.PathNode;
 import com.pathtools.pathnode.PathNodeProps;
 
@@ -21,7 +22,7 @@ public final class PathParser {
         return INSTANCE;
     }
 
-    private PathParser() {}
+    public PathParser() {}
 
     /**
      * Parses the given string representation of a path and returns the corresponding Path object.

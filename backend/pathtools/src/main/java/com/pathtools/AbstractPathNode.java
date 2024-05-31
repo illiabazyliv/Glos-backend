@@ -1,5 +1,6 @@
 package com.pathtools;
 
+import com.pathtools.exception.InvalidPathFormatException;
 import com.pathtools.pathnode.PathNode;
 import com.pathtools.pathnode.PathNodeProps;
 
@@ -31,7 +32,7 @@ public abstract class AbstractPathNode implements PathNode {
         this.type = type;
         final String[] parts = PathUtil.splitPath(rootFullName);
         if (parts.length == 0) {
-            throw new IllegalArgumentException("invalid format path");
+            throw new InvalidPathFormatException("invalid format path");
         }
         setRootPath(parts[0]);
         setRootName(parts[1]);
@@ -89,7 +90,7 @@ public abstract class AbstractPathNode implements PathNode {
     @Override
     public String getRootProp(String prop) {
         if (!props.containsKey(prop)) {
-            throw new IllegalArgumentException("Properties not found");
+            throw new InvalidPathFormatException("Properties not found");
         }
         return props.get(prop);
     }

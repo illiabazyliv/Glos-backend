@@ -32,10 +32,11 @@ public interface Path extends Iterable<PathNode> {
      }
 
      String getPath();
+     String getSimplePath(String sep, boolean startRoot);
      List<PathNode> getNodes();
      PathNode getFirst();
      PathNode getLast();
      int length();
      PathReader reader();
-
+     PathBuilder createBuilder();
 }

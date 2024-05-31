@@ -2,6 +2,7 @@ package com.pathtools.pathnode;
 
 import com.pathtools.AbstractPathNode;
 import com.pathtools.NodeType;
+import com.pathtools.exception.InvalidPathFormatException;
 
 public class FilePathNode extends AbstractPathNode {
 
@@ -17,7 +18,7 @@ public class FilePathNode extends AbstractPathNode {
         super(type, rootFullName);
         String[] parts = getRootName().split("\\.");
         if (parts.length == 0) {
-            throw new IllegalArgumentException("invalid filename '%s'".formatted(getRootName()));
+            throw new InvalidPathFormatException("invalid filename '%s'".formatted(getRootName()));
         }
         setRootFormat(parts[1]);
     }
@@ -26,7 +27,7 @@ public class FilePathNode extends AbstractPathNode {
         super(NodeType.FILE, rootPath, rootName, rootFullName);
         String[] parts = getRootName().split("\\.");
         if (parts.length != 2) {
-            throw new IllegalArgumentException("invalid filename '%s'".formatted(getRootName()));
+            throw new InvalidPathFormatException("invalid filename '%s'".formatted(getRootName()));
         }
         setRootFormat(parts[1]);
     }
