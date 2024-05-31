@@ -4,6 +4,7 @@ import com.glos.filemanagerservice.DTO.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -23,4 +24,5 @@ public interface FileStorageClient
 
     @DeleteMapping("/delete")
      ResponseEntity<List<FileAndStatus>> deleteFile(@RequestBody DeleteRequest request);
+
 }
