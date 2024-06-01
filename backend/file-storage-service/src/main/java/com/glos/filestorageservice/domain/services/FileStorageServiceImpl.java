@@ -4,18 +4,14 @@ import com.glos.filestorageservice.domain.DTO.FileAndStatus;
 import com.glos.filestorageservice.domain.DTO.FileOperationStatus;
 import com.glos.filestorageservice.domain.DTO.FileWithPath;
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
-import com.netflix.discovery.converters.Auto;
-import com.pathtools.NodeType;
 import com.pathtools.PathParser;
 import io.minio.*;
 import io.minio.errors.*;
 import org.apache.commons.compress.utils.IOUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

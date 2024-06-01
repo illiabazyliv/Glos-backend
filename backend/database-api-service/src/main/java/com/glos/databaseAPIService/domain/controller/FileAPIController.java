@@ -83,6 +83,13 @@ public class FileAPIController
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/root-fullname/{rootFullName}")
+    public ResponseEntity<?> deleteFile(@PathVariable String rootFullName)
+    {
+        fileService.deleteByRootFullName(rootFullName);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/repository/{repositoryId}")
     public  ResponseEntity<Page<FileDTO>> getFilesByRepository(
             @ModelAttribute Repository repository,
