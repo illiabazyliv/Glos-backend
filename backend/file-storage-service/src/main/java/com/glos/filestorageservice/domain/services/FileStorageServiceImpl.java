@@ -77,7 +77,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         {
             try (InputStream stream = minioClient.getObject(
                     GetObjectArgs.builder()
-                            .bucket("user3")
+                            .bucket("test")
                             .object(path)
                             .build())) {
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
