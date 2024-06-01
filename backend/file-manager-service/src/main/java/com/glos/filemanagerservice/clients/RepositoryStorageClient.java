@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "fileStorage")
+@FeignClient(name = "repositiryStorage")
 public interface RepositoryStorageClient
 {
     @PostMapping("/{rootFullName}")

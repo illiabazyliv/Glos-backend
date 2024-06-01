@@ -25,6 +25,14 @@ public class PathImpl implements Path {
     }
 
     @Override
+    public String getSimplePath(String sep, boolean startRoot) {
+        String simple = PathParser.getInstance().parseString(this, sep);
+        if (!startRoot)
+            return simple.substring(1);
+        return simple;
+    }
+
+    @Override
     public List<PathNode> getNodes() {
         return nodes;
     }
@@ -67,5 +75,10 @@ public class PathImpl implements Path {
     @Override
     public PathReader reader() {
         return new PathNodeReader(this);
+    }
+
+    @Override
+    public PathBuilder createBuilder() {
+        return new PathBuilder(path);
     }
 }

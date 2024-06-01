@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+@RestController
 public class FileUploadController
 {
     private final FileApiFacade fileClient;

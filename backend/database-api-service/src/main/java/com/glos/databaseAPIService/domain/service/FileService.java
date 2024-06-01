@@ -54,6 +54,11 @@ public class FileService implements CrudService<File, Long>
         return fileRepository.findById(id);
     }
 
+    public Optional<File> getByRootFullName(String rootFullName)
+    {
+        return fileRepository.findByRootFullName(rootFullName);
+    }
+
     @Transactional
     @Override
     public File update(Long id, File newFile)
@@ -67,13 +72,29 @@ public class FileService implements CrudService<File, Long>
     @Override
     public void deleteById(Long id)
     {
-        File found = getFileByIdOrThrow(id);
-        fileRepository.delete(found);
+        delete(getFileByIdOrThrow(id));
+    }
+
+    @Transactional
+    public void deleteByRootFullName(String rootFullName)
+    {
+        delete(getFileByRootFullNameOrThrow(rootFullName));
+    }
+
+    @Transactional
+    private void delete(File file)
+    {
+        fileRepository.delete(file);
     }
 
     File getFileByIdOrThrow(Long id)
     {
         return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
+    }
+
+    File getFileByRootFullNameOrThrow(String rootFullName)
+    {
+        return getByRootFullName(rootFullName).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
     }
 
     public Page<File> findAllByRepository(File filter, Pageable pageable)

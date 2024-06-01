@@ -1,0 +1,34 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: feed-service
+          uri: ${FEED_SERVICE_URL:http://localhost:9004}
+          predicates:
+            - Path=/api/feed,/api/feed/**
+          filters:
+            - RewritePath=/api(?<segment>.*), /api/v1${segment}
+        - id: auth-service
+          uri: ${AUTH_SERVICE_URL:http://localhost:9006}
+          predicates:
+            - Path=/api/auth,/api/auth/**
+          filters:
+            - RewritePath=/api(?<segment>.*), /api/v1${segment}
+        - id: user-manager
+          uri: ${USER_MANAGER_SERVICE_URL:http://localhost:9005}
+          predicates:
+            - Path=/api/users,/api/users/**
+          filters:
+            - RewritePath=/api(?<segment>.*), /api/v1${segment}
+        - id: file-manager-service
+          uri: ${FILE_MANAGER_SERVICE_URL:http://localhost:9010}
+          predicates:
+            - Path=/api/files,/api/files/**,/api/repositories,/api/repositories/**
+          filters:
+            - RewritePath=/api(?<segment>.*), /api/v1${segment}
+        - id: access-service
+          uri: ${ACCESS_SERVICE_URL:http://localhost:9009}
+          predicates:
+            - Path=/api/access-types,/api/access-types/**
+          filters:
+            - RewritePath=/api(?<segment>.*), /api/v1${segment}
