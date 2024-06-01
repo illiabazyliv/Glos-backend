@@ -2,6 +2,7 @@ package com.glos.databaseAPIService.domain.controller;
 
 
 import com.glos.databaseAPIService.domain.entities.Repository;
+import com.glos.databaseAPIService.domain.entities.User;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
 import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
@@ -82,12 +83,35 @@ public class RepositoryAPIController
     }
 
     @GetMapping("/owner-id/{ownerId}")
-    public ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId)
+    public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId,
+                                                                        @ModelAttribute Repository filter,
+                                                                        @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
+                                                                        @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        List<Repository> repositories = repositoryService.findAllByOwnerId(ownerId);
-        List<RepositoryDTO> repositoryDTOS = new ArrayList<>();
+        if (filter.getOwner() == null) {
+            User user = new User();
+            user.setId(ownerId);
+            filter.setOwner(user);
+        } else {
+            filter.getOwner().setId(ownerId);
+        }
+        return getRepositoriesByFilter(filter, ignoreSys, pageable);
+    }
 
-        return ResponseEntity.ok(repositories.stream().map((x) -> {return transferEntityDTO(x, new RepositoryDTO());}).toList());
+    @GetMapping("/owner/{username}")
+    public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable String username,
+                                                                        @ModelAttribute Repository filter,
+                                                                        @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
+                                                                        @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
+    {
+        if (filter.getOwner() == null) {
+            User user = new User();
+            user.setUsername(username);
+            filter.setOwner(user);
+        } else {
+            filter.getOwner().setUsername(username);
+        }
+        return getRepositoriesByFilter(filter, ignoreSys, pageable);
     }
 
 
@@ -104,13 +128,13 @@ public class RepositoryAPIController
     @GetMapping()
     public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(
             @ModelAttribute Repository filter,
+            @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
         PathUtils.ordinalPathsRepository(filter);
-        Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable);
+        Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable, ignoreSys);
+
         Page<RepositoryDTO> repositoryDTOS = repositories.map(mapper::toDto);
-
-
         return ResponseEntity.ok(repositoryDTOS);
     }
 

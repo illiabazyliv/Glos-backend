@@ -97,10 +97,10 @@ public class UserAPIController
     @GetMapping
     public ResponseEntity<Page<UserDTO>> getUsersByFilter(
             @ModelAttribute User filter,
+            @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        return ResponseEntity.ok(userService
-                .getPageByFilter(filter, pageable)
-                .map(mapper::toDto));
+        Page<User> page = userService.getPageByFilter(filter, pageable, ignoreSys);
+        return ResponseEntity.ok(page.map(mapper::toDto));
     }
 }
