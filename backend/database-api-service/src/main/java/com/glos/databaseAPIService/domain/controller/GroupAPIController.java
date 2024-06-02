@@ -69,10 +69,11 @@ public class GroupAPIController
 
     @GetMapping
     public ResponseEntity<Page<GroupDTO>> getAllGroups(
+            @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     )
     {
-        Page<Group> groups = groupService.getPage(pageable);
+        Page<Group> groups = groupService.getPage(pageable, ignoreSys);
         Page<GroupDTO> dtos = groups.map(groupDTOMapper::toDto);
         return ResponseEntity.ok(dtos);
     }
@@ -80,9 +81,10 @@ public class GroupAPIController
     @GetMapping("/filter")
     public ResponseEntity<Page<GroupDTO>> getGroupsByFilters(
             @ModelAttribute Group filter,
+            @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        Page<Group> groups = groupService.getPageByFilter(filter, pageable);
+        Page<Group> groups = groupService.getPageByFilter(filter, pageable, ignoreSys);
         return ResponseEntity.ok(groups.map(groupDTOMapper::toDto));
     }
 }

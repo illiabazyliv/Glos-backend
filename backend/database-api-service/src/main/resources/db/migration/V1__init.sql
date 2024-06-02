@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS repositories (
     CONSTRAINT pk_repositories_id PRIMARY KEY(id),
     CONSTRAINT uq_repositories_owner_id_root_full_name UNIQUE(owner_id, root_full_name),
     CONSTRAINT uq_repositories_owner_id_is_default UNIQUE(owner_id, is_default),
-    CONSTRAINT fk_repositories_users_id FOREIGN KEY (owner_id) REFERENCES users(id)
+    CONSTRAINT fk_repositories_users_id FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS comments (
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS comments (
     `text` TEXT NOT NULL,
     `date` DATETIME NOT NULL,
     CONSTRAINT pk_comments_id PRIMARY KEY(id),
-    CONSTRAINT fk_comments_users_id FOREIGN KEY (author_id) REFERENCES users(id)
+    CONSTRAINT fk_comments_users_id FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS users_roles (
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS files (
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     repository_id BIGINT,
     CONSTRAINT pk_files_id PRIMARY KEY(id),
-    CONSTRAINT fk_files_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id),
+    CONSTRAINT fk_files_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
     CONSTRAINT uq_files_repository_id_root_full_name UNIQUE(repository_id, root_full_name),
     CONSTRAINT ch_root_size_is_not_negative CHECK(root_size >= 0)
 ) ENGINE=InnoDB;
@@ -157,9 +157,9 @@ CREATE TABLE IF NOT EXISTS files_user_access_types (
     user_id BIGINT NOT NULL,
     access_type_id BIGINT NOT NULL,
     CONSTRAINT pk_files_user_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_files_user_access_types_files_id FOREIGN KEY (file_id) REFERENCES files(id),
-    CONSTRAINT fk_files_user_access_types_users_id FOREIGN KEY (user_id) REFERENCES users(id),
-    CONSTRAINT fk_files_user_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id)
+    CONSTRAINT fk_files_user_access_types_files_id FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
+    CONSTRAINT fk_files_user_access_types_users_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_files_user_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS files_secure_codes (
@@ -187,9 +187,9 @@ CREATE TABLE IF NOT EXISTS repositories_users_access_types (
     user_id BIGINT NOT NULL,
     access_type_id BIGINT NOT NULL,
     CONSTRAINT pk_repositories_users_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_repositories_users_access_types_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id),
-    CONSTRAINT fk_repositories_users_access_types_users_id FOREIGN KEY (user_id) REFERENCES users(id),
-    CONSTRAINT fk_repositories_users_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id)
+    CONSTRAINT fk_repositories_users_access_types_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
+    CONSTRAINT fk_repositories_users_access_types_users_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_repositories_users_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS repositories_secure_codes (
@@ -245,7 +245,7 @@ CREATE TRIGGER IF NOT EXISTS after_insert_users
 BEGIN
     INSERT INTO `groups`(name, owner_id)
     VALUES ('friends', NEW.id);
-    INSERT INTO repositories(root_path, root_name, root_full_name, owner_id, is_default)
-    VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE);
+    INSERT INTO repositories(root_path, root_name, root_full_name, owner_id, is_default, display_path, display_name, display_full_name)
+    VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE, '', '', '');
 END$$
 DELIMITER ;

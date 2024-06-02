@@ -8,10 +8,12 @@ import com.glos.databaseAPIService.domain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +21,7 @@ import java.util.Optional;
  * 	@author - yablonovskydima
  */
 @Service
-public class RepositoryService implements CrudService<Repository, Long>
+public class RepositoryService
 {
     private final RepositoryRepository repository;
     private final UserRepository userRepository;
@@ -139,9 +141,9 @@ public class RepositoryService implements CrudService<Repository, Long>
         return repository;
     }
 
-    public List<Repository> findAllByOwnerId(Long ownerId)
+    public List<Repository> findAllByOwnerId(Long ownerId, boolean ignoreSys)
     {
-        return repository.findByOwnerId(ownerId);
+        return removeSysIf(ignoreSys, repository.findByOwnerId(ownerId));
     }
 
     public Optional<Repository> findByRootFullName(String rootFullName)
@@ -154,8 +156,8 @@ public class RepositoryService implements CrudService<Repository, Long>
         return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
     }
 
-    public Page<Repository> findAllByFilter(Repository filter, Pageable pageable) {
-        Page<Repository> list = repository.findAll(Example.of(filter), pageable);
+    public Page<Repository> findAllByFilter(Repository filter, Pageable pageable, boolean ignoreSys) {
+        List<Repository> list = removeSysIf(ignoreSys, repository.findAll(Example.of(filter), pageable));
 
         list.stream()
                 .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))
@@ -164,10 +166,9 @@ public class RepositoryService implements CrudService<Repository, Long>
                 .filter(x -> filter.getTags() == null || x.getTags().containsAll(filter.getTags()))
                 .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()));
 
-        return list;
+        return new PageImpl<>(list, pageable, list.size());
     }
 
-    @Override
     @Transactional
     public Repository create(Repository repository)
     {
@@ -175,23 +176,19 @@ public class RepositoryService implements CrudService<Repository, Long>
         return repo;
     }
 
-    @Override
-    public List<Repository> getAll() {
-        return this.repository.findAll();
+    public List<Repository> getAll(boolean ignoreSys) {
+        return removeSysIf(ignoreSys, this.repository.findAll());
     }
 
-    @Override
     public List<Repository> getAll(EntityFilter filter) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public Optional<Repository> getById(Long id)
     {
         return repository.findById(id);
     }
 
-    @Override
     @Transactional
     public Repository update(Long id, Repository newRepository) {
         Repository repository = getRepositoryByIdOrThrow(id);
@@ -203,5 +200,12 @@ public class RepositoryService implements CrudService<Repository, Long>
     public void deleteById(Long id) {
         Repository found = getRepositoryByIdOrThrow(id);
         repository.deleteById(found.getId());
+    }
+
+    private List<Repository> removeSysIf(boolean isIgnoreSys, Iterable<Repository> iterable) {
+        List<Repository> list = new ArrayList<>();
+        if (isIgnoreSys)
+            iterable.forEach(x -> { if (x.getId() != 1L) list.add(x); } );
+        return list;
     }
 }
