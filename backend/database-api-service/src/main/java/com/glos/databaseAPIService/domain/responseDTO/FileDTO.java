@@ -4,6 +4,7 @@ import com.glos.databaseAPIService.domain.entities.SecureCode;
 import com.glos.databaseAPIService.domain.entities.Tag;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileDTO
@@ -65,6 +66,10 @@ public class FileDTO
     }
 
     public FileDTO() {
+        this.accessTypes = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public Long getId() {

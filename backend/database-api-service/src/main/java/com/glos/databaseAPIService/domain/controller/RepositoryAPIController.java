@@ -48,8 +48,7 @@ public class RepositoryAPIController
     public ResponseEntity<RepositoryDTO> getRepository(@PathVariable Long id)
     {
         Repository repository = repositoryService.getById(id).orElseThrow(() -> {return new ResourceNotFoundException("Repository is not found");} );
-        RepositoryDTO repositoryDTO = new RepositoryDTO();
-        repositoryDTO = transferEntityDTO(repository, repositoryDTO);
+        RepositoryDTO repositoryDTO = mapper.toDto(repository);
         return ResponseEntity.of(Optional.of(repositoryDTO));
     }
 
@@ -59,8 +58,7 @@ public class RepositoryAPIController
         Repository repo = repositoryService.create(repository);
         PathUtils.normalizePathsRepository(repository);
 
-        RepositoryDTO repositoryDTO = new RepositoryDTO();
-        repositoryDTO = transferEntityDTO(repo, repositoryDTO);
+        RepositoryDTO repositoryDTO = mapper.toDto(repo);
 
         return ResponseEntity
                 .created(uriBuilder.path("/repositories/{id}")
@@ -115,14 +113,13 @@ public class RepositoryAPIController
     }
 
 
-    @GetMapping("/root-full-name/{rootFullName}")
+    @GetMapping("/root-fullname/{rootFullName}")
     public ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName)
     {
         final String ordinalRootFullName = PathUtils.originalPath(rootFullName);
-        Repository rep = repositoryService.findByRootFullName(ordinalRootFullName).orElseThrow(() -> {return new ResourceNotFoundException("Repository is not found");} );
-        RepositoryDTO repositoryDTO = new RepositoryDTO();
-        repositoryDTO = transferEntityDTO(rep, repositoryDTO);
-        return ResponseEntity.of(Optional.of(repositoryDTO));
+        Repository rep = repositoryService.findByRootFullName(ordinalRootFullName).orElseThrow(() ->
+                new ResourceNotFoundException("Repository is not found") );
+        return ResponseEntity.of(Optional.of(mapper.toDto(rep)));
     }
 
     @GetMapping()
@@ -133,17 +130,7 @@ public class RepositoryAPIController
     {
         PathUtils.ordinalPathsRepository(filter);
         Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable, ignoreSys);
-
         Page<RepositoryDTO> repositoryDTOS = repositories.map(mapper::toDto);
         return ResponseEntity.ok(repositoryDTOS);
-    }
-
-    RepositoryDTO transferEntityDTO(Repository source, RepositoryDTO destination)
-    {
-        UserDTO owner = new UserDTO();
-        userDTOMapper.transferEntityDto(source.getOwner(), owner);
-        mapper.transferEntityDto(source, destination);
-        destination.setOwner(owner);
-        return destination;
     }
 }

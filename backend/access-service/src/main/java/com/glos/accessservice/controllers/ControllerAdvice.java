@@ -1,10 +1,13 @@
 package com.glos.accessservice.controllers;
 
 import com.glos.accessservice.exeptions.*;
+import com.pathtools.exception.InvalidPathFormatException;
 import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,32 +16,79 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ControllerAdvice {
 
-    @ExceptionHandler(UnsupportedDeleteResourceException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleUnsupportedOperationException(
-            UnsupportedDeleteResourceException e
+    public ExceptionBody handleMethodArgumentNotValid(
+            MethodArgumentNotValidException e
     ) {
-        return new SimpleExceptionBody("Unsupported operation", Map.of(
-                "group", e.getMessage()
-        ));
+        ExceptionBody exceptionBody = new SimpleExceptionBody("Validation failed.", new HashMap<>());
+        List<FieldError> errors = e.getBindingResult().getFieldErrors();
+        exceptionBody.setErrors(errors.stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage))
+        );
+        System.out.println(exceptionBody.getErrors());
+        return exceptionBody;
+    }
+
+    @ExceptionHandler({
+            IllegalArgumentException.class,
+            IllegalStateException.class,
+            InvocationTargetException.class,
+            InvalidPathFormatException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionBody handleBadRequest(
+            Exception e
+    ) {
+        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionBody handleConstraintViolationException(ConstraintViolationException ex) {
+        ExceptionBody exceptionBody = new SimpleExceptionBody();
+        ex.getConstraintViolations().forEach(violation -> {
+            exceptionBody.appendError(violation.getPropertyPath().toString(), violation.getMessage());
+        });
+        return exceptionBody;
     }
 
     @ExceptionHandler(value = {
-            ResourceNotFoundException.class,
             NoResourceFoundException.class,
             UserNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ExceptionBody> handleResourceNotFound(
+    public ExceptionBody handleResourceNotFound(
             Exception e
     ) {
-        return ResponseEntity.notFound().build();
+        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ExceptionBody handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException e
+    ) {
+        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
+    }
+
+    @ExceptionHandler({
+            AccessDeniedException.class,
+            UserAccessDeniedException.class
+    })
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionBody handleAccessDenied(
+            Exception e
+    ) {
+        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
     }
 
     @ExceptionHandler(FeignException.class)
@@ -55,39 +105,7 @@ public class ControllerAdvice {
         return ResponseEntity.status(e.getStatusCode()).body(new SimpleExceptionBody(e.getMessage(), new HashMap<>()));
     }
 
-    @ExceptionHandler({
-            ResourceAlreadyExistsException.class,
-            IllegalArgumentException.class,
-            IllegalStateException.class,
-            InvocationTargetException.class,
-            MethodArgumentNotValidException.class
-    })
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleBadRequest(
-            Exception e
-    ) {
-        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
-    }
-
-    @ExceptionHandler({UserAccessDeniedException.class})
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionBody handleUserAccessDenied(UserAccessDeniedException ex) {
-        return new SimpleExceptionBody(ex.getMessage(), new HashMap<>());
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionBody handleConstraintViolationException(ConstraintViolationException ex) {
-        ExceptionBody exceptionBody = new SimpleExceptionBody();
-        ex.getConstraintViolations().forEach(violation -> {
-            exceptionBody.appendError(violation.getPropertyPath().toString(), violation.getMessage());
-        });
-        return exceptionBody;
-    }
-
-    @ExceptionHandler({
-            Throwable.class
-    })
+    @ExceptionHandler({Throwable.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleResourceNotFound(Throwable throwable) {
         return new SimpleExceptionBody(throwable.getMessage(), new HashMap<>());

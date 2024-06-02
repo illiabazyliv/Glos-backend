@@ -8,10 +8,13 @@ import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
+import com.pathtools.Path;
+import com.pathtools.PathParser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,6 +34,8 @@ public class RepositoryApiFacade
 
     public ResponseEntity<RepositoryDTO> create(Repository repository)
     {
+        Path path = PathParser.getInstance().parse(repository.getRootPath());
+        assignPath(repository, path);
         RepositoryDTO repositoryDTO = new RepositoryDTO();
         try
         {
@@ -47,12 +52,13 @@ public class RepositoryApiFacade
 
     public ResponseEntity<?> update(Long id, Repository repository)
     {
+        Path path = PathParser.getInstance().parse(repository.getRootPath());
+        assignPath(repository, path);
         try {
             repository.setId(id);
             repository.setUpdateDate(LocalDateTime.now());
             String rootFullName = repositoryClient.getRepositoryById(id).getBody().getRootFullName();
             repositoryClient.updateRepository(repository, id);
-
 
             if (repository.getRootFullName() != null && !rootFullName.equals(repository.getRootFullName()))
             {
@@ -107,6 +113,18 @@ public class RepositoryApiFacade
         requestFilter.setSort(sort);
 
         Map<String, Object> map = MapUtils.map(requestFilter);
-        return ResponseEntity.ok(repositoryClient.getRepositoriesByFilter(map).getBody());
+        map.put("ignoreSys", true);
+        Page<RepositoryDTO> repositories = repositoryClient.getRepositoriesByFilter(map).getBody();
+        return ResponseEntity.ok(repositories);
+    }
+
+    private void assignPath(Repository repository, Path path) {
+        path = path.createBuilder().repository(repository.getRootName(), false).build();
+        repository.setRootName(path.getLast().getRootName());
+        repository.setRootPath(path.getLast().getRootPath());
+        repository.setRootFullName(path.getLast().getRootFullName());
+        repository.setDisplayName(path.getLast().getSimpleName());
+        repository.setDisplayPath(path.reader().parent().getSimplePath("/", false));
+        repository.setDisplayFullName(path.getSimplePath("/", false));
     }
 }

@@ -29,13 +29,13 @@ public class FileController
         this.fileApiFacade = fileApiFacade;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<FileDTO> getFileById(@PathVariable Long id)
     {
         return ResponseEntity.ok(fileClient.getFileByID(id).getBody());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/id/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file, @ModelAttribute MultipartFile filesData)
     {
         fileApiFacade.update(id, file, filesData);
@@ -49,7 +49,7 @@ public class FileController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/root-fullname/{rootFullName}")
+    @GetMapping("/{rootFullName}")
     public ResponseEntity<FileDTO> getByRootFullName(@PathVariable String rootFullName)
     {
         return ResponseEntity.ok(fileClient.getFileByRootFullName(rootFullName).getBody());

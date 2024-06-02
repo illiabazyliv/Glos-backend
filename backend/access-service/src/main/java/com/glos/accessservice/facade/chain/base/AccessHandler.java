@@ -44,12 +44,11 @@ public abstract class AccessHandler {
         return next.check(request);
     }
 
-    protected boolean requestNonNullOrThrow(AccessRequest request)
+    protected void requestNonNullOrThrow(AccessRequest request)
             throws NullPointerException {
         Objects.requireNonNull(request, "request param is null");
         Objects.requireNonNull(request.getPath(), "path field is null");
         Objects.requireNonNull(request.getUsername(), "username field is null");
-        return true;
     }
 
 }

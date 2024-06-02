@@ -17,8 +17,6 @@ public class ResolvePathAccessHandler extends AccessHandler {
     public boolean check(AccessRequest request) throws InvalidPathFormatException {
         super.check(request);
         final Map<String, Object> data = request.getData();
-        Objects.requireNonNull(request);
-        Objects.requireNonNull(request.getPath());
         final Path path = PathParser.getInstance().parse(request.getPath());
         data.put("path", path);
         return checkNext(request);

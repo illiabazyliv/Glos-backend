@@ -1,7 +1,9 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
-import jakarta.persistence.*;
 
+import com.glos.databaseAPIService.domain.entities.AccessType;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupDTO
@@ -17,6 +19,8 @@ public class GroupDTO
 
 
     public GroupDTO() {
+        this.accessTypes = new ArrayList<>();
+        this.users = new ArrayList<>();
     }
 
     public GroupDTO(Long id, String name, UserDTO owner, List<AccessType> accessTypes, List<UserDTO> users) {

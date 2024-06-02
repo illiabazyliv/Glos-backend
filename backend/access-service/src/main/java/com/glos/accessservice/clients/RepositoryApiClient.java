@@ -12,6 +12,6 @@ public interface RepositoryApiClient
     @PutMapping("/{id}")
     ResponseEntity<?> update(@PathVariable Long id ,@RequestBody Repository repository);
 
-    @GetMapping("/root-fullName/{rootFullName}")
+    @GetMapping("/root-fullname/{rootFullName}")
     ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);
 }

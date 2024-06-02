@@ -115,7 +115,7 @@ class RepositoryControllerTest {
         repositoryDTO.setId(1L);
         when(repositoryClient.getRepositoryByRootFullName(any())).thenReturn(ResponseEntity.ok(repositoryDTO));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-fullName/testRoot"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-fullname/testRoot"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L));
     }

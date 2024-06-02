@@ -29,34 +29,28 @@ public class UserExistsAccessHandler extends AccessHandler {
     public boolean check(AccessRequest request) {
         super.check(request);
         final Map<String, Object> data = request.getData();
-        //ResponseEntity<User> responseUser = userClient.getByUsername(request.getUsername());
-        ResponseEntity<User> responseUser = getUser(request.getUsername());
-        if (responseUser.getStatusCode().is2xxSuccessful()) {
-            final Path path = (Path)data.get("path");
-            final String rootUsername = path.getFirst().getSimpleName();
+        User user = getUser(request.getUsername());
+        data.put("user", user);
+        final Path path = (Path)data.get("path");
+        final String rootUsername = path.getFirst().getSimpleName();
 
-            ResponseEntity<User> owner = getUser(rootUsername);
-            data.put("owner", owner);
+        User owner = getUser(rootUsername);
+        data.put("owner", owner);
 
-            if (rootUsername.equals(request.getUsername()))
-                return true;
+        if (rootUsername.equals(request.getUsername()))
+            return true;
 
-            data.put("user", responseUser);
-
-            return checkNext(request);
-        } else {
-            throw new HttpStatusCodeImplException(responseUser.getStatusCode());
-        }
+        return checkNext(request);
     }
 
-    private ResponseEntity<User> getUser(String username) {
+    private User getUser(String username) {
         try {
-            return userClient.getByUsername(username);
+            return userClient.getByUsername(username).getBody();
         } catch (FeignException ex) {
             if (ex.status() == 404) {
                 throw new UserNotFoundException("user not found");
             }
-            throw ex;
+            throw new HttpStatusCodeImplException(HttpStatusCode.valueOf(ex.status()), ex.getMessage());
         }
     }
 

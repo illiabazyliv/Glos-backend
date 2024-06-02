@@ -31,7 +31,7 @@ public interface RepositoryClient
     @GetMapping()
     public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
 
-    @GetMapping("/root-full-name/{rootFullName}")
+    @GetMapping("/root-fullname/{rootFullName}")
     ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);
 
 }

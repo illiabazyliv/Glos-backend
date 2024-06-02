@@ -245,7 +245,14 @@ CREATE TRIGGER IF NOT EXISTS after_insert_users
 BEGIN
     INSERT INTO `groups`(name, owner_id)
     VALUES ('friends', NEW.id);
+
+    INSERT INTO groups_access_types(group_id, access_type_id)
+    VALUE (LAST_INSERT_ID(), 3);
+
     INSERT INTO repositories(root_path, root_name, root_full_name, owner_id, is_default, display_path, display_name, display_full_name)
     VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE, '', '', '');
+
+    INSERT INTO repositories_access_types(repository_id, access_type_id)
+    VALUES (LAST_INSERT_ID(), 1);
 END$$
 DELIMITER ;

@@ -1,6 +1,6 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
-import jakarta.persistence.*;
+import com.glos.databaseAPIService.domain.entities.AccessType;
 
 public class RepositoryUserAccessTypeDTO
 {
