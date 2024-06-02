@@ -130,7 +130,7 @@ public class UserController
     }
 
     @GetMapping("/{id}/destroy")
-    public ResponseEntity<?> destoryUser(@PathVariable Long id) {
+    public ResponseEntity<?> destroyUser(@PathVariable Long id) {
         return userAPIFacade.destroy(id);
     }
 }
