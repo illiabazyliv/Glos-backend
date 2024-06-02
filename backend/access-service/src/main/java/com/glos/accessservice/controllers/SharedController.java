@@ -1,9 +1,9 @@
 package com.glos.accessservice.controllers;
 
 import com.glos.accessservice.facade.SharedFacade;
-import com.glos.accessservice.pathUtils.Path;
-import com.glos.accessservice.pathUtils.PathParser;
 import com.glos.accessservice.responseDTO.SharedTokenResponse;
+import com.pathtools.Path;
+import com.pathtools.PathParser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

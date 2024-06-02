@@ -6,6 +6,7 @@ import com.glos.accessservice.entities.AccessType;
 import com.glos.accessservice.entities.SecureCode;
 import com.glos.accessservice.entities.Tag;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryDTO {
@@ -68,6 +69,10 @@ public class RepositoryDTO {
     }
 
     public RepositoryDTO() {
+        this.accessTypes = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public Long getId() {
