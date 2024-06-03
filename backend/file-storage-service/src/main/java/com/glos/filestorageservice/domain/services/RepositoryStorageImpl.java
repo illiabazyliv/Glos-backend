@@ -33,20 +33,20 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     private static final String bucket = "xily1";
 
     @Override
-    public List<RepositoryAndStatus> create(String rootFullName)
+    public RepositoryAndStatus create(String rootFullName)
     {
-        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
+        RepositoryAndStatus repositoryAndStatuses;
         try
         {
             Path path = PathParser.getInstance().parse(rootFullName);
             createRepo(path, -1);
             logger.info("Repository created successfully");
-            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.CREATED, "Repository created successfully"));
+            repositoryAndStatuses = new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.CREATED, "Repository created successfully");
         }
         catch (Exception e)
         {
             logger.info("Failed to create repository");
-            repositoryAndStatuses.add(new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to create repository " + e.getMessage()));
+            repositoryAndStatuses = new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to create repository " + e.getMessage());
         }
         return repositoryAndStatuses;
     }

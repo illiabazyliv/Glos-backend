@@ -11,7 +11,7 @@ import java.util.Map;
 
 public interface RepositoryStorageService
 {
-    List<RepositoryAndStatus> create(String rootFullName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
+    RepositoryAndStatus create(String rootFullName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 
     Map<String, Object> download(String rootFullName) throws Exception;
     List<RepositoryAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception;

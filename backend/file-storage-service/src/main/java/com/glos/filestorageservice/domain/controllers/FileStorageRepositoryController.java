@@ -29,9 +29,9 @@ public class FileStorageRepositoryController
     }
 
     @PostMapping("/{rootFullName}")
-    public ResponseEntity<List<RepositoryAndStatus>> createRepository(@PathVariable String rootFullName)
+    public ResponseEntity<RepositoryAndStatus> createRepository(@PathVariable String rootFullName)
     {
-        List<RepositoryAndStatus> repositoryAndStatuses;
+        RepositoryAndStatus repositoryAndStatuses;
 
         try
         {
