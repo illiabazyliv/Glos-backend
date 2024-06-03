@@ -14,10 +14,7 @@ public interface RepositoryStorageService
     List<RepositoryAndStatus> create(String rootFullName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 
     Map<String, Object> download(String rootFullName) throws Exception;
-
-    //List<RepositoryAndStatus> rename(String rootFullName, String newName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
-
     List<RepositoryAndStatus> move(List<MoveRequest.MoveNode> moves) throws Exception;
 
-    List<RepositoryAndStatus> delete(String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
+    RepositoryAndStatus delete(String rootFullName) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 }
