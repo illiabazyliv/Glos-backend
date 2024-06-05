@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 public class UserDTOMapper extends AbstractMapper<User, UserDTO> {
     @Override
     protected void postDtoCopy(User source, UserDTO destination) {
-        destination.setPassword(source.getPassword_hash());
         destination.setPhoneNumber(source.getPhone_number());
         destination.setFirstName(source.getFirst_name());
         destination.setLastName(source.getLast_name());
@@ -20,7 +19,6 @@ public class UserDTOMapper extends AbstractMapper<User, UserDTO> {
 
     @Override
     protected void postEntityCopy(UserDTO source, User destination) {
-        destination.setPassword_hash(source.getPassword());
         destination.setPhone_number(source.getPhoneNumber());
         destination.setFirst_name(source.getFirstName());
         destination.setLast_name(source.getLastName());

@@ -43,6 +43,7 @@ public class UserBucketServiceImpl implements UserBucketService
             userBucketAndStatus.setUsername(username);
             userBucketAndStatus.setStatus(BucketOperationStatus.FAILED);
             userBucketAndStatus.setMessage("Failed to create bucket " + username);
+            throw new RuntimeException(e.getMessage());
         }
         return userBucketAndStatus;
     }
@@ -88,6 +89,7 @@ public class UserBucketServiceImpl implements UserBucketService
             userBucketAndStatus.setUsername(username);
             userBucketAndStatus.setStatus(BucketOperationStatus.FAILED);
             userBucketAndStatus.setMessage("Failed to delete bucket " + username);
+            throw new RuntimeException(e.getMessage());
         }
 
         return userBucketAndStatus;
@@ -138,6 +140,7 @@ public class UserBucketServiceImpl implements UserBucketService
             userBucketAndStatus.setUsername(oldUsername);
             userBucketAndStatus.setStatus(BucketOperationStatus.FAILED);
             userBucketAndStatus.setMessage("Failed to update bucket " + oldUsername);
+            throw new RuntimeException(e.getMessage());
         }
 
         return userBucketAndStatus;

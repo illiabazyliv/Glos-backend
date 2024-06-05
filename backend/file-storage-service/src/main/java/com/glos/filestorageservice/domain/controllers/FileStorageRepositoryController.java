@@ -4,6 +4,8 @@ import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import com.glos.filestorageservice.domain.DTO.RepositoryAndStatus;
 import com.glos.filestorageservice.domain.services.RepositoryStorageService;
 import com.glos.filestorageservice.domain.utils.ZipUtil;
+import com.pathtools.Path;
+import com.pathtools.PathParser;
 import io.minio.errors.*;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -27,9 +29,9 @@ public class FileStorageRepositoryController
     }
 
     @PostMapping("/{rootFullName}")
-    public ResponseEntity<List<RepositoryAndStatus>> createRepository(@PathVariable String rootFullName)
+    public ResponseEntity<RepositoryAndStatus> createRepository(@PathVariable String rootFullName)
     {
-        List<RepositoryAndStatus> repositoryAndStatuses;
+        RepositoryAndStatus repositoryAndStatuses;
 
         try
         {
@@ -52,41 +54,30 @@ public class FileStorageRepositoryController
 
            for (String key: filesData.keySet())
            {
-               fileNames.put(key, key.substring(rootFullName.length() + 1));
+               java.nio.file.Path path = java.nio.file.Paths.get(key);
+               String filename = path.getFileName().toString();
+               fileNames.put(key, filename);
            }
 
            byte[] zipFile = ZipUtil.createRepositoryZip(filesData, fileNames);
            ByteArrayResource resource = new ByteArrayResource(zipFile);
 
            HttpHeaders headers = new HttpHeaders();
-           headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + rootFullName + ".zip");
+           Path path = PathParser.getInstance().parse(rootFullName);
+           Path newPath = path.createBuilder().removeFirst().build();
+           String zipName = newPath.getSimplePath("/", false);
+           headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipName + ".zip");
            headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
 
            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
        }
        catch (Exception e)
        {
+           System.out.println(e.getMessage());
            return ResponseEntity.internalServerError().build();
        }
     }
 
-//    @PutMapping("/{rootFullName}/{newName}")
-//    public ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName,
-//                                                                      @PathVariable("newName") String newName)
-//    {
-//        List<RepositoryAndStatus> repositoryAndStatuses;
-//
-//        try
-//        {
-//            repositoryAndStatuses = repositoryStorageService.rename(rootFullName, newName);
-//        }
-//        catch (Exception e)
-//        {
-//            throw  new RuntimeException(e.getMessage());
-//        }
-//
-//        return ResponseEntity.ok(repositoryAndStatuses);
-//    }
 
     @PostMapping("/move")
     public ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves) throws Exception {
@@ -94,9 +85,9 @@ public class FileStorageRepositoryController
     }
 
     @DeleteMapping("/{rootFullName}")
-    public ResponseEntity<List<RepositoryAndStatus>> deleteRepository(@PathVariable String rootFullName)
+    public ResponseEntity<RepositoryAndStatus> deleteRepository(@PathVariable String rootFullName)
     {
-        List<RepositoryAndStatus> repositoryAndStatuses;
+        RepositoryAndStatus repositoryAndStatuses;
 
         try
         {

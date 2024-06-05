@@ -16,21 +16,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "repositiryStorage")
+@FeignClient(name = "repositoryStorage")
 public interface RepositoryStorageClient
 {
     @PostMapping("/{rootFullName}")
-    ResponseEntity<List<RepositoryAndStatus>> createRepository(@PathVariable String rootFullName);
+    ResponseEntity<RepositoryAndStatus> createRepository(@PathVariable String rootFullName);
 
     @GetMapping("/download/{rootFullName}")
     ResponseEntity<ByteArrayResource> getRepository(@PathVariable String rootFullName);
-
-//    @PutMapping("/{rootFullName}/{newName}")
-//    ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName, @PathVariable("newName") String newName);
-
     @PostMapping("/move")
     ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves);
 
     @DeleteMapping("/{rootFullName}")
-    ResponseEntity<List<RepositoryAndStatus>> deleteRepository(@PathVariable String rootFullName);
+    ResponseEntity<RepositoryAndStatus> deleteRepository(@PathVariable String rootFullName);
 }

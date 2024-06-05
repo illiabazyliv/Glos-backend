@@ -58,8 +58,16 @@ public class UserAPIFacade {
         user.setIs_credentials_non_expired(Constants.DEFAULT_IS_CREDENTIALS_NON_EXPIRED);
         user.setIs_enabled(Constants.DEFAULT_IS_ENABLED);
         user.setIs_deleted(Constants.DEFAULT_IS_DELETED);
-        ResponseEntity<User> userResponseEntity = userAPIClient.create(user);
-        storageClient.create(user.getUsername());
+        ResponseEntity<User> userResponseEntity;
+        try
+        {
+            storageClient.create(user.getUsername());
+            userResponseEntity = userAPIClient.create(user);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
 
         return userResponseEntity;
     }
@@ -79,6 +87,8 @@ public class UserAPIFacade {
 
     public ResponseEntity<?> destroy(Long id) {
         User user = getById(id);
+        user.getRoles().clear();
+        userAPIClient.updateUser(id, user);
         ResponseEntity<?> response = userAPIClient.delete(user.getId());
         storageClient.delete(user.getUsername());
         return noContent(response);

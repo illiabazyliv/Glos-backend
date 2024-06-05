@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class UserFilterRequestMapper extends AbstractMapper<User, UserFilterRequest> {
     @Override
     protected void postDtoCopy(User source, UserFilterRequest destination) {
-        destination.setPassword(source.getPassword_hash());
         destination.setPhoneNumber(source.getPhone_number());
         destination.setFirstName(source.getFirst_name());
         destination.setLastName(source.getLast_name());
@@ -25,7 +24,6 @@ public class UserFilterRequestMapper extends AbstractMapper<User, UserFilterRequ
 
     @Override
     protected void postEntityCopy(UserFilterRequest source, User destination) {
-        destination.setPassword_hash(source.getPassword());
         destination.setPhone_number(source.getPhoneNumber());
         destination.setFirst_name(source.getFirstName());
         destination.setLast_name(source.getLastName());

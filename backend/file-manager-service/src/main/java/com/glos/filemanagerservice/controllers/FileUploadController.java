@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 
 @RestController
+@RequestMapping
 public class FileUploadController
 {
     private final FileApiFacade fileClient;
@@ -26,8 +27,9 @@ public class FileUploadController
     }
 
 
+    //TODO переробит логіку, не можна використовувати RequestBody і ModelAttribute одночасно
     @PutMapping("/files/upload")
-    public ResponseEntity<List<FileDTO>> uploadFile(@RequestBody List<File> files, @ModelAttribute List<MultipartFile> filesData, UriComponentsBuilder uriComponentsBuilder)
+    public ResponseEntity<List<FileDTO>> uploadFile(@RequestBody List<File> files, @ModelAttribute List<MultipartFile> filesData)
     {
 
         List<FileDTO> created = fileClient.uploadFiles(files, filesData).getBody();

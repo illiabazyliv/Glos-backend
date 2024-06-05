@@ -15,21 +15,21 @@ import java.util.Map;
 public interface RepositoryClient
 {
     @GetMapping("/{id}")
-    public ResponseEntity<RepositoryDTO> getRepositoryById(@PathVariable Long id);
+    ResponseEntity<RepositoryDTO> getRepositoryById(@PathVariable Long id);
     @PostMapping
-    public ResponseEntity<RepositoryDTO> createRepository(@RequestBody Repository repository);
+    ResponseEntity<RepositoryDTO> createRepository(@RequestBody Repository repository);
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRepository(@PathVariable Long id);
+    ResponseEntity<?> deleteRepository(@PathVariable Long id);
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateRepository(@RequestBody Repository newRepository, @PathVariable("id") Long id);
+    ResponseEntity<?> updateRepository(@RequestBody Repository newRepository, @PathVariable("id") Long id);
 
     @GetMapping("/owner-id/{ownerId}")
-    public ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId);
+    ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId);
 
     @GetMapping()
-    public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
+    ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
 
     @GetMapping("/root-fullname/{rootFullName}")
     ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);

@@ -32,6 +32,7 @@ public class RepositoryApiFacade
         this.repositoryStorageClient = repositoryStorageClient;
     }
 
+    //TODO виправити створення репозиторія з accessTypes
     public ResponseEntity<RepositoryDTO> create(Repository repository)
     {
         Path path = PathParser.getInstance().parse(repository.getRootPath());
@@ -63,7 +64,7 @@ public class RepositoryApiFacade
             if (repository.getRootFullName() != null && !rootFullName.equals(repository.getRootFullName()))
             {
                 MoveRequest moveRequest = new MoveRequest();
-                moveRequest.getMoves().add(new MoveRequest.MoveNode(rootFullName, repository.getDisplayFullName()));
+                moveRequest.getMoves().add(new MoveRequest.MoveNode(rootFullName, repository.getRootFullName()));
                 repositoryStorageClient.moveRepository(moveRequest);
             }
 
