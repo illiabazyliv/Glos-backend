@@ -1,14 +1,12 @@
 package com.glos.filestorageservice.domain.services;
 
-import com.glos.filestorageservice.domain.DTO.FileAndStatus;
-import com.glos.filestorageservice.domain.DTO.FileOperationStatus;
-import com.glos.filestorageservice.domain.DTO.FileWithPath;
-import com.glos.filestorageservice.domain.DTO.MoveRequest;
+import com.glos.filestorageservice.domain.DTO.*;
 import com.pathtools.PathParser;
 import io.minio.*;
 import io.minio.errors.*;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,15 +28,18 @@ public class FileStorageServiceImpl implements FileStorageService {
 
 
     @Override
-    public List<FileAndStatus> upload(List<FileWithPath> files)
+    public List<FileAndStatus> upload(List<ByteArrayWithPath> files)
     {
         logger.info("Uploading files");
         List<FileAndStatus> fileAndStatuses = new ArrayList<>();
-        for (FileWithPath file : files)
+
+        for (ByteArrayWithPath file : files)
         {
             try {
+                com.pathtools.Path filename = PathParser.getInstance().parse(file.getFilePath());
+                MultipartFile multipartFile = new MockMultipartFile(filename.getLast().getSimpleName(),  filename.getLast().getSimpleName(), file.getContentType(), file.getFile());
                 com.pathtools.Path path = PathParser.getInstance().parse(file.getFilePath());
-                putObject(path, file.getFile(), -1);
+                putObject(path, multipartFile, -1);
                 fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.SAVED, "Successfully saved file"));
             }
             catch (Exception e)

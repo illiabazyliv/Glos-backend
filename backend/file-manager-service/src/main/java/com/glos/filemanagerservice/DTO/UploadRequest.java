@@ -2,20 +2,20 @@ package com.glos.filemanagerservice.DTO;
 import java.util.List;
 
 public class UploadRequest {
-    private List<FileWithPath> files;
+    private List<ByteArrayWithPath> files;
 
     public UploadRequest() {
     }
 
-    public UploadRequest(List<FileWithPath> filesWithPath) {
-        this.files = filesWithPath;
+    public UploadRequest(List<ByteArrayWithPath> files) {
+        this.files = files;
     }
 
-    public List<FileWithPath> getFiles() {
+    public List<ByteArrayWithPath> getFiles() {
         return files;
     }
 
-    public void setFiles(List<FileWithPath> filesWithPath) {
-        this.files = filesWithPath;
+    public void setFiles(List<ByteArrayWithPath> files) {
+        this.files = files;
     }
 }

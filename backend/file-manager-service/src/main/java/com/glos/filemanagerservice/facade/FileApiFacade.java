@@ -1,5 +1,8 @@
 package com.glos.filemanagerservice.facade;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.FileClient;
 import com.glos.filemanagerservice.clients.FileStorageClient;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +44,18 @@ public class FileApiFacade
         this.fileStorageClient = fileStorageClient;
     }
 
-    public ResponseEntity<List<FileDTO>> uploadFiles(List<File> files, List<MultipartFile> filesData)
+    public ResponseEntity<List<FileDTO>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
     {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<File> files = new ArrayList<>();
+        List<MultipartFile> filesData = new ArrayList<>();
+        objectMapper.registerModule(new JavaTimeModule());
+        for (var u : uploadRequests)
+        {
+            files.add(objectMapper.readValue(u.getFileBody(), File.class));
+            filesData.add(u.getFileData());
+        }
+
         if (files.size() != filesData.size())
         {
             throw new RuntimeException("Number of entities and file data must be equal");
@@ -67,8 +81,22 @@ public class FileApiFacade
                 fileWithPaths.get(i).setFilePath(temp.getRootFullName());
                 fileWithPaths.get(i).setFile(filesData.get(i));
             }
-            request.setFiles(fileWithPaths);
-            fileStorageClient.uploadFiles(request);
+
+            List<ByteArrayWithPath> byteArrayWithPaths = new ArrayList<>();
+            for (var fileWithPath:fileWithPaths)
+            {
+                ByteArrayWithPath byteArrayWithPath = new ByteArrayWithPath();
+                byteArrayWithPath.setFilePath(fileWithPath.getFilePath());
+                byteArrayWithPath.setFile(fileWithPath.getFile().getBytes());
+                byteArrayWithPath.setContentType(fileWithPath.getFile().getContentType());
+                byteArrayWithPaths.add(byteArrayWithPath);
+            }
+
+            request.setFiles(byteArrayWithPaths);
+
+            Map<String, Object> map = MapUtils.map(request);
+            //TODO змапити реквест
+            List<FileAndStatus> fileAndStatuses = fileStorageClient.uploadFiles(map).getBody();
 
         }
         catch (Exception e)
