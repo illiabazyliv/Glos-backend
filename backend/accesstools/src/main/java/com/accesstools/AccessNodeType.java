@@ -4,4 +4,9 @@ public enum AccessNodeType {
 
     NONE, USER, GROUP;
 
+    public static AccessNodeType fromName(String name) {
+        String name0 = name.trim().toUpperCase();
+        return valueOf(name0);
+    }
+
 }

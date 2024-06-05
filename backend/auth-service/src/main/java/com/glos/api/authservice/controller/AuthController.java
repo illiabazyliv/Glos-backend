@@ -19,8 +19,6 @@ public class AuthController {
     private final SignUpRequestMapper signUpRequestMapper;
     private final SimpleAuthService simpleAuthService;
 
-
-
     public AuthController(
             SignUpRequestMapper signUpRequestMapper,
             SimpleAuthService simpleAuthService

@@ -61,6 +61,8 @@ public class UserAPIFacade {
         ResponseEntity<User> userResponseEntity = userAPIClient.create(user);
         storageClient.create(user.getUsername());
 
+        // TODO: send message to email
+
         return userResponseEntity;
     }
 

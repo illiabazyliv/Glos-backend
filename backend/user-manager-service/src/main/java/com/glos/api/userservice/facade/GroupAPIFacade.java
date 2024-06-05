@@ -1,6 +1,5 @@
 package com.glos.api.userservice.facade;
 
-import com.glos.api.userservice.client.AccessTypeAPIClient;
 import com.glos.api.userservice.client.GroupAPIClient;
 import com.glos.api.userservice.client.UserAPIClient;
 import com.glos.api.userservice.entities.AccessType;
@@ -25,19 +24,16 @@ public class GroupAPIFacade {
 
     private final GroupAPIClient groupAPIClient;
     private final UserAPIClient userAPIClient;
-    private final AccessTypeAPIClient accessTypeAPIClient;
     private final UserDTOMapper userDTOMapper;
 
     public GroupAPIFacade(
             GroupAPIClient groupAPIClient,
             UserAPIClient userAPIClient,
-            UserDTOMapper userDTOMapper,
-            AccessTypeAPIClient accessTypeAPIClient
+            UserDTOMapper userDTOMapper
     ) {
         this.groupAPIClient = groupAPIClient;
         this.userAPIClient = userAPIClient;
         this.userDTOMapper = userDTOMapper;
-        this.accessTypeAPIClient = accessTypeAPIClient;
     }
 
     public ResponseEntity<Group> putGroup(Group group, String ownerUsername, String groupName) {
@@ -60,9 +56,6 @@ public class GroupAPIFacade {
         group.setUsers(group.getUsers().stream()
                 .map(x -> getUserByUsername(x.getUsername()))
                 .toList());
-        group.setAccessTypes(group.getAccessTypes().stream()
-                .map(x -> getAccessTypeByName(x.getName()))
-                .toList());
     }
 
     private User getUserByUsername(String username) {
@@ -71,14 +64,6 @@ public class GroupAPIFacade {
             return owner.getBody();
         }
         throw new ResourceNotFoundException("User not found");
-    }
-
-    private AccessType getAccessTypeByName(String name) {
-        ResponseEntity<AccessType> accessType = accessTypeAPIClient.getByName(name);
-        if (accessType.getStatusCode().is2xxSuccessful()) {
-            return accessType.getBody();
-        }
-        throw new ResourceNotFoundException("AccessType not found");
     }
 
     public Page<Group> getAll(Map<String, Object> params) {

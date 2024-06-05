@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.service;
 
 
+import com.accesstools.AccessNode;
 import com.glos.databaseAPIService.domain.entities.File;
 import com.glos.databaseAPIService.domain.entityMappers.FileMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 /**
  * 	@author - yablonovskydima
  */
@@ -35,6 +39,16 @@ public class FileService implements CrudService<File, Long>
     @Transactional
     public File create(File file)
     {
+        Objects.requireNonNull(file);
+        if (file.getAccessTypes() != null) {
+            file.setAccessTypes(
+                    file.getAccessTypes().stream()
+                            .peek(x -> {
+                                AccessNode node = AccessNode.builder(x.getName()).build();
+                                x.setName(node.getPattern());
+                            }).collect(Collectors.toSet())
+            );
+        }
         return fileRepository.save(file);
     }
 
@@ -63,6 +77,16 @@ public class FileService implements CrudService<File, Long>
     @Override
     public File update(Long id, File newFile)
     {
+        Objects.requireNonNull(newFile);
+        if (newFile.getAccessTypes() != null) {
+            newFile.setAccessTypes(
+                    newFile.getAccessTypes().stream()
+                            .peek(x -> {
+                                AccessNode node = AccessNode.builder(x.getName()).build();
+                                x.setName(node.getPattern());
+                            }).collect(Collectors.toSet())
+            );
+        }
         File file = getFileByIdOrThrow(id);
         fileMapper.transferEntityDto(newFile, file);
         return this.fileRepository.save(file);
@@ -84,6 +108,16 @@ public class FileService implements CrudService<File, Long>
     @Transactional
     private void delete(File file)
     {
+        Objects.requireNonNull(file);
+        if (file.getAccessTypes() != null) {
+            file.setAccessTypes(
+                    file.getAccessTypes().stream()
+                            .peek(x -> {
+                                AccessNode node = AccessNode.builder(x.getName()).build();
+                                x.setName(node.getPattern());
+                            }).collect(Collectors.toSet())
+            );
+        }
         fileRepository.delete(file);
     }
 
@@ -104,6 +138,16 @@ public class FileService implements CrudService<File, Long>
 
     public Page<File> findAllByFilter(File filter, Pageable pageable)
     {
+        Objects.requireNonNull(filter);
+        if (filter.getAccessTypes() != null) {
+            filter.setAccessTypes(
+                    filter.getAccessTypes().stream()
+                            .peek(x -> {
+                                AccessNode node = AccessNode.builder(x.getName()).build();
+                                x.setName(node.getPattern());
+                            }).collect(Collectors.toSet())
+            );
+        }
         Page<File> files = fileRepository.findAll(Example.of(filter), pageable);
         files.getContent().stream()
                 .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))

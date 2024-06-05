@@ -3,6 +3,7 @@ package com.glos.api.authservice.service;
 import com.glos.api.authservice.client.SecureCodeClient;
 import com.glos.api.authservice.entities.SecureCode;
 import com.glos.api.authservice.shared.SharedEntity;
+import com.glos.api.authservice.shared.SharedRequest;
 import com.glos.api.authservice.util.PathUtils;
 import com.glos.api.authservice.util.VerificationCodeGenerator;
 import com.glos.api.authservice.util.security.JwtProperties;
@@ -36,14 +37,14 @@ public class SharedService {
         this.jwtProps = jwtProps;
     }
 
-    public JwtResponse generateShared(SharedEntity sharedEntity) {
+    public JwtResponse generateShared(SharedRequest sharedEntity) {
         final SecureCode secureCode = ensureSecureCode(sharedEntity);
         final String token = jwtService.generateShared(secureCode);
         return new JwtResponse(token, null);
     }
 
-    private SecureCode ensureSecureCode(SharedEntity sharedEntity) {
-        final SecureCode found = getSecureCodeByRootFullName(sharedEntity.getRootFullName());
+    private SecureCode ensureSecureCode(SharedRequest sharedRequest) {
+        final SecureCode found = getSecureCodeByRootFullName(sharedRequest.getRootFullName());
 
         if (found != null) {
             if (found.getExpirationDate().isBefore(LocalDateTime.now())) {
@@ -52,6 +53,9 @@ public class SharedService {
             return found;
         }
 
+        SharedEntity sharedEntity = new SharedEntity();
+        sharedEntity.setRootFullName(sharedRequest.getRootFullName());
+        sharedEntity.setExpired(sharedRequest.getExpired());
         final SecureCode completed = completeNewSecureCode(sharedEntity);
 
         return getCreatedSecureCode(secureCodeClient.create(completed));

@@ -1,6 +1,7 @@
 package com.glos.accessservice.facade.chain;
 
 import com.glos.accessservice.clients.RepositoryApiClient;
+import com.glos.accessservice.entities.Repository;
 import com.glos.accessservice.exeptions.HttpStatusCodeImplException;
 import com.glos.accessservice.exeptions.ResourceNotFoundException;
 import com.glos.accessservice.facade.chain.base.AccessHandler;
@@ -32,13 +33,13 @@ public class DirectoryAccessHandler extends AccessHandler {
         final PathNode node = path.getLast();
         if (!data.containsKey("accessTypes") && node.getType() == NodeType.DIRECTORY) {
             final Path parent = path.reader().parent(NodeType.REPOSITORY);
-            final ResponseEntity<RepositoryDTO> response = repositoryApiClient.getRepositoryByRootFullName(parent.getPath());
+            final ResponseEntity<Repository> response = repositoryApiClient.getRepositoryByRootFullName(parent.getPath());
             if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(404))) {
                 throw new ResourceNotFoundException("repository not found");
             } else if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new HttpStatusCodeImplException(response.getStatusCode());
             }
-            final RepositoryDTO repository = response.getBody();
+            final Repository repository = response.getBody();
             data.put("accessTypes", repository.getAccessTypes());
         }
         return checkNext(request);

@@ -2,6 +2,9 @@ package com.glos.databaseAPIService.domain.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 
 @Entity
 @Table(
@@ -18,6 +21,14 @@ public class Tag
     @Column(name = "name", length = 100, nullable = false, unique = true)
     private String name;
 
+    public Tag() {
+    }
+
+    public Tag(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
@@ -32,5 +43,18 @@ public class Tag
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tag tag = (Tag) o;
+        return Objects.equals(id, tag.id) && Objects.equals(name, tag.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

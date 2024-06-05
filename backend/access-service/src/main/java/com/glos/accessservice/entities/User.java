@@ -1,11 +1,10 @@
 package com.glos.accessservice.entities;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class User
@@ -253,4 +252,5 @@ public class User
     {
         this.groups.add(group);
     }
+
 }

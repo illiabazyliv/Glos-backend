@@ -102,7 +102,7 @@ class GroupAPIControllerTest {
         List<Group> groups = Collections.singletonList(group);
         Page<Group> page = new PageImpl<>(groups);
 
-        when(groupService.getPage(any(Pageable.class))).thenReturn(page);
+        when(groupService.getPage(any(Pageable.class), true)).thenReturn(page);
         when(groupDTOMapper.toDto(any(Group.class))).thenReturn(groupDTO);
 
         // When & Then
@@ -123,7 +123,7 @@ class GroupAPIControllerTest {
         List<Group> groups = Collections.singletonList(group);
         Page<Group> page = new PageImpl<>(groups);
 
-        when(groupService.getPageByFilter(any(Group.class), any(Pageable.class))).thenReturn(page);
+        when(groupService.getPageByFilter(any(Group.class), any(Pageable.class), true)).thenReturn(page);
         when(groupDTOMapper.toDto(any(Group.class))).thenReturn(groupDTO);
 
         // When & Then

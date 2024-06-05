@@ -1,5 +1,6 @@
 package com.glos.databaseAPIService.domain.service;
 
+import com.accesstools.AccessNode;
 import com.glos.databaseAPIService.domain.entities.AccessType;
 import com.glos.databaseAPIService.domain.entityMappers.AccessTypeMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -30,9 +33,19 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
     }
 
     @Transactional
+    public Map.Entry<AccessType, Boolean> ensure(String name) {
+        return accessTypeRepository.ensureByName(name);
+    }
+
+    @Transactional
     @Override
     public AccessType create(AccessType accessType)
     {
+        Objects.requireNonNull(accessType);
+        if (accessType.getName() != null) {
+            AccessNode node = AccessNode.builder(accessType.getName()).build();
+            accessType.setName(node.getPattern());
+        }
         return accessTypeRepository.save(accessType);
     }
 
@@ -59,6 +72,11 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
     @Transactional
     @Override
     public AccessType update(Long id, AccessType e) {
+        Objects.requireNonNull(e);
+        if (e.getName() != null) {
+            AccessNode node = AccessNode.builder(e.getName()).build();
+            e.setName(node.getPattern());
+        }
         Optional<AccessType> accessTypeOpt = getById(id);
         AccessType found = accessTypeOpt.orElseThrow(() ->
                 new ResourceNotFoundException("Not found")
@@ -79,6 +97,11 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
 
     public Page<AccessType> getPageByFilter(AccessType accessType, Pageable pageable)
     {
+        Objects.requireNonNull(accessType);
+        if (accessType.getName() != null) {
+            AccessNode node = AccessNode.builder(accessType.getName()).build();
+            accessType.setName(node.getPattern());
+        }
         return accessTypeRepository.findAll(Example.of(accessType), pageable);
     }
 }

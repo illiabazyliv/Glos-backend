@@ -3,7 +3,7 @@ USE glos_database;
 
 CREATE TABLE IF NOT EXISTS access_types (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(20) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
      PRIMARY KEY(id),
      CONSTRAINT uq_access_types_name UNIQUE(`name`)
 ) ENGINE=InnoDB;
@@ -114,15 +114,6 @@ CREATE TABLE IF NOT EXISTS groups_users (
     CONSTRAINT fk_groups_users_users_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS groups_access_types (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    group_id BIGINT NOT NULL,
-    access_type_id BIGINT NOT NULL,
-    CONSTRAINT pk_groups_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_groups_access_types_groups_id FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
-    CONSTRAINT fk_groups_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
 CREATE TABLE IF NOT EXISTS files (
     id BIGINT NOT NULL AUTO_INCREMENT,
     root_path VARCHAR(255) NOT NULL,
@@ -151,17 +142,6 @@ CREATE TABLE IF NOT EXISTS files_access_types (
     CONSTRAINT fk_files_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS files_user_access_types (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    file_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
-    access_type_id BIGINT NOT NULL,
-    CONSTRAINT pk_files_user_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_files_user_access_types_files_id FOREIGN KEY (file_id) REFERENCES files(id) ON DELETE CASCADE,
-    CONSTRAINT fk_files_user_access_types_users_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_files_user_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
 CREATE TABLE IF NOT EXISTS files_secure_codes (
     id BIGINT NOT NULL AUTO_INCREMENT,
     file_id BIGINT NOT NULL,
@@ -179,17 +159,6 @@ CREATE TABLE IF NOT EXISTS repositories_access_types (
     CONSTRAINT pk_repositories_access_types_id PRIMARY KEY(id),
     CONSTRAINT fk_repositories_access_types_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
     CONSTRAINT fk_repositories_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
-) ENGINE=InnoDB;
-
-CREATE TABLE IF NOT EXISTS repositories_users_access_types (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    repository_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
-    access_type_id BIGINT NOT NULL,
-    CONSTRAINT pk_repositories_users_access_types_id PRIMARY KEY(id),
-    CONSTRAINT fk_repositories_users_access_types_repositories_id FOREIGN KEY (repository_id) REFERENCES repositories(id) ON DELETE CASCADE,
-    CONSTRAINT fk_repositories_users_access_types_users_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_repositories_users_access_types_access_types_id FOREIGN KEY (access_type_id) REFERENCES access_types(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS repositories_secure_codes (
@@ -239,20 +208,41 @@ CREATE TABLE IF NOT EXISTS repositories_comments (
 ) ENGINE=InnoDB;
 
 DELIMITER $$
+CREATE TRIGGER IF NOT EXISTS after_insert_files
+    AFTER INSERT ON files
+    FOR EACH ROW
+BEGIN
+    INSERT IGNORE INTO files_access_types(file_id, access_type_id)
+    VALUES
+    (NEW.id, 1),
+    (NEW.id, 4);
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER IF NOT EXISTS after_insert_repositories
+    AFTER INSERT ON repositories
+    FOR EACH ROW
+BEGIN
+    INSERT IGNORE INTO repositories_access_types(repository_id, access_type_id)
+    VALUES
+    (NEW.id, 1),
+    (NEW.id, 4);
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE TRIGGER IF NOT EXISTS after_insert_users
     AFTER INSERT ON users
     FOR EACH ROW
 BEGIN
+    DECLARE new_repository_id BIGINT;
+    DECLARE new_group_id BIGINT;
+
     INSERT INTO `groups`(name, owner_id)
     VALUES ('friends', NEW.id);
 
-    INSERT INTO groups_access_types(group_id, access_type_id)
-    VALUE (LAST_INSERT_ID(), 3);
-
     INSERT INTO repositories(root_path, root_name, root_full_name, owner_id, is_default, display_path, display_name, display_full_name)
     VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE, '', '', '');
-
-    INSERT INTO repositories_access_types(repository_id, access_type_id)
-    VALUES (LAST_INSERT_ID(), 1);
 END$$
 DELIMITER ;

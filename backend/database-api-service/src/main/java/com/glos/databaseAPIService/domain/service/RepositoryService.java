@@ -1,10 +1,13 @@
 package com.glos.databaseAPIService.domain.service;
 
+import com.accesstools.AccessNode;
 import com.glos.databaseAPIService.domain.entities.*;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -13,9 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 	@author - yablonovskydima
@@ -30,15 +32,21 @@ public class RepositoryService
     private final CommentRepository commentRepository;
     private final TagRepository tagRepository;
     private final FileRepository fileRepository;
+    private final AccessTypeService accessTypeService;
+
+    @Autowired
+    private EntityManager entityManager;
+
 
     @Autowired
     public RepositoryService(RepositoryRepository repository,
                              RepositoryMapper repositoryMapper,
-            UserRepository userRepository,
+                             UserRepository userRepository,
                              AccessTypeRepository accessTypeRepository,
                              CommentRepository commentRepository,
                              TagRepository tagRepository,
-                             FileRepository fileRepository
+                             FileRepository fileRepository,
+                             AccessTypeService accessTypeService
     ) {
         this.repository = repository;
         this.repositoryMapper = repositoryMapper;
@@ -47,52 +55,53 @@ public class RepositoryService
         this.commentRepository = commentRepository;
         this.tagRepository = tagRepository;
         this.fileRepository = fileRepository;
+        this.accessTypeService = accessTypeService;
     }
 
     private Repository assignFiles(Repository repository) {
-        final List<File> files = repository.getFiles();
+        final Set<File> files = repository.getFiles();
         if (files != null) {
-            final List<File> found = repository.getFiles().stream().map(x -> {
+            final Set<File> found = repository.getFiles().stream().map(x -> {
                 if (x.getId() != null) {
                     return fileRepository.findById(x.getId()).orElseThrow(() ->
                             new ResourceNotFoundException("Id of Repository is not found")
                     );
                 }
                 return x;
-            }).toList();
-            repository.setFiles(found);
+            }).collect(Collectors.toSet());
+            repository.setFiles(new HashSet<>(found));
         }
         return repository;
     }
 
     private Repository assignTags(Repository repository) {
-        final List<Tag> tags = repository.getTags();
+        final Set<Tag> tags = repository.getTags();
         if (tags != null) {
-            final List<Tag> found = tags.stream().map(x -> {
+            final Set<Tag> found = tags.stream().map(x -> {
                 if (x.getId() != null) {
                     return tagRepository.findById(x.getId()).orElseThrow(() ->
                             new ResourceNotFoundException("Id of Tag is not found")
                     );
                 }
                 return x;
-            }).toList();
-            repository.setTags(found);
+            }).collect(Collectors.toSet());
+            repository.setTags(new HashSet<>(found));
         }
         return repository;
     }
 
     private Repository assignComments(Repository repository) {
-        final List<Comment> comments = repository.getComments();
+        final Set<Comment> comments = repository.getComments();
         if (comments != null) {
-            final List<Comment> found = comments.stream().map(x -> {
+            final Set<Comment> found = comments.stream().map(x -> {
                 if (x.getId() != null) {
                     return commentRepository.findById(x.getId()).orElseThrow(() ->
                             new ResourceNotFoundException("Comment not found")
                     );
                 }
                 return x;
-            }).toList();
-            repository.setComments(found);
+            }).collect(Collectors.toSet());
+            repository.setComments(new HashSet<>(found));
         }
         return repository;
     }
@@ -126,17 +135,15 @@ public class RepositoryService
     }
 
     private Repository assignAccessTypes(Repository repository) {
-        final List<AccessType> ats = repository.getAccessTypes();
+        final Set<AccessType> ats = repository.getAccessTypes();
         if (ats != null && !ats.isEmpty()) {
-            final List<AccessType> found = ats.stream().map(x -> {
-                if (x.getId() != null) {
-                    return accessTypeRepository.findById(x.getId()).orElseThrow(() ->
-                        new ResourceNotFoundException("Id of AccessType is not found")
-                    );
+            final Set<AccessType> found = ats.stream().map(x -> {
+                if (x.getName() != null) {
+                    return accessTypeService.ensure(x.getName()).getKey();
                 }
                 return x;
-            }).toList();
-            repository.setAccessTypes(found);
+            }).collect(Collectors.toSet());
+            repository.setAccessTypes(new HashSet<>(found));
         }
         return repository;
     }
@@ -157,6 +164,8 @@ public class RepositoryService
     }
 
     public Page<Repository> findAllByFilter(Repository filter, Pageable pageable, boolean ignoreSys) {
+        assignAccessTypes(filter);
+
         List<Repository> list = removeSysIf(ignoreSys, repository.findAll(Example.of(filter), pageable));
 
         list.stream()
@@ -172,6 +181,7 @@ public class RepositoryService
     @Transactional
     public Repository create(Repository repository)
     {
+        assignAccessTypes(repository);
         Repository repo =  this.repository.save(repository);
         return repo;
     }
@@ -191,6 +201,7 @@ public class RepositoryService
 
     @Transactional
     public Repository update(Long id, Repository newRepository) {
+        assignAccessTypes(newRepository);
         Repository repository = getRepositoryByIdOrThrow(id);
         repositoryMapper.transferEntityDto(newRepository, repository);
         return this.repository.save(repository);

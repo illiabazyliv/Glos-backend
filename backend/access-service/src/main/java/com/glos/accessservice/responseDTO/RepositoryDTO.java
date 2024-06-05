@@ -1,15 +1,15 @@
 package com.glos.accessservice.responseDTO;
 
-
-
-import com.glos.accessservice.entities.AccessType;
 import com.glos.accessservice.entities.SecureCode;
 import com.glos.accessservice.entities.Tag;
+import com.glos.accessservice.requestDTO.AccessModel;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryDTO {
+public class RepositoryDTO
+{
     private Long id;
 
     private String rootPath;
@@ -30,13 +30,15 @@ public class RepositoryDTO {
 
     private String description;
 
-    private List<AccessType> accessTypes;
+    private List<AccessModel> accessModels;
 
     private List<CommentDTO> comments;
 
     private List<SecureCode> secureCodes;
 
     private List<Tag> tags;
+    private LocalDateTime creationDate;
+    private LocalDateTime updateDate;
 
     public RepositoryDTO(Long id,
                          String rootPath,
@@ -48,10 +50,12 @@ public class RepositoryDTO {
                          String displayName,
                          String displayFullName,
                          String description,
-                         List<AccessType> accessTypes,
+                         List<AccessModel> accessModels,
                          List<CommentDTO> comments,
                          List<SecureCode> secureCodes,
-                         List<Tag> tags) {
+                         List<Tag> tags,
+                         LocalDateTime creationDate,
+                         LocalDateTime updateDate) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -62,17 +66,35 @@ public class RepositoryDTO {
         this.displayName = displayName;
         this.displayFullName = displayFullName;
         this.description = description;
-        this.accessTypes = accessTypes;
+        this.accessModels = accessModels;
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
+        this.creationDate = creationDate;
+        this.updateDate = updateDate;
     }
 
     public RepositoryDTO() {
-        this.accessTypes = new ArrayList<>();
+        this.accessModels = new ArrayList<>();
         this.comments = new ArrayList<>();
         this.secureCodes = new ArrayList<>();
         this.tags = new ArrayList<>();
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Long getId() {
@@ -155,12 +177,12 @@ public class RepositoryDTO {
         this.description = description;
     }
 
-    public List<AccessType> getAccessTypes() {
-        return accessTypes;
+    public List<AccessModel> getAccessModels() {
+        return accessModels;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
-        this.accessTypes = accessTypes;
+    public void setAccessModels(List<AccessModel> accessModels) {
+        this.accessModels = accessModels;
     }
 
     public List<CommentDTO> getComments() {

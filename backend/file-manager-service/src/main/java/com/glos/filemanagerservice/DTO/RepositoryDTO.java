@@ -1,10 +1,10 @@
 package com.glos.filemanagerservice.DTO;
 
-import com.glos.filemanagerservice.entities.AccessType;
 import com.glos.filemanagerservice.entities.SecureCode;
 import com.glos.filemanagerservice.entities.Tag;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryDTO
@@ -29,11 +29,7 @@ public class RepositoryDTO
 
     private String description;
 
-    private List<AccessType> accessTypes;
-
     private List<CommentDTO> comments;
-
-    private List<SecureCode> secureCodes;
 
     private List<Tag> tags;
     private LocalDateTime creationDate;
@@ -49,9 +45,7 @@ public class RepositoryDTO
                          String displayName,
                          String displayFullName,
                          String description,
-                         List<AccessType> accessTypes,
                          List<CommentDTO> comments,
-                         List<SecureCode> secureCodes,
                          List<Tag> tags,
                          LocalDateTime creationDate,
                          LocalDateTime updateDate) {
@@ -65,15 +59,15 @@ public class RepositoryDTO
         this.displayName = displayName;
         this.displayFullName = displayFullName;
         this.description = description;
-        this.accessTypes = accessTypes;
         this.comments = comments;
-        this.secureCodes = secureCodes;
         this.tags = tags;
         this.creationDate = creationDate;
         this.updateDate = updateDate;
     }
 
     public RepositoryDTO() {
+        this.comments = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public LocalDateTime getCreationDate() {
@@ -172,28 +166,12 @@ public class RepositoryDTO
         this.description = description;
     }
 
-    public List<AccessType> getAccessTypes() {
-        return accessTypes;
-    }
-
-    public void setAccessTypes(List<AccessType> accessTypes) {
-        this.accessTypes = accessTypes;
-    }
-
     public List<CommentDTO> getComments() {
         return comments;
     }
 
     public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
-    }
-
-    public List<SecureCode> getSecureCodes() {
-        return secureCodes;
-    }
-
-    public void setSecureCodes(List<SecureCode> secureCodes) {
-        this.secureCodes = secureCodes;
     }
 
     public List<Tag> getTags() {

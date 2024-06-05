@@ -95,4 +95,9 @@ public class SecureCode
     public int hashCode() {
         return Objects.hash(id, code, resourcePath, creationDate, expirationDate);
     }
+
+    @Override
+    public String toString() {
+        return code;
+    }
 }

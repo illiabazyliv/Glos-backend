@@ -70,24 +70,6 @@ public class FileStorageRepositoryController
        }
     }
 
-//    @PutMapping("/{rootFullName}/{newName}")
-//    public ResponseEntity<List<RepositoryAndStatus>> updateRepository(@PathVariable("rootFullName") String rootFullName,
-//                                                                      @PathVariable("newName") String newName)
-//    {
-//        List<RepositoryAndStatus> repositoryAndStatuses;
-//
-//        try
-//        {
-//            repositoryAndStatuses = repositoryStorageService.rename(rootFullName, newName);
-//        }
-//        catch (Exception e)
-//        {
-//            throw  new RuntimeException(e.getMessage());
-//        }
-//
-//        return ResponseEntity.ok(repositoryAndStatuses);
-//    }
-
     @PostMapping("/move")
     public ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves) throws Exception {
         return ResponseEntity.ok(repositoryStorageService.move(moves.getMoves()));

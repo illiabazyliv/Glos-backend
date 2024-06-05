@@ -5,9 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(
@@ -60,12 +58,12 @@ public class Repository
     @UpdateTimestamp
     private LocalDateTime updateDate;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE})
     @JoinTable(name = "repositories_access_types", joinColumns = @JoinColumn(name = "repository_id"),
             inverseJoinColumns = @JoinColumn(name = "access_type_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_access_types_repository_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_access_types_access_types_id"))
-    private List<AccessType> accessTypes;
+    private Set<AccessType> accessTypes;
 
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -73,7 +71,7 @@ public class Repository
             inverseJoinColumns = @JoinColumn(name = "comment_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_comments_repositories_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_comments_comments_id"))
-    private List<Comment> comments;
+    private Set<Comment> comments;
 
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -81,7 +79,7 @@ public class Repository
             inverseJoinColumns = @JoinColumn(name = "secure_code_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_secure_codes_repositories_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_secure_codes_secure_codes_id"))
-    private List<SecureCode> secureCodes;
+    private Set<SecureCode> secureCodes;
 
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
@@ -89,22 +87,21 @@ public class Repository
             inverseJoinColumns = @JoinColumn(name = "tag_id"),
             foreignKey = @ForeignKey(name = "fk_repositories_tags_repositories_id"),
             inverseForeignKey = @ForeignKey(name = "fk_repositories_tags_tags_id"))
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
 
-    @OneToMany(mappedBy = "repository", cascade = CascadeType.ALL)
-    //@JsonManagedReference
-    private List<File> files;
+    @OneToMany(mappedBy = "repository", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<File> files;
 
     public Repository() {
-        this.comments = new ArrayList<>();
-        this.files = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
-        this.accessTypes = new ArrayList<>();
-        this.tags = new ArrayList<>();
+        this.comments = new HashSet<>();
+        this.files = new HashSet<>();
+        this.secureCodes = new HashSet<>();
+        this.accessTypes = new HashSet<>();
+        this.tags = new HashSet<>();
     }
 
-    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, LocalDateTime creationDate, LocalDateTime updateDate, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, LocalDateTime creationDate, LocalDateTime updateDate, Set<AccessType> accessTypes, Set<Comment> comments, Set<SecureCode> secureCodes, Set<Tag> tags, Set<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -204,43 +201,43 @@ public class Repository
         this.description = description;
     }
 
-    public List<AccessType> getAccessTypes() {
+    public Set<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
+    public void setAccessTypes(Set<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
+    public Set<SecureCode> getSecureCodes() {
         return secureCodes;
     }
 
-    public void setSecureCodes(List<SecureCode> secureCodes) {
+    public void setSecureCodes(Set<SecureCode> secureCodes) {
         this.secureCodes = secureCodes;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
-    public List<File> getFiles() {
+    public Set<File> getFiles() {
         return files;
     }
 
-    public void setFiles(List<File> files) {
+    public void setFiles(Set<File> files) {
         this.files = files;
     }
 
@@ -275,25 +272,7 @@ public class Repository
 
     @Override
     public String toString() {
-        return "Repository{" +
-                "id=" + id +
-                ", rootPath='" + rootPath + '\'' +
-                ", rootName='" + rootName + '\'' +
-                ", rootFullName='" + rootFullName + '\'' +
-                ", owner=" + owner +
-                ", isDefault=" + isDefault +
-                ", displayPath='" + displayPath + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", displayFullName='" + displayFullName + '\'' +
-                ", description='" + description + '\'' +
-                ", accessTypes=" + accessTypes +
-                ", comments=" + comments +
-                ", secureCodes=" + secureCodes +
-                ", tags=" + tags +
-                ", files=" + files +
-                '}';
+        return rootFullName;
     }
-
-
 }
 
