@@ -5,14 +5,10 @@ import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.facade.FileApiFacade;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.clients.FileClient;
-import com.glos.filemanagerservice.clients.RepositoryClient;
-import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
-import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -29,13 +25,13 @@ public class FileController
         this.fileApiFacade = fileApiFacade;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<FileDTO> getFileById(@PathVariable Long id)
     {
         return ResponseEntity.ok(fileClient.getFileByID(id).getBody());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/id/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file, @ModelAttribute MultipartFile filesData)
     {
         fileApiFacade.update(id, file, filesData);
@@ -49,7 +45,7 @@ public class FileController
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/root-fullname/{rootFullName}")
+    @GetMapping("/{rootFullName}")
     public ResponseEntity<FileDTO> getByRootFullName(@PathVariable String rootFullName)
     {
         return ResponseEntity.ok(fileClient.getFileByRootFullName(rootFullName).getBody());

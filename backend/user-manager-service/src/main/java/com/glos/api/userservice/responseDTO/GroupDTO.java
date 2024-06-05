@@ -1,7 +1,5 @@
 package com.glos.api.userservice.responseDTO;
 
-import com.glos.api.userservice.entities.AccessType;
-
 import java.util.List;
 
 public class GroupDTO
@@ -10,14 +8,12 @@ public class GroupDTO
     private String name;
     private UserDTO owner;
     private List<UserDTO> users;
-    private List<AccessType> accessTypes;
 
-    public GroupDTO(Long id, String name, UserDTO owner, List<UserDTO> users, List<AccessType> accessTypes) {
+    public GroupDTO(Long id, String name, UserDTO owner, List<UserDTO> users) {
         this.id = id;
         this.name = name;
         this.owner = owner;
         this.users = users;
-        this.accessTypes = accessTypes;
     }
 
     public GroupDTO() {
@@ -53,13 +49,5 @@ public class GroupDTO
 
     public void setUsers(List<UserDTO> users) {
         this.users = users;
-    }
-
-    public List<AccessType> getAccessTypes() {
-        return accessTypes;
-    }
-
-    public void setAccessTypes(List<AccessType> accessTypes) {
-        this.accessTypes = accessTypes;
     }
 }

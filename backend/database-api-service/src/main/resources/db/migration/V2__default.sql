@@ -2,11 +2,13 @@ USE glos_database;
 
 INSERT IGNORE INTO access_types(id, name)
 VALUES
-(1, 'PRIVATE_RW'),
-(2, 'PROTECTED_R'),
-(3, 'PROTECTED_RW'),
-(4, 'PUBLIC_R'),
-(5, 'PUBLIC_RW');
+(1, 'RW_USER_^'),
+(2, 'R_USER_*'),
+(3, 'RW_USER_*'),
+(4, 'R_GROUP_^'),
+(5, 'RW_GROUP_^'),
+(6, 'R_GROUP_*'),
+(7, 'RW_GROUP_*');
 
 INSERT IGNORE INTO roles(id, name)
 VALUES

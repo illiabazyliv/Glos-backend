@@ -16,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -83,32 +81,32 @@ public class UserService
     }
 
     private User assignRoles(User user) {
-        final List<Role> roles = user.getRoles();
+        final Set<Role> roles = user.getRoles();
         if (roles != null) {
-            final List<Role> found = roles.stream().map(x -> {
+            final Set<Role> found = roles.stream().map(x -> {
                 if (x.getId() != null) {
                     return roleRepository.findById(x.getId()).orElseThrow(() ->
                             new ResourceNotFoundException("Id of Role is not found")
                     );
                 }
                 return x;
-            }).toList();
-            user.setRoles(found);
+            }).collect(Collectors.toSet());
+            user.setRoles(new HashSet<>(found));
         }
         return user;
     }
     private User assignGroups(User user) {
-        final List<Group> groups = user.getGroups();
+        final Set<Group> groups = user.getGroups();
         if (groups != null) {
-            final List<Group> found = groups.stream().map(x -> {
+            final Set<Group> found = groups.stream().map(x -> {
                 if (x.getId() != null) {
                     return groupRepository.findById(x.getId()).orElseThrow(() ->
                             new ResourceNotFoundException("Id of Group is not found")
                     );
                 }
                 return x;
-            }).toList();
-            user.setGroups(found);
+            }).collect(Collectors.toSet());
+            user.setGroups(new HashSet<>(found));
         }
         return user;
     }

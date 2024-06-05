@@ -3,20 +3,14 @@ package com.glos.accessservice.responseDTO;
 public class AccessTypesRequestFilter
 {
     private Long id;
+    private String type;
     private String name;
+    private String access;
     private int page;
     private int size;
     private String sort;
 
     public AccessTypesRequestFilter() {
-    }
-
-    public AccessTypesRequestFilter(Long id, String name, int page, int size, String sort) {
-        this.id = id;
-        this.name = name;
-        this.page = page;
-        this.size = size;
-        this.sort = sort;
     }
 
     public Long getId() {
@@ -27,12 +21,28 @@ public class AccessTypesRequestFilter
         this.id = id;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
     }
 
     public int getPage() {

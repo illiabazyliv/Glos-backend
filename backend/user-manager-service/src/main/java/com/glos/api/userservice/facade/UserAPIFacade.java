@@ -69,6 +69,8 @@ public class UserAPIFacade {
             throw new RuntimeException(e.getMessage());
         }
 
+        // TODO: send message to email
+
         return userResponseEntity;
     }
 

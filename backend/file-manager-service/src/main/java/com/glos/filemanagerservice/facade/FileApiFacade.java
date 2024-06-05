@@ -1,5 +1,6 @@
 package com.glos.filemanagerservice.facade;
 
+import com.accesstools.AccessNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -8,9 +9,11 @@ import com.glos.filemanagerservice.clients.FileClient;
 import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.entities.File;
+import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.requestFilters.FileRequestFilter;
 import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
 import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
+import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,16 +34,20 @@ public class FileApiFacade
     private final FileDTOMapper fileDTOMapper;
     private final FileRequestMapper fileRequestMapper;
     private final FileStorageClient fileStorageClient;
+    private final RepositoryDTOMapper repositoryDTOMapper;
 
     public FileApiFacade(FileClient fileClient,
                          RepositoryClient repositoryClient,
                          FileDTOMapper fileDTOMapper,
-                         FileRequestMapper fileRequestMapper, FileStorageClient fileStorageClient) {
+                         FileRequestMapper fileRequestMapper,
+                         FileStorageClient fileStorageClient,
+                         RepositoryDTOMapper repositoryDTOMapper) {
         this.fileClient = fileClient;
         this.repositoryClient = repositoryClient;
         this.fileDTOMapper = fileDTOMapper;
         this.fileRequestMapper = fileRequestMapper;
         this.fileStorageClient = fileStorageClient;
+        this.repositoryDTOMapper = repositoryDTOMapper;
     }
 
     public ResponseEntity<List<FileDTO>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
@@ -75,6 +81,7 @@ public class FileApiFacade
             for (int i = 0; i < files.size(); i++)
             {
                 File temp = files.get(i);
+                checkAccessTypes(temp);
                 temp.setCreationDate(LocalDateTime.now());
                 FileDTO fileDTO = fileClient.createFile(temp).getBody();
                 fileDTOS.add(fileDTO);
@@ -108,9 +115,9 @@ public class FileApiFacade
 
     public ResponseEntity<?> update(Long id, File file, MultipartFile fileData)
     {
-
         try
         {
+            checkAccessTypes(file);
             file.setUpdateDate(LocalDateTime.now());
             file.setId(id);
             fileClient.updateFile(file, id);
@@ -172,7 +179,9 @@ public class FileApiFacade
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)
     {
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryById(repositoryId).getBody();
+        ResponseEntity<Repository> response = repositoryClient.getRepositoryById(repositoryId);
+        Repository repository = response.getBody();
+        RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
         FileDTO fileDTO = new FileDTO();
         fileDTO.setRepository(repositoryDTO);
         FileRequestFilter filter = new FileRequestFilter();
@@ -187,6 +196,7 @@ public class FileApiFacade
 
     public ResponseEntity<Page<FileDTO>> getFilesByFilter(File file, int page, int size, String sort)
     {
+        checkAccessTypes(file);
         FileDTO fileDTO = fileDTOMapper.toDto(file);
         FileRequestFilter filter = fileRequestMapper.toDto(fileDTO);
         filter.setPage(page);
@@ -195,5 +205,17 @@ public class FileApiFacade
 
         Map<String, Object> map = MapUtils.map(filter);
         return ResponseEntity.ok(fileClient.getFilesByFilter(map).getBody());
+    }
+
+    private void checkAccessTypes(File file) {
+        if (file.getAccessTypes() != null) {
+            file.setAccessTypes(
+                    file.getAccessTypes().stream()
+                            .peek(x -> {
+                                AccessNode node = AccessNode.builder(x.getName()).build();
+                                x.setName(node.getPattern());
+                            }).toList()
+            );
+        }
     }
 }

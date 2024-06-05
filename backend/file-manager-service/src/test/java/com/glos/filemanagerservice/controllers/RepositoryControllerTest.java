@@ -45,7 +45,7 @@ class RepositoryControllerTest {
     @Test
     void getByIdTest() throws Exception {
             Long id = 1L;
-            RepositoryDTO repositoryDTO = new RepositoryDTO();
+            Repository repositoryDTO = new Repository();
             when(repositoryClient.getRepositoryById(anyLong())).thenReturn(ResponseEntity.ok(repositoryDTO));
 
             mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{id}", id)
@@ -56,7 +56,7 @@ class RepositoryControllerTest {
     @Test
     void createTest() throws Exception {
         Repository repository = new Repository();
-        RepositoryDTO created = new RepositoryDTO();
+        Repository created = new Repository();
         created.setId(1L);
 
         when(repositoryClient.createRepository(any(Repository.class))).thenReturn(ResponseEntity.ok(created));
@@ -115,7 +115,7 @@ class RepositoryControllerTest {
         repositoryDTO.setId(1L);
         when(repositoryClient.getRepositoryByRootFullName(any())).thenReturn(ResponseEntity.ok(repositoryDTO));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-fullName/testRoot"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-fullname/testRoot"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L));
     }

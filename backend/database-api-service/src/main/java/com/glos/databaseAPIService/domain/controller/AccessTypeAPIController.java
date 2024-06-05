@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mykola Melnyk
@@ -56,6 +58,20 @@ public class AccessTypeAPIController {
                     uriBuilder.path("/access-types/{id}")
                         .build(created.getId())
                 ).body(created);
+    }
+
+    @PutMapping("/ensure/{name}")
+    public ResponseEntity<AccessType> ensure(@PathVariable String name,
+                                             UriComponentsBuilder uriBuilder) {
+        Map.Entry<AccessType, Boolean> accessTypeEntry = accessTypeService.ensure(name);
+        if (!accessTypeEntry.getValue()) {
+            return ResponseEntity.ok(accessTypeEntry.getKey());
+        }
+        final AccessType accessType = accessTypeEntry.getKey();
+        return ResponseEntity.created(
+                uriBuilder.path("/access-types/name/{name}")
+                .build(accessType.getName())
+        ).body(accessType);
     }
 
     @PutMapping("/{id}")

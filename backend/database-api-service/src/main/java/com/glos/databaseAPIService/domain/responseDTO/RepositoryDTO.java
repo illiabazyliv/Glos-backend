@@ -1,10 +1,10 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
+import com.glos.databaseAPIService.domain.entities.AccessType;
 import com.glos.databaseAPIService.domain.entities.SecureCode;
 import com.glos.databaseAPIService.domain.entities.Tag;
-import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.*;
 
 public class RepositoryDTO
 {
@@ -28,13 +28,13 @@ public class RepositoryDTO
 
     private String description;
 
-    private List<AccessType> accessTypes;
+    private Set<AccessType> accessTypes;
 
-    private List<CommentDTO> comments;
+    private Set<CommentDTO> comments;
 
-    private List<SecureCode> secureCodes;
+    private Set<SecureCode> secureCodes;
 
-    private List<Tag> tags;
+    private Set<Tag> tags;
     //file
 
     public RepositoryDTO(Long id,
@@ -47,10 +47,10 @@ public class RepositoryDTO
                          String displayName,
                          String displayFullName,
                          String description,
-                         List<AccessType> accessTypes,
-                         List<CommentDTO> comments,
-                         List<SecureCode> secureCodes,
-                         List<Tag> tags) {
+                         Set<AccessType> accessTypes,
+                         Set<CommentDTO> comments,
+                         Set<SecureCode> secureCodes,
+                         Set<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -68,6 +68,10 @@ public class RepositoryDTO
     }
 
     public RepositoryDTO() {
+        this.accessTypes = new HashSet<>();
+        this.comments = new HashSet<>();
+        this.secureCodes = new HashSet<>();
+        this.tags = new HashSet<>();
     }
 
     public Long getId() {
@@ -150,35 +154,48 @@ public class RepositoryDTO
         this.description = description;
     }
 
-    public List<AccessType> getAccessTypes() {
+    public Set<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
+    public void setAccessTypes(Set<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
     }
 
-    public List<CommentDTO> getComments() {
+    public Set<CommentDTO> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentDTO> comments) {
+    public void setComments(Set<CommentDTO> comments) {
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
+    public Set<SecureCode> getSecureCodes() {
         return secureCodes;
     }
 
-    public void setSecureCodes(List<SecureCode> secureCodes) {
+    public void setSecureCodes(Set<SecureCode> secureCodes) {
         this.secureCodes = secureCodes;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RepositoryDTO that = (RepositoryDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(isDefault, that.isDefault) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(secureCodes, that.secureCodes) && Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, rootPath, rootName, rootFullName, owner, isDefault, displayPath, displayName, displayFullName, description, accessTypes, comments, secureCodes, tags);
     }
 }

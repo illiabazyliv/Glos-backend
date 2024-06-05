@@ -5,8 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(
@@ -59,45 +58,45 @@ public class File
     @JoinColumn(name = "repository_id", foreignKey = @ForeignKey(name = "fk_files_repositories_id"))
     private Repository repository;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "files_access_types", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "access_type_id"),
             foreignKey = @ForeignKey(name = "fk_files_access_types_files_id"),
     inverseForeignKey = @ForeignKey(name = "fk_files_access_types_access_types_id"))
-    private List<AccessType> accessTypes;
+    private Set<AccessType> accessTypes;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "files_comments", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"),
             foreignKey = @ForeignKey(name = "fk_files_comments_files_id"),
     inverseForeignKey = @ForeignKey(name = "fk_files_comments_comments_id"))
-    private List<Comment> comments;
+    private Set<Comment> comments;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "files_secure_codes", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "secure_code_id"),
             foreignKey = @ForeignKey(name = "fk_files_secure_codes_secure_codes_id"),
     inverseForeignKey = @ForeignKey(name = "fk_files_secure_codes_files_id"))
-    private List<SecureCode> secureCodes;
+    private Set<SecureCode> secureCodes;
 
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(name = "files_tags", joinColumns = @JoinColumn(name = "file_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"),
             foreignKey = @ForeignKey(name = "fk_files_tags_files_id"),
             inverseForeignKey = @ForeignKey(name = "fk_files_tags_tags_id")
     )
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     public File() {
         this.repository = new Repository();
-        this.tags = new ArrayList<>();
-        this.comments = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
-        this.accessTypes = new ArrayList<>();
+        this.tags = new HashSet<>();
+        this.comments = new HashSet<>();
+        this.secureCodes = new HashSet<>();
+        this.accessTypes = new HashSet<>();
     }
 
-    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, LocalDateTime creationDate, LocalDateTime updateDate, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, LocalDateTime creationDate, LocalDateTime updateDate, Repository repository, Set<AccessType> accessTypes, Set<Comment> comments, Set<SecureCode> secureCodes, Set<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -212,55 +211,53 @@ public class File
         this.repository = repository;
     }
 
-    public List<AccessType> getAccessTypes() {
+    public Set<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
+    public void setAccessTypes(Set<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
+    public Set<SecureCode> getSecureCodes() {
         return secureCodes;
     }
 
-    public void setSecureCodes(List<SecureCode> secureCodes) {
+    public void setSecureCodes(Set<SecureCode> secureCodes) {
         this.secureCodes = secureCodes;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        File file = (File) o;
+        return Objects.equals(id, file.id) && Objects.equals(rootPath, file.rootPath) && Objects.equals(rootFilename, file.rootFilename) && Objects.equals(rootFullName, file.rootFullName) && Objects.equals(rootSize, file.rootSize) && Objects.equals(rootFormat, file.rootFormat) && Objects.equals(displayPath, file.displayPath) && Objects.equals(displayFilename, file.displayFilename) && Objects.equals(displayFullName, file.displayFullName) && Objects.equals(creationDate, file.creationDate) && Objects.equals(updateDate, file.updateDate) && Objects.equals(repository, file.repository) && Objects.equals(accessTypes, file.accessTypes) && Objects.equals(comments, file.comments) && Objects.equals(secureCodes, file.secureCodes) && Objects.equals(tags, file.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, rootPath, rootFilename, rootFullName, rootSize, rootFormat, displayPath, displayFilename, displayFullName, creationDate, updateDate, repository, accessTypes, comments, secureCodes, tags);
+    }
+
+    @Override
     public String toString() {
-        return "File{" +
-                "id=" + id +
-                ", rootPath='" + rootPath + '\'' +
-                ", rootFilename='" + rootFilename + '\'' +
-                ", rootFullName='" + rootFullName + '\'' +
-                ", rootSize=" + rootSize +
-                ", rootFormat='" + rootFormat + '\'' +
-                ", displayPath='" + displayPath + '\'' +
-                ", displayFilename='" + displayFilename + '\'' +
-                ", displayFullName='" + displayFullName + '\'' +
-                ", repository=" + repository +
-                ", accessTypes=" + accessTypes +
-                ", comments=" + comments +
-                ", secureCodes=" + secureCodes +
-                ", tags=" + tags +
-                '}';
+        return rootFullName;
     }
 }

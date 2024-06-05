@@ -78,7 +78,6 @@ public class FileStorageRepositoryController
        }
     }
 
-
     @PostMapping("/move")
     public ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves) throws Exception {
         return ResponseEntity.ok(repositoryStorageService.move(moves.getMoves()));

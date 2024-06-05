@@ -11,10 +11,15 @@ public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDT
 
     private final UserDTOMapper userDTOMapper;
     private final CommentDTOMapper commentDTOMapper;
+    private final AccessModelMapper accessModelMapper;
 
-    public RepositoryDTOMapper(UserDTOMapper userDTOMapper, CommentDTOMapper commentDTOMapper) {
+    public RepositoryDTOMapper(
+            UserDTOMapper userDTOMapper,
+            CommentDTOMapper commentDTOMapper,
+            AccessModelMapper accessModelMapper) {
         this.userDTOMapper = userDTOMapper;
         this.commentDTOMapper = commentDTOMapper;
+        this.accessModelMapper = accessModelMapper;
     }
 
     @Override
@@ -23,6 +28,11 @@ public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDT
     {
         destination.setOwner(userDTOMapper.toDto(source.getOwner()));
         destination.setComments(source.getComments().stream().map(commentDTOMapper::toDto).toList());
+        if (source.getAccessTypes() != null) {
+            destination.setAccessModels(source.getAccessTypes().stream()
+                    .map(accessModelMapper::toDto)
+                    .toList());
+        }
     }
 
     @Override
@@ -30,5 +40,10 @@ public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDT
     {
         destination.setOwner(userDTOMapper.toEntity(source.getOwner()));
         destination.setComments(source.getComments().stream().map(commentDTOMapper::toEntity).toList());
+        if (source.getAccessModels() != null) {
+            destination.setAccessTypes(source.getAccessModels().stream()
+                            .map(accessModelMapper::toEntity)
+                    .toList());
+        }
     }
 }

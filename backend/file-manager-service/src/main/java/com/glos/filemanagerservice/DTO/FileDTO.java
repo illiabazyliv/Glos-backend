@@ -1,10 +1,10 @@
 package com.glos.filemanagerservice.DTO;
 
-import com.glos.filemanagerservice.entities.AccessType;
 import com.glos.filemanagerservice.entities.SecureCode;
 import com.netflix.servo.tag.Tag;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileDTO
@@ -29,7 +29,7 @@ public class FileDTO
 
     private RepositoryDTO repository;
 
-    private List<AccessType> accessTypes;
+    private List<AccessModel> accessModels;
 
     private List<CommentDTO> comments;
     private List<SecureCode> secureCodes;
@@ -47,7 +47,7 @@ public class FileDTO
                    String displayFilename,
                    String displayFullName,
                    RepositoryDTO repository,
-                   List<AccessType> accessTypes,
+                   List<AccessModel> accessModels,
                    List<CommentDTO> comments,
                    List<SecureCode> secureCodes,
                    List<Tag> tags,
@@ -63,7 +63,7 @@ public class FileDTO
         this.displayFilename = displayFilename;
         this.displayFullName = displayFullName;
         this.repository = repository;
-        this.accessTypes = accessTypes;
+        this.accessModels = accessModels;
         this.comments = comments;
         this.secureCodes = secureCodes;
         this.tags = tags;
@@ -73,7 +73,10 @@ public class FileDTO
 
     public FileDTO()
     {
-        this.repository = new RepositoryDTO();
+        this.accessModels = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.secureCodes = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public Long getId() {
@@ -156,12 +159,12 @@ public class FileDTO
         this.repository = repository;
     }
 
-    public List<AccessType> getAccessTypes() {
-        return accessTypes;
+    public List<AccessModel> getAccessModels() {
+        return accessModels;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
-        this.accessTypes = accessTypes;
+    public void setAccessModels(List<AccessModel> accessModels) {
+        this.accessModels = accessModels;
     }
 
     public List<CommentDTO> getComments() {
@@ -186,5 +189,21 @@ public class FileDTO
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 }

@@ -1,8 +1,9 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
-import jakarta.persistence.*;
 
-import java.util.List;
+import com.glos.databaseAPIService.domain.entities.AccessType;
+
+import java.util.*;
 
 public class GroupDTO
 {
@@ -12,14 +13,16 @@ public class GroupDTO
 
     private UserDTO owner;
 
-    private List<AccessType> accessTypes;
-    private List<UserDTO> users;
+    private Set<AccessType> accessTypes;
+    private Set<UserDTO> users;
 
 
     public GroupDTO() {
+        this.accessTypes = new HashSet<>();
+        this.users = new HashSet<>();
     }
 
-    public GroupDTO(Long id, String name, UserDTO owner, List<AccessType> accessTypes, List<UserDTO> users) {
+    public GroupDTO(Long id, String name, UserDTO owner, Set<AccessType> accessTypes, Set<UserDTO> users) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -51,19 +54,32 @@ public class GroupDTO
         this.owner = owner;
     }
 
-    public List<AccessType> getAccessTypes() {
+    public Set<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
+    public void setAccessTypes(Set<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
     }
 
-    public List<UserDTO> getUsers() {
+    public Set<UserDTO> getUsers() {
         return users;
     }
 
-    public void setUsers(List<UserDTO> users) {
+    public void setUsers(Set<UserDTO> users) {
         this.users = users;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GroupDTO groupDTO = (GroupDTO) o;
+        return Objects.equals(id, groupDTO.id) && Objects.equals(name, groupDTO.name) && Objects.equals(owner, groupDTO.owner) && Objects.equals(accessTypes, groupDTO.accessTypes) && Objects.equals(users, groupDTO.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, owner, accessTypes, users);
     }
 }

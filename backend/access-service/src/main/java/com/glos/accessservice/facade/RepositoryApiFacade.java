@@ -22,27 +22,27 @@ public class RepositoryApiFacade
         this.repositoryDTOMapper = repositoryDTOMapper;
     }
 
-    public ResponseEntity<?> repositoryAppendAccessType(String rootFullName, String name)
-    {
-        RepositoryDTO repositoryDTO = repositoryApiClient.getRepositoryByRootFullName(rootFullName).getBody();
-        AccessType accessType = accessTypeApiClient.getByName(name).getBody();
-        repositoryDTO.getAccessTypes().add(accessType);
-
-        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-
-        repositoryApiClient.update(repository.getId(), repository);
-        return ResponseEntity.noContent().build();
-    }
-
-    public ResponseEntity<?> repositoryRemoveAccessType(String rootFullName, String name)
-    {
-        RepositoryDTO repositoryDTO = repositoryApiClient.getRepositoryByRootFullName(rootFullName).getBody();
-        AccessType accessType = accessTypeApiClient.getByName(name).getBody();
-        repositoryDTO.getAccessTypes().removeIf((x) -> {return x.getId() == accessType.getId();});
-
-        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-
-        repositoryApiClient.update(repository.getId(),repository);
-        return ResponseEntity.noContent().build();
-    }
+//    public ResponseEntity<?> repositoryAppendAccessType(String rootFullName, String name)
+//    {
+//        RepositoryDTO repositoryDTO = repositoryApiClient.getRepositoryByRootFullName(rootFullName).getBody();
+//        AccessType accessType = accessTypeApiClient.getByName(name).getBody();
+//        repositoryDTO.getAccessTypes().add(accessType);
+//
+//        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
+//
+//        repositoryApiClient.update(repository.getId(), repository);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    public ResponseEntity<?> repositoryRemoveAccessType(String rootFullName, String name)
+//    {
+//        RepositoryDTO repositoryDTO = repositoryApiClient.getRepositoryByRootFullName(rootFullName).getBody();
+//        AccessType accessType = accessTypeApiClient.getByName(name).getBody();
+//        repositoryDTO.getAccessTypes().removeIf((x) -> {return x.getId() == accessType.getId();});
+//
+//        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
+//
+//        repositoryApiClient.update(repository.getId(),repository);
+//        return ResponseEntity.noContent().build();
+//    }
 }

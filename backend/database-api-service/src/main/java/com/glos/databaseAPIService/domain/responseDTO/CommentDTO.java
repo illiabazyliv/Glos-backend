@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class CommentDTO
 {
@@ -49,5 +50,18 @@ public class CommentDTO
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CommentDTO that = (CommentDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(author, that.author) && Objects.equals(text, that.text) && Objects.equals(date, that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, author, text, date);
     }
 }
