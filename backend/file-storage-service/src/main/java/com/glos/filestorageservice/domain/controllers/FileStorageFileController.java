@@ -29,7 +29,7 @@ public class FileStorageFileController
     @PostMapping("/upload")
     public ResponseEntity<List<FileAndStatus>> uploadFiles(@ModelAttribute UploadRequest request)
     {
-        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        List<FileAndStatus> fileAndStatuses;
 
         try
         {

@@ -1,7 +1,10 @@
 package com.glos.filemanagerservice.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.glos.filemanagerservice.DTO.DownloadRequest;
 import com.glos.filemanagerservice.DTO.FileDTO;
+import com.glos.filemanagerservice.DTO.FileRequest;
+import com.glos.filemanagerservice.DTO.UploadRequest;
 import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
 import com.glos.filemanagerservice.entities.File;
@@ -27,12 +30,12 @@ public class FileUploadController
     }
 
 
-    //TODO переробит логіку, не можна використовувати RequestBody і ModelAttribute одночасно
+
     @PutMapping("/files/upload")
-    public ResponseEntity<List<FileDTO>> uploadFile(@RequestBody List<File> files, @ModelAttribute List<MultipartFile> filesData)
+    public ResponseEntity<List<FileDTO>> uploadFile(@ModelAttribute FileRequest fileRequests) throws JsonProcessingException
     {
 
-        List<FileDTO> created = fileClient.uploadFiles(files, filesData).getBody();
+        List<FileDTO> created = fileClient.uploadFiles(fileRequests.getFileNodes()).getBody();
         return ResponseEntity.ok(created);
     }
 
