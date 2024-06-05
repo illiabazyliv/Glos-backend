@@ -4,8 +4,7 @@ import com.glos.databaseAPIService.domain.entities.SecureCode;
 import com.glos.databaseAPIService.domain.entities.Tag;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class FileDTO
 {
@@ -29,11 +28,11 @@ public class FileDTO
 
     private RepositoryDTO repository;
 
-    private List<AccessType> accessTypes;
+    private Set<AccessType> accessTypes;
 
-    private List<CommentDTO> comments;
-    private List<SecureCode> secureCodes;
-    private List<Tag> tags;
+    private Set<CommentDTO> comments;
+    private Set<SecureCode> secureCodes;
+    private Set<Tag> tags;
 
     public FileDTO(Long id,
                    String rootPath,
@@ -45,10 +44,10 @@ public class FileDTO
                    String displayFilename,
                    String displayFullName,
                    RepositoryDTO repository,
-                   List<AccessType> accessTypes,
-                   List<CommentDTO> comments,
-                   List<SecureCode> secureCodes,
-                   List<Tag> tags) {
+                   Set<AccessType> accessTypes,
+                   Set<CommentDTO> comments,
+                   Set<SecureCode> secureCodes,
+                   Set<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -66,10 +65,10 @@ public class FileDTO
     }
 
     public FileDTO() {
-        this.accessTypes = new ArrayList<>();
-        this.comments = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
-        this.tags = new ArrayList<>();
+        this.accessTypes = new HashSet<>();
+        this.comments = new HashSet<>();
+        this.secureCodes = new HashSet<>();
+        this.tags = new HashSet<>();
     }
 
     public Long getId() {
@@ -152,35 +151,48 @@ public class FileDTO
         this.repository = repository;
     }
 
-    public List<AccessType> getAccessTypes() {
+    public Set<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
+    public void setAccessTypes(Set<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
     }
 
-    public List<CommentDTO> getComments() {
+    public Set<CommentDTO> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentDTO> comments) {
+    public void setComments(Set<CommentDTO> comments) {
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
+    public Set<SecureCode> getSecureCodes() {
         return secureCodes;
     }
 
-    public void setSecureCodes(List<SecureCode> secureCodes) {
+    public void setSecureCodes(Set<SecureCode> secureCodes) {
         this.secureCodes = secureCodes;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileDTO fileDTO = (FileDTO) o;
+        return Objects.equals(id, fileDTO.id) && Objects.equals(rootPath, fileDTO.rootPath) && Objects.equals(rootFilename, fileDTO.rootFilename) && Objects.equals(rootFullName, fileDTO.rootFullName) && Objects.equals(rootSize, fileDTO.rootSize) && Objects.equals(rootFormat, fileDTO.rootFormat) && Objects.equals(displayPath, fileDTO.displayPath) && Objects.equals(displayFilename, fileDTO.displayFilename) && Objects.equals(displayFullName, fileDTO.displayFullName) && Objects.equals(repository, fileDTO.repository) && Objects.equals(accessTypes, fileDTO.accessTypes) && Objects.equals(comments, fileDTO.comments) && Objects.equals(secureCodes, fileDTO.secureCodes) && Objects.equals(tags, fileDTO.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, rootPath, rootFilename, rootFullName, rootSize, rootFormat, displayPath, displayFilename, displayFullName, repository, accessTypes, comments, secureCodes, tags);
     }
 }

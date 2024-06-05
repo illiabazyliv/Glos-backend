@@ -14,6 +14,6 @@ public class Constants {
     public static final boolean DEFAULT_IS_ACCOUNT_NON_EXPIRED = true;
     public static final boolean DEFAULT_IS_ACCOUNT_NON_LOCKED = true;
     public static final boolean DEFAULT_IS_CREDENTIALS_NON_EXPIRED = true;
-    public static final boolean DEFAULT_IS_ENABLED = true;
+    public static final boolean DEFAULT_IS_ENABLED = false;
     public static final boolean DEFAULT_IS_DELETED = false;
 }

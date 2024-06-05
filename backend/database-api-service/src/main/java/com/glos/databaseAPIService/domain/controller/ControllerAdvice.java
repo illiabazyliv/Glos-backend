@@ -1,5 +1,6 @@
 package com.glos.databaseAPIService.domain.controller;
 
+import com.accesstools.InvalidAccessPatternException;
 import com.glos.databaseAPIService.domain.exceptions.InternalExceptionBody;
 import com.glos.databaseAPIService.domain.exceptions.ResourceAlreadyExistsException;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
@@ -40,7 +41,8 @@ public class ControllerAdvice {
             IllegalArgumentException.class,
             IllegalStateException.class,
             InvocationTargetException.class,
-            MethodArgumentNotValidException.class
+            MethodArgumentNotValidException.class,
+            InvalidAccessPatternException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public InternalExceptionBody handleBadRequest(

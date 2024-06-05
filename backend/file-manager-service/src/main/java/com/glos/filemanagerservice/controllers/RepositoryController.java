@@ -22,17 +22,22 @@ public class RepositoryController
 {
     private final RepositoryClient repositoryClient;
     private final RepositoryApiFacade repositoryApiFacade;
+    private final RepositoryDTOMapper repositoryDTOMapper;
 
     public RepositoryController(RepositoryClient repositoryClient,
-                                RepositoryApiFacade repositoryApiFacade) {
+                                RepositoryApiFacade repositoryApiFacade,
+                                RepositoryDTOMapper repositoryDTOMapper) {
         this.repositoryClient = repositoryClient;
         this.repositoryApiFacade = repositoryApiFacade;
+        this.repositoryDTOMapper = repositoryDTOMapper;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RepositoryDTO> getById(@PathVariable Long id)
     {
-        return ResponseEntity.ok(repositoryClient.getRepositoryById(id).getBody());
+        ResponseEntity<Repository> response = repositoryClient.getRepositoryById(id);
+        Repository repository = response.getBody();
+        return ResponseEntity.ok(repositoryDTOMapper.toDto(repository));
     }
 
     @PostMapping

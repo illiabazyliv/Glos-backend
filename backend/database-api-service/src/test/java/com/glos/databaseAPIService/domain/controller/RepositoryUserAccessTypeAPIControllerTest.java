@@ -2,13 +2,9 @@ package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.databaseAPIService.domain.entities.AccessType;
 import com.glos.databaseAPIService.domain.entities.Repository;
-import com.glos.databaseAPIService.domain.entities.RepositoryUserAccessType;
 import com.glos.databaseAPIService.domain.entities.User;
-import com.glos.databaseAPIService.domain.filters.RepositoryUserAccessTypeFilter;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
-import com.glos.databaseAPIService.domain.responseMappers.RepositoryUserAccessTypeDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
-import com.glos.databaseAPIService.domain.service.RepositoryUserAccessTypeService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;

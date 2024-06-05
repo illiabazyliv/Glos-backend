@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -164,7 +165,7 @@ class UserAPIControllerTest {
         Page<User> page = new PageImpl<>(Collections.singletonList(user), PageRequest.of(0, 1), 1);
         UserDTO userDTO = new UserDTO();
 
-        when(userService.getPageByFilter(any(User.class), any(Pageable.class))).thenReturn(page);
+        when(userService.getPageByFilter(any(User.class), any(Pageable.class), eq(true))).thenReturn(page);
         when(mapper.toDto(user)).thenReturn(userDTO);
 
         mockMvc.perform(MockMvcRequestBuilders

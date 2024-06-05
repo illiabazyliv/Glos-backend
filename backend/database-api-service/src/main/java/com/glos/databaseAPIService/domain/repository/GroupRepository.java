@@ -19,7 +19,6 @@ public interface GroupRepository extends JpaRepository<Group, Long>
             WHERE :#{#filter.asMap().id} IS NULL OR group.id = :#{#filter.asMap().get("id")}
             AND :#{#filter.asMap().owner} IS NULL OR group.owner = :#{#filter.asMap().get("owner")}
             AND (:#{#filter.asMap().users} IS NULL OR ARRAY_INTERSECT(group.users, :#{#filter.asMap().get("users")}) IS NOT NULL)
-            AND (:#{#filter.asMap().accessTypes} IS NULL OR ARRAY_INTERSECT(group.accessTypes, :#{#filter.asMap().get("accessTypes")}) IS NOT NULL)
             """)
     List<Group> findAllByFilter(@Param("filter") EntityFilter filter);
 }

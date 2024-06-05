@@ -5,6 +5,8 @@ import com.glos.databaseAPIService.domain.mappers.AbstractMapper;
 import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDTO>
 {
@@ -21,13 +23,13 @@ public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDT
     protected void postDtoCopy(Repository source, RepositoryDTO destination)
     {
         destination.setOwner(userDTOMapper.toDto(source.getOwner()));
-        destination.setComments(source.getComments().stream().map(commentDTOMapper::toDto).toList());
+        destination.setComments(source.getComments().stream().map(commentDTOMapper::toDto).collect(Collectors.toSet()));
     }
 
     @Override
     protected void postEntityCopy(RepositoryDTO source, Repository destination)
     {
         destination.setOwner(userDTOMapper.toEntity(source.getOwner()));
-        destination.setComments(source.getComments().stream().map(commentDTOMapper::toEntity).toList());
+        destination.setComments(source.getComments().stream().map(commentDTOMapper::toEntity).collect(Collectors.toSet()));
     }
 }

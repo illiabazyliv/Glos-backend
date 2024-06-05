@@ -5,16 +5,23 @@ import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class RepositoryDTOMapper extends AbstractMapper<Repository, RepositoryDTO>
 {
 
     private final UserDTOMapper userDTOMapper;
     private final CommentDTOMapper commentDTOMapper;
+    private final AccessModelMapper accessModelMapper;
 
-    public RepositoryDTOMapper(UserDTOMapper userDTOMapper, CommentDTOMapper commentDTOMapper) {
+    public RepositoryDTOMapper(
+            UserDTOMapper userDTOMapper,
+            CommentDTOMapper commentDTOMapper,
+            AccessModelMapper accessModelMapper) {
         this.userDTOMapper = userDTOMapper;
         this.commentDTOMapper = commentDTOMapper;
+        this.accessModelMapper = accessModelMapper;
     }
 
     @Override

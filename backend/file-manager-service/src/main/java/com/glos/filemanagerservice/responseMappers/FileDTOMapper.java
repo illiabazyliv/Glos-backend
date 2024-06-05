@@ -10,11 +10,16 @@ public class FileDTOMapper extends AbstractMapper<File, FileDTO>
 {
     private final RepositoryDTOMapper repositoryDTOMapper;
     private final CommentDTOMapper commentDTOMapper;
+    private final AccessModelMapper accessModelMapper;
 
 
-    public FileDTOMapper(RepositoryDTOMapper repositoryDTOMapper, CommentDTOMapper commentDTOMapper) {
+    public FileDTOMapper(
+            RepositoryDTOMapper repositoryDTOMapper,
+            CommentDTOMapper commentDTOMapper,
+            AccessModelMapper accessModelMapper) {
         this.repositoryDTOMapper = repositoryDTOMapper;
         this.commentDTOMapper = commentDTOMapper;
+        this.accessModelMapper = accessModelMapper;
     }
 
     @Override
@@ -22,11 +27,21 @@ public class FileDTOMapper extends AbstractMapper<File, FileDTO>
     {
         destination.setRepository(repositoryDTOMapper.toDto(source.getRepository()));
         destination.setComments(source.getComments().stream().map(commentDTOMapper::toDto).toList());
+        if (source.getAccessTypes() != null) {
+            destination.setAccessModels(source.getAccessTypes().stream()
+                    .map(accessModelMapper::toDto)
+                    .toList());
+        }
     }
     @Override
     protected void postEntityCopy(FileDTO source, File destination)
     {
         destination.setRepository(repositoryDTOMapper.toEntity(source.getRepository()));
         destination.setComments(source.getComments().stream().map(commentDTOMapper::toEntity).toList());
+        if (source.getAccessModels() != null) {
+            destination.setAccessTypes(source.getAccessModels().stream()
+                    .map(accessModelMapper::toEntity)
+                    .toList());
+        }
     }
 }

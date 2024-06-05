@@ -2,8 +2,7 @@ package com.glos.databaseAPIService.domain.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(
@@ -29,14 +28,7 @@ public class Group
             inverseJoinColumns = @JoinColumn(name = "user_id"),
             foreignKey = @ForeignKey(name = "fk_groups_users_groups_id"),
             inverseForeignKey = @ForeignKey(name = "fk_groups_users_users_id"))
-    private List<User> users;
-
-    @ManyToMany
-    @JoinTable(name = "groups_access_types", joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "access_type_id"),
-            foreignKey = @ForeignKey(name = "fk_groups_access_types_groups_id"),
-            inverseForeignKey = @ForeignKey(name = "fk_groups_access_types_access_types_id"))
-    private List<AccessType> accessTypes;
+    private Set<User> users;
 
     public Long getId() {
         return id;
@@ -62,37 +54,44 @@ public class Group
         this.owner = owner;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
-    }
-
-    public List<AccessType> getAccessTypes() {
-        return accessTypes;
-    }
-
-    public void setAccessTypes(List<AccessType> accessTypes) {
-        this.accessTypes = accessTypes;
     }
 
     public Group()
     {
-        this.users = new ArrayList<>();
-        this.accessTypes = new ArrayList<>();
+        this.users = new HashSet<>();
     }
 
     public Group(Long id,
                  String name,
                  User owner,
-                 List<User> users,
-                 List<AccessType> accessTypes) {
+                 Set<User> users) {
         this.id = id;
         this.name = name;
         this.owner = owner;
         this.users = users;
-        this.accessTypes = accessTypes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return Objects.equals(id, group.id) && Objects.equals(name, group.name) && Objects.equals(owner, group.owner) && Objects.equals(users, group.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, owner, users);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(
@@ -64,14 +63,14 @@ public class User
     private Boolean is_deleted;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private List<Group> groups;
+    private Set<Group> groups;
 
     @ManyToMany
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"),
             foreignKey = @ForeignKey(name = "fk_users_roles_users_id"),
             inverseForeignKey = @ForeignKey(name = "fk_users_roles_roles_id"))
-    private List<Role> roles;
+    private Set<Role> roles;
 
     @Column(name = "deleted_datetime")
     private LocalDateTime deletedDateTime;
@@ -89,11 +88,11 @@ public class User
     private LocalDateTime updatedDataTime;
 
     public User() {
-        this.roles = new ArrayList<>();
-        this.groups = new ArrayList<>();
+        this.roles = new HashSet<>();
+        this.groups = new HashSet<>();
     }
 
-    public User(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDate birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, List<Group> groups, List<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
+    public User(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDate birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, Set<Group> groups, Set<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
         this.id = id;
         this.username = username;
         this.password_hash = password_hash;
@@ -229,19 +228,19 @@ public class User
         this.is_deleted = is_deleted;
     }
 
-    public List<Group> getGroups() {
+    public Set<Group> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<Group> groups) {
+    public void setGroups(Set<Group> groups) {
         this.groups = groups;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -288,5 +287,23 @@ public class User
     public void addGroup(Group group)
     {
         this.groups.add(group);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password_hash, user.password_hash) && Objects.equals(email, user.email) && Objects.equals(phone_number, user.phone_number) && Objects.equals(gender, user.gender) && Objects.equals(first_name, user.first_name) && Objects.equals(last_name, user.last_name) && Objects.equals(birthdate, user.birthdate) && Objects.equals(is_account_non_expired, user.is_account_non_expired) && Objects.equals(is_account_non_locked, user.is_account_non_locked) && Objects.equals(is_credentials_non_expired, user.is_credentials_non_expired) && Objects.equals(is_enabled, user.is_enabled) && Objects.equals(is_deleted, user.is_deleted) && Objects.equals(groups, user.groups) && Objects.equals(roles, user.roles) && Objects.equals(deletedDateTime, user.deletedDateTime) && Objects.equals(blockedDateTime, user.blockedDateTime) && Objects.equals(disabledDateTime, user.disabledDateTime) && Objects.equals(createdDateTime, user.createdDateTime) && Objects.equals(updatedDataTime, user.updatedDataTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password_hash, email, phone_number, gender, first_name, last_name, birthdate, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled, is_deleted, groups, roles, deletedDateTime, blockedDateTime, disabledDateTime, createdDateTime, updatedDataTime);
+    }
+
+    @Override
+    public String toString() {
+        return username;
     }
 }

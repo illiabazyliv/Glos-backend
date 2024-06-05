@@ -49,7 +49,7 @@ class RepositoryAPIControllerTest {
         Repository repository = new Repository();
         repository.setId(id);
 
-        when(repositoryService.getById(id)).thenReturn(Optional.of(repository));
+        when(repositoryService.getById(eq(id))).thenReturn(Optional.of(repository));
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/repositories/{id}" , id)
@@ -115,13 +115,13 @@ class RepositoryAPIControllerTest {
         Repository repository = new Repository();
         List<Repository> repositories = List.of(repository);
 
-        when(repositoryService.findAllByOwnerId(anyLong())).thenReturn(repositories);
+        when(repositoryService.findAllByOwnerId(anyLong(), eq(true))).thenReturn(repositories);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner-id/{owner-id}", ownerId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        Mockito.verify(repositoryService, Mockito.times(1)).findAllByOwnerId(Mockito.anyLong());
+        Mockito.verify(repositoryService, Mockito.times(1)).findAllByOwnerId(Mockito.anyLong(), true);
     }
     @Test
     void getRepositoryByRootFullNameTest() throws Exception {
@@ -144,7 +144,7 @@ class RepositoryAPIControllerTest {
         List<Repository> repositories = List.of(repository);
         Page<Repository> page = new PageImpl<>(repositories);
 
-        Mockito.when(repositoryService.findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class))).thenReturn(page);
+        Mockito.when(repositoryService.findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class), eq(true))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/repositories")
@@ -156,6 +156,6 @@ class RepositoryAPIControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
 
-        Mockito.verify(repositoryService, Mockito.times(1)).findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class));
+        Mockito.verify(repositoryService, Mockito.times(1)).findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class), eq(true));
     }
     }

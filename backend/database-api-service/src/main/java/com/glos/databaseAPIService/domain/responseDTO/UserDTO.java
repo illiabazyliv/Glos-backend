@@ -4,6 +4,8 @@ import com.glos.databaseAPIService.domain.entities.Role;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class UserDTO
 {
@@ -35,7 +37,7 @@ public class UserDTO
 
     private Boolean is_deleted;
 
-    private List<Role> roles;
+    private Set<Role> roles;
 
     private LocalDateTime deletedDateTime;
 
@@ -47,7 +49,7 @@ public class UserDTO
 
     private LocalDateTime updatedDataTime;
 
-    public UserDTO(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDateTime birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, List<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
+    public UserDTO(Long id, String username, String password_hash, String email, String phone_number, String gender, String first_name, String last_name, LocalDateTime birthdate, Boolean is_account_non_expired, Boolean is_account_non_locked, Boolean is_credentials_non_expired, Boolean is_enabled, Boolean is_deleted, Set<Role> roles, LocalDateTime deletedDateTime, LocalDateTime blockedDateTime, LocalDateTime disabledDateTime, LocalDateTime createdDateTime, LocalDateTime updatedDataTime) {
         this.id = id;
         this.username = username;
         this.password_hash = password_hash;
@@ -185,11 +187,11 @@ public class UserDTO
         this.is_deleted = is_deleted;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -231,5 +233,18 @@ public class UserDTO
 
     public void setUpdatedDataTime(LocalDateTime updatedDataTime) {
         this.updatedDataTime = updatedDataTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id) && Objects.equals(username, userDTO.username) && Objects.equals(password_hash, userDTO.password_hash) && Objects.equals(email, userDTO.email) && Objects.equals(phone_number, userDTO.phone_number) && Objects.equals(gender, userDTO.gender) && Objects.equals(first_name, userDTO.first_name) && Objects.equals(last_name, userDTO.last_name) && Objects.equals(birthdate, userDTO.birthdate) && Objects.equals(is_account_non_expired, userDTO.is_account_non_expired) && Objects.equals(is_account_non_locked, userDTO.is_account_non_locked) && Objects.equals(is_credentials_non_expired, userDTO.is_credentials_non_expired) && Objects.equals(is_enabled, userDTO.is_enabled) && Objects.equals(is_deleted, userDTO.is_deleted) && Objects.equals(roles, userDTO.roles) && Objects.equals(deletedDateTime, userDTO.deletedDateTime) && Objects.equals(blockedDateTime, userDTO.blockedDateTime) && Objects.equals(disabledDateTime, userDTO.disabledDateTime) && Objects.equals(createdDateTime, userDTO.createdDateTime) && Objects.equals(updatedDataTime, userDTO.updatedDataTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password_hash, email, phone_number, gender, first_name, last_name, birthdate, is_account_non_expired, is_account_non_locked, is_credentials_non_expired, is_enabled, is_deleted, roles, deletedDateTime, blockedDateTime, disabledDateTime, createdDateTime, updatedDataTime);
     }
 }

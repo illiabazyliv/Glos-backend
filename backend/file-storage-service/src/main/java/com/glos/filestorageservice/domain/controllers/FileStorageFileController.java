@@ -3,20 +3,14 @@ package com.glos.filestorageservice.domain.controllers;
 import com.glos.filestorageservice.domain.DTO.*;
 import com.glos.filestorageservice.domain.services.FileStorageService;
 import com.glos.filestorageservice.domain.utils.ZipUtil;
-import com.pathtools.NodeType;
 import com.pathtools.Path;
 import com.pathtools.PathParser;
 import com.pathtools.pathnode.FilePathNode;
-import io.minio.errors.*;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.nio.file.Files;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -87,12 +81,9 @@ public class FileStorageFileController
         {
             List<byte[]> filesData = fileStorageService.download(request.getFilenames());
 
-            //TODO імплементувати парсер
-
             List<String> fileNames = request.getFilenames().stream()
-                    .map(path -> path.substring(path.lastIndexOf("/") + 1))
+                    .map(path -> PathParser.getInstance().parse(path).getLast().getSimpleName())
                     .toList();
-            //TODO імплементувати парсер
 
             byte[] zipData = ZipUtil.createZip(filesData, fileNames);
 

@@ -1,6 +1,10 @@
 package com.glos.accessservice.facade.chain.base;
 
+import com.accesstools.AccessNode;
+
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public abstract class AccessHandler {
 
@@ -39,8 +43,10 @@ public abstract class AccessHandler {
     }
 
     protected final boolean checkNext(AccessRequest request) {
-        if (next == null)
-            return true;
+        if (next == null){
+            Set<AccessNode> accessNodes = (Set<AccessNode>)request.getData().get("accessNodes");
+            return accessNodes != null && !accessNodes.isEmpty();
+        }
         return next.check(request);
     }
 

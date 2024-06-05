@@ -14,6 +14,7 @@ public class InitAccessChain extends AccessHandler {
             DirectoryAccessHandler directoryAccessHandler,
             FileAccessHandler fileAccessHandler,
             ArchiveAccessHandler archiveAccessHandler,
+            GroupAvailableAccessHandler groupAvailableAccessHandler,
             UserAvailableAccessHandler userAvailableAccessHandler
     ) {
         add(resolvePathAccessHandler);
@@ -22,6 +23,7 @@ public class InitAccessChain extends AccessHandler {
         add(directoryAccessHandler);
         add(fileAccessHandler);
         add(archiveAccessHandler);
+        add(groupAvailableAccessHandler);
         add(userAvailableAccessHandler);
     }
 

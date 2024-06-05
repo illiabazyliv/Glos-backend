@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserClient {
 
     @GetMapping("/users/username/{username}")
-    public ResponseEntity<User> getByUsername(@PathVariable String username);
+    ResponseEntity<User> getByUsername(@PathVariable String username);
 
 }

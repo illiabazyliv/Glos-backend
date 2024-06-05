@@ -1,14 +1,9 @@
 package com.glos.databaseAPIService.domain.controller;
 
-import com.glos.databaseAPIService.domain.entities.FileUserAccessType;
-import com.glos.databaseAPIService.domain.filters.FileUserAccessTypeFilter;
-import com.glos.databaseAPIService.domain.responseDTO.FileUserAccessTypeDTO;
 import com.glos.databaseAPIService.domain.responseMappers.FileDTOMapper;
-import com.glos.databaseAPIService.domain.responseMappers.FileUserAccessTypeDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.FileService;
-import com.glos.databaseAPIService.domain.service.FileUserAccessTypeService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;

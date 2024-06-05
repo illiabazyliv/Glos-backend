@@ -26,8 +26,7 @@ spring:
             allowed-methods: 'GET,POST,PUT,DELETE,PATCH'
             allow-credentials: true
             allowed-origin-patterns:
-              - 'https://*:3000'
-              - 'http://*:3000'
+              - '*://*:*'
             maxAge: 30
       discovery:
         locator:

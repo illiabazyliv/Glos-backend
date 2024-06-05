@@ -18,6 +18,9 @@ public interface AccessTypeApiClient
     @GetMapping("/name/{name}")
     ResponseEntity<AccessType> getByName(@PathVariable String name);
 
+    @PutMapping("/ensure/{name}")
+    ResponseEntity<AccessType> ensure(@PathVariable String name);
+
     @PostMapping
     ResponseEntity<AccessType> create(@RequestBody AccessType request);
 
