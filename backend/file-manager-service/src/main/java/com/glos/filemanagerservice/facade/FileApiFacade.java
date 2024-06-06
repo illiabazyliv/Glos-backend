@@ -68,7 +68,6 @@ public class FileApiFacade
         }
 
         List<FileDTO> fileDTOS = new ArrayList<>();
-        UploadRequest request = new UploadRequest();
 
         List<FileWithPath> fileWithPaths = new ArrayList<>();
         for (int i = 0; i < files.size(); i++)
@@ -89,22 +88,10 @@ public class FileApiFacade
                 fileWithPaths.get(i).setFile(filesData.get(i));
             }
 
-            List<ByteArrayWithPath> byteArrayWithPaths = new ArrayList<>();
-            for (var fileWithPath:fileWithPaths)
+            for (FileWithPath file:fileWithPaths)
             {
-                ByteArrayWithPath byteArrayWithPath = new ByteArrayWithPath();
-                byteArrayWithPath.setFilePath(fileWithPath.getFilePath());
-                byteArrayWithPath.setFile(fileWithPath.getFile().getBytes());
-                byteArrayWithPath.setContentType(fileWithPath.getFile().getContentType());
-                byteArrayWithPaths.add(byteArrayWithPath);
+                fileStorageClient.uploadFiles(file.getFilePath(), file.getFile());
             }
-
-            request.setFiles(byteArrayWithPaths);
-
-            Map<String, Object> map = request.toMap();
-            //TODO змапити реквест
-            List<FileAndStatus> fileAndStatuses = fileStorageClient.uploadFiles(map).getBody();
-
         }
         catch (Exception e)
         {
@@ -113,10 +100,12 @@ public class FileApiFacade
         return ResponseEntity.ok(fileDTOS);
     }
 
-    public ResponseEntity<?> update(Long id, File file, MultipartFile fileData)
+    public ResponseEntity<?> update(Long id, FileRequest.FileNode request)
     {
         try
         {
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = objectMapper.readValue(request.getFileBody(), File.class);
             checkAccessTypes(file);
             file.setUpdateDate(LocalDateTime.now());
             file.setId(id);
@@ -125,7 +114,7 @@ public class FileApiFacade
 
             if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
             {
-                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, fileData);
+                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
                 fileStorageClient.updateFile(fileWithPath);
 
                 MoveRequest moveRequest = new MoveRequest();
@@ -135,7 +124,7 @@ public class FileApiFacade
             }
             else
             {
-                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, fileData);
+                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
                 fileStorageClient.updateFile(fileWithPath);
             }
 
@@ -174,7 +163,8 @@ public class FileApiFacade
     public ResponseEntity<ByteArrayResource> downloadFiles(List<String> rootFullNames)
     {
         DownloadRequest request = new DownloadRequest(rootFullNames);
-        return ResponseEntity.ok(fileStorageClient.downloadFile(request).getBody());
+        ByteArrayResource byteArrayResource = fileStorageClient.downloadFile(request).getBody();
+        return ResponseEntity.ok(byteArrayResource);
     }
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)

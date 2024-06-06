@@ -1,6 +1,7 @@
 package com.glos.filemanagerservice.controllers;
 
 import com.glos.filemanagerservice.DTO.FileDTO;
+import com.glos.filemanagerservice.DTO.FileRequest;
 import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.facade.FileApiFacade;
 import com.glos.filemanagerservice.DTO.Page;
@@ -32,9 +33,9 @@ public class FileController
     }
 
     @PutMapping("/id/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file, @ModelAttribute MultipartFile filesData)
+    public ResponseEntity<?> update(@PathVariable Long id, @ModelAttribute FileRequest.FileNode updateRequest)
     {
-        fileApiFacade.update(id, file, filesData);
+        fileApiFacade.update(id, updateRequest);
         return ResponseEntity.noContent().build();
     }
 
