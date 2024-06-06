@@ -21,11 +21,11 @@ import java.util.List;
 @RequestMapping
 public class FileUploadController
 {
-    private final FileApiFacade fileClient;
+    private final FileApiFacade fileApiFacade;
     private final RepositoryStorageClient repositoryStorageClient;
 
     public FileUploadController(FileApiFacade fileClient, RepositoryStorageClient repositoryStorageClient) {
-        this.fileClient = fileClient;
+        this.fileApiFacade = fileClient;
         this.repositoryStorageClient = repositoryStorageClient;
     }
 
@@ -35,14 +35,14 @@ public class FileUploadController
     public ResponseEntity<List<FileDTO>> uploadFile(@ModelAttribute FileRequest fileRequests) throws JsonProcessingException
     {
 
-        List<FileDTO> created = fileClient.uploadFiles(fileRequests.getFileNodes()).getBody();
+        List<FileDTO> created = fileApiFacade.uploadFiles(fileRequests.getFileNodes()).getBody();
         return ResponseEntity.ok(created);
     }
 
     @GetMapping("/files/download")
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody List<String> rootFullNames)
     {
-        return ResponseEntity.ok(fileClient.downloadFiles(rootFullNames).getBody());
+        return ResponseEntity.ok(fileApiFacade.downloadFiles(rootFullNames).getBody());
     }
 
     @GetMapping("/repositories/{rootFullName}/download")

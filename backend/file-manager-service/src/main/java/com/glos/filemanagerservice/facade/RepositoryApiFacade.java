@@ -36,7 +36,7 @@ public class RepositoryApiFacade
         this.repositoryStorageClient = repositoryStorageClient;
     }
 
-    //TODO виправити створення репозиторія з accessTypes
+
     public ResponseEntity<RepositoryDTO> create(Repository repository)
     {
         checkAccessTypes(repository);

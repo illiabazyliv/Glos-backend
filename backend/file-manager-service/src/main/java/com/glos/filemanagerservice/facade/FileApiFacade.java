@@ -101,7 +101,7 @@ public class FileApiFacade
 
             request.setFiles(byteArrayWithPaths);
 
-            Map<String, Object> map = MapUtils.map(request);
+            Map<String, Object> map = request.toMap();
             //TODO змапити реквест
             List<FileAndStatus> fileAndStatuses = fileStorageClient.uploadFiles(map).getBody();
 
