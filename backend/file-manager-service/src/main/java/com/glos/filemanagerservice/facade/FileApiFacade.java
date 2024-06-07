@@ -100,35 +100,39 @@ public class FileApiFacade
         return ResponseEntity.ok(fileDTOS);
     }
 
-    public ResponseEntity<?> update(Long id, FileRequest.FileNode request)
+    public ResponseEntity<?> update(Long id, FileRequest updateRequest)
     {
         try
         {
-            ObjectMapper objectMapper = new ObjectMapper();
-            File file = objectMapper.readValue(request.getFileBody(), File.class);
-            checkAccessTypes(file);
-            file.setUpdateDate(LocalDateTime.now());
-            file.setId(id);
-            fileClient.updateFile(file, id);
-            String oldRootFullName = fileClient.getFileByID(id).getBody().getRootFullName();
-
-            if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
+            MoveRequest moveRequest = new MoveRequest();
+            for (FileRequest.FileNode request: updateRequest.getFileNodes())
             {
-                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
-                fileStorageClient.updateFile(fileWithPath);
+                ObjectMapper objectMapper = new ObjectMapper();
+                File file = objectMapper.readValue(request.getFileBody(), File.class);
+                checkAccessTypes(file);
+                file.setUpdateDate(LocalDateTime.now());
+                file.setId(id);
 
-                MoveRequest moveRequest = new MoveRequest();
-                moveRequest.getMoves().add(new MoveRequest.MoveNode(oldRootFullName, file.getRootFullName()));
+                String oldRootFullName = fileClient.getFileByID(id).getBody().getRootFullName();
+                fileClient.updateFile(file, id);
 
+                if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
+                {
+                    MoveRequest.MoveNode moveNode = new MoveRequest.MoveNode(oldRootFullName, file.getRootFullName());
+                    moveRequest.getMoves().add(moveNode);
+                }
+
+                if (request.getFileData() != null)
+                {
+                    FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
+                    fileStorageClient.updateFile(fileWithPath);
+                }
+
+            }
+            if (moveRequest != null)
+            {
                 fileStorageClient.moveFile(moveRequest);
             }
-            else
-            {
-                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
-                fileStorageClient.updateFile(fileWithPath);
-            }
-
-
         }
         catch (Exception e)
         {
@@ -138,15 +142,13 @@ public class FileApiFacade
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<?> deleteFiles(List<Long> ids)
+    public ResponseEntity<?> deleteFiles(List<String> rootFullNames)
     {
-        List<String> rootFullNames = new ArrayList<>();
         try
         {
-            for (Long id:ids)
+            for (String rotFullName:rootFullNames)
             {
-                rootFullNames.add(fileClient.getFileByID(id).getBody().getRootFullName());
-                fileClient.deleteFile(id);
+                fileClient.deleteFile(fileClient.getFileByRootFullName(rotFullName).getBody().getId());
             }
 
             DeleteRequest request = new DeleteRequest(rootFullNames);
