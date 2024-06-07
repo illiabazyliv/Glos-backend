@@ -33,16 +33,16 @@ public class FileController
     }
 
     @PutMapping("/id/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @ModelAttribute FileRequest.FileNode updateRequest)
+    public ResponseEntity<?> update(@PathVariable Long id, @ModelAttribute FileRequest updateRequest)
     {
         fileApiFacade.update(id, updateRequest);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> delete(@RequestBody List<Long> ids)
+    public ResponseEntity<?> delete(@RequestBody List<String> rootFullNames)
     {
-        fileApiFacade.deleteFiles(ids);
+        fileApiFacade.deleteFiles(rootFullNames);
         return ResponseEntity.noContent().build();
     }
 

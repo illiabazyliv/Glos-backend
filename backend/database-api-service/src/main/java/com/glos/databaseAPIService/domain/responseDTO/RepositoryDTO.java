@@ -35,7 +35,6 @@ public class RepositoryDTO
     private Set<SecureCode> secureCodes;
 
     private Set<Tag> tags;
-    //file
 
     public RepositoryDTO(Long id,
                          String rootPath,

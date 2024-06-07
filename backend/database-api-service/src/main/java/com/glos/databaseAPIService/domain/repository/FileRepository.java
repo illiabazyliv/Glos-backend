@@ -20,7 +20,7 @@ public interface FileRepository extends JpaRepository<File, Long>
             SELECT file FROM File file
             WHERE file.repository.id = :repositoryId
             """)
-    public List<File> findAllByRepositoryId(@Param("repositoryId") Long repositoryId);
+    List<File> findAllByRepositoryId(@Param("repositoryId") Long repositoryId);
 
     @Query("""
          SELECT file FROM File file
@@ -35,11 +35,11 @@ public interface FileRepository extends JpaRepository<File, Long>
          AND (:#{#filter.displayFullName} IS NULL OR file.displayFullName = :#{#filter.displayFullName})
          AND (:#{#filter.repository} IS NULL OR file.repository = :#{#filter.repository})
         """)
-    public List<File> findAllByFilter(@Param("filter") FileFilter filter);
+    List<File> findAllByFilter(@Param("filter") FileFilter filter);
 
     @Query(value = """
             SELECT file FROM File file
             WHERE file.rootFullName = :rootFullName
             """)
-    public Optional<File> findByRootFullName(@Param("rootFullName") String rootFullName);
+    Optional<File> findByRootFullName(@Param("rootFullName") String rootFullName);
 }

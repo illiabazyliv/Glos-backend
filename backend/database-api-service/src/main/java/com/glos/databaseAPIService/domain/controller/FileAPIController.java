@@ -11,7 +11,8 @@ import com.glos.databaseAPIService.domain.responseMappers.FileDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.FileService;
-import com.glos.databaseAPIService.domain.util.PathUtils;
+import com.pathtools.Path;
+import com.pathtools.PathParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,9 +56,9 @@ public class FileAPIController
     @PostMapping
     public ResponseEntity<FileDTO> createFile(@RequestBody File file, UriComponentsBuilder uriBuilder)
     {
-        PathUtils.ordinalPathsFile(file);
+        Path path = PathParser.getInstance().parse(file.getRootFullName());
+        file.setRootFullName(path.getPath());
         File created = fileService.create(file);
-        PathUtils.normalizePathsFile(created);
 
         FileDTO fileDTO = new FileDTO();
         fileDTO = transferEntityDTO(file, fileDTO);
@@ -71,7 +72,7 @@ public class FileAPIController
     @PutMapping("/{id}")
     public ResponseEntity<?> updateFile(@RequestBody File newFile, @PathVariable("id") Long id)
     {
-        PathUtils.ordinalPathsFile(newFile);
+        //PathUtils.ordinalPathsFile(newFile);
         fileService.update(id, newFile);
         return ResponseEntity.noContent().build();
     }
@@ -106,7 +107,7 @@ public class FileAPIController
     @GetMapping("/root-fullname/{rootFullName}")
     public ResponseEntity<FileDTO> getFileByRootFullName(@PathVariable String rootFullName)
     {
-        String normalizeRootFullName = PathUtils.originalPath(rootFullName);
+        String normalizeRootFullName = PathParser.getInstance().parse(rootFullName).getPath();
         File file = fileService.findByRootFullName(normalizeRootFullName).orElseThrow(() -> { return new ResourceNotFoundException("File is not found"); });
         FileDTO fileDTO = new FileDTO();
         fileDTO = transferEntityDTO(file, fileDTO);
@@ -119,7 +120,8 @@ public class FileAPIController
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     )
     {
-        PathUtils.ordinalPathsFile(filter);
+        Path path = PathParser.getInstance().parse(filter.getRootFullName());
+        filter.setRootFullName(path.getPath());
         Page<File> files = fileService.findAllByFilter(filter, pageable);
         Page<FileDTO> fileDTOS = files.map(fileDTOMapper::toDto);
         return ResponseEntity.ok(fileDTOS);
