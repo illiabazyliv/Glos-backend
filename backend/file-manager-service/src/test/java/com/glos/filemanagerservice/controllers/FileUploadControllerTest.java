@@ -1,6 +1,7 @@
 package com.glos.filemanagerservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.glos.filemanagerservice.DTO.FileAndStatus;
 import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.DTO.FileRequest;
 import com.glos.filemanagerservice.clients.FileClient;
@@ -53,10 +54,9 @@ class FileUploadControllerTest {
 
     @Test
     void uploadFileTest()throws Exception {
-        FileDTO fileDTO = new FileDTO();
-        fileDTO.setId(1L);
-        List<FileDTO> fileDTOList = Collections.singletonList(fileDTO);
-        when(fileApiFacade.uploadFiles(any())).thenReturn(ResponseEntity.ok(fileDTOList));
+        FileAndStatus fileAndStatus = new FileAndStatus();
+        List<FileAndStatus> fileAndStatuses = Collections.singletonList(fileAndStatus);
+        when(fileApiFacade.uploadFiles(any())).thenReturn(ResponseEntity.ok(fileAndStatuses));
 
         FileRequest fileRequest = new FileRequest();
 

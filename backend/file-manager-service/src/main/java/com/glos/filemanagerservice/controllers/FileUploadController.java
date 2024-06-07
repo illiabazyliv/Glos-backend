@@ -1,10 +1,7 @@
 package com.glos.filemanagerservice.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.glos.filemanagerservice.DTO.DownloadRequest;
-import com.glos.filemanagerservice.DTO.FileDTO;
-import com.glos.filemanagerservice.DTO.FileRequest;
-import com.glos.filemanagerservice.DTO.UploadRequest;
+import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
 import com.glos.filemanagerservice.entities.File;
@@ -34,10 +31,10 @@ public class FileUploadController
 
 
     @PutMapping("/files/upload")
-    public ResponseEntity<List<FileDTO>> uploadFile(@ModelAttribute FileRequest fileRequests) throws JsonProcessingException
+    public ResponseEntity<List<FileAndStatus>> uploadFile(@ModelAttribute FileRequest fileRequests) throws JsonProcessingException
     {
 
-        List<FileDTO> created = fileApiFacade.uploadFiles(fileRequests.getFileNodes()).getBody();
+        List<FileAndStatus> created = fileApiFacade.uploadFiles(fileRequests.getFileNodes()).getBody();
         return ResponseEntity.ok(created);
     }
 

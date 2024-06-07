@@ -4,19 +4,29 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-public class FileRequest
+public class FileUpdateRequest
 {
     public static class FileNode
     {
+        private Long id;
         private String fileBody;
         private MultipartFile fileData;
 
-        public FileNode(String fileBody, MultipartFile fileData) {
+        public FileNode(Long id, String fileBody, MultipartFile fileData) {
+            this.id = id;
             this.fileBody = fileBody;
             this.fileData = fileData;
         }
 
         public FileNode() {
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
         }
 
         public String getFileBody() {
@@ -36,13 +46,13 @@ public class FileRequest
         }
     }
 
-    public FileRequest() {
-    }
-
     private List<FileNode> fileNodes;
 
-    public FileRequest(List<FileNode> fileNodes) {
+    public FileUpdateRequest(List<FileNode> fileNodes) {
         this.fileNodes = fileNodes;
+    }
+
+    public FileUpdateRequest() {
     }
 
     public List<FileNode> getFileNodes() {
