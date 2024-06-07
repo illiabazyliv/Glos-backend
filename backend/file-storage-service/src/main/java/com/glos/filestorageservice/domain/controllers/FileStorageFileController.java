@@ -9,9 +9,9 @@ import com.pathtools.pathnode.FilePathNode;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,59 +22,60 @@ public class FileStorageFileController
 
     private final FileStorageService fileStorageService;
 
-    public FileStorageFileController(FileStorageService fileStorageService) {
+    public FileStorageFileController(FileStorageService fileStorageService)
+    {
         this.fileStorageService = fileStorageService;
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<List<FileAndStatus>> uploadFiles(@ModelAttribute UploadRequest request)
+    public ResponseEntity<FileAndStatus> uploadFile(@RequestPart(value = "filePath") String filePath, @RequestPart(value = "file")MultipartFile file)
     {
-        List<FileAndStatus> fileAndStatuses;
+        FileAndStatus fileAndStatus;
 
         try
         {
-            fileAndStatuses = fileStorageService.upload(request.getFiles());
+            fileAndStatus = fileStorageService.upload(filePath, file);
         }
         catch (Exception e)
         {
              throw new RuntimeException(e.getMessage());
         }
 
-        return ResponseEntity.ok(fileAndStatuses);
+        return ResponseEntity.ok(fileAndStatus);
     }
 
-    @GetMapping("/files/download/{filename}")
-    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String filename) {
-        try {
-            final Path path = PathParser.getInstance().parse(filename);
-            final FilePathNode fileNode = (FilePathNode) path.reader().last();
+//    @GetMapping("/files/download/{filename}")
+//    public ResponseEntity<ByteArrayResource> downloadFiles(@PathVariable String filename) {
+//        try {
+//            final Path path = PathParser.getInstance().parse(filename);
+//            final FilePathNode fileNode = (FilePathNode) path.reader().last();
+//
+//            final List<byte[]> filesData = fileStorageService.download(Collections.singletonList(filename));
+//            if (filesData.isEmpty())
+//                return ResponseEntity.notFound().build();
+//
+//            final byte[] bytes = filesData.get(0);
+//            final ByteArrayResource resource = new ByteArrayResource(bytes);
+//
+//            final java.nio.file.Path pathIo = java.nio.file.Path.of(path.getSimplePath("/", true));
+//            String mimeType = Files.probeContentType(pathIo);
+//
+//            if (mimeType == null)
+//                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+//
+//            final HttpHeaders headers = new HttpHeaders();
+//            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileNode.getSimpleName()));
+//            headers.setContentType(MediaType.parseMediaType(mimeType));
+//            headers.setContentLength(bytes.length);
+//
+//            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.internalServerError().build();
+//        }
+//    }
 
-            final List<byte[]> filesData = fileStorageService.download(Collections.singletonList(filename));
-            if (filesData.isEmpty())
-                return ResponseEntity.notFound().build();
-
-            final byte[] bytes = filesData.get(0);
-            final ByteArrayResource resource = new ByteArrayResource(bytes);
-
-            final java.nio.file.Path pathIo = java.nio.file.Path.of(path.getSimplePath("/", true));
-            String mimeType = Files.probeContentType(pathIo);
-
-            if (mimeType == null)
-                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-
-            final HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileNode.getSimpleName()));
-            headers.setContentType(MediaType.parseMediaType(mimeType));
-            headers.setContentLength(bytes.length);
-
-            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @GetMapping("/download")
+    @PostMapping("/files/download")
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
     {
         try
@@ -101,9 +102,9 @@ public class FileStorageFileController
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateFile(@ModelAttribute FileWithPath request)
+    public ResponseEntity<?> updateFile(@RequestPart(value = "filePath") String filePath, @RequestPart(value = "file")MultipartFile file)
     {
-        return ResponseEntity.ok(fileStorageService.update(request));
+        return ResponseEntity.ok(fileStorageService.update(filePath, file));
     }
 
     @PostMapping("/move")

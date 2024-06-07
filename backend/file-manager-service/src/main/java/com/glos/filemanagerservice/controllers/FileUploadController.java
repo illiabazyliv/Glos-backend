@@ -40,9 +40,9 @@ public class FileUploadController
     }
 
     @GetMapping("/files/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody List<String> rootFullNames)
+    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
     {
-        return ResponseEntity.ok(fileApiFacade.downloadFiles(rootFullNames).getBody());
+        return ResponseEntity.ok(fileApiFacade.downloadFiles(request).getBody());
     }
 
     @GetMapping("/repositories/{rootFullName}/download")
