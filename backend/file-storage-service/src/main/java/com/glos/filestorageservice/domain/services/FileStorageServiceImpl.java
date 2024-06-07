@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,29 +29,24 @@ public class FileStorageServiceImpl implements FileStorageService {
 
 
     @Override
-    public List<FileAndStatus> upload(List<ByteArrayWithPath> files)
+    public FileAndStatus upload(String filePath, MultipartFile file)
     {
         logger.info("Uploading files");
-        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        FileAndStatus fileAndStatus = new FileAndStatus();
 
-        for (ByteArrayWithPath file : files)
+        try {
+            com.pathtools.Path path = PathParser.getInstance().parse(filePath);
+            putObject(path, file, -1);
+            fileAndStatus = new FileAndStatus(filePath, FileOperationStatus.SAVED, "Successfully saved file");
+        }
+        catch (Exception e)
         {
-            try {
-                com.pathtools.Path filename = PathParser.getInstance().parse(file.getFilePath());
-                MultipartFile multipartFile = new MockMultipartFile(filename.getLast().getSimpleName(),  filename.getLast().getSimpleName(), file.getContentType(), file.getFile());
-                com.pathtools.Path path = PathParser.getInstance().parse(file.getFilePath());
-                putObject(path, multipartFile, -1);
-                fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.SAVED, "Successfully saved file"));
-            }
-            catch (Exception e)
-            {
-                logger.info("Failed to upload file");
-                fileAndStatuses.add(new FileAndStatus(file.getFilePath(), FileOperationStatus.FAILED, "Failed saving file"));
-            }
+            logger.info("Failed to upload file");
+            fileAndStatus = new FileAndStatus(filePath, FileOperationStatus.FAILED, "Failed saving file");
         }
 
         logger.info("Success upload files");
-        return fileAndStatuses;
+        return fileAndStatus;
     }
 
     @Override
@@ -78,10 +74,10 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public FileAndStatus update(FileWithPath file) {
+    public FileAndStatus update(String filePath, MultipartFile file) {
         logger.info("Updating files");
 
-        com.pathtools.Path path = PathParser.getInstance().parse(file.getFilePath());
+        com.pathtools.Path path = PathParser.getInstance().parse(filePath);
 
         // TODO: реалізувати конвертацію (optional)
         /*
@@ -94,12 +90,12 @@ public class FileStorageServiceImpl implements FileStorageService {
         try
         {
             removeObject(path);
-            putObject(path, file.getFile(), -1);
-            fileAndStatuses = new FileAndStatus((file.getFilePath()), FileOperationStatus.UPDATED, "File updated successfully");
+            putObject(path, file, -1);
+            fileAndStatuses = new FileAndStatus((filePath), FileOperationStatus.UPDATED, "File updated successfully");
         }
         catch (Exception e) {
-            logger.info("Failed to update file: " + file.getFilePath());
-            fileAndStatuses = new FileAndStatus(file.getFilePath(), FileOperationStatus.FAILED, e.getMessage());
+            logger.info("Failed to update file: " + filePath);
+            fileAndStatuses = new FileAndStatus(filePath, FileOperationStatus.FAILED, e.getMessage());
         }
 
         logger.info("Success updating files");

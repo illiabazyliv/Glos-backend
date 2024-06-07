@@ -18,18 +18,18 @@ import java.util.Map;
 @FeignClient(name = "fileStorage")
 public interface FileStorageClient
 {
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/storage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<FileAndStatus> uploadFiles(@RequestPart(value = "filePath") String filePath, @RequestPart(value = "file") MultipartFile file);
-    @GetMapping("/files/download")
+    @PostMapping("/storage/files/download")
     ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request);
 
-    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/storage/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<FileAndStatus> updateFile(@ModelAttribute FileWithPath request);
 
-    @PostMapping("/move")
+    @PostMapping("/storage/move")
     ResponseEntity<List<FileAndStatus>> moveFile(@RequestBody MoveRequest request);
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/storage/delete")
      ResponseEntity<List<FileAndStatus>> deleteFile(@RequestBody DeleteRequest request);
 
 }

@@ -160,9 +160,8 @@ public class FileApiFacade
 
     }
 
-    public ResponseEntity<ByteArrayResource> downloadFiles(List<String> rootFullNames)
+    public ResponseEntity<ByteArrayResource> downloadFiles(DownloadRequest request)
     {
-        DownloadRequest request = new DownloadRequest(rootFullNames);
         ByteArrayResource byteArrayResource = fileStorageClient.downloadFile(request).getBody();
         return ResponseEntity.ok(byteArrayResource);
     }
