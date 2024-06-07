@@ -10,6 +10,8 @@ import com.glos.filemanagerservice.clients.RepositoryStorageClient;
 import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.facade.FileApiFacade;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,10 +41,15 @@ public class FileUploadController
         return ResponseEntity.ok(created);
     }
 
-    @GetMapping("/files/download")
+    @PostMapping("/files/download")
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
     {
-        return ResponseEntity.ok(fileApiFacade.downloadFiles(request).getBody());
+        ByteArrayResource resource = fileApiFacade.downloadFiles(request).getBody();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     @GetMapping("/repositories/{rootFullName}/download")
