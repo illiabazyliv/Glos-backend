@@ -1,7 +1,9 @@
 package com.glos.filemanagerservice.controllers;
 
 import com.glos.filemanagerservice.DTO.Page;
+import com.glos.filemanagerservice.DTO.RepositoryAndStatus;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
+import com.glos.filemanagerservice.DTO.RepositoryUpdateRequest;
 import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.entities.User;
 import com.glos.filemanagerservice.facade.RepositoryApiFacade;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/repositories")
@@ -41,19 +44,16 @@ public class RepositoryController
     }
 
     @PostMapping
-    public ResponseEntity<RepositoryDTO> create(@RequestBody Repository repository, UriComponentsBuilder uriComponentsBuilder)
+    public ResponseEntity<RepositoryAndStatus> create(@RequestBody Repository repository)
     {
-        RepositoryDTO created = repositoryApiFacade.create(repository).getBody();
-        return ResponseEntity.created(uriComponentsBuilder.path("/repositories/{id}")
-                .build(created.getId())).body(created);
+        RepositoryAndStatus created = repositoryApiFacade.create(repository).getBody();
+        return ResponseEntity.ok(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id ,@RequestBody Repository repository)
+    public ResponseEntity<List<RepositoryAndStatus>> update(@ModelAttribute RepositoryUpdateRequest updateRequest)
     {
-
-        repositoryApiFacade.update(id, repository);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(repositoryApiFacade.update(updateRequest.getRepositories()).getBody());
     }
 
     @DeleteMapping("/{id}")
