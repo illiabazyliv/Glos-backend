@@ -20,7 +20,7 @@ public interface FileStorageClient
 {
     @PostMapping(value = "/storage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<FileAndStatus> uploadFiles(@RequestPart(value = "filePath") String filePath, @RequestPart(value = "file") MultipartFile file);
-    @PostMapping("/storage/files/download")
+    @PostMapping(value = "/storage/files/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request);
 
     @PutMapping(value = "/storage/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
