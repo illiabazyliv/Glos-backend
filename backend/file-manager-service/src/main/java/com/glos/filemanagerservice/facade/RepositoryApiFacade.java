@@ -1,6 +1,7 @@
 package com.glos.filemanagerservice.facade;
 
 import com.accesstools.AccessNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
@@ -37,50 +38,56 @@ public class RepositoryApiFacade
     }
 
 
-    public ResponseEntity<RepositoryDTO> create(Repository repository)
+    public ResponseEntity<RepositoryAndStatus> create(Repository repository)
     {
         checkAccessTypes(repository);
         Path path = PathParser.getInstance().parse(repository.getRootPath());
         assignPath(repository, path);
-        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        RepositoryAndStatus repositoryAndStatus;
         try
         {
             repository.setCreationDate(LocalDateTime.now());
-            ResponseEntity<Repository> repositoryResponse = repositoryClient.createRepository(repository);
-            repositoryDTO = repositoryDTOMapper.toDto(repositoryResponse.getBody());
-            repositoryStorageClient.createRepository(repository.getRootFullName());
+            repositoryClient.createRepository(repository);
+            repositoryAndStatus = repositoryStorageClient.createRepository(repository.getRootFullName()).getBody();
         }
         catch (Exception e)
         {
             throw new RuntimeException(e.getMessage());
         }
-        return ResponseEntity.ok(repositoryDTO);
+        return ResponseEntity.ok(repositoryAndStatus);
     }
 
-    public ResponseEntity<?> update(Long id, Repository repository)
+    public ResponseEntity<List<RepositoryAndStatus>> update(List<RepositoryUpdateRequest.RepositoryNode> repositories)
     {
-        checkAccessTypes(repository);
-        Path path = PathParser.getInstance().parse(repository.getRootPath());
-        assignPath(repository, path);
+        List<RepositoryAndStatus> repositoryAndStatuses;
+        MoveRequest moveRequest = new MoveRequest();
         try {
-            repository.setId(id);
-            repository.setUpdateDate(LocalDateTime.now());
-            String rootFullName = repositoryClient.getRepositoryById(id).getBody().getRootFullName();
-            repositoryClient.updateRepository(repository, id);
-
-            if (repository.getRootFullName() != null && !rootFullName.equals(repository.getRootFullName()))
+            for (RepositoryUpdateRequest.RepositoryNode repository : repositories)
             {
-                MoveRequest moveRequest = new MoveRequest();
-                moveRequest.getMoves().add(new MoveRequest.MoveNode(rootFullName, repository.getRootFullName()));
-                repositoryStorageClient.moveRepository(moveRequest);
-            }
+                ObjectMapper objectMapper = new ObjectMapper();
+                Repository repo = objectMapper.readValue(repository.getRepositoryBody(), Repository.class);
 
+                checkAccessTypes(repo);
+                Path path = PathParser.getInstance().parse(repo.getRootPath());
+                assignPath(repo, path);
+                repo.setId(repository.getId());
+                repo.setUpdateDate(LocalDateTime.now());
+
+                String rootFullName = repositoryClient.getRepositoryById(repository.getId()).getBody().getRootFullName();
+                repositoryClient.updateRepository(repo, repository.getId());
+
+                if (repo.getRootFullName() != null && !rootFullName.equals(repo.getRootFullName()))
+                {
+                    moveRequest.getMoves().add(new MoveRequest.MoveNode(rootFullName, repo.getRootFullName()));
+                }
+            }
+            repositoryAndStatuses = repositoryStorageClient.moveRepository(moveRequest).getBody();
         }
         catch (Exception e)
         {
             throw new RuntimeException(e.getMessage());
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(repositoryAndStatuses);
     }
 
     public ResponseEntity<?> delete(Long id)
