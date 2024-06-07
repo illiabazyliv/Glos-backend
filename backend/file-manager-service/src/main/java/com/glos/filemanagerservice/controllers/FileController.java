@@ -1,10 +1,8 @@
 package com.glos.filemanagerservice.controllers;
 
-import com.glos.filemanagerservice.DTO.FileDTO;
-import com.glos.filemanagerservice.DTO.FileRequest;
+import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.facade.FileApiFacade;
-import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.clients.FileClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +31,15 @@ public class FileController
     }
 
     @PutMapping("/id/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @ModelAttribute FileRequest updateRequest)
+    public ResponseEntity<List<FileAndStatus>> update(@ModelAttribute FileUpdateRequest updateRequest)
     {
-        fileApiFacade.update(id, updateRequest);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileApiFacade.update(updateRequest).getBody());
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> delete(@RequestBody List<String> rootFullNames)
+    public ResponseEntity<List<FileAndStatus>> delete(@RequestBody List<String> rootFullNames)
     {
-        fileApiFacade.deleteFiles(rootFullNames);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileApiFacade.deleteFiles(rootFullNames).getBody());
     }
 
     @GetMapping("/{rootFullName}")

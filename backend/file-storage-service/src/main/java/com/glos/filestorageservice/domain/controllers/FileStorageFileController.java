@@ -44,36 +44,36 @@ public class FileStorageFileController
         return ResponseEntity.ok(fileAndStatus);
     }
 
-//    @GetMapping("/files/download/{filename}")
-//    public ResponseEntity<ByteArrayResource> downloadFiles(@PathVariable String filename) {
-//        try {
-//            final Path path = PathParser.getInstance().parse(filename);
-//            final FilePathNode fileNode = (FilePathNode) path.reader().last();
-//
-//            final List<byte[]> filesData = fileStorageService.download(Collections.singletonList(filename));
-//            if (filesData.isEmpty())
-//                return ResponseEntity.notFound().build();
-//
-//            final byte[] bytes = filesData.get(0);
-//            final ByteArrayResource resource = new ByteArrayResource(bytes);
-//
-//            final java.nio.file.Path pathIo = java.nio.file.Path.of(path.getSimplePath("/", true));
-//            String mimeType = Files.probeContentType(pathIo);
-//
-//            if (mimeType == null)
-//                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-//
-//            final HttpHeaders headers = new HttpHeaders();
-//            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileNode.getSimpleName()));
-//            headers.setContentType(MediaType.parseMediaType(mimeType));
-//            headers.setContentLength(bytes.length);
-//
-//            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError().build();
-//        }
-//    }
+    @GetMapping("/files/download/{filename}")
+    public ResponseEntity<ByteArrayResource> downloadFiles(@PathVariable String filename) {
+        try {
+            final Path path = PathParser.getInstance().parse(filename);
+            final FilePathNode fileNode = (FilePathNode) path.reader().last();
+
+            final List<byte[]> filesData = fileStorageService.download(Collections.singletonList(filename));
+            if (filesData.isEmpty())
+                return ResponseEntity.notFound().build();
+
+            final byte[] bytes = filesData.get(0);
+            final ByteArrayResource resource = new ByteArrayResource(bytes);
+
+            final java.nio.file.Path pathIo = java.nio.file.Path.of(path.getSimplePath("/", true));
+            String mimeType = Files.probeContentType(pathIo);
+
+            if (mimeType == null)
+                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+
+            final HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileNode.getSimpleName()));
+            headers.setContentType(MediaType.parseMediaType(mimeType));
+            headers.setContentLength(bytes.length);
+
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 
     @PostMapping("/files/download")
     public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)

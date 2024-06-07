@@ -50,7 +50,7 @@ public class FileApiFacade
         this.repositoryDTOMapper = repositoryDTOMapper;
     }
 
-    public ResponseEntity<List<FileDTO>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
+    public ResponseEntity<List<FileAndStatus>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
     {
         ObjectMapper objectMapper = new ObjectMapper();
         List<File> files = new ArrayList<>();
@@ -67,7 +67,7 @@ public class FileApiFacade
             throw new RuntimeException("Number of entities and file data must be equal");
         }
 
-        List<FileDTO> fileDTOS = new ArrayList<>();
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
 
         List<FileWithPath> fileWithPaths = new ArrayList<>();
         for (int i = 0; i < files.size(); i++)
@@ -82,39 +82,39 @@ public class FileApiFacade
                 File temp = files.get(i);
                 checkAccessTypes(temp);
                 temp.setCreationDate(LocalDateTime.now());
-                FileDTO fileDTO = fileClient.createFile(temp).getBody();
-                fileDTOS.add(fileDTO);
+                fileClient.createFile(temp);
                 fileWithPaths.get(i).setFilePath(temp.getRootFullName());
                 fileWithPaths.get(i).setFile(filesData.get(i));
             }
 
             for (FileWithPath file:fileWithPaths)
             {
-                fileStorageClient.uploadFiles(file.getFilePath(), file.getFile());
+               fileAndStatuses.add( fileStorageClient.uploadFiles(file.getFilePath(), file.getFile()).getBody());
             }
         }
         catch (Exception e)
         {
             throw  new RuntimeException(e.getMessage());
         }
-        return ResponseEntity.ok(fileDTOS);
+        return ResponseEntity.ok(fileAndStatuses);
     }
 
-    public ResponseEntity<?> update(Long id, FileRequest updateRequest)
+    public ResponseEntity<List<FileAndStatus>> update(FileUpdateRequest updateRequest)
     {
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
         try
         {
             MoveRequest moveRequest = new MoveRequest();
-            for (FileRequest.FileNode request: updateRequest.getFileNodes())
+            for (FileUpdateRequest.FileNode request: updateRequest.getFileNodes())
             {
                 ObjectMapper objectMapper = new ObjectMapper();
                 File file = objectMapper.readValue(request.getFileBody(), File.class);
                 checkAccessTypes(file);
                 file.setUpdateDate(LocalDateTime.now());
-                file.setId(id);
+                file.setId(request.getId());
 
-                String oldRootFullName = fileClient.getFileByID(id).getBody().getRootFullName();
-                fileClient.updateFile(file, id);
+                String oldRootFullName = fileClient.getFileByID(request.getId()).getBody().getRootFullName();
+                fileClient.updateFile(file, request.getId());
 
                 if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
                 {
@@ -125,7 +125,7 @@ public class FileApiFacade
                 if (request.getFileData() != null)
                 {
                     FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
-                    fileStorageClient.updateFile(fileWithPath);
+                    fileAndStatuses.add(fileStorageClient.updateFile(fileWithPath).getBody());
                 }
 
             }
@@ -139,11 +139,16 @@ public class FileApiFacade
             throw  new RuntimeException(e.getMessage());
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileAndStatuses);
     }
 
-    public ResponseEntity<?> deleteFiles(List<String> rootFullNames)
+    public ResponseEntity<List<FileAndStatus>> deleteFiles(List<String> rootFullNames)
     {
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        if (rootFullNames == null || rootFullNames.isEmpty())
+        {
+            return ResponseEntity.ok(List.of());
+        }
         try
         {
             for (String rotFullName:rootFullNames)
@@ -152,13 +157,13 @@ public class FileApiFacade
             }
 
             DeleteRequest request = new DeleteRequest(rootFullNames);
-            fileStorageClient.deleteFile(request);
+            fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
         }
         catch (Exception e)
         {
             throw new RuntimeException(e.getMessage());
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileAndStatuses);
 
     }
 
