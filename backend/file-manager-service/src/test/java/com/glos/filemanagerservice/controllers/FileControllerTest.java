@@ -23,9 +23,8 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FileController.class)
 @ExtendWith(MockitoExtension.class)
@@ -51,26 +50,20 @@ class FileControllerTest {
     @Test
     void getFileByIdTest() throws Exception {
         FileDTO fileDTO = new FileDTO();
-        Long id = 1L;
-        fileDTO.setId(id);
+        fileDTO.setId(1L);
         when(fileClient.getFileByID(anyLong())).thenReturn(ResponseEntity.ok(fileDTO));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/files/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get("/files/id/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1}"));
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
     void updateTest() throws Exception {
-        File file = new File();
-        Long id = 1L;
-        file.setId(id);
-        file.setUpdateDate(LocalDateTime.now());
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/files/{id}", id)
-        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":1,\"name\":\"test\"}"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/files/id/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{ \"id\": 1, \"name\": \"file\" }")
+                        .param("filesData", "fileData"))
                 .andExpect(status().isNoContent());
 
 
@@ -78,20 +71,21 @@ class FileControllerTest {
 
     @Test
     void deleteTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/files/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/files")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("[1, 2, 3]"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void getByRootFullNameTest() throws Exception {
-        FileDTO mockFileDTO = new FileDTO();
-        when(fileClient.getFileByRootFullName(anyString())).thenReturn(ResponseEntity.ok(mockFileDTO));
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setId(1L);
+        when(fileClient.getFileByRootFullName(any())).thenReturn(ResponseEntity.ok(fileDTO));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/files/root-fullname/{rootFullName}", "testRootFullName")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get("/files/someRootFullName"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{}"));
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
