@@ -36,6 +36,9 @@ public class FileRequest
         }
     }
 
+    public FileRequest() {
+    }
+
     private List<FileNode> fileNodes;
 
     public FileRequest(List<FileNode> fileNodes) {

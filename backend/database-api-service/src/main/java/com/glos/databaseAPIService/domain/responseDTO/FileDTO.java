@@ -1,8 +1,8 @@
 package com.glos.databaseAPIService.domain.responseDTO;
 
+import com.glos.databaseAPIService.domain.entities.AccessType;
 import com.glos.databaseAPIService.domain.entities.SecureCode;
 import com.glos.databaseAPIService.domain.entities.Tag;
-import jakarta.persistence.*;
 
 import java.util.*;
 

@@ -7,6 +7,8 @@ import com.glos.databaseAPIService.domain.entityMappers.FileMapper;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.FileRepository;
+import com.pathtools.Path;
+import com.pathtools.PathParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -78,6 +80,8 @@ public class FileService implements CrudService<File, Long>
     public File update(Long id, File newFile)
     {
         Objects.requireNonNull(newFile);
+        Path path = PathParser.getInstance().parse(newFile.getRootFullName());
+        newFile.setRootFullName(path.getPath());
         if (newFile.getAccessTypes() != null) {
             newFile.setAccessTypes(
                     newFile.getAccessTypes().stream()

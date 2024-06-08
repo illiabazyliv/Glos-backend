@@ -50,7 +50,7 @@ public class FileApiFacade
         this.repositoryDTOMapper = repositoryDTOMapper;
     }
 
-    public ResponseEntity<List<FileDTO>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
+    public ResponseEntity<List<FileAndStatus>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
     {
         ObjectMapper objectMapper = new ObjectMapper();
         List<File> files = new ArrayList<>();
@@ -67,8 +67,7 @@ public class FileApiFacade
             throw new RuntimeException("Number of entities and file data must be equal");
         }
 
-        List<FileDTO> fileDTOS = new ArrayList<>();
-        UploadRequest request = new UploadRequest();
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
 
         List<FileWithPath> fileWithPaths = new ArrayList<>();
         for (int i = 0; i < files.size(); i++)
@@ -83,98 +82,95 @@ public class FileApiFacade
                 File temp = files.get(i);
                 checkAccessTypes(temp);
                 temp.setCreationDate(LocalDateTime.now());
-                FileDTO fileDTO = fileClient.createFile(temp).getBody();
-                fileDTOS.add(fileDTO);
+                fileClient.createFile(temp);
                 fileWithPaths.get(i).setFilePath(temp.getRootFullName());
                 fileWithPaths.get(i).setFile(filesData.get(i));
             }
 
-            List<ByteArrayWithPath> byteArrayWithPaths = new ArrayList<>();
-            for (var fileWithPath:fileWithPaths)
+            for (FileWithPath file:fileWithPaths)
             {
-                ByteArrayWithPath byteArrayWithPath = new ByteArrayWithPath();
-                byteArrayWithPath.setFilePath(fileWithPath.getFilePath());
-                byteArrayWithPath.setFile(fileWithPath.getFile().getBytes());
-                byteArrayWithPath.setContentType(fileWithPath.getFile().getContentType());
-                byteArrayWithPaths.add(byteArrayWithPath);
+               fileAndStatuses.add( fileStorageClient.uploadFiles(file.getFilePath(), file.getFile()).getBody());
             }
-
-            request.setFiles(byteArrayWithPaths);
-
-            Map<String, Object> map = request.toMap();
-            //TODO змапити реквест
-            List<FileAndStatus> fileAndStatuses = fileStorageClient.uploadFiles(map).getBody();
-
         }
         catch (Exception e)
         {
             throw  new RuntimeException(e.getMessage());
         }
-        return ResponseEntity.ok(fileDTOS);
+        return ResponseEntity.ok(fileAndStatuses);
     }
 
-    public ResponseEntity<?> update(Long id, File file, MultipartFile fileData)
+    public ResponseEntity<List<FileAndStatus>> update(FileUpdateRequest updateRequest)
     {
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
         try
         {
-            checkAccessTypes(file);
-            file.setUpdateDate(LocalDateTime.now());
-            file.setId(id);
-            fileClient.updateFile(file, id);
-            String oldRootFullName = fileClient.getFileByID(id).getBody().getRootFullName();
-
-            if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
+            MoveRequest moveRequest = new MoveRequest();
+            for (FileUpdateRequest.FileNode request: updateRequest.getFileNodes())
             {
-                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, fileData);
-                fileStorageClient.updateFile(fileWithPath);
+                ObjectMapper objectMapper = new ObjectMapper();
+                File file = objectMapper.readValue(request.getFileBody(), File.class);
+                checkAccessTypes(file);
+                file.setUpdateDate(LocalDateTime.now());
+                file.setId(request.getId());
 
-                MoveRequest moveRequest = new MoveRequest();
-                moveRequest.getMoves().add(new MoveRequest.MoveNode(oldRootFullName, file.getRootFullName()));
+                String oldRootFullName = fileClient.getFileByID(request.getId()).getBody().getRootFullName();
+                fileClient.updateFile(file, request.getId());
 
+                if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
+                {
+                    MoveRequest.MoveNode moveNode = new MoveRequest.MoveNode(oldRootFullName, file.getRootFullName());
+                    moveRequest.getMoves().add(moveNode);
+                }
+
+                if (request.getFileData() != null)
+                {
+                    FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
+                    fileAndStatuses.add(fileStorageClient.updateFile(fileWithPath).getBody());
+                }
+
+            }
+            if (moveRequest != null)
+            {
                 fileStorageClient.moveFile(moveRequest);
             }
-            else
-            {
-                FileWithPath fileWithPath = new FileWithPath(oldRootFullName, fileData);
-                fileStorageClient.updateFile(fileWithPath);
-            }
-
-
         }
         catch (Exception e)
         {
             throw  new RuntimeException(e.getMessage());
         }
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileAndStatuses);
     }
 
-    public ResponseEntity<?> deleteFiles(List<Long> ids)
+    public ResponseEntity<List<FileAndStatus>> deleteFiles(List<String> rootFullNames)
     {
-        List<String> rootFullNames = new ArrayList<>();
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        if (rootFullNames == null || rootFullNames.isEmpty())
+        {
+            return ResponseEntity.ok(List.of());
+        }
         try
         {
-            for (Long id:ids)
+            for (String rotFullName:rootFullNames)
             {
-                rootFullNames.add(fileClient.getFileByID(id).getBody().getRootFullName());
-                fileClient.deleteFile(id);
+                fileClient.deleteFile(fileClient.getFileByRootFullName(rotFullName).getBody().getId());
             }
 
             DeleteRequest request = new DeleteRequest(rootFullNames);
-            fileStorageClient.deleteFile(request);
+            fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
         }
         catch (Exception e)
         {
             throw new RuntimeException(e.getMessage());
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(fileAndStatuses);
 
     }
 
-    public ResponseEntity<ByteArrayResource> downloadFiles(List<String> rootFullNames)
+    public ResponseEntity<ByteArrayResource> downloadFiles(DownloadRequest request)
     {
-        DownloadRequest request = new DownloadRequest(rootFullNames);
-        return ResponseEntity.ok(fileStorageClient.downloadFile(request).getBody());
+        ByteArrayResource byteArrayResource = fileStorageClient.downloadFile(request).getBody();
+        return ResponseEntity.ok(byteArrayResource);
     }
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)

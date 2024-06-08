@@ -5,11 +5,11 @@ import com.glos.databaseAPIService.domain.entities.Repository;
 import com.glos.databaseAPIService.domain.entities.User;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
-import com.glos.databaseAPIService.domain.responseDTO.UserDTO;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
-import com.glos.databaseAPIService.domain.util.PathUtils;
+import com.pathtools.Path;
+import com.pathtools.PathParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +18,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -54,9 +51,9 @@ public class RepositoryAPIController
 
     @PostMapping
     public ResponseEntity<RepositoryDTO> createRepository(@RequestBody Repository repository, UriComponentsBuilder uriBuilder) {
-        PathUtils.ordinalPathsRepository(repository);
+        Path path = PathParser.getInstance().parse(repository.getRootFullName());
+        repository.setRootFullName(path.getPath());
         Repository repo = repositoryService.create(repository);
-        PathUtils.normalizePathsRepository(repository);
 
         RepositoryDTO repositoryDTO = mapper.toDto(repo);
 
@@ -116,8 +113,7 @@ public class RepositoryAPIController
     @GetMapping("/root-fullname/{rootFullName}")
     public ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName)
     {
-        final String ordinalRootFullName = PathUtils.originalPath(rootFullName);
-        Repository rep = repositoryService.findByRootFullName(ordinalRootFullName).orElseThrow(() ->
+        Repository rep = repositoryService.findByRootFullName(PathParser.getInstance().parse(rootFullName).getPath()).orElseThrow(() ->
                 new ResourceNotFoundException("Repository is not found") );
         return ResponseEntity.of(Optional.of(mapper.toDto(rep)));
     }
@@ -128,7 +124,8 @@ public class RepositoryAPIController
             @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        PathUtils.ordinalPathsRepository(filter);
+        Path path = PathParser.getInstance().parse(filter.getRootFullName());
+        filter.setRootFullName(path.getPath());
         Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable, ignoreSys);
         Page<RepositoryDTO> repositoryDTOS = repositories.map(mapper::toDto);
         return ResponseEntity.ok(repositoryDTOS);
