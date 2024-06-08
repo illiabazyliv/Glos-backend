@@ -1,0 +1,23 @@
+package com.glos.databaseAPIService.domain.repository;
+
+
+import com.glos.databaseAPIService.domain.entities.AccessType;
+import com.glos.databaseAPIService.domain.entities.Tag;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Map;
+import java.util.Optional;
+/**
+ * 	@author - yablonovskydima
+ */
+@Repository
+public interface TagRepository extends JpaRepository<Tag, Long>
+{
+    default Map.Entry<Tag, Boolean> ensureByName(String name) {
+        final Optional<Tag> tagOpt = findByName(name);
+        return Map.entry(tagOpt.orElseGet(() -> save(new Tag(null, name))), tagOpt.isEmpty());
+    }
+
+    Optional<Tag> findByName(String name);
+}

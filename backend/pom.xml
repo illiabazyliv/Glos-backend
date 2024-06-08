@@ -20,6 +20,14 @@
     <module>eureka-service</module>
     <module>api-gateway</module>
     <module>operation-service</module>
+    <module>notification-service</module>
+    <module>database-api-service</module>
+    <module>user-manager-service</module>
+    <module>auth-service</module>
+    <module>file-manager-service</module>
+    <module>access-service</module>
+    <module>comment-service</module>
+    <module>file-storage-service</module>
   </modules>
 
   <properties>
@@ -28,12 +36,23 @@
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!--Spring Boot-->
+    <spring-boot.version>3.2.3</spring-boot.version>
     <spring-cloud.version>2023.0.1</spring-cloud.version>
     <spring-colud-eureka>4.1.1</spring-colud-eureka>
+    <jsonwebtoken.version>0.12.3</jsonwebtoken.version>
+    <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+    <jakarta-validation.version>3.0.2</jakarta-validation.version>
+    <minio.version>8.5.7</minio.version>
+    <jasypt.version>3.0.5</jasypt.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-docker-compose</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
@@ -44,6 +63,23 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -52,4 +88,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>

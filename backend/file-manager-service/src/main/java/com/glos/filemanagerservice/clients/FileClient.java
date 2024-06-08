@@ -1,0 +1,33 @@
+package com.glos.filemanagerservice.clients;
+
+import com.glos.filemanagerservice.DTO.FileDTO;
+import com.glos.filemanagerservice.DTO.Page;
+import com.glos.filemanagerservice.entities.File;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@FeignClient(name = "files")
+public interface FileClient
+{
+    @GetMapping("/{id}")
+    ResponseEntity<FileDTO> getFileByID(@PathVariable Long id);
+
+    @PostMapping
+    ResponseEntity<FileDTO> createFile(@RequestBody File file);
+
+    @PutMapping("/{id}")
+    ResponseEntity<?> updateFile(@RequestBody File newFile, @PathVariable("id") Long id);
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteFile(@PathVariable Long id);
+
+    @GetMapping
+    ResponseEntity<Page<FileDTO>> getFilesByFilter(@SpringQueryMap Map<String, Object> filter);
+
+    @GetMapping("/root-fullname/{rootFullName}")
+    public ResponseEntity<FileDTO> getFileByRootFullName(@PathVariable String rootFullName);
+}
