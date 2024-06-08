@@ -204,7 +204,7 @@ public class FileApiFacade
     }
 
     private void checkAccessTypes(File file) {
-        if (file.getAccessTypes() != null) {
+        if (file != null && file.getAccessTypes() != null) {
             file.setAccessTypes(
                     file.getAccessTypes().stream()
                             .peek(x -> {

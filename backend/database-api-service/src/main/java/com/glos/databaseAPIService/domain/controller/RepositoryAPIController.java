@@ -124,8 +124,11 @@ public class RepositoryAPIController
             @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        Path path = PathParser.getInstance().parse(filter.getRootFullName());
-        filter.setRootFullName(path.getPath());
+        if (filter != null && filter.getRootFullName() != null)
+        {
+            Path path = PathParser.getInstance().parse(filter.getRootFullName());
+            filter.setRootFullName(path.getPath());
+        }
         Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable, ignoreSys);
         Page<RepositoryDTO> repositoryDTOS = repositories.map(mapper::toDto);
         return ResponseEntity.ok(repositoryDTOS);
