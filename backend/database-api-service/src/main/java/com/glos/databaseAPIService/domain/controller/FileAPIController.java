@@ -120,8 +120,12 @@ public class FileAPIController
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     )
     {
-        Path path = PathParser.getInstance().parse(filter.getRootFullName());
-        filter.setRootFullName(path.getPath());
+        if (filter != null && filter.getRootFullName() != null)
+        {
+            Path path = PathParser.getInstance().parse(filter.getRootFullName());
+            filter.setRootFullName(path.getPath());
+        }
+
         Page<File> files = fileService.findAllByFilter(filter, pageable);
         Page<FileDTO> fileDTOS = files.map(fileDTOMapper::toDto);
         return ResponseEntity.ok(fileDTOS);
