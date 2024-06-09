@@ -29,6 +29,6 @@ spring:
         - id: comment-service
           uri: ${COMMENT_SERVICE_URL:http://localhost:9007}
           predicates:
-            -Path=/api/comments,/api/comments/**,/api/**/comments, /api/**/comments/**
+            - Path=/api/comments,/api/comments/**
           filters:
-            -RewritePath=/api(?<segment>.*), /api/v1${segment}
+            - RewritePath=/api(?<segment>.*), /api/v1${segment}

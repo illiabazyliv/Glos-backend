@@ -25,6 +25,7 @@ public class SignUpRequest {
             groups = OnCreate.class)
     @UserUniqueField(name = "username", message = "Username is already taken",
                      groups = OnCreate.class)
+    @Pattern(regexp = "^[A-Za-z0-9]{5,}$", message = "Invalid format")
     private String username;
 
     @NotBlank(message = "Password can not be empty.", groups = OnCreate.class)
@@ -48,6 +49,8 @@ public class SignUpRequest {
             groups = {OnCreate.class, OnUpdate.class})
     @UserUniqueField(name = "email", message = "Email is already taken",
                     groups = OnCreate.class)
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$",
+            message = "Invalid format")
     private String email;
 
     @NotBlank(message = "Phone number can not be null.",
@@ -76,6 +79,8 @@ public class SignUpRequest {
     @Length(max = 20,
             message = "Firstname must be 20 characters or less.",
             groups = {OnCreate.class, OnUpdate.class})
+    @Pattern(regexp = "^[A-Za-z]{2,}$",
+            message = "Invalid format")
     private String firstName;
 
     @NotBlank(message = "Lastname can not be null.",
@@ -83,6 +88,8 @@ public class SignUpRequest {
     @Length(max = 20,
             message = "Lastname must be 20 characters or less.",
             groups = {OnCreate.class, OnUpdate.class})
+    @Pattern(regexp = "^[A-Za-z]{2,}$",
+            message = "Invalid format")
     private String lastName;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
