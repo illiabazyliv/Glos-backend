@@ -23,7 +23,7 @@ spring:
         - id: access-service
           uri: ${ACCESS_SERVICE_URL:http://localhost:9009}
           predicates:
-            - Path=/api/access-types,/api/access-types/**
+            - Path=/api/access/**
           filters:
             - RewritePath=/api(?<segment>.*), /api/v1${segment}
         - id: comment-service
