@@ -1,5 +1,6 @@
 package com.glos.api.authservice.controller;
 
+import com.glos.api.authservice.dto.SignInRequest;
 import com.glos.api.authservice.dto.SignUpRequest;
 import com.glos.api.authservice.entities.Roles;
 import com.glos.api.authservice.entities.User;
@@ -31,11 +32,7 @@ public class AuthController {
     public ResponseEntity<JwtResponse> registerUser(
             @RequestBody  @Validated(OnCreate.class)  SignUpRequest request
     ) {
-        JwtEntity jwtEntity = new JwtEntity(() -> {
-            User user = signUpRequestMapper.toEntity(request);
-            user.setRoles(Collections.singletonList(Roles.ROLE_USER.asEntity()));
-            return user;
-        });
+        JwtEntity jwtEntity = complateJwtEntity(request, Roles.ROLE_USER);
         JwtResponse response = simpleAuthService.register(jwtEntity);
         return ResponseEntity.ok(response);
     }
@@ -44,20 +41,24 @@ public class AuthController {
     public ResponseEntity<JwtResponse> registerAdmin(
             @RequestBody @Validated(OnCreate.class) SignUpRequest request
     ) {
-        JwtEntity jwtEntity = new JwtEntity(() -> {
-            User user = signUpRequestMapper.toEntity(request);
-            user.setRoles(Collections.singletonList(Roles.ROLE_ADMIN.asEntity()));
-            return user;
-        });
+        JwtEntity jwtEntity = complateJwtEntity(request, Roles.ROLE_ADMIN);
         JwtResponse response = simpleAuthService.register(jwtEntity);
         return ResponseEntity.ok(response);
     }
 
+    private JwtEntity complateJwtEntity(SignUpRequest request, Roles role) {
+        return new JwtEntity(() -> {
+            User user = signUpRequestMapper.toEntity(request);
+            user.setRoles(Collections.singletonList(role.asEntity()));
+            return user;
+        });
+    }
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
-            @RequestBody @Valid JwtRequest jwtRequest
+            @RequestBody @Valid SignInRequest signInRequest
     ) {
-        return ResponseEntity.ok(simpleAuthService.authenticate(jwtRequest));
+        return ResponseEntity.ok(simpleAuthService.authenticate(signInRequest));
     }
 
     @GetMapping("/validate")

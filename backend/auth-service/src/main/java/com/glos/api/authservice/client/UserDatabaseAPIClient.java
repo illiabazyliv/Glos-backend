@@ -12,4 +12,7 @@ public interface UserDatabaseAPIClient {
     @GetMapping("/users/{id}")
     ResponseEntity<User> getById(@PathVariable Long id);
 
+    @GetMapping("/users/username/{username}")
+    ResponseEntity<User> getByUsername(@PathVariable String username);
+
 }

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -33,11 +35,10 @@ public class ControllerAdvice {
     public InternalExceptionBody handleResourceNotFound(
             Exception e
     ) {
-        return new InternalExceptionBody(e.getClass(), e.getMessage());
+        return new InternalExceptionBody(e.getClass(), e.getMessage(), new HashMap<>());
     }
 
     @ExceptionHandler({
-            ResourceAlreadyExistsException.class,
             IllegalArgumentException.class,
             IllegalStateException.class,
             InvocationTargetException.class,
@@ -48,7 +49,16 @@ public class ControllerAdvice {
     public InternalExceptionBody handleBadRequest(
             Exception e
     ) {
-        return new InternalExceptionBody(e.getClass(), e.getMessage());
+        return new InternalExceptionBody(e.getClass(), e.getMessage(), new HashMap<>());
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public InternalExceptionBody handleAlreadyExists(
+            ResourceAlreadyExistsException e
+    ) {
+        Map<String, String> errors =  Map.of(e.getField().getKey(), e.getField().getValue());
+        return new InternalExceptionBody(e.getClass(), e.getMessage(), errors);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
@@ -56,7 +66,7 @@ public class ControllerAdvice {
     public InternalExceptionBody handleDataIntegrityViolationException(
             DataIntegrityViolationException e
     ) {
-        return new InternalExceptionBody(e.getClass(), e.getMessage());
+        return new InternalExceptionBody(e.getClass(), e.getMessage(),  new HashMap<>());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -66,7 +76,7 @@ public class ControllerAdvice {
         ex.getConstraintViolations().forEach(violation -> {
             errorMessage.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("; ");
         });
-        return new InternalExceptionBody(ex.getClass(), errorMessage.toString());
+        return new InternalExceptionBody(ex.getClass(), errorMessage.toString(), new HashMap<>());
     }
 
     @ExceptionHandler(InvalidDataAccessApiUsageException.class)
@@ -76,9 +86,9 @@ public class ControllerAdvice {
             org.hibernate.TransientPropertyValueException nestedException = (org.hibernate.TransientPropertyValueException) ex.getCause();
             String propertyName = nestedException.getPropertyName();
             String message = String.format("Transient property value exception: %s", propertyName);
-            return new InternalExceptionBody(ex.getClass(), message);
+            return new InternalExceptionBody(ex.getClass(), message, new HashMap<>());
         }
-        return new InternalExceptionBody(ex.getClass(), "Invalid data access: " + ex.getMessage());
+        return new InternalExceptionBody(ex.getClass(), "Invalid data access: " + ex.getMessage(), new HashMap<>());
     }
 
     @ExceptionHandler(OptimisticLockException.class)
@@ -86,7 +96,7 @@ public class ControllerAdvice {
     public InternalExceptionBody handleOptimisticLockException(
             OptimisticLockException e
     ){
-        return new InternalExceptionBody(e.getClass(), e.getMessage());
+        return new InternalExceptionBody(e.getClass(), e.getMessage(), new HashMap<>());
     }
 
     @ExceptionHandler({
@@ -97,6 +107,6 @@ public class ControllerAdvice {
     })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public InternalExceptionBody handleResourceNotFound(Throwable throwable) {
-        return new InternalExceptionBody(throwable.getClass(), throwable.getMessage());
+        return new InternalExceptionBody(throwable.getClass(), throwable.getMessage(), new HashMap<>());
     }
 }

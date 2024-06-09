@@ -25,9 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ResponseEntity<User> response = userAPIClient.getByUsername(username);
-        User u1 = getUser(response);
-        User u2 = getUser(userDatabaseAPIClient.getById(u1.getId()));
+        User u2 = getUser(userDatabaseAPIClient.getByUsername(username));
         JwtEntity j = new JwtEntity();
         j.setUser(u2);
         return j;

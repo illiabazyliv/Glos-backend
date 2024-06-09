@@ -47,7 +47,6 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler({
-            ResourceAlreadyExistsException.class,
             IllegalArgumentException.class,
             IllegalStateException.class,
             InvocationTargetException.class,
@@ -60,6 +59,11 @@ public class ControllerAdvice {
         return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
     }
 
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionBody handleResourceAlreadyExistsException(ResourceAlreadyExistsException e) {
+        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -71,9 +75,7 @@ public class ControllerAdvice {
         return exceptionBody;
     }
 
-    @ExceptionHandler({
-            Throwable.class
-    })
+    @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionBody handleResourceNotFound(Throwable throwable) {
         return new SimpleExceptionBody(throwable.getMessage(), new HashMap<>());

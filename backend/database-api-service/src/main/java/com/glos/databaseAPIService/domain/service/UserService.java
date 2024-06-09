@@ -4,6 +4,7 @@ package com.glos.databaseAPIService.domain.service;
 import com.glos.databaseAPIService.domain.entities.Group;
 import com.glos.databaseAPIService.domain.entities.Role;
 import com.glos.databaseAPIService.domain.entities.User;
+import com.glos.databaseAPIService.domain.exceptions.ResourceAlreadyExistsException;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.entityMappers.UserMapper;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
@@ -72,8 +73,12 @@ public class UserService
     @Transactional
     public User create(User user) {
         collect();
+
+        throwIfAlreadyExists(user);
+
         assignRoles(user);
         assignGroups(user);
+
         LocalDateTime now = LocalDateTime.now();
         user.setCreatedDateTime(now);
         user.setUpdatedDataTime(now);
@@ -197,6 +202,19 @@ public class UserService
                     return x.getDeletedDateTime().isBefore(now);
                 }).toList();
         userRepository.deleteAll(users2);
+    }
+
+    private void throwIfAlreadyExists(User user) throws ResourceAlreadyExistsException {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            Map.Entry<String, String> entry = Map.entry("username", user.getUsername());
+            throw new ResourceAlreadyExistsException("Username '%s' is already taken.".formatted(user.getUsername()), entry);
+        } else if (userRepository.findByUsername(user.getEmail()).isPresent()) {
+            Map.Entry<String, String> entry = Map.entry("email", user.getEmail());
+            throw new ResourceAlreadyExistsException("Email '%s' is already taken.".formatted(user.getEmail()), entry);
+        } else if (userRepository.findByPhoneNumber(user.getPhone_number()).isPresent()) {
+            Map.Entry<String, String> entry = Map.entry("phoneNumber", user.getPhone_number());
+            throw new ResourceAlreadyExistsException("Phone number '%s' is already taken.".formatted(user.getPhone_number()), entry);
+        }
     }
 
     private List<User> removeSysIf(boolean isIgnoreSys, Iterable<User> iterable) {

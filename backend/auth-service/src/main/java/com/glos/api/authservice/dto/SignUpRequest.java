@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.glos.api.authservice.validation.OnCreate;
 import com.glos.api.authservice.validation.OnUpdate;
 import com.glos.api.authservice.validation.PasswordConfirm;
+import com.glos.api.authservice.validation.UserUniqueField;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -22,6 +23,8 @@ public class SignUpRequest {
     @Length(max = 20,
             message = "Username must be 20 characters or less.",
             groups = OnCreate.class)
+    @UserUniqueField(name = "username", message = "Username is already taken",
+                     groups = OnCreate.class)
     private String username;
 
     @NotBlank(message = "Password can not be empty.", groups = OnCreate.class)
@@ -43,6 +46,8 @@ public class SignUpRequest {
     @Length(max = 50,
             message = "Email must be 50 characters or less.",
             groups = {OnCreate.class, OnUpdate.class})
+    @UserUniqueField(name = "email", message = "Email is already taken",
+                    groups = OnCreate.class)
     private String email;
 
     @NotBlank(message = "Phone number can not be null.",
@@ -54,6 +59,9 @@ public class SignUpRequest {
     @Length(max = 15,
             message = "Incorrect phone number.",
             groups = {OnCreate.class, OnUpdate.class})
+    @UserUniqueField(name = "phoneNumber",
+                    message = "Phone number is already taken",
+            groups = OnCreate.class)
     private String phoneNumber;
 
     @NotBlank(message = "Firstname can not be null.",

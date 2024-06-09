@@ -6,25 +6,25 @@ import java.util.Objects;
 
 public class SignInRequest {
 
-    @NotBlank(message = "Username can not be empty.")
-    private String username;
+    @NotBlank(message = "Login can not be empty.")
+    private String login;
 
     @NotBlank(message = "Password can not be empty.")
     private String password;
 
     public SignInRequest() {}
 
-    public SignInRequest(String username, String password) {
-        this.username = username;
+    public SignInRequest(String login, String password) {
+        this.login = login;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLogin() {
+        return login;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLogin(String username) {
+        this.login = username;
     }
 
     public String getPassword() {
@@ -40,11 +40,11 @@ public class SignInRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SignInRequest that = (SignInRequest) o;
-        return Objects.equals(username, that.username) && Objects.equals(password, that.password);
+        return Objects.equals(login, that.login) && Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password);
+        return Objects.hash(login, password);
     }
 }

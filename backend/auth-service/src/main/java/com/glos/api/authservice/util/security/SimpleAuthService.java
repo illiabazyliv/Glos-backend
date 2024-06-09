@@ -1,10 +1,18 @@
 package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
+import com.glos.api.authservice.dto.SignInRequest;
 import com.glos.api.authservice.entities.Roles;
 import com.glos.api.authservice.entities.User;
+import com.glos.api.authservice.exception.HttpStatusCodeImplException;
+import com.glos.api.authservice.exception.InvalidLoginException;
+import com.glos.api.authservice.exception.ResponseEntityException;
 import com.glos.api.authservice.exception.UserAccountStateException;
 import com.glos.api.authservice.shared.SharedEntity;
+import com.glos.api.authservice.util.UsernameUtil;
+import feign.Feign;
+import feign.FeignException;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,7 +25,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.net.UnknownServiceException;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 public class SimpleAuthService implements AuthService {
@@ -59,6 +70,12 @@ public class SimpleAuthService implements AuthService {
         User created = response.getBody();
         created.setPassword_hash(user.getPassword_hash());
         return created;
+    }
+
+    public JwtResponse authenticate(SignInRequest request) {
+        final String loginType = UsernameUtil.detectTypeLogin(request.getLogin());
+        final JwtRequest jwtRequest = complateJwtRequest(loginType, request);
+        return authenticate(jwtRequest);
     }
 
     @Override
@@ -105,5 +122,58 @@ public class SimpleAuthService implements AuthService {
     @Override
     public boolean validate(String token) {
         return jwtService.validateToken(token);
+    }
+
+    private JwtRequest complateJwtRequest(String type, SignInRequest request) {
+        final User user = getUserSwitch(type).apply(request.getLogin());
+        return new JwtRequest(user.getUsername(), request.getPassword());
+    }
+
+    private Function<String, User> getUserSwitch(String type) {
+        return switch (type) {
+            case "username" -> this::getUserByUsername;
+            case "email" -> this::getByEmail;
+            case "phoneNumber" -> this::getByPhoneNumber;
+            default -> throw new InvalidLoginException("Invalid login", "");
+        };
+    }
+
+    private User getByUsername(String username) {
+        try {
+            return userAPIClient.getByUsername(username).getBody();
+        } catch (FeignException ex) {
+            if (ex.status() >= 500) {
+                throw new RuntimeException("Internal server error");
+            } else if (ex.status() == 404) {
+                throw new UsernameNotFoundException("User not found");
+            }
+            throw new HttpStatusCodeImplException(HttpStatusCode.valueOf(ex.status()), ex.getMessage());
+        }
+    }
+
+    private User getByEmail(String email) {
+        try {
+            return userAPIClient.getByEmail(email).getBody();
+        } catch (FeignException ex) {
+            if (ex.status() >= 500) {
+                throw new RuntimeException("Internal server error");
+            } else if (ex.status() == 404) {
+                throw new UsernameNotFoundException("User not found");
+            }
+            throw new HttpStatusCodeImplException(HttpStatusCode.valueOf(ex.status()), ex.getMessage());
+        }
+    }
+
+    private User getByPhoneNumber(String phoneNumber) {
+        try {
+            return userAPIClient.getByPhoneNumber(phoneNumber).getBody();
+        } catch (FeignException ex) {
+            if (ex.status() >= 500) {
+                throw new RuntimeException("Internal server error");
+            } else if (ex.status() == 404) {
+                throw new UsernameNotFoundException("User not found");
+            }
+            throw new HttpStatusCodeImplException(HttpStatusCode.valueOf(ex.status()), ex.getMessage());
+        }
     }
 }

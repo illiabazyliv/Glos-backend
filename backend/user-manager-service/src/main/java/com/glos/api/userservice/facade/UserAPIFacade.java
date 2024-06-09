@@ -5,11 +5,15 @@ import com.glos.api.userservice.client.StorageClient;
 import com.glos.api.userservice.client.UserAPIClient;
 import com.glos.api.userservice.entities.Role;
 import com.glos.api.userservice.entities.User;
+import com.glos.api.userservice.exeptions.HttpStatusCodeImplException;
+import com.glos.api.userservice.exeptions.ResourceAlreadyExistsException;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
 import com.glos.api.userservice.utils.Constants;
+import feign.FeignException;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.glos.api.userservice.utils.MapUtils;
@@ -59,15 +63,22 @@ public class UserAPIFacade {
         user.setIs_enabled(Constants.DEFAULT_IS_ENABLED);
         user.setIs_deleted(Constants.DEFAULT_IS_DELETED);
         ResponseEntity<User> userResponseEntity;
+
         try
         {
-            storageClient.create(user.getUsername());
             userResponseEntity = userAPIClient.create(user);
         }
-        catch (Exception e)
+        catch (FeignException e)
         {
-            throw new RuntimeException(e.getMessage());
+            if (e.status() >= 500) {
+                throw new RuntimeException("Internal server error");
+            } else if (e.status() == 409) {
+                throw new ResourceAlreadyExistsException(e.getMessage());
+            }
+            throw new HttpStatusCodeImplException(HttpStatusCode.valueOf(e.status()), e.getMessage());
         }
+
+        storageClient.create(user.getUsername());
 
         // TODO: send message to email
 
