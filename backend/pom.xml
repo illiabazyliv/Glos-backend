@@ -28,6 +28,7 @@
     <module>access-service</module>
     <module>comment-service</module>
     <module>file-storage-service</module>
+    <module>operation-service</module>
   </modules>
 
   <properties>
