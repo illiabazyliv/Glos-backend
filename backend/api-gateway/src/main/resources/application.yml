@@ -3,6 +3,13 @@ server:
   port: ${PORT:9002}
   servlet:
     context-path: ${SERVER_CONTEXT_PATH:/api}
+  ssl:
+    enabled: true
+    key-alias: glos-backend
+    key-store: classpath:ssl/glos_backend.pfx
+    key-store-type: PKCS12
+    key-store-password: "T0}%{oHzy*onW%iGzJPt"
+    key-password: "T0}%{oHzy*onW%iGzJPt"
 
 eureka:
   instance:
