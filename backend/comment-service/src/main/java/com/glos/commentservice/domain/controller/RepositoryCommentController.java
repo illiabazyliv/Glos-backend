@@ -17,6 +17,7 @@ public class RepositoryCommentController
         this.repositoryApiFacade = repositoryApiFacade;
     }
 
+    //TODO працює тільки коли в постмані символи % пишеш як %25
     @GetMapping("/repositories/{rootFullName}/comments")
     public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable String rootFullName)
     {

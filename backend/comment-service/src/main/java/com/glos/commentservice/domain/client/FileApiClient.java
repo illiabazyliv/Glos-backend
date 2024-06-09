@@ -13,8 +13,8 @@ public interface FileApiClient
 {
 
     @PutMapping("/{id}")
-    ResponseEntity<?> update(@PathVariable Long id, @RequestBody File file);
+    ResponseEntity<?> updateFile(@RequestBody File newFile, @PathVariable("id") Long id);
 
     @GetMapping("/root-fullname/{rootFullName}")
-    ResponseEntity<FileDTO> getByRootFullName(@PathVariable String rootFullName);
+    ResponseEntity<FileDTO> getFileByRootFullName(@PathVariable String rootFullName);
 }
