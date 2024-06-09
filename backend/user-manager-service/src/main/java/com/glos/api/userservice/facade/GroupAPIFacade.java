@@ -38,6 +38,7 @@ public class GroupAPIFacade {
 
     public ResponseEntity<Group> putGroup(Group group, String ownerUsername, String groupName) {
         Optional<Group> groupOtp = getByOwnerAndName(ownerUsername, groupName);
+        group.setName(groupName);
         if (group.getOwner() == null) {
             group.setOwner(new User());
             group.getOwner().setUsername(ownerUsername);
