@@ -38,7 +38,7 @@ public class RepositoryApiFacade
         RepositoryDTO repositoryDTO = repositoryApiClient.getRepositoryByRootFullName(rootFullName).getBody();
         repositoryDTO.getComments().add(created);
         Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-        repositoryApiClient.update(repository.getId(), repository);
+        repositoryApiClient.updateRepository(repository, repository.getId());
         return ResponseEntity.ok(created);
     }
 
@@ -47,7 +47,7 @@ public class RepositoryApiFacade
         CommentDTO commentDTO = commentApiFacade.getById(id).getBody();
         RepositoryDTO repositoryDTO = repositoryApiClient.getRepositoryByRootFullName(rootFullName).getBody();
         repositoryDTO.getComments().remove(commentDTO);
-        repositoryApiClient.update(repositoryDTO.getId(), repositoryDTOMapper.toEntity(repositoryDTO));
+        repositoryApiClient.updateRepository(repositoryDTOMapper.toEntity(repositoryDTO), repositoryDTO.getId());
         commentApiFacade.deleteComment(id);
         return ResponseEntity.noContent().build();
     }
@@ -64,7 +64,7 @@ public class RepositoryApiFacade
                 x = commentDTO;
             }
         });
-        repositoryApiClient.update(repositoryDTO.getId(), repositoryDTOMapper.toEntity(repositoryDTO));
+        repositoryApiClient.updateRepository(repositoryDTOMapper.toEntity(repositoryDTO), repositoryDTO.getId());
         return ResponseEntity.noContent().build();
     }
 }

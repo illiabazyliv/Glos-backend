@@ -45,7 +45,7 @@ public class FileApiFacade
 
     public ResponseEntity<Page<CommentDTO>> getFileComments(String rootFullName)
     {
-        FileDTO fileDTO = fileClient.getByRootFullName(rootFullName).getBody();
+        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
         Page<CommentDTO> commentDTOPage = new Page<>();
         commentDTOPage.setContent(fileDTO.getComments());
         return ResponseEntity.ok(commentDTOPage);
@@ -55,19 +55,19 @@ public class FileApiFacade
     {
         CommentDTO created = commentApiFacade.createComment(comment).getBody();
         created.getAuthor().setId(comment.getAuthor().getId());
-        FileDTO fileDTO = fileClient.getByRootFullName(rootFullName).getBody();
+        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
         fileDTO.getComments().add(created);
         File file = fileDTOMapper.toEntity(fileDTO);
-        fileClient.update(file.getId(), file);
+        fileClient.updateFile(file, file.getId());
         return ResponseEntity.ok(created);
     }
 
     public ResponseEntity<?> deleteComment(String rootFullName, Long id)
     {
         CommentDTO commentDTO = commentApiFacade.getById(id).getBody();
-        FileDTO fileDTO = fileClient.getByRootFullName(rootFullName).getBody();
+        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
         fileDTO.getComments().remove(commentDTO);
-        fileClient.update(fileDTO.getId(), fileDTOMapper.toEntity(fileDTO));
+        fileClient.updateFile(fileDTOMapper.toEntity(fileDTO), fileDTO.getId());
         commentApiFacade.deleteComment(id);
         return ResponseEntity.noContent().build();
     }
@@ -77,14 +77,14 @@ public class FileApiFacade
         comment.setId(id);
         commentApiFacade.updateComment(id, comment);
         CommentDTO commentDTO = commentApiFacade.getById(id).getBody();
-        FileDTO fileDTO = fileClient.getByRootFullName(rootFullName).getBody();
+        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
         fileDTO.getComments().stream().forEach((x) -> {
             if(x.getId() == id)
             {
                 x = commentDTO;
             }
         });
-        fileClient.update(fileDTO.getId(), fileDTOMapper.toEntity(fileDTO));
+        fileClient.updateFile(fileDTOMapper.toEntity(fileDTO), fileDTO.getId());
         return ResponseEntity.noContent().build();
     }
 }

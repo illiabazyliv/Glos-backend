@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 public interface RepositoryApiClient
 {
     @PutMapping("/{id}")
-    ResponseEntity<?> update(@PathVariable Long id ,@RequestBody Repository repository);
+    ResponseEntity<?> updateRepository(@RequestBody Repository newRepository, @PathVariable("id") Long id);
 
-    @GetMapping("/root-fullName/{rootFullName}")
+    @GetMapping("/root-fullname/{rootFullName}")
     ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);
 
 }

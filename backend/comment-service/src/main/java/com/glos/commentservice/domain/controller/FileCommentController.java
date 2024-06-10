@@ -17,7 +17,7 @@ public class FileCommentController
         this.fileApiFacade = fileApiFacade;
     }
 
-
+    //TODO працює тільки коли в постмані символи % пишеш як %25
     @GetMapping("/files/{rootFullName}/comments")
     public ResponseEntity<Page<CommentDTO>> getComments(@PathVariable String rootFullName)
     {
@@ -25,7 +25,7 @@ public class FileCommentController
     }
 
     @PostMapping("/files/{rootFullName}/comments")
-    public ResponseEntity<CommentDTO> createComment(@RequestBody Comment comment, @PathVariable String rootFullName)
+    public ResponseEntity<CommentDTO> createComment(@RequestBody Comment comment, @PathVariable("rootFullName") String rootFullName)
     {
         return ResponseEntity.ok(fileApiFacade.createFileComment(comment ,rootFullName).getBody());
     }

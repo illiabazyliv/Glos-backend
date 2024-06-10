@@ -12,6 +12,16 @@ public class Comment
 
     private LocalDateTime date;
 
+    public Comment(Long id, User author, String text, LocalDateTime date) {
+        this.id = id;
+        this.author = author;
+        this.text = text;
+        this.date = date;
+    }
+
+    public Comment() {
+    }
+
     public Long getId() {
         return id;
     }

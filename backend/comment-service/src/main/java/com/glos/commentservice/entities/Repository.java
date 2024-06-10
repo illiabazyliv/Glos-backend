@@ -1,7 +1,5 @@
 package com.glos.commentservice.entities;
 
-import jakarta.persistence.AccessType;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +28,7 @@ public class Repository
 
     private String description;
 
-    private List<jakarta.persistence.AccessType> accessTypes;
+    private List<AccessType> accessTypes;
     private List<Comment> comments;
     private List<SecureCode> secureCodes;
     private List<Tag> tags;
@@ -45,7 +43,7 @@ public class Repository
         this.tags = new ArrayList<>();
     }
 
-    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<jakarta.persistence.AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -143,7 +141,7 @@ public class Repository
         this.description = description;
     }
 
-    public List<jakarta.persistence.AccessType> getAccessTypes() {
+    public List<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
