@@ -8,7 +8,6 @@ import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.exeptions.HttpStatusCodeImplException;
 import com.glos.api.userservice.exeptions.ResourceAlreadyExistsException;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
-import com.glos.api.userservice.responseDTO.ChangePasswordRequest;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
@@ -79,7 +78,7 @@ public class UserAPIFacade {
             throw new HttpStatusCodeImplException(HttpStatusCode.valueOf(e.status()), e.getMessage());
         }
 
-        storageClient.create(user.getUsername());
+        //storageClient.create(user.getUsername());
 
         // TODO: send message to email
 
@@ -104,7 +103,7 @@ public class UserAPIFacade {
         user.getRoles().clear();
         userAPIClient.updateUser(id, user);
         ResponseEntity<?> response = userAPIClient.delete(user.getId());
-        storageClient.delete(user.getUsername());
+        //storageClient.delete(user.getUsername());
         return noContent(response);
     }
 
@@ -115,10 +114,10 @@ public class UserAPIFacade {
                         .toList());
         ResponseEntity<?> response = userAPIClient.updateUser(user.getId(), newUser);
 
-        if (!user.getUsername().equals(newUser.getUsername()))
-        {
-            storageClient.update(user.getUsername(), newUser.getUsername());
-        }
+//        if (!user.getUsername().equals(newUser.getUsername()))
+//        {
+//            storageClient.update(user.getUsername(), newUser.getUsername());
+//        }
 
         return noContent(response);
     }

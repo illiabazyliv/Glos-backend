@@ -20,8 +20,6 @@
 			<groupId>com.pathtools</groupId>
 			<artifactId>pathtools</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/pathtools-1.0.jar</systemPath>
 		</dependency>
 		<!--Spring Boot-->
 		<dependency>

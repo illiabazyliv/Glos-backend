@@ -68,7 +68,9 @@ public class SimpleAuthService implements AuthService {
     }
 
     public JwtResponse authenticate(SignInRequest request) {
-        final String loginType = UsernameUtil.detectTypeLogin(request.getLogin());
+        final String loginType = ("sys".equals(request.getLogin()))
+                ? "username"
+                : UsernameUtil.detectTypeLogin(request.getLogin());
         final JwtRequest jwtRequest = complateJwtRequest(loginType, request);
         return authenticate(jwtRequest);
     }
