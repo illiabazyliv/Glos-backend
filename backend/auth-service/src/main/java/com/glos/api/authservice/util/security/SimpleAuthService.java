@@ -1,39 +1,32 @@
 package com.glos.api.authservice.util.security;
 
 import com.glos.api.authservice.client.UserAPIClient;
+import com.glos.api.authservice.client.UserDatabaseAPIClient;
+import com.glos.api.authservice.dto.ChangeRequest;
 import com.glos.api.authservice.dto.SignInRequest;
 import com.glos.api.authservice.entities.Roles;
 import com.glos.api.authservice.entities.User;
 import com.glos.api.authservice.exception.HttpStatusCodeImplException;
 import com.glos.api.authservice.exception.InvalidLoginException;
-import com.glos.api.authservice.exception.ResponseEntityException;
-import com.glos.api.authservice.exception.UserAccountStateException;
-import com.glos.api.authservice.shared.SharedEntity;
 import com.glos.api.authservice.util.UsernameUtil;
-import feign.Feign;
 import feign.FeignException;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.net.UnknownServiceException;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Service
 public class SimpleAuthService implements AuthService {
 
     private final UserAPIClient userAPIClient;
+    private final UserDatabaseAPIClient userDatabaseAPIClient;
     private final JwtService jwtService;
     private final AuthenticationManager authManager;
     private final UserDetailsService userDetailsService;
@@ -41,12 +34,14 @@ public class SimpleAuthService implements AuthService {
 
     public SimpleAuthService(
             UserAPIClient userAPIClient,
+            UserDatabaseAPIClient userDatabaseAPIClient,
             JwtService jwtService,
             AuthenticationManager authManager,
             UserDetailsService userDetailsService,
             PasswordEncoder passwordEncoder
     ) {
         this.userAPIClient = userAPIClient;
+        this.userDatabaseAPIClient = userDatabaseAPIClient;
         this.jwtService = jwtService;
         this.authManager = authManager;
         this.userDetailsService = userDetailsService;
@@ -122,6 +117,37 @@ public class SimpleAuthService implements AuthService {
     @Override
     public boolean validate(String token) {
         return jwtService.validateToken(token);
+    }
+
+    @Override
+    public void changePassword(String username, ChangeRequest request) {
+        final User user = getUserByUsername(username);
+        // TODO: send request change to operation service
+    }
+
+    @Override
+    public void changePhoneNumber(String username, ChangeRequest request) {
+        final User user = getUserByUsername(username);
+        // TODO: send request change to operation service
+    }
+
+    @Override
+    public void changeEmail(String username, ChangeRequest request) {
+        final User user = getUserByUsername(username);
+        // TODO: send request change to operation service
+    }
+
+    @Override
+    public void changeUsername(String username, ChangeRequest request) {
+        final User user = getUserByUsername(username);
+        // TODO: send request change to operation service
+    }
+
+    @Override
+    public void deleteAccount(String username) {
+        final User user = getUserByUsername(username);
+        //userAPIClient.deleteById(user.getId());
+        // TODO: send request delete user to operation service
     }
 
     private JwtRequest complateJwtRequest(String type, SignInRequest request) {

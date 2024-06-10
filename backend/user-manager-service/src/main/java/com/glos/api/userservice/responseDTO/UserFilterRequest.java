@@ -31,16 +31,18 @@ public class UserFilterRequest {
     private int page;
     private int size;
     private String sort;
+    private String login;
 
     public UserFilterRequest() {
         this.roles = new ArrayList<>();
         this.groups = new ArrayList<>();
     }
 
-    public UserFilterRequest(Long id, String username, String email, String phoneNumber, String gender, String firstName, String lastName, LocalDateTime birthdate, Boolean blocked, Boolean enabled, Boolean deleted, List<String> roles, List<String> groups, int page, int size, String sort) {
+    public UserFilterRequest(Long id, String username, String email, String login, String phoneNumber, String gender, String firstName, String lastName, LocalDateTime birthdate, Boolean blocked, Boolean enabled, Boolean deleted, List<String> roles, List<String> groups, int page, int size, String sort) {
         this.id = id;
         this.username = username;;
         this.email = email;
+        this.login = login;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.firstName = firstName;
@@ -72,6 +74,13 @@ public class UserFilterRequest {
         this.username = username;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
     public String getEmail() {
         return email;

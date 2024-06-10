@@ -5,10 +5,7 @@ import com.glos.api.authservice.entities.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -20,6 +17,9 @@ public interface UserAPIClient {
 
     @GetMapping("/users/{id}")
     ResponseEntity<User> getById(@PathVariable Long id);
+
+    @DeleteMapping("/users/{id}")
+    ResponseEntity<?> deleteById(@PathVariable Long id);
 
     @GetMapping("/users/username/{username}")
     ResponseEntity<User> getByUsername(@PathVariable String username);

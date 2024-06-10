@@ -8,6 +8,7 @@ import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.exeptions.HttpStatusCodeImplException;
 import com.glos.api.userservice.exeptions.ResourceAlreadyExistsException;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
+import com.glos.api.userservice.responseDTO.ChangePasswordRequest;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
@@ -203,4 +204,5 @@ public class UserAPIFacade {
         }
         throw new ResourceNotFoundException("User not found");
     }
+
 }

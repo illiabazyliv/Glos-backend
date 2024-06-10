@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/repositories")
@@ -73,7 +75,8 @@ public class RepositoryController
         User user = new User();
         user.setUsername(username);
         repository.setOwner(user);
-        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, page, size, sort).getBody());
+        Map<String, Object> filter = new HashMap<>();
+        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, filter, page, size, sort).getBody());
     }
 
     @GetMapping("/root-fullname/{rootFullName}")
@@ -82,12 +85,42 @@ public class RepositoryController
         return ResponseEntity.ok(repositoryClient.getRepositoryByRootFullName(rootFullName).getBody());
     }
 
-    @GetMapping
-    public ResponseEntity<Page<RepositoryDTO>> getByFilter(@ModelAttribute Repository repository,
+    @GetMapping("/repositories/path/{rootFullName}")
+    public ResponseEntity<Page<RepositoryDTO>> getByFilter(@PathVariable String rootFullName,
+                                                           @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                                                           @RequestParam(name = "accessTypes", required = false, defaultValue = "") List<String> accessTypes,
+                                                           @RequestParam(name = "tags", required = false, defaultValue = "") List<String> tags,
                                                            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                            @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
-        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, page, size, sort).getBody());
+        final Path path = Path.builder(rootFullName).build();
+        Repository repository = new Repository();
+        repository.setRootFullName(path.getPath());
+        return getByFilter(repository, search, path.getFirst().getSimpleName(), accessTypes, tags, page, size, sort);
+    }
+
+    @GetMapping("/{rootFullName}")
+    public ResponseEntity<Page<RepositoryDTO>> getByFilter(@ModelAttribute Repository repository,
+                                                           @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                                                           @RequestParam(name = "username", required = false, defaultValue = "") String username,
+                                                           @RequestParam(name = "accessTypes", required = false, defaultValue = "") List<String> accessTypes,
+                                                           @RequestParam(name = "tags", required = false, defaultValue = "") List<String> tags,
+                                                           @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                           @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                           @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
+    {
+        Map<String, Object> filter = new HashMap<>();
+        putIfNonNull(filter, "owner.username", username);
+        putIfNonNull(filter, "search", search);
+        putIfNonNull(filter, "accessTypes", accessTypes);
+        putIfNonNull(filter, "tags", tags);
+        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, filter, page, size, sort).getBody());
+    }
+
+    private void putIfNonNull(Map<String, Object> map, String key, Object value) {
+        if (value != null) {
+            map.put(key, value);
+        }
     }
 }

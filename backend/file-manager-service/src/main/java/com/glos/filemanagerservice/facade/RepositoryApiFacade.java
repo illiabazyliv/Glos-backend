@@ -120,7 +120,7 @@ public class RepositoryApiFacade
         return ResponseEntity.ok(repositoryPage.map(repositoryDTOMapper::toDto));
     }
 
-    public ResponseEntity<Page<RepositoryDTO>> getRepositoryByFilter(Repository repository, int page, int size, String sort)
+    public ResponseEntity<Page<RepositoryDTO>> getRepositoryByFilter(Repository repository, Map<String, Object> filter, int page, int size, String sort)
     {
         checkAccessTypes(repository);
         RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
@@ -130,6 +130,7 @@ public class RepositoryApiFacade
         requestFilter.setSort(sort);
 
         Map<String, Object> map = MapUtils.map(requestFilter);
+        map.putAll(filter);
         map.put("ignoreSys", true);
         Page<Repository> repositories = repositoryClient.getRepositoriesByFilter(map).getBody();
         return ResponseEntity.ok(repositories.map(repositoryDTOMapper::toDto));
