@@ -1,0 +1,16 @@
+package com.glos.filemanagerservice.clients;
+
+import com.glos.filemanagerservice.entities.Tag;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@FeignClient(name = "tags")
+public interface TagClient
+{
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteTag(@PathVariable Long id);
+
+    @GetMapping("/name/{name}")
+    ResponseEntity<Tag> getTagByName(@PathVariable String name);
+}

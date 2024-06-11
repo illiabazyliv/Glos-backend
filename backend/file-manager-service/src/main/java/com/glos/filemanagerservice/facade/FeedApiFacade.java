@@ -50,8 +50,8 @@ public class FeedApiFacade
 
         Map<String, Object> map = MapUtils.map(requestFilter);
 
-        Page<Repository> repositoryPage = repositoryClient.getRepositoriesByFilter(map).getBody();
+        Page<RepositoryDTO> repositoryPage = repositoryClient.getRepositoriesByFilter(map).getBody();
 
-        return ResponseEntity.ok(repositoryPage.map(repositoryDTOMapper::toDto));
+        return ResponseEntity.ok(repositoryPage);
     }
 }

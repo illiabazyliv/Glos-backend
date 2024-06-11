@@ -68,4 +68,19 @@ public class FileController
     {
         return ResponseEntity.ok(fileApiFacade.getFilesByFilter(file, page, size, sort).getBody());
     }
+
+    @PutMapping("/{rootFullName}/add-tag/{name}")
+    public ResponseEntity<FileDTO> addTag(@PathVariable("rootFullName") String rootFullName,
+                                          @PathVariable("name") String name)
+    {
+        return ResponseEntity.ok(fileApiFacade.addTag(rootFullName, name).getBody());
+    }
+
+    @PutMapping("/{rootFullName}/remove-tag/{name}")
+    public ResponseEntity<?> removeTag(@PathVariable("rootFullName") String rootFullName,
+                                       @PathVariable("name") String name)
+    {
+        fileApiFacade.removeTag(rootFullName, name);
+        return ResponseEntity.noContent().build();
+    }
 }

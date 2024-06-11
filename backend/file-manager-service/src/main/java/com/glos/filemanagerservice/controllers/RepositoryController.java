@@ -1,9 +1,6 @@
 package com.glos.filemanagerservice.controllers;
 
-import com.glos.filemanagerservice.DTO.Page;
-import com.glos.filemanagerservice.DTO.RepositoryAndStatus;
-import com.glos.filemanagerservice.DTO.RepositoryDTO;
-import com.glos.filemanagerservice.DTO.RepositoryUpdateRequest;
+import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.entities.User;
 import com.glos.filemanagerservice.facade.RepositoryApiFacade;
@@ -40,9 +37,9 @@ public class RepositoryController
     @GetMapping("/{id}")
     public ResponseEntity<RepositoryDTO> getById(@PathVariable Long id)
     {
-        ResponseEntity<Repository> response = repositoryClient.getRepositoryById(id);
-        Repository repository = response.getBody();
-        return ResponseEntity.ok(repositoryDTOMapper.toDto(repository));
+        ResponseEntity<RepositoryDTO> response = repositoryClient.getRepositoryById(id);
+        RepositoryDTO repository = response.getBody();
+        return ResponseEntity.ok(repository);
     }
 
     @PostMapping
@@ -116,6 +113,21 @@ public class RepositoryController
         putIfNonNull(filter, "accessTypes", accessTypes);
         putIfNonNull(filter, "tags", tags);
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, filter, page, size, sort).getBody());
+    }
+
+    @PutMapping("/{rootFullName}/add-tag/{name}")
+    public ResponseEntity<RepositoryDTO> addTag(@PathVariable("rootFullName") String rootFullName,
+                                          @PathVariable("name") String name)
+    {
+        return ResponseEntity.ok(repositoryApiFacade.addTag(rootFullName, name).getBody());
+    }
+
+    @PutMapping("/{rootFullName}/remove-tag/{name}")
+    public ResponseEntity<?> removeTag(@PathVariable("rootFullName") String rootFullName,
+                                       @PathVariable("name") String name)
+    {
+        repositoryApiFacade.removeTag(rootFullName, name);
+        return ResponseEntity.noContent().build();
     }
 
     private void putIfNonNull(Map<String, Object> map, String key, Object value) {

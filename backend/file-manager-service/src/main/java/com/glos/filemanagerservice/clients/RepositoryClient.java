@@ -15,9 +15,9 @@ import java.util.Map;
 public interface RepositoryClient
 {
     @GetMapping("/{id}")
-    public ResponseEntity<Repository> getRepositoryById(@PathVariable Long id);
+    ResponseEntity<RepositoryDTO> getRepositoryById(@PathVariable Long id);
     @PostMapping
-    public ResponseEntity<Repository> createRepository(@RequestBody Repository repository);
+    ResponseEntity<RepositoryDTO> createRepository(@RequestBody Repository repository);
 
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteRepository(@PathVariable Long id);
@@ -26,10 +26,10 @@ public interface RepositoryClient
     ResponseEntity<?> updateRepository(@RequestBody Repository newRepository, @PathVariable("id") Long id);
 
     @GetMapping("/owner-id/{ownerId}")
-    public ResponseEntity<List<Repository>> getRepositoriesByOwnerId(@PathVariable Long ownerId);
+    ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId);
 
     @GetMapping()
-    public ResponseEntity<Page<Repository>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
+    ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
 
     @GetMapping("/root-fullname/{rootFullName}")
     ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);

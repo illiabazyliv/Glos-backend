@@ -8,12 +8,12 @@ import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.FileClient;
 import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryClient;
+import com.glos.filemanagerservice.clients.TagClient;
 import com.glos.filemanagerservice.entities.File;
-import com.glos.filemanagerservice.entities.Repository;
+import com.glos.filemanagerservice.entities.Tag;
 import com.glos.filemanagerservice.requestFilters.FileRequestFilter;
 import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
 import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
-import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -34,20 +34,19 @@ public class FileApiFacade
     private final FileDTOMapper fileDTOMapper;
     private final FileRequestMapper fileRequestMapper;
     private final FileStorageClient fileStorageClient;
-    private final RepositoryDTOMapper repositoryDTOMapper;
+    private final TagClient tagClient;
 
     public FileApiFacade(FileClient fileClient,
                          RepositoryClient repositoryClient,
                          FileDTOMapper fileDTOMapper,
                          FileRequestMapper fileRequestMapper,
-                         FileStorageClient fileStorageClient,
-                         RepositoryDTOMapper repositoryDTOMapper) {
+                         FileStorageClient fileStorageClient, TagClient tagClient) {
         this.fileClient = fileClient;
         this.repositoryClient = repositoryClient;
         this.fileDTOMapper = fileDTOMapper;
         this.fileRequestMapper = fileRequestMapper;
         this.fileStorageClient = fileStorageClient;
-        this.repositoryDTOMapper = repositoryDTOMapper;
+        this.tagClient = tagClient;
     }
 
     public ResponseEntity<List<FileAndStatus>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
@@ -175,11 +174,10 @@ public class FileApiFacade
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)
     {
-        ResponseEntity<Repository> response = repositoryClient.getRepositoryById(repositoryId);
-        Repository repository = response.getBody();
-        RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
+        ResponseEntity<RepositoryDTO> response = repositoryClient.getRepositoryById(repositoryId);
+        RepositoryDTO repository = response.getBody();
         FileDTO fileDTO = new FileDTO();
-        fileDTO.setRepository(repositoryDTO);
+        fileDTO.setRepository(repository);
         FileRequestFilter filter = new FileRequestFilter();
         fileRequestMapper.transferEntityDto(fileDTO, filter);
         filter.setPage(page);
@@ -201,6 +199,26 @@ public class FileApiFacade
 
         Map<String, Object> map = MapUtils.map(filter);
         return ResponseEntity.ok(fileClient.getFilesByFilter(map).getBody());
+    }
+
+    public ResponseEntity<FileDTO> addTag(String rootFullName, String name)
+    {
+        Tag tag = new Tag(name);
+        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
+        fileDTO.getTags().add(tag);
+        File file = fileDTOMapper.toEntity(fileDTO);
+        fileClient.updateFile(file, fileDTO.getId());
+        return ResponseEntity.ok(fileClient.getFileByID(fileDTO.getId()).getBody());
+    }
+
+    public ResponseEntity<FileDTO> removeTag(String rootFullName, String name)
+    {
+        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
+        fileDTO.getTags().removeIf(x -> {return x.getName().equals(name);});
+        File file = fileDTOMapper.toEntity(fileDTO);
+        fileClient.updateFile(file, fileDTO.getId());
+        tagClient.deleteTag(tagClient.getTagByName(name).getBody().getId());
+        return ResponseEntity.noContent().build();
     }
 
     private void checkAccessTypes(File file) {

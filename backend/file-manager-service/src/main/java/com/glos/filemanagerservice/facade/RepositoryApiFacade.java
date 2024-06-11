@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
-import com.glos.filemanagerservice.entities.AccessType;
-import com.glos.filemanagerservice.entities.File;
+import com.glos.filemanagerservice.clients.TagClient;
 import com.glos.filemanagerservice.entities.Repository;
+import com.glos.filemanagerservice.entities.Tag;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
@@ -29,12 +29,14 @@ public class RepositoryApiFacade
     private  final RepositoryRequestMapper requestMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
     private final RepositoryStorageClient repositoryStorageClient;
+    private final TagClient tagClient;
 
-    public RepositoryApiFacade(RepositoryClient repositoryClient, RepositoryRequestMapper requestMapper, RepositoryDTOMapper repositoryDTOMapper, RepositoryStorageClient repositoryStorageClient) {
+    public RepositoryApiFacade(RepositoryClient repositoryClient, RepositoryRequestMapper requestMapper, RepositoryDTOMapper repositoryDTOMapper, RepositoryStorageClient repositoryStorageClient, TagClient tagClient) {
         this.repositoryClient = repositoryClient;
         this.requestMapper = requestMapper;
         this.repositoryDTOMapper = repositoryDTOMapper;
         this.repositoryStorageClient = repositoryStorageClient;
+        this.tagClient = tagClient;
     }
 
 
@@ -116,8 +118,8 @@ public class RepositoryApiFacade
         requestFilter.setSort(sort);
 
         Map<String, Object> map = MapUtils.map(requestFilter);
-        Page<Repository> repositoryPage = repositoryClient.getRepositoriesByFilter(map).getBody();
-        return ResponseEntity.ok(repositoryPage.map(repositoryDTOMapper::toDto));
+        Page<RepositoryDTO> repositoryPage = repositoryClient.getRepositoriesByFilter(map).getBody();
+        return ResponseEntity.ok(repositoryPage);
     }
 
     public ResponseEntity<Page<RepositoryDTO>> getRepositoryByFilter(Repository repository, Map<String, Object> filter, int page, int size, String sort)
@@ -132,8 +134,28 @@ public class RepositoryApiFacade
         Map<String, Object> map = MapUtils.map(requestFilter);
         map.putAll(filter);
         map.put("ignoreSys", true);
-        Page<Repository> repositories = repositoryClient.getRepositoriesByFilter(map).getBody();
-        return ResponseEntity.ok(repositories.map(repositoryDTOMapper::toDto));
+        Page<RepositoryDTO> repositories = repositoryClient.getRepositoriesByFilter(map).getBody();
+        return ResponseEntity.ok(repositories);
+    }
+
+    public ResponseEntity<RepositoryDTO> addTag(String rootFullName, String name)
+    {
+        Tag tag = new Tag(name);
+        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
+        repositoryDTO.getTags().add(tag);
+        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
+        repositoryClient.updateRepository(repository, repositoryDTO.getId());
+        return ResponseEntity.ok(repositoryClient.getRepositoryById(repositoryDTO.getId()).getBody());
+    }
+
+    public ResponseEntity<RepositoryDTO> removeTag(String rootFullName, String name)
+    {
+        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
+        repositoryDTO.getTags().removeIf(x -> {return x.getName().equals(name);});
+        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
+        repositoryClient.updateRepository(repository, repositoryDTO.getId());
+        tagClient.deleteTag(tagClient.getTagByName(name).getBody().getId());
+        return ResponseEntity.noContent().build();
     }
 
     private void assignPath(Repository repository, Path path) {

@@ -1,7 +1,7 @@
 package com.glos.filemanagerservice.DTO;
 
 import com.glos.filemanagerservice.entities.SecureCode;
-import com.netflix.servo.tag.Tag;
+import com.glos.filemanagerservice.entities.Tag;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
