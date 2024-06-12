@@ -52,4 +52,7 @@ public class FileRequest
     public void setFileNodes(List<FileNode> fileNodes) {
         this.fileNodes = fileNodes;
     }
+
+    public FileRequest() {
+    }
 }

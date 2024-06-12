@@ -1,80 +1,99 @@
 package com.glos.accessservice.controllers;
 
-import com.glos.accessservice.clients.AccessTypeApiClient;
-import com.glos.accessservice.entities.AccessType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.glos.accessservice.facade.AccessFacade;
+import com.glos.accessservice.facade.chain.base.AccessRequest;
+import com.glos.accessservice.requestDTO.AccessModel;
 import com.glos.accessservice.responseDTO.Page;
+import com.glos.accessservice.responseDTO.Pageable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
-import java.util.Map;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-@WebMvcTest(AccessTypeController.class)
-@ExtendWith(MockitoExtension.class)
-class AccessTypeControllerTest {
 
+@WebMvcTest(AccessController.class)
+@ExtendWith(MockitoExtension.class)
+class AccessControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private AccessTypeApiClient accessTypeApiClient;
+    private AccessFacade accessFacade;
 
-    @Test
-    public void testGetById() throws Exception {
-        AccessType accessType = new AccessType();
-        accessType.setId(1L);
-        accessType.setName("Test Access Type");
+    @InjectMocks
+    private AccessController accessController;
 
-        when(accessTypeApiClient.getById(1L)).thenReturn(ResponseEntity.ok(accessType));
-
-        mockMvc.perform(get("/access-types/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("Test Access Type"));
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testGetByName() throws Exception {
-        AccessType accessType = new AccessType();
-        accessType.setId(1L);
-        accessType.setName("Test Access Type");
+    public void IsAvailableTest() throws Exception {
+        String username = "sys";
+        String access = "read";
+        String rootFullName = "$sys";
 
-        when(accessTypeApiClient.getByName("Test Access Type")).thenReturn(ResponseEntity.ok(accessType));
+        when(accessFacade.available(any(AccessRequest.class))).thenReturn(ResponseEntity.ok().build());
 
-        mockMvc.perform(get("/access-types/name/Test Access Type"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("Test Access Type"));
+        mockMvc.perform(MockMvcRequestBuilders.get("/access/{access}/{rootFullName}/available/{username}", access, rootFullName, username)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void testGetByFilter() throws Exception {
-        Page<AccessType> page = new Page<>();
-        page.setContent(Collections.singletonList(new AccessType()));
-        page.setTotalElements(1);
-        page.setSize(10);
-        page.setNumber(0);
+    public void AddAccessTest() throws Exception {
+        AccessModel model = new AccessModel();
+        String rootFullName = "$sys";
 
-        when(accessTypeApiClient.getByFilter(any(Map.class))).thenReturn(ResponseEntity.ok(page));
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(accessFacade.addAccess(eq(rootFullName), any(AccessModel.class))).thenReturn(ResponseEntity.noContent().build());
 
-        mockMvc.perform(get("/access-types")
+        mockMvc.perform(MockMvcRequestBuilders.put("/access/{rootFullName}/add-access", rootFullName)
+                        .content(objectMapper.writeValueAsString(model))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void RemoveAccessTest() throws Exception {
+        AccessModel model = new AccessModel();
+        String rootFullName = "$sys";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(accessFacade.removeAccess(eq(rootFullName), any(AccessModel.class))).thenReturn(ResponseEntity.noContent().build());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/access/{rootFullName}/remove-access", rootFullName)
+                        .content(objectMapper.writeValueAsString(model))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void GetAccessesTest() throws Exception {
+        Page<AccessModel> page = new Page<>();
+        when(accessFacade.accessPage(eq("$test%root"), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/access/$test%root/list")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .param("page", "0")
                         .param("size", "10")
-                        .param("sort", "id,asc"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalElements").value(1))
-                .andExpect(jsonPath("$.size").value(10))
-                .andExpect(jsonPath("$.number").value(0));
+                        .param("sort", "name,asc"))
+                .andExpect(status().isOk());
     }
 }
