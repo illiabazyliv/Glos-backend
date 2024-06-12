@@ -4,6 +4,10 @@ package com.glos.databaseAPIService.domain.controller;
 import com.glos.databaseAPIService.domain.entities.Tag;
 import com.glos.databaseAPIService.domain.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -60,8 +64,9 @@ public class TagAPIController
     }
 
     @GetMapping
-    public List<Tag> getAllTags()
+    public ResponseEntity<Page<Tag>> getByFilter(@ModelAttribute Tag filter,
+                                                 @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        return tagService.getAll();
+        return ResponseEntity.ok(tagService.findAllByFilter(filter, pageable));
     }
 }

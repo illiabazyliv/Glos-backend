@@ -115,21 +115,6 @@ public class RepositoryController
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, filter, page, size, sort).getBody());
     }
 
-    @PutMapping("/{rootFullName}/add-tag/{name}")
-    public ResponseEntity<RepositoryDTO> addTag(@PathVariable("rootFullName") String rootFullName,
-                                          @PathVariable("name") String name)
-    {
-        return ResponseEntity.ok(repositoryApiFacade.addTag(rootFullName, name).getBody());
-    }
-
-    @PutMapping("/{rootFullName}/remove-tag/{name}")
-    public ResponseEntity<?> removeTag(@PathVariable("rootFullName") String rootFullName,
-                                       @PathVariable("name") String name)
-    {
-        repositoryApiFacade.removeTag(rootFullName, name);
-        return ResponseEntity.noContent().build();
-    }
-
     private void putIfNonNull(Map<String, Object> map, String key, Object value) {
         if (value != null) {
             map.put(key, value);

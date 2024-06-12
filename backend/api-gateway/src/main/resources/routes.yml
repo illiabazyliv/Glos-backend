@@ -17,7 +17,7 @@ spring:
         - id: file-manager-service
           uri: ${FILE_MANAGER_SERVICE_URL:http://localhost:9010}
           predicates:
-            - Path=/api/files,/api/files/**,/api/repositories,/api/repositories/**,/api/feed,/api/feed/**
+            - Path=/api/files,/api/files/**,/api/repositories,/api/repositories/**,/api/feed,/api/feed/**,/api/tags
           filters:
             - RewritePath=/api(?<segment>.*), /api/v1${segment}
         - id: access-service
