@@ -30,8 +30,6 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     @Autowired
     private MinioClient minioClient;
 
-    private static final String bucket = "xily1";
-
     @Override
     public RepositoryAndStatus create(String rootFullName)
     {
