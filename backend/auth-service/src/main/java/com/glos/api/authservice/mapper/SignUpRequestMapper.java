@@ -20,6 +20,6 @@ public class SignUpRequestMapper extends AbstractMapper<User, SignUpRequest> {
         destination.setPhone_number(source.getPhoneNumber());
         destination.setPassword_hash(source.getPassword());
         destination.setFirst_name(source.getFirstName());
-        destination.setFirst_name(source.getLastName());
+        destination.setLast_name(source.getLastName());
     }
 }
