@@ -129,7 +129,7 @@ public class GroupAPIFacade {
         Group group = getByOwnerAndName(ownerUsername, groupName)
                 .orElseThrow(() -> new ResourceNotFoundException("Group is not found"));
         User user = getUserByUsername(username);
-        group.getUsers().removeIf(x -> {return x.getId() == user.getId();});
+        group.getUsers().removeIf(u -> u.getUsername().equals(user.getUsername()));
         return groupAPIClient.updateGroup(group.getId(), group);
     }
 

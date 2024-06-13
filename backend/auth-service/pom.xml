@@ -21,6 +21,11 @@
 			<artifactId>pathtools</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.accesstools</groupId>
+			<artifactId>accesstools</artifactId>
+			<version>1.0</version>
+		</dependency>
 		<!--Spring Boot-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
