@@ -2,17 +2,13 @@ package com.glos.filemanagerservice.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.glos.filemanagerservice.DTO.*;
-import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
-import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.facade.FileApiFacade;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -28,14 +24,11 @@ public class FileUploadController
         this.repositoryStorageClient = repositoryStorageClient;
     }
 
-
-
     @PutMapping("/files/upload")
-    public ResponseEntity<List<FileAndStatus>> uploadFile(@ModelAttribute FileRequest fileRequests) throws JsonProcessingException
+    public ResponseEntity<String> uploadFile(@ModelAttribute FileRequest fileRequests) throws JsonProcessingException
     {
-
-        List<FileAndStatus> created = fileApiFacade.uploadFiles(fileRequests.getFileNodes()).getBody();
-        return ResponseEntity.ok(created);
+        List<FileAndStatus> created = fileApiFacade.uploadFiles(fileRequests.getFiles()).getBody();
+        return ResponseEntity.ok("OK");
     }
 
     @PostMapping("/files/download")

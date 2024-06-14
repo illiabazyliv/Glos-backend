@@ -51,14 +51,12 @@ public class FileApiFacade
 
     public ResponseEntity<List<FileAndStatus>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
     {
-        ObjectMapper objectMapper = new ObjectMapper();
         List<File> files = new ArrayList<>();
         List<MultipartFile> filesData = new ArrayList<>();
-        objectMapper.registerModule(new JavaTimeModule());
         for (var u : uploadRequests)
         {
-            files.add(objectMapper.readValue(u.getFileBody(), File.class));
-            filesData.add(u.getFileData());
+            files.add(u.getFileData());
+            filesData.add(u.getFile());
         }
 
         if (files.size() != filesData.size())

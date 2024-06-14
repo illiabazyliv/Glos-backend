@@ -1,5 +1,6 @@
 package com.glos.filemanagerservice.DTO;
 
+import com.glos.filemanagerservice.entities.File;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -8,51 +9,49 @@ public class FileRequest
 {
     public static class FileNode
     {
-        private String fileBody;
-        private MultipartFile fileData;
-
-        public FileNode(String fileBody, MultipartFile fileData) {
-            this.fileBody = fileBody;
-            this.fileData = fileData;
-        }
+        private File fileData;
+        private MultipartFile file;
 
         public FileNode() {
         }
 
-        public String getFileBody() {
-            return fileBody;
+        public FileNode(File fileData, MultipartFile file) {
+            this.fileData = fileData;
+            this.file = file;
         }
 
-        public void setFileBody(String fileBody) {
-            this.fileBody = fileBody;
-        }
-
-        public MultipartFile getFileData() {
+        public File getFileData() {
             return fileData;
         }
 
-        public void setFileData(MultipartFile fileData) {
+        public void setFileData(File fileData) {
             this.fileData = fileData;
+        }
+
+        public MultipartFile getFile() {
+            return file;
+        }
+
+        public void setFile(MultipartFile file) {
+            this.file = file;
         }
     }
 
-    public FileRequest() {
-    }
 
-    private List<FileNode> fileNodes;
-
-    public FileRequest(List<FileNode> fileNodes) {
-        this.fileNodes = fileNodes;
-    }
-
-    public List<FileNode> getFileNodes() {
-        return fileNodes;
-    }
-
-    public void setFileNodes(List<FileNode> fileNodes) {
-        this.fileNodes = fileNodes;
-    }
+    private List<FileNode> files;
 
     public FileRequest() {
+    }
+
+    public FileRequest(List<FileNode> files) {
+        this.files = files;
+    }
+
+    public List<FileNode> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileNode> files) {
+        this.files = files;
     }
 }
