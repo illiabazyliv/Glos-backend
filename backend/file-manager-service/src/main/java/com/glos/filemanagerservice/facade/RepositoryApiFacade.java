@@ -11,6 +11,7 @@ import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.entities.Tag;
 import com.glos.filemanagerservice.entities.User;
 import com.glos.filemanagerservice.exception.HttpStatusCodeImplException;
+import com.glos.filemanagerservice.exception.SimpleExceptionBody;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestFilterMapper;
@@ -29,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +71,8 @@ public class RepositoryApiFacade
 
         if (owner.getUsername() == null) {
             owner.setUsername(ownerUsername);
+        } else if (!owner.getUsername().equals(ownerUsername)) {
+            throw new HttpStatusCodeImplException(HttpStatus.CONFLICT, "Conflict", Map.of("owner.username", "owner.username and first node in path not match"));
         }
 
         repository.setOwner(owner);

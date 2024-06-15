@@ -78,9 +78,9 @@ public class ControllerAdvice {
 
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<ExceptionBody> handleHttpStatusCodeException(
-            HttpStatusCodeException e
+            HttpStatusCodeImplException e
     ) {
-        return ResponseEntity.status(e.getStatusCode()).body(new SimpleExceptionBody(e.getMessage(), new HashMap<>()));
+        return ResponseEntity.status(e.getStatusCode()).body(new SimpleExceptionBody(e.getMessage(), e.getErrors()));
     }
 
     @ExceptionHandler({
