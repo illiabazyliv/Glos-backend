@@ -20,6 +20,8 @@ import com.pathtools.Path;
 import com.pathtools.PathParser;
 import feign.FeignException;
 import org.apache.http.HttpException;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -79,9 +81,15 @@ public class RepositoryApiFacade
             //repositoryAndStatus = repositoryStorageClient.createRepository(repository.getRootFullName()).getBody();
             return ResponseEntity.ok(created);
         }
-        catch (Exception e)
+        catch (FeignException e)
         {
-            throw new RuntimeException(e.getMessage());
+            HttpStatusCode status = HttpStatusCode.valueOf(e.status());
+            if (status.value() == 409) {
+                throw new HttpStatusCodeImplException(status, "Conflict");
+            } else if (status.value() == 404) {
+                throw new HttpStatusCodeImplException(status, "Not found");
+            }
+            throw new HttpStatusCodeImplException(status, e.getMessage());
         }
     }
 

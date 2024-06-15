@@ -165,16 +165,8 @@ public class RepositoryService
         final Set<Tag> tags = repository.getTags();
         if (tags != null && !tags.isEmpty()) {
             final Set<Tag> found = tags.stream().map(x -> {
-                if (x.getId() != null) {
-                    return tagService.getById(x.getId()).orElseThrow(() ->
-                            new ResourceNotFoundException("Id of Tag is not found")
-                    );
-                }
                 if (x.getName() != null) {
-                    Map.Entry<Tag, Boolean> entry = tagService.ensure(x.getName());
-                    if (entry.getValue()) {
-                        return entry.getKey();
-                    }
+                    return tagService.ensure(x.getName()).getKey();
                 }
                 return x;
             }).collect(Collectors.toSet());
