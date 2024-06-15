@@ -28,9 +28,9 @@ public class RepositoryService
     private final RepositoryMapper repositoryMapper;
     private final AccessTypeRepository accessTypeRepository;
     private final CommentRepository commentRepository;
-    private final TagRepository tagRepository;
     private final FileRepository fileRepository;
     private final AccessTypeService accessTypeService;
+    private final TagService tagService;
 
     @Autowired
     private EntityManager entityManager;
@@ -44,16 +44,105 @@ public class RepositoryService
                              CommentRepository commentRepository,
                              TagRepository tagRepository,
                              FileRepository fileRepository,
-                             AccessTypeService accessTypeService
+                             AccessTypeService accessTypeService,
+                             TagService tagService
     ) {
         this.repository = repository;
         this.repositoryMapper = repositoryMapper;
         this.userRepository = userRepository;
         this.accessTypeRepository = accessTypeRepository;
         this.commentRepository = commentRepository;
-        this.tagRepository = tagRepository;
+        this.tagService = tagService;
         this.fileRepository = fileRepository;
         this.accessTypeService = accessTypeService;
+    }
+
+    @Transactional
+    public Repository create(Repository repository)
+    {
+        if (findByRootFullName(repository.getRootFullName()).isPresent()) {
+            throw new ResourceAlreadyExistsException(Map.entry("", ""));
+        }
+        assignUser(repository);
+        assignAccessTypes(repository);
+        assignTags(repository);
+
+        Repository repo =  this.repository.save(repository);
+        return repo;
+    }
+
+    public List<Repository> findAllByOwnerId(Long ownerId, Map<String, Object> props)
+    {
+        final boolean ignoreSys = (boolean) props.get("ignoreSys");
+        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
+        return repository.findByOwnerId(ownerId).stream()
+                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
+                .filter(x -> x.getDefault() == null || !x.getDefault() || !ignoreDefault)
+                .toList();
+    }
+
+    public Optional<Repository> findByRootFullName(String rootFullName)
+    {
+        return repository.findByRootFullName(rootFullName);
+    }
+
+    Repository getRepositoryByIdOrThrow(Long id)
+    {
+        return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
+    }
+
+    public Page<Repository> findAllByFilter(Repository filter, Pageable pageable, Map<String, Object> props) {
+        assignAccessTypes(filter);
+        assignTags(filter);
+
+        final boolean ignoreSys = (boolean) props.get("ignoreSys");
+        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
+
+        List<Repository> list = repository.findAll(Example.of(filter), pageable).stream()
+                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
+                .filter(x -> x.getDefault() == null || !x.getDefault() || !ignoreDefault)
+                .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))
+                .filter(x -> filter.getComments() == null || x.getComments().containsAll(filter.getComments()))
+                .filter(x -> filter.getSecureCodes() == null || x.getSecureCodes().containsAll(filter.getSecureCodes()))
+                .filter(x -> filter.getTags() == null || x.getTags().containsAll(filter.getTags()))
+                .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()))
+                .toList();
+
+        return new PageImpl<>(list, pageable, list.size());
+    }
+
+
+
+    public List<Repository> getAll(Map<String, Object> props) {
+        final boolean ignoreSys = (boolean) props.get("ignoreSys");
+        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
+        return this.repository.findAll().stream()
+                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
+                .filter(x -> x.getDefault() == null || !x.getDefault() || !ignoreDefault)
+                .toList();
+    }
+
+    public List<Repository> getAll(EntityFilter filter) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Optional<Repository> getById(Long id)
+    {
+        return repository.findById(id);
+    }
+
+    @Transactional
+    public Repository update(Long id, Repository newRepository) {
+        assignAccessTypes(newRepository);
+        Repository repository = getRepositoryByIdOrThrow(id);
+        repositoryMapper.transferEntityDto(newRepository, repository);
+        return this.repository.save(repository);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        Repository found = getRepositoryByIdOrThrow(id);
+        repository.deleteById(found.getId());
     }
 
     private Repository assignFiles(Repository repository) {
@@ -74,12 +163,18 @@ public class RepositoryService
 
     private Repository assignTags(Repository repository) {
         final Set<Tag> tags = repository.getTags();
-        if (tags != null) {
+        if (tags != null && !tags.isEmpty()) {
             final Set<Tag> found = tags.stream().map(x -> {
                 if (x.getId() != null) {
-                    return tagRepository.findById(x.getId()).orElseThrow(() ->
+                    return tagService.getById(x.getId()).orElseThrow(() ->
                             new ResourceNotFoundException("Id of Tag is not found")
                     );
+                }
+                if (x.getName() != null) {
+                    Map.Entry<Tag, Boolean> entry = tagService.ensure(x.getName());
+                    if (entry.getValue()) {
+                        return entry.getKey();
+                    }
                 }
                 return x;
             }).collect(Collectors.toSet());
@@ -144,90 +239,6 @@ public class RepositoryService
             repository.setAccessTypes(new HashSet<>(found));
         }
         return repository;
-    }
-
-    public List<Repository> findAllByOwnerId(Long ownerId, Map<String, Object> props)
-    {
-        final boolean ignoreSys = (boolean) props.get("ignoreSys");
-        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
-        return repository.findByOwnerId(ownerId).stream()
-                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
-                .filter(x -> !x.getDefault() || !ignoreDefault)
-                .toList();
-    }
-
-    public Optional<Repository> findByRootFullName(String rootFullName)
-    {
-        return repository.findByRootFullName(rootFullName);
-    }
-
-    Repository getRepositoryByIdOrThrow(Long id)
-    {
-        return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
-    }
-
-    public Page<Repository> findAllByFilter(Repository filter, Pageable pageable, Map<String, Object> props) {
-        assignAccessTypes(filter);
-
-        final boolean ignoreSys = (boolean) props.get("ignoreSys");
-        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
-
-        List<Repository> list = repository.findAll(Example.of(filter), pageable).stream()
-                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
-                .filter(x -> !x.getDefault() || !ignoreDefault)
-                .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))
-                .filter(x -> filter.getComments() == null || x.getComments().containsAll(filter.getComments()))
-                .filter(x -> filter.getSecureCodes() == null || x.getSecureCodes().containsAll(filter.getSecureCodes()))
-                .filter(x -> filter.getTags() == null || x.getTags().containsAll(filter.getTags()))
-                .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()))
-                .toList();
-
-        return new PageImpl<>(list, pageable, list.size());
-    }
-
-    @Transactional
-    public Repository create(Repository repository)
-    {
-        if (findByRootFullName(repository.getRootFullName()).isPresent()) {
-            throw new ResourceAlreadyExistsException(Map.entry("", ""));
-        }
-        assignUser(repository);
-        assignAccessTypes(repository);
-
-        Repository repo =  this.repository.save(repository);
-        return repo;
-    }
-
-    public List<Repository> getAll(Map<String, Object> props) {
-        final boolean ignoreSys = (boolean) props.get("ignoreSys");
-        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
-        return this.repository.findAll().stream()
-                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
-                .filter(x -> !x.getDefault() || !ignoreDefault)
-                .toList();
-    }
-
-    public List<Repository> getAll(EntityFilter filter) {
-        throw new UnsupportedOperationException();
-    }
-
-    public Optional<Repository> getById(Long id)
-    {
-        return repository.findById(id);
-    }
-
-    @Transactional
-    public Repository update(Long id, Repository newRepository) {
-        assignAccessTypes(newRepository);
-        Repository repository = getRepositoryByIdOrThrow(id);
-        repositoryMapper.transferEntityDto(newRepository, repository);
-        return this.repository.save(repository);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
-        Repository found = getRepositoryByIdOrThrow(id);
-        repository.deleteById(found.getId());
     }
 
 //    private List<Repository> removeSysIf(boolean isIgnoreSys, Iterable<Repository> iterable) {

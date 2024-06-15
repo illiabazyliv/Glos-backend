@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 /**
  * 	@author - yablonovskydima
@@ -48,6 +49,12 @@ public class TagService implements CrudService<Tag, Long>
     @Override
     public Tag create(Tag tag) {
         return tagRepository.save(tag);
+    }
+
+    @Transactional
+    public Map.Entry<Tag, Boolean> ensure(String name) {
+        final Optional<Tag> tagOpt = tagRepository.findByName(name);
+        return Map.entry(tagOpt.orElseGet(() -> tagRepository.save(new Tag(null, name))), tagOpt.isEmpty());
     }
 
     @Override

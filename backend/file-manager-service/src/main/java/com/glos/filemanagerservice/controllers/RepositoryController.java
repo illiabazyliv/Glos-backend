@@ -8,12 +8,9 @@ import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
 import com.pathtools.Path;
-import com.pathtools.PathParser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +22,16 @@ public class RepositoryController
     private final RepositoryClient repositoryClient;
     private final RepositoryApiFacade repositoryApiFacade;
     private final RepositoryDTOMapper repositoryDTOMapper;
+    private final RepositoryRequestMapper repositoryRequestMapper;
 
     public RepositoryController(RepositoryClient repositoryClient,
                                 RepositoryApiFacade repositoryApiFacade,
-                                RepositoryDTOMapper repositoryDTOMapper) {
+                                RepositoryDTOMapper repositoryDTOMapper,
+                                RepositoryRequestMapper repositoryRequestMapper) {
         this.repositoryClient = repositoryClient;
         this.repositoryApiFacade = repositoryApiFacade;
         this.repositoryDTOMapper = repositoryDTOMapper;
+        this.repositoryRequestMapper = repositoryRequestMapper;
     }
 
     @GetMapping("/{id}")
@@ -43,9 +43,10 @@ public class RepositoryController
     }
 
     @PostMapping
-    public ResponseEntity<RepositoryAndStatus> create(@RequestBody Repository repository)
+    public ResponseEntity<RepositoryDTO> create(@RequestBody RepositoryRequest request)
     {
-        RepositoryAndStatus created = repositoryApiFacade.create(repository).getBody();
+        Repository repository = repositoryRequestMapper.toEntity(request);
+        RepositoryDTO created = repositoryApiFacade.create(repository).getBody();
         return ResponseEntity.ok(created);
     }
 
@@ -82,7 +83,7 @@ public class RepositoryController
         return ResponseEntity.ok(repositoryClient.getRepositoryByRootFullName(rootFullName).getBody());
     }
 
-    @GetMapping("/repositories/path/{rootFullName}")
+    @GetMapping("/path/{rootFullName}")
     public ResponseEntity<Page<RepositoryDTO>> getByFilter(@PathVariable String rootFullName,
                                                            @RequestParam(name = "search", required = false, defaultValue = "") String search,
                                                            @RequestParam(name = "accessTypes", required = false, defaultValue = "") List<String> accessTypes,
@@ -97,7 +98,7 @@ public class RepositoryController
         return getByFilter(repository, search, path.getFirst().getSimpleName(), accessTypes, tags, page, size, sort);
     }
 
-    @GetMapping("/{rootFullName}")
+    @GetMapping
     public ResponseEntity<Page<RepositoryDTO>> getByFilter(@ModelAttribute Repository repository,
                                                            @RequestParam(name = "search", required = false, defaultValue = "") String search,
                                                            @RequestParam(name = "username", required = false, defaultValue = "") String username,

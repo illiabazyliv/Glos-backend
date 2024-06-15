@@ -4,15 +4,13 @@ import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.entities.AccessType;
-import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.AccessModelMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
-import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
+import com.glos.filemanagerservice.responseMappers.RepositoryRequestFilterMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +20,13 @@ import java.util.Map;
 public class FeedApiFacade
 {
     private final RepositoryClient repositoryClient;
-    private final RepositoryRequestMapper requestMapper;
+    private final RepositoryRequestFilterMapper requestMapper;
     private final AccessModelMapper accessModelMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
 
     public FeedApiFacade(
             RepositoryClient repositoryClient,
-            RepositoryRequestMapper requestMapper,
+            RepositoryRequestFilterMapper requestMapper,
             AccessModelMapper accessModelMapper,
             RepositoryDTOMapper repositoryDTOMapper) {
         this.repositoryClient = repositoryClient;

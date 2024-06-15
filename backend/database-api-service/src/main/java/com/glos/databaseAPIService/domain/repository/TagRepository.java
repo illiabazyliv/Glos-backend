@@ -14,10 +14,5 @@ import java.util.Optional;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long>
 {
-    default Map.Entry<Tag, Boolean> ensureByName(String name) {
-        final Optional<Tag> tagOpt = findByName(name);
-        return Map.entry(tagOpt.orElseGet(() -> save(new Tag(null, name))), tagOpt.isEmpty());
-    }
-
     Optional<Tag> findByName(String name);
 }
