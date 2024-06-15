@@ -15,11 +15,7 @@ import java.util.Optional;
 @Repository
 public interface AccessTypeRepository extends JpaRepository<AccessType, Long>
 {
-    default Map.Entry<AccessType, Boolean> ensureByName(String name) {
-        final Optional<AccessType> accessTypeOpt = findByName(name);
-        final AccessNode node = AccessNode.builder(name).build();
-        return Map.entry(accessTypeOpt.orElseGet(() -> save(new AccessType(null, node.getPattern()))), accessTypeOpt.isEmpty());
-    }
+
 
     Optional<AccessType> findByName(String name);
 }

@@ -34,7 +34,15 @@ public class AccessTypeService implements CrudService<AccessType, Long> {
 
     @Transactional
     public Map.Entry<AccessType, Boolean> ensure(String name) {
-        return accessTypeRepository.ensureByName(name);
+        Optional<AccessType> accessTypeOpt = accessTypeRepository.findByName(name);
+        AccessNode node = AccessNode.builder(name).build();
+        AccessType accessType = accessTypeOpt.orElseGet(() -> {
+            AccessType accessType1 = accessTypeRepository.save(
+                    new AccessType(null, node.getPattern())
+            );
+            return accessType1;
+        });
+        return Map.entry(accessType, accessTypeOpt.isEmpty());
     }
 
     @Transactional

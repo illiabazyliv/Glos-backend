@@ -3,6 +3,7 @@ package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.databaseAPIService.domain.entities.Repository;
 import com.glos.databaseAPIService.domain.entities.User;
+import com.glos.databaseAPIService.domain.exceptions.ResourceAlreadyExistsException;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
@@ -18,6 +19,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -53,6 +57,7 @@ public class RepositoryAPIController
     public ResponseEntity<RepositoryDTO> createRepository(@RequestBody Repository repository, UriComponentsBuilder uriBuilder) {
         Path path = PathParser.getInstance().parse(repository.getRootFullName());
         repository.setRootFullName(path.getPath());
+
         Repository repo = repositoryService.create(repository);
 
         RepositoryDTO repositoryDTO = mapper.toDto(repo);
@@ -81,6 +86,7 @@ public class RepositoryAPIController
     public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId,
                                                                         @ModelAttribute Repository filter,
                                                                         @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
+                                                                        @RequestParam(value = "ignoreDefault", required = false, defaultValue = "true") boolean ignoreDefault,
                                                                         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
         if (filter.getOwner() == null) {
@@ -90,13 +96,14 @@ public class RepositoryAPIController
         } else {
             filter.getOwner().setId(ownerId);
         }
-        return getRepositoriesByFilter(filter, ignoreSys, pageable);
+        return getRepositoriesByFilter(filter, ignoreSys, ignoreDefault, pageable);
     }
 
     @GetMapping("/owner/{username}")
     public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable String username,
                                                                         @ModelAttribute Repository filter,
                                                                         @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
+                                                                        @RequestParam(value = "ignoreDefault", required = false, defaultValue = "true") boolean ignoreDefault,
                                                                         @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
         if (filter.getOwner() == null) {
@@ -106,7 +113,8 @@ public class RepositoryAPIController
         } else {
             filter.getOwner().setUsername(username);
         }
-        return getRepositoriesByFilter(filter, ignoreSys, pageable);
+        final Map<String, Object> props = Map.of("ignoreSys", ignoreSys, "ignoreDefault", ignoreDefault);
+        return getRepositoriesByFilter(filter, ignoreSys, ignoreDefault, pageable);
     }
 
 
@@ -122,15 +130,17 @@ public class RepositoryAPIController
     public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(
             @ModelAttribute Repository filter,
             @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
+            @RequestParam(value = "ignoreDefault", required = false, defaultValue = "true") boolean ignoreDefault,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
         if (filter != null && filter.getRootFullName() != null)
         {
-            Path path = PathParser.getInstance().parse(filter.getRootFullName());
+            final Path path = PathParser.getInstance().parse(filter.getRootFullName());
             filter.setRootFullName(path.getPath());
         }
-        Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable, ignoreSys);
-        Page<RepositoryDTO> repositoryDTOS = repositories.map(mapper::toDto);
+        final Map<String, Object> props = Map.of("ignoreSys", ignoreSys, "ignoreDefault", ignoreDefault);
+        final Page<Repository> repositories = repositoryService.findAllByFilter(filter, pageable, props);
+        final Page<RepositoryDTO> repositoryDTOS = repositories.map(mapper::toDto);
         return ResponseEntity.ok(repositoryDTOS);
     }
 }

@@ -3,16 +3,14 @@ package com.glos.databaseAPIService.domain.service;
 import com.accesstools.AccessNode;
 import com.glos.databaseAPIService.domain.entities.*;
 import com.glos.databaseAPIService.domain.entityMappers.RepositoryMapper;
+import com.glos.databaseAPIService.domain.exceptions.ResourceAlreadyExistsException;
 import com.glos.databaseAPIService.domain.exceptions.ResourceNotFoundException;
 import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -148,9 +146,14 @@ public class RepositoryService
         return repository;
     }
 
-    public List<Repository> findAllByOwnerId(Long ownerId, boolean ignoreSys)
+    public List<Repository> findAllByOwnerId(Long ownerId, Map<String, Object> props)
     {
-        return removeSysIf(ignoreSys, repository.findByOwnerId(ownerId));
+        final boolean ignoreSys = (boolean) props.get("ignoreSys");
+        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
+        return repository.findByOwnerId(ownerId).stream()
+                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
+                .filter(x -> !x.getDefault() || !ignoreDefault)
+                .toList();
     }
 
     public Optional<Repository> findByRootFullName(String rootFullName)
@@ -163,17 +166,21 @@ public class RepositoryService
         return getById(id).orElseThrow(() -> { return new ResourceNotFoundException("Tag is not found"); });
     }
 
-    public Page<Repository> findAllByFilter(Repository filter, Pageable pageable, boolean ignoreSys) {
+    public Page<Repository> findAllByFilter(Repository filter, Pageable pageable, Map<String, Object> props) {
         assignAccessTypes(filter);
 
-        List<Repository> list = removeSysIf(ignoreSys, repository.findAll(Example.of(filter), pageable));
+        final boolean ignoreSys = (boolean) props.get("ignoreSys");
+        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
 
-        list.stream()
+        List<Repository> list = repository.findAll(Example.of(filter), pageable).stream()
+                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
+                .filter(x -> !x.getDefault() || !ignoreDefault)
                 .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))
                 .filter(x -> filter.getComments() == null || x.getComments().containsAll(filter.getComments()))
                 .filter(x -> filter.getSecureCodes() == null || x.getSecureCodes().containsAll(filter.getSecureCodes()))
                 .filter(x -> filter.getTags() == null || x.getTags().containsAll(filter.getTags()))
-                .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()));
+                .filter(x -> filter.getFiles() == null || x.getFiles().containsAll(filter.getFiles()))
+                .toList();
 
         return new PageImpl<>(list, pageable, list.size());
     }
@@ -181,13 +188,23 @@ public class RepositoryService
     @Transactional
     public Repository create(Repository repository)
     {
+        if (findByRootFullName(repository.getRootFullName()).isPresent()) {
+            throw new ResourceAlreadyExistsException(Map.entry("", ""));
+        }
+        assignUser(repository);
         assignAccessTypes(repository);
+
         Repository repo =  this.repository.save(repository);
         return repo;
     }
 
-    public List<Repository> getAll(boolean ignoreSys) {
-        return removeSysIf(ignoreSys, this.repository.findAll());
+    public List<Repository> getAll(Map<String, Object> props) {
+        final boolean ignoreSys = (boolean) props.get("ignoreSys");
+        final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
+        return this.repository.findAll().stream()
+                .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
+                .filter(x -> !x.getDefault() || !ignoreDefault)
+                .toList();
     }
 
     public List<Repository> getAll(EntityFilter filter) {
@@ -213,10 +230,10 @@ public class RepositoryService
         repository.deleteById(found.getId());
     }
 
-    private List<Repository> removeSysIf(boolean isIgnoreSys, Iterable<Repository> iterable) {
-        List<Repository> list = new ArrayList<>();
-        if (isIgnoreSys)
-            iterable.forEach(x -> { if (x.getId() != 1L) list.add(x); } );
-        return list;
-    }
+//    private List<Repository> removeSysIf(boolean isIgnoreSys, Iterable<Repository> iterable) {
+//        List<Repository> list = new ArrayList<>();
+//        if (isIgnoreSys)
+//            iterable.forEach(x -> { if (x.getId() != 1L) list.add(x); } );
+//        return list;
+//    }
 }

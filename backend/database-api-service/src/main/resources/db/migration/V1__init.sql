@@ -243,6 +243,6 @@ BEGIN
     VALUES ('friends', NEW.id);
 
     INSERT INTO repositories(root_path, root_name, root_full_name, owner_id, is_default, display_path, display_name, display_full_name)
-    VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE, '', '', '');
+    VALUES ('', CONCAT('$', NEW.username), CONCAT('$', NEW.username), NEW.id, TRUE, '', NEW.username, NEW.username);
 END$$
 DELIMITER ;
