@@ -58,6 +58,10 @@ public final class AccessUtils {
         return accessNode.getReadType() == AccessReadType.R;
     }
 
+    public static boolean isOwner(AccessNode accessNode) {
+        return accessNode.getNodeType() == AccessNodeType.OWNER;
+    }
+
     public static boolean isAny(AccessNode accessNode) {
         return accessNode.getName().equals(Constants.SPEC_ANY);
     }

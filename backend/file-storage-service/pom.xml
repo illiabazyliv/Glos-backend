@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>com.pathtools</groupId>
 			<artifactId>pathtools</artifactId>
-			<version>1.0</version>
+			<version>1.0.1</version>
 		</dependency>
 
 		<!--Test-->

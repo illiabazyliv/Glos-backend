@@ -165,6 +165,10 @@ public class PathNodeReader implements PathReader {
             return null;
         }
         LinkedList<PathNode> list = new LinkedList<>(path.getNodes());
+
+        if (list.getLast().getType() == type)
+            list.removeLast();
+
         PathNode node = list.getLast();
         while(!list.isEmpty()) {
             node = list.getLast();

@@ -6,12 +6,12 @@ import com.glos.filemanagerservice.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RepositoryRequestMapper extends AbstractMapper<RepositoryDTO, RepositoryRequestFilter>
+public class RepositoryRequestFilterMapper extends AbstractMapper<RepositoryDTO, RepositoryRequestFilter>
 {
     private final UserDTOMapper userDTOMapper;
     private final CommentDTOMapper commentDTOMapper;
 
-    public RepositoryRequestMapper(UserDTOMapper userDTOMapper, CommentDTOMapper commentDTOMapper) {
+    public RepositoryRequestFilterMapper(UserDTOMapper userDTOMapper, CommentDTOMapper commentDTOMapper) {
         this.userDTOMapper = userDTOMapper;
         this.commentDTOMapper = commentDTOMapper;
     }
