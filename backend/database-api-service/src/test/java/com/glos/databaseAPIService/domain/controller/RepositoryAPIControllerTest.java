@@ -22,7 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -115,14 +117,16 @@ class RepositoryAPIControllerTest {
         Repository repository = new Repository();
         List<Repository> repositories = List.of(repository);
 
-        when(repositoryService.findAllByOwnerId(anyLong(), eq(true))).thenReturn(repositories);
+        Map<String, Object> params = new HashMap<>();
+        params.put("includeDetails", true);
+
+        when(repositoryService.findAllByOwnerId(eq(ownerId), eq(params))).thenReturn(repositories);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner-id/{owner-id}", ownerId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        Mockito.verify(repositoryService, Mockito.times(1)).findAllByOwnerId(Mockito.anyLong(), true);
-    }
+        verify(repositoryService, times(1)).findAllByOwnerId(eq(ownerId), eq(params));    }
     @Test
     void getRepositoryByRootFullNameTest() throws Exception {
         String rootFullName = "testRootFullName";
@@ -144,7 +148,10 @@ class RepositoryAPIControllerTest {
         List<Repository> repositories = List.of(repository);
         Page<Repository> page = new PageImpl<>(repositories);
 
-        Mockito.when(repositoryService.findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class), eq(true))).thenReturn(page);
+        Map<String, Object> params = new HashMap<>();
+        params.put("includeDetails", true);
+
+        when(repositoryService.findAllByFilter(any(Repository.class), any(Pageable.class), eq(params))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/repositories")
@@ -156,6 +163,6 @@ class RepositoryAPIControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
 
-        Mockito.verify(repositoryService, Mockito.times(1)).findAllByFilter(Mockito.any(Repository.class), Mockito.any(Pageable.class), eq(true));
+        verify(repositoryService, times(1)).findAllByFilter(any(Repository.class), any(Pageable.class), eq(params));
     }
     }

@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -47,7 +48,7 @@ class RepositoryControllerTest {
     @Test
     void getByIdTest() throws Exception {
             Long id = 1L;
-            Repository repositoryDTO = new Repository();
+            RepositoryDTO repositoryDTO = new RepositoryDTO();
             when(repositoryClient.getRepositoryById(anyLong())).thenReturn(ResponseEntity.ok(repositoryDTO));
 
             mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{id}", id)
@@ -95,7 +96,7 @@ class RepositoryControllerTest {
         Page<RepositoryDTO> repositoryDTOPage = new Page<>();
         repositoryDTOPage.setContent(Collections.singletonList(new RepositoryDTO()));
 
-        when(repositoryApiFacade.getRepositoryByFilter(any(Repository.class), any(int.class), any(int.class), any(String.class)))
+        when(repositoryApiFacade.getRepositoryByFilter(any(Repository.class), any(Map.class), any(int.class), any(int.class), any(String.class)))
                 .thenReturn(ResponseEntity.ok(repositoryDTOPage));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner/testuser")
@@ -121,7 +122,7 @@ class RepositoryControllerTest {
         Page<RepositoryDTO> page = new Page<>();
         page.setContent(Collections.singletonList(new RepositoryDTO()));
 
-        when(repositoryApiFacade.getRepositoryByFilter(any(Repository.class), anyInt(), anyInt(), anyString()))
+        when(repositoryApiFacade.getRepositoryByFilter(any(Repository.class), any(Map.class),anyInt(), anyInt(), anyString()))
                 .thenReturn(ResponseEntity.ok(page));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories")
