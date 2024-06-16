@@ -37,7 +37,7 @@ public class EmailController
     }
 
     @PostMapping("/send/{action}")
-    public HttpStatus sendMessage(
+    public ResponseEntity<?> sendMessage(
             @PathVariable String action,
             @RequestBody MessageVerificationDTO messageDTO
     ) throws MessagingException {
@@ -49,7 +49,7 @@ public class EmailController
         props.putProp("text", messageDTO.getText());
         final MessageTemplate messageTemplate = tn.messageTemplate().apply(props);
         emailManager.send(messageTemplate);
-        return HttpStatus.OK;
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/send-message")

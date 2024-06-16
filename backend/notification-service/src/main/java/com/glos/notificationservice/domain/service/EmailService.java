@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.ui.freemarker.SpringTemplateLoader;
@@ -38,6 +39,7 @@ public class EmailService
         this.templateEngine = templateEngine;
     }
 
+    @Async
     public void sendText(String to, String subject, String content) {
         try {
             logger.info("Sending message");
@@ -53,6 +55,7 @@ public class EmailService
         }
     }
 
+    @Async
     public void sendTemplate(String to, String subject, String viewName, Map<String, Object> props) throws MessagingException {
         try {
             logger.info("Sending message");
@@ -78,6 +81,7 @@ public class EmailService
         }
     }
 
+    @Async
     public void sendHtml(String to, String subject, String plainHtml, Map<String, Object> props)
             throws MessagingException {
         try {
