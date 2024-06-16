@@ -5,6 +5,7 @@ import com.glos.api.operationservice.exception.InvalidOperationDataPropertiesExc
 import com.glos.api.operationservice.exception.OperationExpiredException;
 import com.glos.api.operationservice.exception.OperationNotFoundException;
 import com.glos.api.operationservice.util.VerificationCodeGenerator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,17 +16,22 @@ import java.util.regex.Pattern;
 @Service
 public class OperationService {
 
-    private final VerificationCodeGenerator codeGenerator = new VerificationCodeGenerator();
-    private final Set<Operation> operations;
-    private final OperationExecutor executor;
+    private final VerificationCodeGenerator codeGenerator = VerificationCodeGenerator.getInstance();
+    private final OperationExecutor executor = OperationExecutor.getInstance();
+    private final Set<Operation> operations = new HashSet<>();
+    private final NotificationService notificationService;
 
-    public OperationService() {
-        this.operations = new HashSet<>();
-        this.executor = new OperationExecutor();
+    public OperationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
-    public Operation create(String action, Map<String, String> data, int expired) {
+    public Operation create(String action, Map<String, String> data, Integer expired) {
         collectAllExpired();
+
+        if (expired == null) {
+            expired = Operations.DEFAULT_EXPIRED_SECONDS;
+        }
+
         Action actionObj = Action.valueOfIgnoreCase(action);
 
         if (!actionObj.checkProperties(data, "code")) {
@@ -47,6 +53,7 @@ public class OperationService {
         operation.setData(data);
         operation.setCreatedDatetime(now);
         operation.setExpiredDatetime(now.plusSeconds(expired));
+        operation.getData().put("code", operation.getCode());
 
         operations.add(operation);
 
@@ -56,7 +63,11 @@ public class OperationService {
     }
 
     private void sendMessage(String email, Operation operation) {
-        // TODO: Send code to user email
+        notificationService.send(
+                email,
+                Action.valueOfIgnoreCase(operation.getAction()),
+                operation.getData()
+        );
     }
 
     public boolean execute(Operation operation) {

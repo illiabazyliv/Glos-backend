@@ -1,13 +1,17 @@
 package com.glos.api.authservice.util.security;
 
+import com.glos.api.authservice.client.OperationClient;
 import com.glos.api.authservice.client.UserAPIClient;
 import com.glos.api.authservice.client.UserDatabaseAPIClient;
 import com.glos.api.authservice.dto.ChangeRequest;
+import com.glos.api.authservice.dto.OperationCreateRequest;
+import com.glos.api.authservice.dto.OperationExecuteRequest;
 import com.glos.api.authservice.dto.SignInRequest;
 import com.glos.api.authservice.entities.Roles;
 import com.glos.api.authservice.entities.User;
 import com.glos.api.authservice.exception.HttpStatusCodeImplException;
 import com.glos.api.authservice.exception.InvalidLoginException;
+import com.glos.api.authservice.util.OperationRequests;
 import com.glos.api.authservice.util.UsernameUtil;
 import feign.FeignException;
 import org.springframework.http.HttpStatusCode;
@@ -20,6 +24,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -31,6 +38,7 @@ public class SimpleAuthService implements AuthService {
     private final AuthenticationManager authManager;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final OperationClient operationClient;
 
     public SimpleAuthService(
             UserAPIClient userAPIClient,
@@ -38,7 +46,8 @@ public class SimpleAuthService implements AuthService {
             JwtService jwtService,
             AuthenticationManager authManager,
             UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            OperationClient operationClient
     ) {
         this.userAPIClient = userAPIClient;
         this.userDatabaseAPIClient = userDatabaseAPIClient;
@@ -46,6 +55,7 @@ public class SimpleAuthService implements AuthService {
         this.authManager = authManager;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
+        this.operationClient = operationClient;
     }
 
     @Override
@@ -122,34 +132,77 @@ public class SimpleAuthService implements AuthService {
     }
 
     @Override
+    public void execute(OperationExecuteRequest request) {
+        operationClient.execute(request);
+    }
+
+    @Override
     public void changePassword(String username, ChangeRequest request) {
         final User user = getUserByUsername(username);
-        // TODO: send request change to operation service
+        final Map<String, String> data = new HashMap<>();
+        data.put("username", username);
+        data.put("email", user.getEmail());
+        data.put("oldPassword", request.getOldValue());
+        data.put("newPassword", request.getNewValue());
+        operationClient.create(OperationRequests.changePassword(null, data));
+    }
+
+    @Override
+    public void internalChangePassword(String username, ChangeRequest request) {
+        final User user = getUserByUsername(username);
+        final String newPassword = passwordEncoder.encode(request.getNewValue());
+        user.setPassword_hash(newPassword);
+        userDatabaseAPIClient.update(user.getId(), user);
     }
 
     @Override
     public void changePhoneNumber(String username, ChangeRequest request) {
         final User user = getUserByUsername(username);
-        // TODO: send request change to operation service
+        final Map<String, String> data = new HashMap<>();
+        data.put("username", username);
+        data.put("email", user.getEmail());
+        data.put("oldPhoneNumber", request.getOldValue());
+        data.put("newPhoneNumber", request.getNewValue());
+        operationClient.create(OperationRequests.changePhoneNumber(null, data));
     }
 
     @Override
     public void changeEmail(String username, ChangeRequest request) {
         final User user = getUserByUsername(username);
-        // TODO: send request change to operation service
+        final Map<String, String> data = new HashMap<>();
+        data.put("username", username);
+        data.put("email", request.getNewValue());
+        data.put("oldEmail", request.getOldValue());
+        data.put("newEmail", request.getNewValue());
+        operationClient.create(OperationRequests.changeEmail(null, data));
     }
 
     @Override
     public void changeUsername(String username, ChangeRequest request) {
         final User user = getUserByUsername(username);
-        // TODO: send request change to operation service
+        final Map<String, String> data = new HashMap<>();
+        data.put("username", username);
+        data.put("email", user.getEmail());
+        data.put("newUsername", request.getNewValue());
+        operationClient.create(OperationRequests.changeUsername(null, data));
     }
 
     @Override
     public void deleteAccount(String username) {
         final User user = getUserByUsername(username);
-        //userAPIClient.deleteById(user.getId());
-        // TODO: send request delete user to operation service
+        final Map<String, String> data = new HashMap<>();
+        data.put("username", username);
+        data.put("email", user.getEmail());
+        operationClient.create(OperationRequests.dropAccount(null, data));
+    }
+
+    @Override
+    public void restoreAccount(String username) {
+        final User user = getUserByUsername(username);
+        final Map<String, String> data = new HashMap<>();
+        data.put("username", username);
+        data.put("email", user.getEmail());
+        operationClient.create(OperationRequests.restoreAccount(null, data));
     }
 
     private JwtRequest complateJwtRequest(String type, SignInRequest request) {

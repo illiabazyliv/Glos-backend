@@ -1,11 +1,10 @@
 package com.glos.api.operationservice.controller;
 
-import com.glos.api.operationservice.exception.ExceptionBody;
-import com.glos.api.operationservice.exception.InvalidOperationDataPropertiesException;
-import com.glos.api.operationservice.exception.OperationExpiredException;
-import com.glos.api.operationservice.exception.OperationNotFoundException;
+import com.glos.api.operationservice.exception.*;
+import feign.FeignException;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -92,6 +93,13 @@ public class ControllerAdvice {
             OperationExpiredException e
     ) {
         return new ExceptionBody(e.getMessage());
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ExceptionBody> handleFeignClient(FeignException ex)
+    {
+        ExceptionBody exceptionBody = new ExceptionBody(ex.getMessage());
+        return ResponseEntity.status(ex.status()).body(exceptionBody);
     }
 
     @ExceptionHandler(Exception.class)

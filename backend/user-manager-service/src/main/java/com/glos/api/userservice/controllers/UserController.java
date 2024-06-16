@@ -1,7 +1,9 @@
 package com.glos.api.userservice.controllers;
 
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.facade.*;
+import com.glos.api.userservice.responseDTO.ChangeRequest;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserDTO;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
@@ -100,6 +102,15 @@ public class UserController
         return ResponseEntity.ok(Constants.DURATION_DELETED_STATE.toMillis());
     }
 
+    @PutMapping("/{username}/change/{property}")
+    public ResponseEntity<?> changeProperty(
+            @PathVariable String username,
+            @PathVariable String property,
+            @RequestBody ChangeRequest request
+    ) {
+        return userAPIFacade.change(property, username, request);
+    }
+
     @PutMapping("/{username}/block")
     public ResponseEntity<?> blockUser(@PathVariable("username") String username)
     {
@@ -127,6 +138,11 @@ public class UserController
     @PutMapping("/{username}/restore")
     public ResponseEntity<?> restoreUser(@PathVariable("username") String username) {
         return userAPIFacade.restore(username);
+    }
+
+    @DeleteMapping("/username/{username}")
+    public ResponseEntity<?> destroyUserByUsername(@PathVariable String username) {
+        return userAPIFacade.deleteByUsername(username);
     }
 
     @GetMapping("/{id}/destroy")

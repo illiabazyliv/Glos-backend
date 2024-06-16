@@ -25,4 +25,6 @@ spring:
           roles:
             url: "${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}/roles"
           storage:
-            url: http://localhost:9009/api/v1/storage/buckets
+            url: "${STORAGE_SERVICE:http://localhost:9009/api/v1/storage/buckets}"
+          notification:
+            url: "${NOTIFICATION_SERVICE:http://localhost:9003/api/v1}"

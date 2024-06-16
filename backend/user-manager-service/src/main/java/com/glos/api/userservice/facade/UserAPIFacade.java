@@ -8,6 +8,7 @@ import com.glos.api.userservice.entities.User;
 import com.glos.api.userservice.exeptions.HttpStatusCodeImplException;
 import com.glos.api.userservice.exeptions.ResourceAlreadyExistsException;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
+import com.glos.api.userservice.responseDTO.ChangeRequest;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
@@ -85,12 +86,74 @@ public class UserAPIFacade {
         return userResponseEntity;
     }
 
+    public ResponseEntity<?> change(String property, String username, ChangeRequest request) {
+        if (property == null || changeRequestIsNull(request)) {
+            return ResponseEntity.badRequest().build();
+        } else if (request.oldEqualNew()) {
+            return ResponseEntity.status(409).build();
+        }
+        final User user = getUserByUsername(username);
+
+        if (property.equals("username")) {
+            if (!Constants.USERNAME_PATTERN.matcher(request.getNewValue()).find()) {
+                throw new IllegalArgumentException("Invalid username format.");
+            } else if (!user.getUsername().equals(request.getOldValue())){
+                throw new IllegalArgumentException("Old value not equal value in object");
+            }
+
+            tryGet(property, () -> userAPIClient.getUserByUsername(request.getNewValue()));
+
+            user.setUsername(request.getNewValue());
+        } else if (property.equals("email")) {
+            if (!Constants.EMAIL_PATTERN.matcher(request.getNewValue()).find()) {
+                throw new IllegalArgumentException("Invalid email format.");
+            } else if (!user.getEmail().equals(request.getOldValue())){
+                throw new IllegalArgumentException("Old value not equal value in object");
+            }
+
+            tryGet(property, () -> userAPIClient.getUserByEmail(request.getNewValue()));
+
+            user.setEmail(request.getNewValue());
+        } else if (property.equals("phoneNumber")) {
+            if (!Constants.PHONE_NUMBER_PATTERN.matcher(request.getNewValue()).find()) {
+                throw new IllegalArgumentException("Invalid email format.");
+            } else if (!user.getPhone_number().equals(request.getOldValue())){
+                throw new IllegalArgumentException("Old value not equal value in object");
+            }
+
+            tryGet(property, () -> userAPIClient.getUserByPhoneNumber(request.getNewValue()));
+
+            user.setPhone_number(request.getNewValue());
+        }
+
+        return userAPIClient.updateUser(user.getId(), user);
+    }
+
+    private boolean changeRequestIsNull(ChangeRequest request) {
+        return request == null ||
+                request.getNewValue() == null ||
+                request.getOldValue() == null;
+    }
+
+    private void tryGet(String property, Runnable runnable) {
+        try {
+            runnable.run();
+            throw new ResourceAlreadyExistsException("%s already taken".formatted(property));
+        } catch (ResourceAlreadyExistsException e) { throw e; }
+        catch (Exception ignore) {}
+    }
+
     private Role getRole(String name) {
         ResponseEntity<Role> response = roleAPIClient.getByName(name);
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         }
         throw new ResourceNotFoundException("Role not found");
+    }
+
+    public ResponseEntity<?> deleteByUsername(String username) {
+        User user = getUserByUsername(username);
+        return noContent(deleted(user, true));
     }
 
     public ResponseEntity<?> deleteById(Long id) {

@@ -15,7 +15,8 @@ public enum Action {
     CHANGE_PASSWORD("username", "email", "code", "oldPassword", "newPassword"),
     CHANGE_EMAIL("username", "email", "code", "oldEmail", "newEmail"),
     CHANGE_PHONE_NUMBER("username", "email", "code", "oldPhoneNumber", "newPhoneNumber"),
-    DROP_ACCOUNT("username", "email", "code");
+    DROP_ACCOUNT("username", "email", "code"),
+    RESTORE_ACCOUNT("username", "email", "code");
 
     private Set<String> properties;
 

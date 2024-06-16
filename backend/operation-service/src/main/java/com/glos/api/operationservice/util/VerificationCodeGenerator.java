@@ -4,7 +4,16 @@ import com.glos.api.operationservice.Operations;
 
 import java.security.SecureRandom;
 
-public class VerificationCodeGenerator {
+public final class VerificationCodeGenerator {
+
+    private static VerificationCodeGenerator instance;
+
+
+    public static VerificationCodeGenerator getInstance() {
+        return (instance != null) ? instance : new VerificationCodeGenerator();
+    }
+
+    private VerificationCodeGenerator() {}
 
     public String generateVerificationCode() {
         final SecureRandom sRandom = new SecureRandom();

@@ -1,4 +1,4 @@
-package com.glos.api.authservice.dto;
+package com.glos.api.operationservice.dto;
 
 import java.util.Objects;
 

@@ -24,7 +24,8 @@ spring:
             url: ${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}
           secureCode:
             url: ${DATABASE_API_SERVICE_URL:http://localhost:8080/api/v1}
-
+          operation:
+            url: ${OPERATION_SERVICE:http://localhost:9004/api/v1}
 security:
   jwt:
     secret: ${SECURITY_JWT_SECRET:"583773d0820a96e7b12c0bc72b0e132224552a82ad95953778bfacfa7d5a4f1a"}

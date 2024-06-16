@@ -1,4 +1,4 @@
-package com.glos.api.authservice.dto;
+package com.glos.api.userservice.responseDTO;
 
 import java.util.Objects;
 
