@@ -1,18 +1,43 @@
 package com.glos.api.operationservice;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+@Document("operations")
+@CompoundIndexes({
+        @CompoundIndex(name = "uq_operations_user_action", unique = true, def = "{ 'data.username': 1, 'action': 1 }")
+})
 public class Operation {
+
+    @Id
     private UUID id;
+
+    @Field(name = "code")
+    @Indexed(unique = true)
     private String code;
+
+    @Field(name = "action")
     private String action;
+
+    @Field(name = "data")
     private Map<String, String> data;
+
+    @Field(name = "createdDatetime")
     private LocalDateTime createdDatetime;
+
+    @Field(name = "expiredDatetime")
     private LocalDateTime expiredDatetime;
 
+    @Field(name = "executionDatetime")
     private LocalDateTime executionDatetime;
 
     public Operation() {
@@ -100,5 +125,18 @@ public class Operation {
     @Override
     public int hashCode() {
         return Objects.hash(id, code, action, data, createdDatetime, expiredDatetime, executionDatetime);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder("{");
+        builder.append("id").append(id);
+        builder.append("code").append(code);
+        builder.append("action").append(action);
+        builder.append("data").append(data);
+        builder.append("createdDatetime").append(createdDatetime);
+        builder.append("expiredDatetime").append(expiredDatetime);
+        builder.append("executionDatetime").append(executionDatetime);
+        return builder.append("}").toString();
     }
 }

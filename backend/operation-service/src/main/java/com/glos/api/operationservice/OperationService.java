@@ -4,7 +4,10 @@ import com.glos.api.operationservice.exception.ExecutionOperationException;
 import com.glos.api.operationservice.exception.InvalidOperationDataPropertiesException;
 import com.glos.api.operationservice.exception.OperationExpiredException;
 import com.glos.api.operationservice.exception.OperationNotFoundException;
+import com.glos.api.operationservice.repository.OperationRepository;
 import com.glos.api.operationservice.util.VerificationCodeGenerator;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +21,15 @@ public class OperationService {
 
     private final VerificationCodeGenerator codeGenerator = VerificationCodeGenerator.getInstance();
     private final OperationExecutor executor = OperationExecutor.getInstance();
-    private final Set<Operation> operations = new HashSet<>();
     private final NotificationService notificationService;
+    private final OperationRepository operationRepository;
 
-    public OperationService(NotificationService notificationService) {
+    public OperationService(
+            NotificationService notificationService,
+            OperationRepository operationRepository
+    ) {
         this.notificationService = notificationService;
+        this.operationRepository = operationRepository;
     }
 
     public Operation create(String action, Map<String, String> data, Integer expired) {
@@ -39,11 +46,8 @@ public class OperationService {
         }
 
         String user = data.get("username");
-        Optional<Operation> operationOpt = operations.stream()
-                .filter(x -> x.getData().get("username").equals(user))
-                .filter(x -> x.getAction().equalsIgnoreCase(action))
-                .findFirst();
-        operationOpt.ifPresent(operations::remove);
+        Optional<Operation> operationOpt = operationRepository.findByUsernameAndAction(user, action);
+        operationOpt.ifPresent(operationRepository::delete);
 
         final LocalDateTime now = LocalDateTime.now();
         Operation operation = new Operation();
@@ -55,7 +59,7 @@ public class OperationService {
         operation.setExpiredDatetime(now.plusSeconds(expired));
         operation.getData().put("code", operation.getCode());
 
-        operations.add(operation);
+        operationRepository.save(operation);
 
         sendMessage(data.get("email"), operation);
 
@@ -63,11 +67,9 @@ public class OperationService {
     }
 
     private void sendMessage(String email, Operation operation) {
-        notificationService.send(
-                email,
-                Action.valueOfIgnoreCase(operation.getAction()),
-                operation.getData()
-        );
+        final Action action = Action.valueOfIgnoreCase(operation.getAction());
+        final Map<String, String> data = operation.getData();
+        notificationService.send(email, action, data);
     }
 
     public boolean execute(Operation operation) {
@@ -77,9 +79,7 @@ public class OperationService {
     public boolean execute(String code) {
         collectAllExpired();
         validateVerificationCode(code);
-        Optional<Operation> operationOpt = operations.stream()
-                .filter(x -> x.getCode().equals(code))
-                .findFirst();
+        Optional<Operation> operationOpt = operationRepository.findByCode(code);
 
         Operation operation = operationOpt.orElseThrow(
                 () -> new OperationNotFoundException("Operation not found", code)
@@ -95,6 +95,7 @@ public class OperationService {
             throw new ExecutionOperationException("Operation was not complate", code);
         }
         operation.setExpiredDatetime(LocalDateTime.now());
+        operationRepository.save(operation);
         return true;
     }
 
@@ -103,11 +104,13 @@ public class OperationService {
     }
 
     private void collectAllExpired() {
-        operations.removeIf(x -> {
-            System.out.println(x.isExpired());
-            return x.isExpired() &&
-                    getSecondsExpiredOperation(x) > Operations.DEFAULT_EXPIRED_SECONDS;
-        });
+        List<Operation> operationsExpired = operationRepository.findAll().stream()
+                .filter(x -> x.isExpired() &&
+                        getSecondsExpiredOperation(x) > Operations.DEFAULT_EXPIRED_SECONDS)
+                .toList();
+        if (!operationsExpired.isEmpty()) {
+            operationRepository.deleteAll(operationsExpired);
+        }
     }
 
     private int getSecondsExpiredOperation(Operation operation) {
