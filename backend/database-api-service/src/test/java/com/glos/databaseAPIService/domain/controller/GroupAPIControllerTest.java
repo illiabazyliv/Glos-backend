@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,7 +38,7 @@ class GroupAPIControllerTest {
     @MockBean
     private GroupDTOMapper groupDTOMapper;
     @Test
-    void getGroupById() throws Exception {
+    void getGroupByIdTest() throws Exception {
         Long id = 1L;
         Group group = new Group();
         GroupDTO groupDTO = new GroupDTO();
@@ -52,7 +53,7 @@ class GroupAPIControllerTest {
     }
 
     @Test
-    void createGroup() throws Exception {
+    void createGroupTest() throws Exception {
         Group request = new Group();
         Group created = new Group();
         created.setId(1L);
@@ -72,7 +73,7 @@ class GroupAPIControllerTest {
     }
 
     @Test
-    void deleteGroup() throws Exception{
+    void deleteGroupTest() throws Exception{
         Long id = 1L;
         doNothing().when(groupService).deleteById(id);
         mockMvc.perform(MockMvcRequestBuilders.delete("/groups/{id}" , id))
@@ -80,7 +81,7 @@ class GroupAPIControllerTest {
     }
 
     @Test
-    void updateGroup() throws Exception {
+    void updateGroupTest() throws Exception {
         Long id = 1L;
         Group request = new Group();
         Group updated = new Group();
@@ -96,44 +97,42 @@ class GroupAPIControllerTest {
 
 
     @Test
-    void getAllGroups() throws  Exception {
+    void getAllGroupsTest() throws  Exception {
         Group group = new Group();
-        GroupDTO groupDTO = new GroupDTO();
-        List<Group> groups = Collections.singletonList(group);
-        Page<Group> page = new PageImpl<>(groups);
+        group.setId(1L);
 
-        when(groupService.getPage(any(Pageable.class), true)).thenReturn(page);
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+
+        Page<Group> groupPage = new PageImpl<>(Collections.singletonList(group), PageRequest.of(0, 10), 1);
+        Page<GroupDTO> groupDTOPage = new PageImpl<>(Collections.singletonList(groupDTO), PageRequest.of(0, 10), 1);
+
+        when(groupService.getPage(any(Pageable.class), eq(true))).thenReturn(groupPage);
         when(groupDTOMapper.toDto(any(Group.class))).thenReturn(groupDTO);
 
-        // When & Then
         mockMvc.perform(MockMvcRequestBuilders.get("/groups")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("sort", "id,asc")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content[0]").exists());
+                .andExpect(jsonPath("$.content[0].id").value(1L));
     }
 
     @Test
-    void getGroupsByFilters() throws Exception {
+    void getGroupsByFiltersTest() throws Exception {
         Group group = new Group();
-        GroupDTO groupDTO = new GroupDTO();
-        List<Group> groups = Collections.singletonList(group);
-        Page<Group> page = new PageImpl<>(groups);
+        group.setId(1L);
 
-        when(groupService.getPageByFilter(any(Group.class), any(Pageable.class), true)).thenReturn(page);
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+
+        Page<Group> groupPage = new PageImpl<>(Collections.singletonList(group), PageRequest.of(0, 10), 1);
+        Page<GroupDTO> groupDTOPage = new PageImpl<>(Collections.singletonList(groupDTO), PageRequest.of(0, 10), 1);
+
+        when(groupService.getPageByFilter(any(Group.class), any(Pageable.class), eq(true))).thenReturn(groupPage);
         when(groupDTOMapper.toDto(any(Group.class))).thenReturn(groupDTO);
 
-        // When & Then
         mockMvc.perform(MockMvcRequestBuilders.get("/groups/filter")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("sort", "id,asc")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content[0]").exists());
+                .andExpect(jsonPath("$.content[0].id").value(1L));
     }
 }
