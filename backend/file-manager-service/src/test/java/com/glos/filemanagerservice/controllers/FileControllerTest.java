@@ -1,6 +1,8 @@
 package com.glos.filemanagerservice.controllers;
 
+import com.glos.filemanagerservice.DTO.FileAndStatus;
 import com.glos.filemanagerservice.DTO.FileDTO;
+import com.glos.filemanagerservice.DTO.FileUpdateRequest;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.clients.FileClient;
 import com.glos.filemanagerservice.clients.RepositoryClient;
@@ -16,11 +18,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -60,21 +64,33 @@ class FileControllerTest {
 
     @Test
     void updateTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/files/id/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{ \"id\": 1, \"name\": \"file\" }")
-                        .param("filesData", "fileData"))
-                .andExpect(status().isNoContent());
+        MockMultipartFile mockFile = new MockMultipartFile(
+                "fileData", "filename.txt", "text/plain", "some content".getBytes());
 
+        FileUpdateRequest.FileNode fileNode = new FileUpdateRequest.FileNode(1L, "fileBody", mockFile);
+        FileUpdateRequest updateRequest = new FileUpdateRequest(List.of(fileNode));
 
+        List<FileAndStatus> response = List.of(new FileAndStatus());
+        when(fileApiFacade.update(any(FileUpdateRequest.class))).thenReturn(ResponseEntity.ok(response));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/files/id/{id}", 1L)
+                        .param("fileNodes[0].id", "1")
+                        .param("fileNodes[0].fileBody", "fileBody")
+                        .contentType("multipart/form-data")
+                        .content(mockFile.getBytes()))
+                .andExpect(status().isOk());
     }
 
     @Test
     void deleteTest() throws Exception {
+        List<String> rootFullNames = List.of("root1", "root2");
+        List<FileAndStatus> response = List.of(new FileAndStatus());
+        when(fileApiFacade.deleteFiles(rootFullNames)).thenReturn(ResponseEntity.ok(response));
+
         mockMvc.perform(MockMvcRequestBuilders.delete("/files")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("[1, 2, 3]"))
-                .andExpect(status().isNoContent());
+                        .content("[\"root1\", \"root2\"]")
+                        .contentType("application/json"))
+                .andExpect(status().isOk());
     }
 
     @Test
