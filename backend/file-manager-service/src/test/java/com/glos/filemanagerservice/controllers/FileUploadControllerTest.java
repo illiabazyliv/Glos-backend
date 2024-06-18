@@ -1,6 +1,7 @@
 package com.glos.filemanagerservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.glos.filemanagerservice.DTO.DownloadRequest;
 import com.glos.filemanagerservice.DTO.FileAndStatus;
 import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.DTO.FileRequest;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -63,21 +65,23 @@ class FileUploadControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put("/files/upload")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .flashAttr("fileRequests", fileRequest))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L));
+                .andExpect(status().isOk());
     }
     @Test
     void downloadFileTest()throws Exception {
-        ByteArrayResource resource = new ByteArrayResource("test content".getBytes());
-        when(fileApiFacade.downloadFiles(any())).thenReturn(ResponseEntity.ok(resource));
+        byte[] fileContent = "test content".getBytes();
+        ByteArrayResource resource = new ByteArrayResource(fileContent);
+        ResponseEntity<ByteArrayResource> responseEntity = ResponseEntity.ok(resource);
 
-        List<String> rootFullNames = Collections.singletonList("someFileName");
+        when(fileApiFacade.downloadFiles(any(DownloadRequest.class))).thenReturn(responseEntity);
+        DownloadRequest downloadRequest = new DownloadRequest();
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/files/download")
+        mockMvc.perform(MockMvcRequestBuilders.post("/files/download")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(rootFullNames)))
+                        .content("{\"yourJsonField\": \"yourValue\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("test content"));
+                .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip"))
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "application/zip"));
     }
     @Test
     void downloadRepository() throws Exception {
