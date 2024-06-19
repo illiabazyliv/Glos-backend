@@ -31,7 +31,7 @@ public class RepositoryDTO
 
     private List<CommentDTO> comments;
 
-    private List<Tag> tags;
+    private List<String> tags;
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
 
@@ -46,7 +46,7 @@ public class RepositoryDTO
                          String displayFullName,
                          String description,
                          List<CommentDTO> comments,
-                         List<Tag> tags,
+                         List<String> tags,
                          LocalDateTime creationDate,
                          LocalDateTime updateDate) {
         this.id = id;
@@ -174,11 +174,11 @@ public class RepositoryDTO
         this.comments = comments;
     }
 
-    public List<Tag> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 }

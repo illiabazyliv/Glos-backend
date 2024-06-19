@@ -1,9 +1,7 @@
 package com.glos.filemanagerservice.entities;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Repository
 {
@@ -19,21 +17,21 @@ public class Repository
     private String description;
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
-    private List<AccessType> accessTypes;
-    private List<Comment> comments;
-    private List<SecureCode> secureCodes;
-    private List<Tag> tags;
-    private List<File> files;
+    private Set<AccessType> accessTypes;
+    private Set<Comment> comments;
+    private Set<SecureCode> secureCodes;
+    private Set<Tag> tags;
+    private Set<File> files;
 
     public Repository() {
-        this.comments = new ArrayList<>();
-        this.files = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
-        this.accessTypes = new ArrayList<>();
-        this.tags = new ArrayList<>();
+        this.comments = new HashSet<>();
+        this.files = new HashSet<>();
+        this.secureCodes = new HashSet<>();
+        this.accessTypes = new HashSet<>();
+        this.tags = new HashSet<>();
     }
 
-    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, LocalDateTime creationDate, LocalDateTime updateDate, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, LocalDateTime creationDate, LocalDateTime updateDate, Set<AccessType> accessTypes, Set<Comment> comments, Set<SecureCode> secureCodes, Set<Tag> tags, Set<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -133,43 +131,43 @@ public class Repository
         this.description = description;
     }
 
-    public List<AccessType> getAccessTypes() {
+    public Set<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
+    public void setAccessTypes(Set<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
+    public Set<SecureCode> getSecureCodes() {
         return secureCodes;
     }
 
-    public void setSecureCodes(List<SecureCode> secureCodes) {
+    public void setSecureCodes(Set<SecureCode> secureCodes) {
         this.secureCodes = secureCodes;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
-    public List<File> getFiles() {
+    public Set<File> getFiles() {
         return files;
     }
 
-    public void setFiles(List<File> files) {
+    public void setFiles(Set<File> files) {
         this.files = files;
     }
 

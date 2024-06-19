@@ -1,5 +1,7 @@
 package com.glos.filemanagerservice.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.entities.User;
@@ -8,9 +10,12 @@ import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
 import com.pathtools.Path;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +55,10 @@ public class RepositoryController
         return ResponseEntity.ok(created);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<List<RepositoryAndStatus>> update(@ModelAttribute RepositoryUpdateRequest updateRequest)
-    {
-        return ResponseEntity.ok(repositoryApiFacade.update(updateRequest.getRepositories()).getBody());
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody RepositoryUpdateRequest updateRequest) throws JsonProcessingException {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Not implemented");
+        //return ResponseEntity.ok(repositoryApiFacade.update(updateRequest.getRepositories()).getBody());
     }
 
     @DeleteMapping("/{id}")
@@ -94,14 +99,14 @@ public class RepositoryController
     {
         final Path path = Path.builder(rootFullName).build();
         Repository repository = new Repository();
-        repository.setRootFullName(path.getPath());
+        repository.setRootPath(path.getPath());
         return getByFilter(repository, search, path.getFirst().getSimpleName(), accessTypes, tags, page, size, sort);
     }
 
     @GetMapping
     public ResponseEntity<Page<RepositoryDTO>> getByFilter(@ModelAttribute Repository repository,
                                                            @RequestParam(name = "search", required = false, defaultValue = "") String search,
-                                                           @RequestParam(name = "username", required = false, defaultValue = "") String username,
+                                                           @RequestParam(name = "username", required = false) String username,
                                                            @RequestParam(name = "accessTypes", required = false, defaultValue = "") List<String> accessTypes,
                                                            @RequestParam(name = "tags", required = false, defaultValue = "") List<String> tags,
                                                            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
@@ -111,8 +116,12 @@ public class RepositoryController
         Map<String, Object> filter = new HashMap<>();
         putIfNonNull(filter, "owner.username", username);
         putIfNonNull(filter, "search", search);
-        putIfNonNull(filter, "accessTypes", accessTypes);
-        putIfNonNull(filter, "tags", tags);
+        if (accessTypes != null && !accessTypes.isEmpty()) {
+            putIfNonNull(filter, "accessTypes", accessTypes);
+        }
+        if (tags != null && !accessTypes.isEmpty()) {
+            putIfNonNull(filter, "tags", tags);
+        }
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, filter, page, size, sort).getBody());
     }
 

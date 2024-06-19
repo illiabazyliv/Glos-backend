@@ -62,15 +62,15 @@ public class SecureCode
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        SecureCode that = (SecureCode) object;
-        return Objects.equals(id, that.id) && Objects.equals(code, that.code) && Objects.equals(resourcePath, that.resourcePath) && Objects.equals(creationDate, that.creationDate) && Objects.equals(expirationDate, that.expirationDate);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SecureCode that = (SecureCode) o;
+        return Objects.equals(id, that.id) && Objects.equals(code, that.code) && Objects.equals(resourcePath, that.resourcePath) && Objects.equals(expirationDate, that.expirationDate) && Objects.equals(creationDate, that.creationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, resourcePath, creationDate, expirationDate);
+        return Objects.hash(id, code, resourcePath, expirationDate, creationDate);
     }
 }

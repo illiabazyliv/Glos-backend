@@ -2,7 +2,9 @@ package com.glos.filemanagerservice.entities;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class File
 {
@@ -18,20 +20,20 @@ public class File
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
     private Repository repository;
-    private List<AccessType> accessTypes;
-    private List<Comment> comments;
-    private List<SecureCode> secureCodes;
-    private List<Tag> tags;
+    private Set<AccessType> accessTypes;
+    private Set<Comment> comments;
+    private Set<SecureCode> secureCodes;
+    private Set<Tag> tags;
 
     public File() {
         this.repository = new Repository();
-        this.tags = new ArrayList<>();
-        this.comments = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
-        this.accessTypes = new ArrayList<>();
+        this.tags = new HashSet<>();
+        this.comments = new HashSet<>();
+        this.secureCodes = new HashSet<>();
+        this.accessTypes = new HashSet<>();
     }
 
-    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, LocalDateTime creationDate, LocalDateTime updateDate, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, LocalDateTime creationDate, LocalDateTime updateDate, Repository repository, Set<AccessType> accessTypes, Set<Comment> comments, Set<SecureCode> secureCodes, Set<Tag> tags) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -146,35 +148,35 @@ public class File
         this.repository = repository;
     }
 
-    public List<AccessType> getAccessTypes() {
+    public Set<AccessType> getAccessTypes() {
         return accessTypes;
     }
 
-    public void setAccessTypes(List<AccessType> accessTypes) {
+    public void setAccessTypes(Set<AccessType> accessTypes) {
         this.accessTypes = accessTypes;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
+    public Set<SecureCode> getSecureCodes() {
         return secureCodes;
     }
 
-    public void setSecureCodes(List<SecureCode> secureCodes) {
+    public void setSecureCodes(Set<SecureCode> secureCodes) {
         this.secureCodes = secureCodes;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 

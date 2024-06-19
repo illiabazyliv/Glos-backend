@@ -5,6 +5,8 @@ import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class FileDTOMapper extends AbstractMapper<File, FileDTO>
 {
@@ -37,11 +39,13 @@ public class FileDTOMapper extends AbstractMapper<File, FileDTO>
     protected void postEntityCopy(FileDTO source, File destination)
     {
         destination.setRepository(repositoryDTOMapper.toEntity(source.getRepository()));
-        destination.setComments(source.getComments().stream().map(commentDTOMapper::toEntity).toList());
+        destination.setComments(source.getComments().stream()
+                .map(commentDTOMapper::toEntity)
+                .collect(Collectors.toSet()));
         if (source.getAccessModels() != null) {
             destination.setAccessTypes(source.getAccessModels().stream()
                     .map(accessModelMapper::toEntity)
-                    .toList());
+                    .collect(Collectors.toSet()));
         }
     }
 }

@@ -1,17 +1,13 @@
 package com.glos.filemanagerservice.facade;
 
 import com.accesstools.AccessNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
 import com.glos.filemanagerservice.clients.TagClient;
-import com.glos.filemanagerservice.entities.AccessType;
 import com.glos.filemanagerservice.entities.Repository;
-import com.glos.filemanagerservice.entities.Tag;
 import com.glos.filemanagerservice.entities.User;
 import com.glos.filemanagerservice.exception.HttpStatusCodeImplException;
-import com.glos.filemanagerservice.exception.SimpleExceptionBody;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestFilterMapper;
@@ -20,19 +16,13 @@ import com.pathtools.NodeType;
 import com.pathtools.Path;
 import com.pathtools.PathParser;
 import feign.FeignException;
-import org.apache.http.HttpException;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class RepositoryApiFacade
@@ -41,14 +31,16 @@ public class RepositoryApiFacade
     private  final RepositoryRequestFilterMapper requestMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
     private final RepositoryStorageClient repositoryStorageClient;
-    private final TagClient tagClient;
 
-    public RepositoryApiFacade(RepositoryClient repositoryClient, RepositoryRequestFilterMapper requestMapper, RepositoryDTOMapper repositoryDTOMapper, RepositoryStorageClient repositoryStorageClient, TagClient tagClient) {
+    public RepositoryApiFacade(
+            RepositoryClient repositoryClient,
+            RepositoryRequestFilterMapper requestMapper,
+            RepositoryDTOMapper repositoryDTOMapper,
+            RepositoryStorageClient repositoryStorageClient) {
         this.repositoryClient = repositoryClient;
         this.requestMapper = requestMapper;
         this.repositoryDTOMapper = repositoryDTOMapper;
         this.repositoryStorageClient = repositoryStorageClient;
-        this.tagClient = tagClient;
     }
 
 
@@ -104,8 +96,7 @@ public class RepositoryApiFacade
         try {
             for (RepositoryUpdateRequest.RepositoryNode repository : repositories)
             {
-                ObjectMapper objectMapper = new ObjectMapper();
-                Repository repo = objectMapper.readValue(repository.getRepositoryBody(), Repository.class);
+                Repository repo = repository.getRepository();
 
                 assignPath(repo);
                 checkAccessTypes(repo);
@@ -121,13 +112,13 @@ public class RepositoryApiFacade
                     moveRequest.getMoves().add(new MoveRequest.MoveNode(rootFullName, repo.getRootFullName()));
                 }
             }
-            repositoryAndStatuses = repositoryStorageClient.moveRepository(moveRequest).getBody();
+            //repositoryAndStatuses = repositoryStorageClient.moveRepository(moveRequest).getBody();
         }
         catch (Exception e)
         {
             throw new RuntimeException(e.getMessage());
         }
-        return ResponseEntity.ok(repositoryAndStatuses);
+        return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<?> delete(Long id)
@@ -181,26 +172,6 @@ public class RepositoryApiFacade
         return ResponseEntity.ok(repositories);
     }
 
-    public ResponseEntity<RepositoryDTO> addTag(String rootFullName, String name)
-    {
-        Tag tag = new Tag(name);
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        repositoryDTO.getTags().add(tag);
-        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-        repositoryClient.updateRepository(repository, repositoryDTO.getId());
-        return ResponseEntity.ok(repositoryClient.getRepositoryById(repositoryDTO.getId()).getBody());
-    }
-
-    public ResponseEntity<RepositoryDTO> removeTag(String rootFullName, String name)
-    {
-        RepositoryDTO repositoryDTO = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-        repositoryDTO.getTags().removeIf(x -> {return x.getName().equals(name);});
-        Repository repository = repositoryDTOMapper.toEntity(repositoryDTO);
-        repositoryClient.updateRepository(repository, repositoryDTO.getId());
-        tagClient.deleteTag(tagClient.getTagByName(name).getBody().getId());
-        return ResponseEntity.noContent().build();
-    }
-
     private void assignPath(Repository repository) {
         Path path = PathParser.getInstance().parse(repository.getRootPath());
         String rootName = repository.getRootName();
@@ -219,7 +190,7 @@ public class RepositoryApiFacade
     private void checkAccessTypes(Repository repository) {
         if (repository.getAccessTypes() != null) {
             repository.setAccessTypes(
-                    new ArrayList<>(repository.getAccessTypes().stream()
+                    new HashSet<>(repository.getAccessTypes().stream()
                             .peek(x -> {
                                 AccessNode node = AccessNode.builder(x.getName()).build();
                                 x.setName(node.getPattern());

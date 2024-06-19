@@ -22,8 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class FileApiFacade
@@ -221,13 +223,13 @@ public class FileApiFacade
 
     private void checkAccessTypes(File file) {
         if (file != null && file.getAccessTypes() != null) {
-            file.setAccessTypes(
+            file.setAccessTypes(new HashSet<>(
                     file.getAccessTypes().stream()
                             .peek(x -> {
                                 AccessNode node = AccessNode.builder(x.getName()).build();
                                 x.setName(node.getPattern());
-                            }).toList()
-            );
+                            }).collect(Collectors.toSet())
+            ));
         }
     }
 }

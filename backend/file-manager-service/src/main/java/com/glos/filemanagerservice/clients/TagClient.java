@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
@@ -20,4 +21,7 @@ public interface TagClient
 
     @GetMapping
     ResponseEntity<Page<Tag>> getByFilter(@SpringQueryMap Map<String, Object> filter);
+
+    @PutMapping("/ensure/{tagName}")
+    ResponseEntity<Tag> ensureTag(@PathVariable String tagName);
 }

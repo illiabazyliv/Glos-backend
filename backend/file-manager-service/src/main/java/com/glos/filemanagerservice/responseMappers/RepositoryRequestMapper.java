@@ -12,6 +12,8 @@ import com.glos.filemanagerservice.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 @Component
 public class RepositoryRequestMapper extends AbstractMapper<Repository, RepositoryRequest> {
@@ -19,7 +21,7 @@ public class RepositoryRequestMapper extends AbstractMapper<Repository, Reposito
     @Override
     protected void postEntityCopy(RepositoryRequest source, Repository destination) {
         if (source.getAccessTypes() != null) {
-            destination.setAccessTypes(new ArrayList<>(source.getAccessTypes().stream()
+            destination.setAccessTypes(new HashSet<>(source.getAccessTypes().stream()
                     .map(x -> {
                         final AccessNode node = AccessNode.builder()
                                 .setReadType(AccessReadType.fromName(x.getAccess()))
@@ -28,12 +30,14 @@ public class RepositoryRequestMapper extends AbstractMapper<Repository, Reposito
                                 .build();
                         return new AccessType(null, node.getPattern());
                     })
-                    .toList()));
+                    .collect(Collectors.toSet())));
         }
         if (source.getTags() != null) {
-            destination.setTags(source.getTags().stream()
+            destination.setTags(new HashSet<>(
+                    source.getTags().stream()
                             .map(x -> new Tag(null, x))
-                    .toList());
+                    .toList())
+            );
         }
     }
 
