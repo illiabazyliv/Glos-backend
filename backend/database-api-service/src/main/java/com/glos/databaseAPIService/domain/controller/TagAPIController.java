@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 	@author - yablonovskydima
@@ -32,6 +33,17 @@ public class TagAPIController
     public ResponseEntity<Tag> getTagById(@PathVariable Long id)
     {
         return ResponseEntity.of(tagService.getById(id));
+    }
+
+    @PutMapping("/ensure/{tagName}")
+    public ResponseEntity<Tag> ensureTag(@PathVariable String tagName, UriComponentsBuilder uriBuilder) {
+        Map.Entry<Tag, Boolean> pair =  tagService.ensure(tagName);
+        if (pair.getValue()) {
+            return ResponseEntity.created(uriBuilder.path("/tags/name/{tagName}")
+                    .build(tagName)).body(pair.getKey());
+        } else {
+            return ResponseEntity.ok(pair.getKey());
+        }
     }
 
     @PostMapping

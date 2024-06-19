@@ -1,6 +1,7 @@
 package com.glos.databaseAPIService.domain.responseMappers;
 
 import com.glos.databaseAPIService.domain.entities.Repository;
+import com.glos.databaseAPIService.domain.entities.Tag;
 import com.glos.databaseAPIService.domain.mappers.AbstractMapper;
 import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
 import org.springframework.stereotype.Component;

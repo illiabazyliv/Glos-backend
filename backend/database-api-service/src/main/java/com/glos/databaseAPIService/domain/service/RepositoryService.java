@@ -134,6 +134,8 @@ public class RepositoryService
     @Transactional
     public Repository update(Long id, Repository newRepository) {
         assignAccessTypes(newRepository);
+        assignTags(newRepository);
+        assignComments(newRepository);
         Repository repository = getRepositoryByIdOrThrow(id);
         repositoryMapper.transferEntityDto(newRepository, repository);
         return this.repository.save(repository);

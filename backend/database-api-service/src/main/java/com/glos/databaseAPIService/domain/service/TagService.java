@@ -7,6 +7,7 @@ import com.glos.databaseAPIService.domain.filters.EntityFilter;
 import com.glos.databaseAPIService.domain.repository.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,13 @@ public class TagService implements CrudService<Tag, Long>
 
     public Page<Tag> findAllByFilter(Tag tag, Pageable page)
     {
-        return tagRepository.findAll(Example.of(tag), page);
+        Example<Tag> exampleTag = Example.of(tag, ExampleMatcher.matching()
+                .withMatcher("name", ExampleMatcher.GenericPropertyMatcher.of(
+                        ExampleMatcher.StringMatcher.CONTAINING
+                ))
+                .withIgnoreCase()
+                .withIgnoreNullValues());
+        return tagRepository.findAll(exampleTag, page);
     }
 
     @Transactional
