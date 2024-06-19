@@ -2,12 +2,14 @@ package com.glos.databaseAPIService.domain.controller;
 
 import com.glos.databaseAPIService.domain.entities.Repository;
 import com.glos.databaseAPIService.domain.entities.User;
+import com.glos.databaseAPIService.domain.responseDTO.RepositoryDTO;
 import com.glos.databaseAPIService.domain.responseMappers.RepositoryDTOMapper;
 import com.glos.databaseAPIService.domain.responseMappers.UserDTOMapper;
 import com.glos.databaseAPIService.domain.service.RepositoryService;
 import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import java.lang.Long;
@@ -22,10 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 import static org.mockito.Mockito.*;
@@ -37,50 +37,50 @@ class RepositoryAPIControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private RepositoryService repositoryService;
     @MockBean
     private RepositoryDTOMapper mapper;
     @MockBean
     private UserDTOMapper userDTOMapper;
+    @InjectMocks
+    private RepositoryAPIController repositoryAPIController;
+    @Autowired
+    private RepositoryDTOMapper repositoryDTOMapper;
 
     @Test
     public void getRepositoryTest() throws Exception {
-        Long id = 1L;
         Repository repository = new Repository();
-        repository.setId(id);
+        repository.setId(1L);
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO.setId(1L);
 
-        when(repositoryService.getById(eq(id))).thenReturn(Optional.of(repository));
+        when(repositoryService.getById(1L)).thenReturn(Optional.of(repository));
+        when(repositoryDTOMapper.toDto(any(Repository.class))).thenReturn(repositoryDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/repositories/{id}" , id)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/1")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
     void createRepositoryTest() throws Exception {
         Repository repository = new Repository();
-        Repository response = new Repository();
-        User owner = new User();
-        owner.setId(1L);
-        response.setId(1L);
-        response.setOwner(owner);
-        repository.setOwner(owner);
+        repository.setId(1L);
+        repository.setRootFullName("root/path");
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO.setId(1L);
 
-        when(repositoryService.create(any(Repository.class))).thenReturn(response);
+        when(repositoryService.create(any(Repository.class))).thenReturn(repository);
+        when(repositoryDTOMapper.toDto(any(Repository.class))).thenReturn(repositoryDTO);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String requestJson = objectMapper.writeValueAsString(repository);
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/repositories")
-                        .content(requestJson)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-
-        verify(repositoryService, times(1)).create(any(Repository.class));
+        mockMvc.perform(MockMvcRequestBuilders.post("/repositories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"rootFullName\":\"root/path\"}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
@@ -113,56 +113,61 @@ class RepositoryAPIControllerTest {
 
     @Test
     void getRepositoriesByOwnerIdTest() throws Exception {
-        Long ownerId = 1L;
         Repository repository = new Repository();
-        List<Repository> repositories = List.of(repository);
+        repository.setId(1L);
+        User owner = new User();
+        owner.setUsername("testUser");
+        repository.setOwner(owner);
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("includeDetails", true);
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO.setId(1L);
 
-        when(repositoryService.findAllByOwnerId(eq(ownerId), eq(params))).thenReturn(repositories);
+        Page<Repository> repositoryPage = new PageImpl<>(Collections.singletonList(repository), PageRequest.of(0, 10), 1);
+        Page<RepositoryDTO> repositoryDTOPage = new PageImpl<>(Collections.singletonList(repositoryDTO), PageRequest.of(0, 10), 1);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner-id/{owner-id}", ownerId)
+        when(repositoryService.findAllByFilter(any(Repository.class), any(Pageable.class), any(Map.class))).thenReturn(repositoryPage);
+        when(repositoryDTOMapper.toDto(any(Repository.class))).thenReturn(repositoryDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/owner/testUser")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        verify(repositoryService, times(1)).findAllByOwnerId(eq(ownerId), eq(params));    }
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(1L));
+    }
     @Test
     void getRepositoryByRootFullNameTest() throws Exception {
-        String rootFullName = "testRootFullName";
         Repository repository = new Repository();
+        repository.setId(1L);
+        repository.setRootFullName("$sys");
 
-        Mockito.when(repositoryService.findByRootFullName(Mockito.anyString())).thenReturn(Optional.of(repository));
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO.setId(1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-full-name/{rootFullName}", rootFullName)
+        when(repositoryService.findByRootFullName("$sys")).thenReturn(Optional.of(repository));
+        when(repositoryDTOMapper.toDto(any(Repository.class))).thenReturn(repositoryDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-fullname/$sys")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-        Mockito.verify(repositoryService, Mockito.times(1)).findByRootFullName(Mockito.anyString());;
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
     void getRepositoriesByFilterTest() throws Exception {
-        Repository filter = new Repository();
         Repository repository = new Repository();
-        List<Repository> repositories = List.of(repository);
-        Page<Repository> page = new PageImpl<>(repositories);
+        repository.setId(1L);
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("includeDetails", true);
+        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        repositoryDTO.setId(1L);
 
-        when(repositoryService.findAllByFilter(any(Repository.class), any(Pageable.class), eq(params))).thenReturn(page);
+        Page<Repository> repositoryPage = new PageImpl<>(Collections.singletonList(repository), PageRequest.of(0, 10), 1);
+        Page<RepositoryDTO> repositoryDTOPage = new PageImpl<>(Collections.singletonList(repositoryDTO), PageRequest.of(0, 10), 1);
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/repositories")
-                        .param("name", filter.getDisplayName())
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("sort", "id,asc")
+        when(repositoryService.findAllByFilter(any(Repository.class), any(Pageable.class), any(Map.class))).thenReturn(repositoryPage);
+        when(repositoryDTOMapper.toDto(any(Repository.class))).thenReturn(repositoryDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/repositories")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-
-        verify(repositoryService, times(1)).findAllByFilter(any(Repository.class), any(Pageable.class), eq(params));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(1L));
     }
-    }
+}
