@@ -2,6 +2,7 @@ package com.glos.filemanagerservice.DTO;
 
 import com.glos.filemanagerservice.entities.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryUpdateRequest
@@ -9,14 +10,14 @@ public class RepositoryUpdateRequest
     public static class RepositoryNode
     {
         private Long id;
-        private String repositoryBody;
-
-        public RepositoryNode(Long id, String repositoryBody) {
-            this.id = id;
-            this.repositoryBody = repositoryBody;
-        }
+        private RepositoryUpdateDTO repository;
 
         public RepositoryNode() {
+        }
+
+        public RepositoryNode(Long id, RepositoryUpdateDTO repository) {
+            this.id = id;
+            this.repository = repository;
         }
 
         public Long getId() {
@@ -27,15 +28,20 @@ public class RepositoryUpdateRequest
             this.id = id;
         }
 
-        public String getRepositoryBody() {
-            return repositoryBody;
+        public RepositoryUpdateDTO getRepository() {
+            return repository;
         }
 
-        public void setRepositoryBody(String repositoryBody) {
-            this.repositoryBody = repositoryBody;
+        public void setRepository(RepositoryUpdateDTO repository) {
+            this.repository = repository;
         }
     }
+
     private List<RepositoryNode> repositories;
+
+    public RepositoryUpdateRequest() {
+        this.repositories = new ArrayList<>();
+    }
 
     public RepositoryUpdateRequest(List<RepositoryNode> repositories) {
         this.repositories = repositories;

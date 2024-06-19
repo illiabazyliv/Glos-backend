@@ -4,13 +4,14 @@ import com.accesstools.AccessNode;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
-import com.glos.filemanagerservice.clients.TagClient;
 import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.entities.User;
 import com.glos.filemanagerservice.exception.HttpStatusCodeImplException;
+import com.glos.filemanagerservice.exception.ResourceNotFoundException;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestFilterMapper;
+import com.glos.filemanagerservice.responseMappers.RepositoryUpdateDTOMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
 import com.pathtools.NodeType;
 import com.pathtools.Path;
@@ -31,16 +32,19 @@ public class RepositoryApiFacade
     private  final RepositoryRequestFilterMapper requestMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
     private final RepositoryStorageClient repositoryStorageClient;
+    private final RepositoryUpdateDTOMapper repositoryUpdateDTOMapper;
 
     public RepositoryApiFacade(
             RepositoryClient repositoryClient,
             RepositoryRequestFilterMapper requestMapper,
             RepositoryDTOMapper repositoryDTOMapper,
-            RepositoryStorageClient repositoryStorageClient) {
+            RepositoryStorageClient repositoryStorageClient,
+            RepositoryUpdateDTOMapper repositoryUpdateDTOMapper) {
         this.repositoryClient = repositoryClient;
         this.requestMapper = requestMapper;
         this.repositoryDTOMapper = repositoryDTOMapper;
         this.repositoryStorageClient = repositoryStorageClient;
+        this.repositoryUpdateDTOMapper = repositoryUpdateDTOMapper;
     }
 
 
@@ -91,33 +95,50 @@ public class RepositoryApiFacade
 
     public ResponseEntity<List<RepositoryAndStatus>> update(List<RepositoryUpdateRequest.RepositoryNode> repositories)
     {
-        List<RepositoryAndStatus> repositoryAndStatuses;
+        List<RepositoryAndStatus> repositoryAndStatuses = new ArrayList<>();
         MoveRequest moveRequest = new MoveRequest();
-        try {
-            for (RepositoryUpdateRequest.RepositoryNode repository : repositories)
-            {
-                Repository repo = repository.getRepository();
-
-                assignPath(repo);
-                checkAccessTypes(repo);
-
-                repo.setId(repository.getId());
-                repo.setUpdateDate(LocalDateTime.now());
-
-                String rootFullName = repositoryClient.getRepositoryById(repository.getId()).getBody().getRootFullName();
-                repositoryClient.updateRepository(repo, repository.getId());
-
-                if (repo.getRootFullName() != null && !rootFullName.equals(repo.getRootFullName()))
-                {
-                    moveRequest.getMoves().add(new MoveRequest.MoveNode(rootFullName, repo.getRootFullName()));
-                }
-            }
-            //repositoryAndStatuses = repositoryStorageClient.moveRepository(moveRequest).getBody();
-        }
-        catch (Exception e)
+        for (RepositoryUpdateRequest.RepositoryNode repository : repositories)
         {
-            throw new RuntimeException(e.getMessage());
+            RepositoryDTO found = repositoryClient.getRepositoryById(repository.getId()).getBody();
+            if (found.getDefault() != null && found.getDefault()) {
+                if (repositories.size() == 1) {
+                    throw new ResourceNotFoundException();
+                }
+                repositoryAndStatuses.add(new RepositoryAndStatus(
+                        found.getDisplayFullName(),
+                        RepositoryOperationStatus.FAILED,
+                        "Default repository is immutable"));
+                continue;
+            }
+            RepositoryUpdateDTO repoDto = repository.getRepository();
+            Repository repo = repositoryUpdateDTOMapper.toEntity(repoDto);
+
+            checkAccessTypes(repo);
+
+            repo.setId(repository.getId());
+            repo.setUpdateDate(LocalDateTime.now());
+
+
+
+            repo.setRootPath(found.getRootPath());
+            if (repo.getRootName() == null || repo.getRootName().isEmpty()) {
+                repo.setRootName(found.getRootName());
+            }
+            assignPath(repo);
+
+
+            repositoryClient.updateRepository(repo, repository.getId());
+
+            if (repo.getRootFullName() != null && !found.getRootFullName().equals(repo.getRootFullName()))
+            {
+                moveRequest.getMoves().add(new MoveRequest.MoveNode(found.getRootFullName(), repo.getRootFullName()));
+            }
         }
+        if (moveRequest.getMoves() != null && !moveRequest.getMoves().isEmpty()) {
+            //repositoryAndStatuses.addAll(repositoryStorageClient.moveRepository(moveRequest).getBody());
+        }
+
+
         return ResponseEntity.noContent().build();
     }
 

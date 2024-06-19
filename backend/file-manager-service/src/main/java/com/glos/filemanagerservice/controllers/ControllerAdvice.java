@@ -31,7 +31,7 @@ public class ControllerAdvice {
             MethodArgumentNotValidException e
     ) {
         ExceptionBody exceptionBody = new SimpleExceptionBody("Validation failed.", new HashMap<>());
-        List<FieldError> errors = appendPasswordConfirm(e.getBindingResult());
+        List<FieldError> errors = (List<FieldError>) e.getBindingResult();
         exceptionBody.setErrors(errors.stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage))
         );
@@ -39,20 +39,9 @@ public class ControllerAdvice {
         return exceptionBody;
     }
 
-    private List<FieldError> appendPasswordConfirm(BindingResult bindingResult) {
-        List<FieldError> passwordConfirmErrors = new ArrayList<>(bindingResult.getFieldErrors());
-
-        for (ObjectError error : bindingResult.getGlobalErrors()) {
-            if (error.getObjectName().equals("userDTO") && error.getCode().equals("PasswordConfirm")) {
-                passwordConfirmErrors.add(new FieldError("userDTO", "passwordConfirm", error.getDefaultMessage()));
-            }
-        }
-
-        return passwordConfirmErrors;
-    }
-
     @ExceptionHandler(value = {
-            NoResourceFoundException.class
+            NoResourceFoundException.class,
+            ResourceNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionBody handleResourceNotFound(

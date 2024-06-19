@@ -1,36 +1,33 @@
 package com.glos.filemanagerservice.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.glos.filemanagerservice.entities.*;
+import com.glos.filemanagerservice.validation.OnUpdate;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class RepositoryRequest {
-
-    @NotEmpty(message = "can't be empty")
-    private String rootPath;
-    @NotEmpty(message = "can't be empty")
-    private String rootName;
+public class RepositoryUpdateDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private User owner;
+    private String rootPath;
+
+    @NotNull(message = "can't be empty")
+    @NotEmpty(message = "can't be empty")
+    private String rootName;
     private String description;
-    private List<AccessModel> accessTypes;
     private List<String> tags;
 
-    public RepositoryRequest() {
-
+    public RepositoryUpdateDTO() {
+        this.tags = new ArrayList<>();
     }
 
-    public RepositoryRequest(String rootPath, String rootName, User owner, String description, List<AccessModel> accessTypes, List<String> tags) {
+    public RepositoryUpdateDTO(String rootPath, String rootName, String description, List<String> tags) {
         this.rootPath = rootPath;
         this.rootName = rootName;
-        this.owner = owner;
         this.description = description;
-        this.accessTypes = accessTypes;
-        this.tags = tags;
     }
 
     public String getRootPath() {
@@ -49,14 +46,6 @@ public class RepositoryRequest {
         this.rootName = rootName;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -65,13 +54,6 @@ public class RepositoryRequest {
         this.description = description;
     }
 
-    public List<AccessModel> getAccessTypes() {
-        return accessTypes;
-    }
-
-    public void setAccessTypes(List<AccessModel> accessTypes) {
-        this.accessTypes = accessTypes;
-    }
 
     public List<String> getTags() {
         return tags;
@@ -79,5 +61,18 @@ public class RepositoryRequest {
 
     public void setTags(List<String> tags) {
         this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RepositoryUpdateDTO that = (RepositoryUpdateDTO) o;
+        return Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(description, that.description) && Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rootPath, rootName, description, tags);
     }
 }

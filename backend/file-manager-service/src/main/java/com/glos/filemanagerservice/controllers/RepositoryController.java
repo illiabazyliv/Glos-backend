@@ -9,16 +9,18 @@ import com.glos.filemanagerservice.facade.RepositoryApiFacade;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
+import com.glos.filemanagerservice.validation.OnCreate;
+import com.glos.filemanagerservice.validation.OnUpdate;
 import com.pathtools.Path;
+import jakarta.validation.Valid;
 import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import static com.glos.filemanagerservice.DTO.RepositoryUpdateRequest.RepositoryNode;
 
 @RestController
 @RequestMapping("/repositories")
@@ -48,17 +50,23 @@ public class RepositoryController
     }
 
     @PostMapping
-    public ResponseEntity<RepositoryDTO> create(@RequestBody RepositoryRequest request)
+    public ResponseEntity<RepositoryDTO> create(@Valid @RequestBody RepositoryRequest request)
     {
         Repository repository = repositoryRequestMapper.toEntity(request);
         RepositoryDTO created = repositoryApiFacade.create(repository).getBody();
         return ResponseEntity.ok(created);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateById(@PathVariable Long id, @RequestBody RepositoryUpdateDTO request) {
+        final RepositoryNode node = new RepositoryNode(id, request);
+        repositoryApiFacade.update(Collections.singletonList(node));
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody RepositoryUpdateRequest updateRequest) throws JsonProcessingException {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Not implemented");
-        //return ResponseEntity.ok(repositoryApiFacade.update(updateRequest.getRepositories()).getBody());
+    public ResponseEntity<List<RepositoryAndStatus>> update(@RequestBody @Valid List<RepositoryNode> repositoryNodes) {
+        return ResponseEntity.ok(repositoryApiFacade.update(repositoryNodes).getBody());
     }
 
     @DeleteMapping("/{id}")
