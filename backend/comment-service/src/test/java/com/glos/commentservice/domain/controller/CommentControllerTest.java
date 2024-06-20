@@ -5,7 +5,6 @@ import com.glos.commentservice.domain.DTO.CommentDTO;
 import com.glos.commentservice.domain.DTO.Page;
 import com.glos.commentservice.domain.facade.CommentApiFacade;
 import com.glos.commentservice.entities.Comment;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 import static org.mockito.ArgumentMatchers.any;
@@ -98,7 +98,7 @@ class CommentControllerTest {
         List<CommentDTO> list = Collections.singletonList(commentDTO);
         Page<CommentDTO> page = new Page<>();
 
-        when(commentApiFacade.getByFilter(any(Comment.class))).thenReturn(ResponseEntity.ok(page));
+        when(commentApiFacade.getByFilter(anyString(), any(Map.class))).thenReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/comments")

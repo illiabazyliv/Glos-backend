@@ -30,20 +30,13 @@ public class File
 
     private List<Comment> comments;
 
-
-    private List<SecureCode> secureCodes;
-
-    private List<Tag> tags;
-
     public File() {
         this.repository = new Repository();
-        this.tags = new ArrayList<>();
         this.comments = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
         this.accessTypes = new ArrayList<>();
     }
 
-    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags) {
+    public File(Long id, String rootPath, String rootFilename, String rootFullName, Integer rootSize, String rootFormat, String displayPath, String displayFilename, String displayFullName, Repository repository, List<AccessType> accessTypes, List<Comment> comments) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootFilename = rootFilename;
@@ -56,8 +49,6 @@ public class File
         this.repository = repository;
         this.accessTypes = accessTypes;
         this.comments = comments;
-        this.secureCodes = secureCodes;
-        this.tags = tags;
     }
 
     public Long getId() {
@@ -156,22 +147,6 @@ public class File
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
-        return secureCodes;
-    }
-
-    public void setSecureCodes(List<SecureCode> secureCodes) {
-        this.secureCodes = secureCodes;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     @Override
     public String toString() {
         return "File{" +
@@ -187,8 +162,6 @@ public class File
                 ", repository=" + repository +
                 ", accessTypes=" + accessTypes +
                 ", comments=" + comments +
-                ", secureCodes=" + secureCodes +
-                ", tags=" + tags +
                 '}';
     }
 }

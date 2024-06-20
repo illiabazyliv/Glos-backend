@@ -5,6 +5,8 @@ import com.glos.commentservice.entities.File;
 import com.glos.commentservice.entities.mappers.AbstractMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class FileDTOMapper extends AbstractMapper<File, FileDTO>
 {
@@ -21,12 +23,12 @@ public class FileDTOMapper extends AbstractMapper<File, FileDTO>
     protected void postDtoCopy(File source, FileDTO destination)
     {
         destination.setRepository(repositoryDTOMapper.toDto(source.getRepository()));
-        destination.setComments(source.getComments().stream().map(commentDTOMapper::toDto).toList());
+        destination.setComments(new ArrayList<>(source.getComments().stream().map(commentDTOMapper::toDto).toList()));
     }
     @Override
     protected void postEntityCopy(FileDTO source, File destination)
     {
         destination.setRepository(repositoryDTOMapper.toEntity(source.getRepository()));
-        destination.setComments(source.getComments().stream().map(commentDTOMapper::toEntity).toList());
+        destination.setComments(new ArrayList<>(source.getComments().stream().map(commentDTOMapper::toEntity).toList()));
     }
 }

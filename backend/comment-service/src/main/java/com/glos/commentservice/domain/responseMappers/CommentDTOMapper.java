@@ -20,10 +20,14 @@ public class CommentDTOMapper extends AbstractMapper<Comment, CommentDTO>
     protected void postDtoCopy(Comment source, CommentDTO destination)
     {
         destination.setAuthor(userMapper.toDto(source.getAuthor()));
+        destination.setDate(source.getCreationDate());
+        destination.setUpdateDate(source.getUpdateDate());
     }
     @Override
     protected void postEntityCopy(CommentDTO source, Comment destination)
     {
         destination.setAuthor(userMapper.toEntity(source.getAuthor()));
+        destination.setCreationDate(source.getDate());
+        destination.setUpdateDate(source.getUpdateDate());
     }
 }

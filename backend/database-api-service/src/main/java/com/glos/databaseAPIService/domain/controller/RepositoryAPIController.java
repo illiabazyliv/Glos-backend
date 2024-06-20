@@ -77,8 +77,7 @@ public class RepositoryAPIController
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRepository(@RequestBody Repository newRepository, @PathVariable("id") Long id)
     {
-        //PathUtils.ordinalPathsRepository(newRepository);
-        repositoryService.update(id, newRepository);
+        Repository repository = repositoryService.update(id, newRepository);
         return ResponseEntity.noContent().build();
     }
 

@@ -38,13 +38,24 @@ public class CommentAPIController {
     @GetMapping
     public ResponseEntity<Page<CommentDTO>> getAllByFilter(
             @ModelAttribute Comment filter,
+            @RequestParam(name = "rootFullName") String rootFullName,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     )
     {
-        Page<Comment> comments = commentService.getPageByFilter(filter, pageable);
-        Page<CommentDTO> commentDTOPage = comments.map(commentDTOMapper::toDto);
+        final Page<Comment> comments = commentService.getPageByFilter(filter, pageable);
+        final Page<CommentDTO> commentDTOPage = comments.map(commentDTOMapper::toDto);
 
         return ResponseEntity.ok(commentDTOPage);
+    }
+
+    @GetMapping("/path/{rootFullName}")
+    public ResponseEntity<Page<CommentDTO>> getAllCommentsByRootFullName(
+            @PathVariable String rootFullName,
+            @ModelAttribute Comment filter,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        Page<Comment> comments = commentService.getPageCommentsByRootFullName(rootFullName, filter, pageable);
+        return ResponseEntity.ok(comments.map(commentDTOMapper::toDto));
     }
 
     @GetMapping("/{id}")

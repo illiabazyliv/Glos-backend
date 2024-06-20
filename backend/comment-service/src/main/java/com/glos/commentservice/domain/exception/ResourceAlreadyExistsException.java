@@ -1,4 +1,4 @@
-package com.glos.commentservice.domain.exceptions;
+package com.glos.commentservice.domain.exception;
 
 public class ResourceAlreadyExistsException extends RuntimeException {
     public ResourceAlreadyExistsException() {

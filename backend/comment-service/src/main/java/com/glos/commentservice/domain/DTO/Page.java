@@ -91,6 +91,7 @@ public class Page<T> {
 
     public void setContent(List<T> content) {
         this.content = content;
+        this.size = content.size();
     }
 
     public int getNumber() {

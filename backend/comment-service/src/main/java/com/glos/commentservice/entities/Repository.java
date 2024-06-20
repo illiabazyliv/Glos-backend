@@ -30,20 +30,16 @@ public class Repository
 
     private List<AccessType> accessTypes;
     private List<Comment> comments;
-    private List<SecureCode> secureCodes;
-    private List<Tag> tags;
 
     private List<File> files;
 
     public Repository() {
         this.comments = new ArrayList<>();
         this.files = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
         this.accessTypes = new ArrayList<>();
-        this.tags = new ArrayList<>();
     }
 
-    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<SecureCode> secureCodes, List<Tag> tags, List<File> files) {
+    public Repository(Long id, String rootPath, String rootName, String rootFullName, User owner, Boolean isDefault, String displayPath, String displayName, String displayFullName, String description, List<AccessType> accessTypes, List<Comment> comments, List<File> files) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -56,8 +52,6 @@ public class Repository
         this.description = description;
         this.accessTypes = accessTypes;
         this.comments = comments;
-        this.secureCodes = secureCodes;
-        this.tags = tags;
         this.files = files;
     }
 
@@ -157,22 +151,6 @@ public class Repository
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
-        return secureCodes;
-    }
-
-    public void setSecureCodes(List<SecureCode> secureCodes) {
-        this.secureCodes = secureCodes;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     public List<File> getFiles() {
         return files;
     }
@@ -186,12 +164,12 @@ public class Repository
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Repository that = (Repository) o;
-        return Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(isDefault, that.isDefault) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(secureCodes, that.secureCodes) && Objects.equals(tags, that.tags) && Objects.equals(files, that.files);
+        return Objects.equals(id, that.id) && Objects.equals(rootPath, that.rootPath) && Objects.equals(rootName, that.rootName) && Objects.equals(rootFullName, that.rootFullName) && Objects.equals(owner, that.owner) && Objects.equals(isDefault, that.isDefault) && Objects.equals(displayPath, that.displayPath) && Objects.equals(displayName, that.displayName) && Objects.equals(displayFullName, that.displayFullName) && Objects.equals(description, that.description) && Objects.equals(accessTypes, that.accessTypes) && Objects.equals(comments, that.comments) && Objects.equals(files, that.files);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, rootPath, rootName, rootFullName, owner, isDefault, displayPath, displayName, displayFullName, description, accessTypes, comments, secureCodes, tags, files);
+        return Objects.hash(id, rootPath, rootName, rootFullName, owner, isDefault, displayPath, displayName, displayFullName, description, accessTypes, comments, files);
     }
 
     @Override
@@ -209,8 +187,6 @@ public class Repository
                 ", description='" + description + '\'' +
                 ", accessTypes=" + accessTypes +
                 ", comments=" + comments +
-                ", secureCodes=" + secureCodes +
-                ", tags=" + tags +
                 ", files=" + files +
                 '}';
     }

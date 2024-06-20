@@ -89,10 +89,13 @@ CREATE TABLE IF NOT EXISTS repositories (
 
 CREATE TABLE IF NOT EXISTS comments (
     id BIGINT NOT NULL AUTO_INCREMENT,
+    resource_path VARCHAR(100),
     author_id BIGINT,
-    `text` TEXT NOT NULL,
-    `date` DATETIME NOT NULL,
+    `text` VARCHAR(300) NOT NULL,
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_comments_id PRIMARY KEY(id),
+    CONSTRAINT uq_comments_resource_path_author_id_text UNIQUE(author_id, resource_path, `text`),
     CONSTRAINT fk_comments_users_id FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 

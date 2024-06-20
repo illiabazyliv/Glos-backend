@@ -13,17 +13,21 @@ import java.util.Map;
 public interface ExternalCommentApi {
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> getById(@PathVariable Long id);
+    ResponseEntity<Comment> getById(@PathVariable Long id);
 
     @PostMapping
     ResponseEntity<Comment> create (@RequestBody Comment comment);
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Comment request);
+    ResponseEntity<?> update(@PathVariable Long id, @RequestBody Comment request);
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Long id);
+    ResponseEntity<?> deleteById(@PathVariable Long id);
 
     @GetMapping
-    public ResponseEntity<Page<Comment>> getAllByFilter(@SpringQueryMap Map<String, Object> filter);
+    ResponseEntity<Page<Comment>> getAllByFilter(@SpringQueryMap Map<String, Object> filter);
+
+    @GetMapping("/path/{rootFullName}")
+    ResponseEntity<Page<Comment>> getAllCommentsByRootFullName(@PathVariable String rootFullName,
+                                                               @SpringQueryMap Map<String, Object> filter);
 }

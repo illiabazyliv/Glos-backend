@@ -12,15 +12,17 @@ public class CommentDTO
     private String text;
 
     private LocalDateTime date;
+    private LocalDateTime updateDate;
 
     public CommentDTO() {
     }
 
-    public CommentDTO(Long id, UserDTO author, String text, LocalDateTime date) {
+    public CommentDTO(Long id, UserDTO author, String text, LocalDateTime date, LocalDateTime updateDate) {
         this.id = id;
         this.author = author;
         this.text = text;
         this.date = date;
+        this.updateDate = updateDate;
     }
 
     public Long getId() {
@@ -53,5 +55,13 @@ public class CommentDTO
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(LocalDateTime updateDate) {
+        this.updateDate = updateDate;
     }
 }

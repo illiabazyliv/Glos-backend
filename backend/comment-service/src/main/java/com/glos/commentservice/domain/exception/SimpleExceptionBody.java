@@ -1,4 +1,4 @@
-package com.glos.commentservice.domain.exceptions;
+package com.glos.commentservice.domain.exception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +17,11 @@ public class SimpleExceptionBody implements ExceptionBody {
     }
 
     @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
     public void setMessage(String message) {
         this.message = message;
     }
@@ -29,5 +34,15 @@ public class SimpleExceptionBody implements ExceptionBody {
     @Override
     public void removeError(String key) {
         errors.remove(key);
+    }
+
+    @Override
+    public void setErrors(Map<String, String> errors) {
+        this.errors.putAll(errors);
+    }
+
+    @Override
+    public Map<String, String> getErrors() {
+        return errors;
     }
 }

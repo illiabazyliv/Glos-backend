@@ -1,8 +1,6 @@
 package com.glos.commentservice.domain.DTO;
 
 import com.glos.commentservice.entities.AccessType;
-import com.glos.commentservice.entities.SecureCode;
-import com.glos.commentservice.entities.Tag;
 
 import java.util.List;
 
@@ -31,10 +29,6 @@ public class RepositoryDTO
     private List<AccessType> accessTypes;
 
     private List<CommentDTO> comments;
-
-    private List<SecureCode> secureCodes;
-
-    private List<Tag> tags;
     //file
 
     public RepositoryDTO(Long id,
@@ -48,9 +42,7 @@ public class RepositoryDTO
                          String displayFullName,
                          String description,
                          List<AccessType> accessTypes,
-                         List<CommentDTO> comments,
-                         List<SecureCode> secureCodes,
-                         List<Tag> tags) {
+                         List<CommentDTO> comments) {
         this.id = id;
         this.rootPath = rootPath;
         this.rootName = rootName;
@@ -63,8 +55,6 @@ public class RepositoryDTO
         this.description = description;
         this.accessTypes = accessTypes;
         this.comments = comments;
-        this.secureCodes = secureCodes;
-        this.tags = tags;
     }
 
     public RepositoryDTO() {
@@ -164,21 +154,5 @@ public class RepositoryDTO
 
     public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
-    }
-
-    public List<SecureCode> getSecureCodes() {
-        return secureCodes;
-    }
-
-    public void setSecureCodes(List<SecureCode> secureCodes) {
-        this.secureCodes = secureCodes;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
     }
 }

@@ -1,5 +1,6 @@
 package com.glos.api.userservice.facade;
 
+import com.glos.api.userservice.client.OperationClient;
 import com.glos.api.userservice.client.RoleAPIClient;
 import com.glos.api.userservice.client.StorageClient;
 import com.glos.api.userservice.client.UserAPIClient;
@@ -9,6 +10,7 @@ import com.glos.api.userservice.exeptions.HttpStatusCodeImplException;
 import com.glos.api.userservice.exeptions.ResourceAlreadyExistsException;
 import com.glos.api.userservice.exeptions.ResourceNotFoundException;
 import com.glos.api.userservice.responseDTO.ChangeRequest;
+import com.glos.api.userservice.responseDTO.OperationCreateRequest;
 import com.glos.api.userservice.responseDTO.Page;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserFilterRequestMapper;
@@ -16,11 +18,14 @@ import com.glos.api.userservice.utils.Constants;
 import feign.FeignException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.glos.api.userservice.utils.MapUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -30,17 +35,19 @@ public class UserAPIFacade {
     private final RoleAPIClient roleAPIClient;
     private final UserFilterRequestMapper userFilterRequestMapper;
     private final StorageClient storageClient;
+    private final OperationClient operationClient;
 
 
     public UserAPIFacade(
             UserAPIClient userAPIClient,
             RoleAPIClient roleAPIClient,
             UserFilterRequestMapper userFilterRequestMapper,
-            StorageClient storageClient) {
+            StorageClient storageClient, OperationClient operationClient) {
         this.userAPIClient = userAPIClient;
         this.roleAPIClient = roleAPIClient;
         this.userFilterRequestMapper = userFilterRequestMapper;
         this.storageClient = storageClient;
+        this.operationClient = operationClient;
     }
 
     public User getById(Long id) {
@@ -81,9 +88,18 @@ public class UserAPIFacade {
 
         //storageClient.create(user.getUsername());
 
-        // TODO: send message to email
+        //sendConfirmEmail(user);
 
         return userResponseEntity;
+    }
+
+    @Async
+    public void sendConfirmEmail(User user) {
+        final Map<String,String> map = new HashMap<>();
+        map.put("username", user.getUsername());
+        map.put("email", user.getEmail());
+        final OperationCreateRequest request = new OperationCreateRequest("confirm-email", map, 60 * 5);
+        operationClient.create(request);
     }
 
     public ResponseEntity<?> change(String property, String username, ChangeRequest request) {

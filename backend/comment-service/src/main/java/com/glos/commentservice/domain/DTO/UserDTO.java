@@ -1,10 +1,5 @@
 package com.glos.commentservice.domain.DTO;
 
-import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 public class UserDTO
 {
     private Long id;
