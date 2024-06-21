@@ -86,10 +86,10 @@ public class FileApiFacade
                 fileWithPaths.get(i).setFile(filesData.get(i));
             }
 
-            for (FileWithPath file:fileWithPaths)
-            {
-               fileAndStatuses.add( fileStorageClient.uploadFiles(file.getFilePath(), file.getFile()).getBody());
-            }
+//            for (FileWithPath file:fileWithPaths)
+//            {
+//               fileAndStatuses.add( fileStorageClient.uploadFiles(file.getFilePath(), file.getFile()).getBody());
+//            }
         }
         catch (Exception e)
         {
@@ -121,17 +121,17 @@ public class FileApiFacade
                     moveRequest.getMoves().add(moveNode);
                 }
 
-                if (request.getFileData() != null)
-                {
-                    FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
-                    fileAndStatuses.add(fileStorageClient.updateFile(fileWithPath).getBody());
-                }
+//                if (request.getFileData() != null)
+//                {
+//                    FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
+//                    fileAndStatuses.add(fileStorageClient.updateFile(fileWithPath).getBody());
+//                }
 
             }
-            if (moveRequest != null)
-            {
-                fileStorageClient.moveFile(moveRequest);
-            }
+//            if (moveRequest != null)
+//            {
+//                fileStorageClient.moveFile(moveRequest);
+//            }
         }
         catch (Exception e)
         {
