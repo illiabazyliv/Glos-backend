@@ -42,10 +42,7 @@ public class UserRolesController
         //Page<RoleDTO> roleDTOPage = rolePage.map(role -> new RoleDTO(role.getName()));
         rolePage.setNumber(page);
         rolePage.setSize(size);
-        String[] arr = sort.split(",");
-        rolePage.setSortBy(arr[0]);
-        rolePage.setSortDir(arr[1]);
-        rolePage.setSorted(true);
+        rolePage.setSortPattern(sort);
         return ResponseEntity.ok(rolePage);
 
     }

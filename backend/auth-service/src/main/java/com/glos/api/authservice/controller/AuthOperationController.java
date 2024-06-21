@@ -61,11 +61,15 @@ public class AuthOperationController {
     public ResponseEntity<?> changeUsername(@PathVariable("username") String username,
                                             @RequestBody ChangeRequest request)
     {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not working yet");
+        // TODO: impl rename root repository 
+        /*
         if (request.oldEqualNew()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Old value match to new value");
         }
         simpleAuthService.changeUsername(username, request);
         return ResponseEntity.accepted().build();
+        */
     }
 
     @PutMapping("/auth/users/{username}/change-email")
