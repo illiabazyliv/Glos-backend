@@ -72,12 +72,12 @@ class CommentAPIControllerTest {
         CommentDTO mockComment = new CommentDTO();
         mockComment.setId(id);
         mockComment.setText("Test Comment");
-        mockComment.setDate(dateTime);
+        mockComment.setCreationDate(dateTime);
 
         Comment comment = new Comment();
         comment.setId(id);
         comment.setText("Test Comment");
-        comment.setDate(dateTime);
+        comment.setCreationDate(dateTime);
 
         Mockito.when(commentService.getById(id)).thenReturn(Optional.of(comment));
         Mockito.when(commentDTOMapper.toDto(comment)).thenReturn(mockComment);

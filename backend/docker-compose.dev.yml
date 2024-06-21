@@ -140,13 +140,12 @@ services:
       eureka-server:
         condition: service_healthy
     environment:
-      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: glos_database
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_USER: root
       EUREKA_CLIENT_DEFAULT_ZONE: http://eureka-server:9001/api/eureka/
     ports:
-      - "3307:3306"
+      - "3306:3306"
     networks:
       - glos-app-network
 
