@@ -9,22 +9,23 @@ public class FileRequest
 {
     public static class FileNode
     {
-        private File fileData;
+        private String fileData;
         private MultipartFile file;
 
         public FileNode() {
         }
 
-        public FileNode(File fileData, MultipartFile file) {
+        public FileNode(String fileData, MultipartFile file) {
             this.fileData = fileData;
             this.file = file;
         }
 
-        public File getFileData() {
+
+        public String getFileData() {
             return fileData;
         }
 
-        public void setFileData(File fileData) {
+        public void setFileData(String fileData) {
             this.fileData = fileData;
         }
 
