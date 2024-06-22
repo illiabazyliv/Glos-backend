@@ -122,7 +122,7 @@ public class RepositoryController
     @GetMapping
     public ResponseEntity<Page<RepositoryDTO>> getByFilter(@ModelAttribute Repository repository,
                                                            @RequestParam(name = "search", required = false, defaultValue = "") String search,
-                                                           @RequestParam(name = "username") String username,
+                                                           @RequestParam(name = "username", required = false) String username,
                                                            @RequestParam(name = "shared", required = false) String shared,
                                                            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                            @RequestParam(name = "size", required = false, defaultValue = "10") int size,

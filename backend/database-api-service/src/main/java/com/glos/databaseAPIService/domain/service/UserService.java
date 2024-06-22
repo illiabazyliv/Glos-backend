@@ -69,7 +69,6 @@ public class UserService
         return userRepository.findByPhoneNumber(phoneNumber);
     }
 
-
     @Transactional
     public User create(User user) {
         collect();
@@ -85,46 +84,26 @@ public class UserService
         return userRepository.save(user);
     }
 
-    private User assignRoles(User user) {
-        final Set<Role> roles = user.getRoles();
-        if (roles != null) {
-            final Set<Role> found = roles.stream().map(x -> {
-                if (x.getId() != null) {
-                    return roleRepository.findById(x.getId()).orElseThrow(() ->
-                            new ResourceNotFoundException("Id of Role is not found")
-                    );
-                }
-                return x;
-            }).collect(Collectors.toSet());
-            user.setRoles(new HashSet<>(found));
-        }
-        return user;
-    }
-    private User assignGroups(User user) {
-        final Set<Group> groups = user.getGroups();
-        if (groups != null) {
-            final Set<Group> found = groups.stream().map(x -> {
-                if (x.getId() != null) {
-                    return groupRepository.findById(x.getId()).orElseThrow(() ->
-                            new ResourceNotFoundException("Id of Group is not found")
-                    );
-                }
-                return x;
-            }).collect(Collectors.toSet());
-            user.setGroups(new HashSet<>(found));
-        }
-        return user;
-    }
-
     public Page<User> getPage(Pageable pageable, boolean ignoreSys) {
         collect();
         List<User> list = removeSysIf(ignoreSys, userRepository.findAll(pageable));
         return new PageImpl<>(list, pageable, list.size());
     }
 
-    public Page<User> getPageByFilter(User group, Pageable pageable, boolean ignoreSys) {
+    public Page<User> getPageByFilter(User filter, Pageable pageable, boolean ignoreSys) {
         collect();
-        List<User> list = removeSysIf(ignoreSys, userRepository.findAll(Example.of(group)));
+        final Example<User> userExample = Example.of(filter, ExampleMatcher.matching()
+                .withMatcher("username", ExampleMatcher.GenericPropertyMatcher.of(
+                        ExampleMatcher.StringMatcher.CONTAINING
+                ))
+                .withMatcher("email", ExampleMatcher.GenericPropertyMatcher.of(
+                        ExampleMatcher.StringMatcher.CONTAINING
+                ))
+                .withMatcher("phoneNumber", ExampleMatcher.GenericPropertyMatcher.of(
+                        ExampleMatcher.StringMatcher.CONTAINING
+                ))
+                .withIgnoreNullValues());
+        List<User> list = removeSysIf(ignoreSys, userRepository.findAll(userExample, pageable));
         return new PageImpl<>(list, pageable, list.size());
     }
 
@@ -136,14 +115,24 @@ public class UserService
 
     public List<User> getAll(User filter, boolean ignoreSys) {
         collect();
-        List<User> list = removeSysIf(ignoreSys, userRepository.findAll(Example.of(filter)));
+
+        final Example<User> userExample = Example.of(filter, ExampleMatcher.matching()
+                        .withMatcher("username", ExampleMatcher.GenericPropertyMatcher.of(
+                                ExampleMatcher.StringMatcher.CONTAINING
+                        ))
+                        .withMatcher("email", ExampleMatcher.GenericPropertyMatcher.of(
+                                ExampleMatcher.StringMatcher.CONTAINING
+                        ))
+                        .withMatcher("phoneNumber", ExampleMatcher.GenericPropertyMatcher.of(
+                             ExampleMatcher.StringMatcher.CONTAINING
+                        ))
+                .withIgnoreNullValues());
+        List<User> list = removeSysIf(ignoreSys, userRepository.findAll(userExample));
         return list.stream()
                 .filter(x -> filter.getRoles() == null || x.getRoles().containsAll(filter.getRoles()))
                 .filter(x -> filter.getGroups() == null || x.getGroups().containsAll(filter.getGroups()))
                 .toList();
     }
-
-
 
     public List<User> getAll(EntityFilter filter) {
         collect();
@@ -192,8 +181,7 @@ public class UserService
 
 
     private void collect() {
-        List<User> users = userRepository.findAll();
-        List<User> users2 = users.stream()
+        List<User> users = userRepository.findAll().stream()
                 .filter(x -> x.getId() != 1L)
                 .filter(x -> x.getIs_deleted() != null && x.getIs_deleted())
                 .filter(x -> x.getDeletedDateTime() != null)
@@ -201,7 +189,7 @@ public class UserService
                     LocalDateTime now = LocalDateTime.now();
                     return x.getDeletedDateTime().isBefore(now);
                 }).toList();
-        userRepository.deleteAll(users2);
+        userRepository.deleteAll(users);
     }
 
     private void throwIfAlreadyExists(User user) throws ResourceAlreadyExistsException {
@@ -215,6 +203,37 @@ public class UserService
             Map.Entry<String, String> entry = Map.entry("phoneNumber", user.getPhone_number());
             throw new ResourceAlreadyExistsException("Phone number '%s' is already taken.".formatted(user.getPhone_number()), entry);
         }
+    }
+
+    private User assignRoles(User user) {
+        final Set<Role> roles = user.getRoles();
+        if (roles != null) {
+            final Set<Role> found = roles.stream().map(x -> {
+                if (x.getId() != null) {
+                    return roleRepository.findById(x.getId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Id of Role is not found")
+                    );
+                }
+                return x;
+            }).collect(Collectors.toSet());
+            user.setRoles(new HashSet<>(found));
+        }
+        return user;
+    }
+    private User assignGroups(User user) {
+        final Set<Group> groups = user.getGroups();
+        if (groups != null) {
+            final Set<Group> found = groups.stream().map(x -> {
+                if (x.getId() != null) {
+                    return groupRepository.findById(x.getId()).orElseThrow(() ->
+                            new ResourceNotFoundException("Id of Group is not found")
+                    );
+                }
+                return x;
+            }).collect(Collectors.toSet());
+            user.setGroups(new HashSet<>(found));
+        }
+        return user;
     }
 
     private List<User> removeSysIf(boolean isIgnoreSys, Iterable<User> iterable) {

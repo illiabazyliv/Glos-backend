@@ -25,10 +25,10 @@ public class FileUploadController
     }
 
     @PutMapping("/files/upload")
-    public ResponseEntity<String> uploadFile(@ModelAttribute FileRequest fileRequests) throws JsonProcessingException
+    public ResponseEntity<List<FileAndStatus>> uploadFile(@ModelAttribute FileRequest uploadRequests) throws JsonProcessingException
     {
-        List<FileAndStatus> created = fileApiFacade.uploadFiles(fileRequests.getFiles()).getBody();
-        return ResponseEntity.ok("OK");
+        List<FileAndStatus> created = fileApiFacade.uploadFiles(uploadRequests.getFiles()).getBody();
+        return ResponseEntity.ok(created);
     }
 
     @PostMapping("/files/download")

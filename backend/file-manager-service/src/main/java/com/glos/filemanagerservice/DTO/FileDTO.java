@@ -1,8 +1,5 @@
 package com.glos.filemanagerservice.DTO;
 
-import com.glos.filemanagerservice.entities.SecureCode;
-import com.glos.filemanagerservice.entities.Tag;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +29,7 @@ public class FileDTO
     private List<AccessModel> accessModels;
 
     private List<CommentDTO> comments;
-    private List<SecureCode> secureCodes;
-    private List<Tag> tags;
+    private List<String> tags;
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
 
@@ -49,8 +45,7 @@ public class FileDTO
                    RepositoryDTO repository,
                    List<AccessModel> accessModels,
                    List<CommentDTO> comments,
-                   List<SecureCode> secureCodes,
-                   List<Tag> tags,
+                   List<String> tags,
                    LocalDateTime creationDate,
                    LocalDateTime updateDate) {
         this.id = id;
@@ -65,7 +60,6 @@ public class FileDTO
         this.repository = repository;
         this.accessModels = accessModels;
         this.comments = comments;
-        this.secureCodes = secureCodes;
         this.tags = tags;
         this.creationDate = creationDate;
         this.updateDate = updateDate;
@@ -75,7 +69,6 @@ public class FileDTO
     {
         this.accessModels = new ArrayList<>();
         this.comments = new ArrayList<>();
-        this.secureCodes = new ArrayList<>();
         this.tags = new ArrayList<>();
     }
 
@@ -175,19 +168,11 @@ public class FileDTO
         this.comments = comments;
     }
 
-    public List<SecureCode> getSecureCodes() {
-        return secureCodes;
-    }
-
-    public void setSecureCodes(List<SecureCode> secureCodes) {
-        this.secureCodes = secureCodes;
-    }
-
-    public List<Tag> getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 

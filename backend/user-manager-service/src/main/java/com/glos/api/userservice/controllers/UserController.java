@@ -2,6 +2,7 @@ package com.glos.api.userservice.controllers;
 
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.glos.api.userservice.entities.User;
+import com.glos.api.userservice.exeptions.InvalidLoginException;
 import com.glos.api.userservice.facade.*;
 import com.glos.api.userservice.responseDTO.ChangeRequest;
 import com.glos.api.userservice.responseDTO.Page;
@@ -9,10 +10,13 @@ import com.glos.api.userservice.responseDTO.UserDTO;
 import com.glos.api.userservice.responseDTO.UserFilterRequest;
 import com.glos.api.userservice.responseMappers.UserDTOMapper;
 import com.glos.api.userservice.utils.Constants;
+import com.glos.api.userservice.utils.UsernameUtil;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.function.Function;
 
 @RestController
 @RequestMapping("/users")
@@ -86,10 +90,12 @@ public class UserController
     @GetMapping
     @PageableAsQueryParam
     public ResponseEntity<Page<UserDTO>> getAllByFilter(@ModelAttribute UserFilterRequest filter,
-                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
-                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
-                                        @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
+                                                        @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                                                        @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+                                                        @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                                        @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
+        filter.setUsername(search);
         filter.setPage(page);
         filter.setSize(size);
         filter.setSort(sort);

@@ -16,12 +16,10 @@ spring:
     name: ${APPLICATION_NAME:operation-service}
   data:
     mongodb:
-      host: localhost:27017
-      port: 27017
-      username: ''
-      password: ''
-      database: 'operationdb'
-      uri: mongodb://localhost:27017/operationdb
+      username: ${MONGODB_USERNAME:glosadmin}
+      password: ${MONGODB_PASSWORD:glosadmin}
+      database: ${MONGODB_DATABASE:operationdb}
+      uri: ${MONGODB_URL:mongodb://glosadmin:glosadmin@16.16.126.56:27017}
   cloud:
     openfeign:
       client:
