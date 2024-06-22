@@ -59,7 +59,9 @@ public class FileApiFacade
         List<MultipartFile> filesData = new ArrayList<>();
         for (var u : uploadRequests)
         {
-            files.add(u.getFileData());
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = objectMapper.readValue(u.getFileData(), File.class);
+            files.add(file);
             filesData.add(u.getFile());
         }
 
