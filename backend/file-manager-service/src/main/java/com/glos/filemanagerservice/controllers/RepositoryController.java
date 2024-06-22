@@ -1,7 +1,5 @@
 package com.glos.filemanagerservice.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.entities.User;
@@ -9,14 +7,10 @@ import com.glos.filemanagerservice.facade.RepositoryApiFacade;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
-import com.glos.filemanagerservice.validation.OnCreate;
-import com.glos.filemanagerservice.validation.OnUpdate;
 import com.pathtools.Path;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -44,9 +38,8 @@ public class RepositoryController
     @GetMapping("/{id}")
     public ResponseEntity<RepositoryDTO> getById(@PathVariable Long id)
     {
-        ResponseEntity<RepositoryDTO> response = repositoryClient.getRepositoryById(id);
-        RepositoryDTO repository = response.getBody();
-        return ResponseEntity.ok(repository);
+        Repository repository = repositoryClient.getRepositoryById(id).getBody();
+        return ResponseEntity.ok(repositoryDTOMapper.toDto(repository));
     }
 
     @PostMapping
@@ -78,59 +71,74 @@ public class RepositoryController
 
     @GetMapping("/owner/{username}")
     public ResponseEntity<Page<RepositoryDTO>> getByOwnerId(@PathVariable String username,
+                                                            @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                                                            @RequestParam(name = "shared", required = false) String shared,
                                                             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                             @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                             @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
-        Repository repository = new Repository();
-        User user = new User();
+        final Repository repository = new Repository();
+        final User user = new User();
         user.setUsername(username);
+        if (search.contains("/")) {
+            repository.setDisplayFullName(search);
+        } else {
+            repository.setDisplayName(search);
+        }
         repository.setOwner(user);
-        Map<String, Object> filter = new HashMap<>();
-        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, filter, page, size, sort).getBody());
+        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, new HashMap<>(), page, size, sort)
+                .getBody());
     }
 
     @GetMapping("/root-fullname/{rootFullName}")
     public ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName)
     {
-        return ResponseEntity.ok(repositoryClient.getRepositoryByRootFullName(rootFullName).getBody());
+        final Repository repository = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
+        return ResponseEntity.ok(repositoryDTOMapper.toDto(repository));
     }
 
     @GetMapping("/path/{rootFullName}")
     public ResponseEntity<Page<RepositoryDTO>> getByFilter(@PathVariable String rootFullName,
                                                            @RequestParam(name = "search", required = false, defaultValue = "") String search,
-                                                           @RequestParam(name = "accessTypes", required = false, defaultValue = "") List<String> accessTypes,
-                                                           @RequestParam(name = "tags", required = false, defaultValue = "") List<String> tags,
+                                                           @RequestParam(name = "shared", required = false) String shared,
                                                            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                            @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
         final Path path = Path.builder(rootFullName).build();
-        Repository repository = new Repository();
+        final Repository repository = new Repository();
+        final User user = new User();
+        user.setUsername(path.getFirst().getSimpleName());
         repository.setRootPath(path.getPath());
-        return getByFilter(repository, search, path.getFirst().getSimpleName(), accessTypes, tags, page, size, sort);
+        if (search.contains("/")) {
+            repository.setDisplayFullName(search);
+        } else {
+            repository.setDisplayName(search);
+        }
+        repository.setOwner(user);
+        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, new HashMap<>(), page, size, sort).getBody());
     }
 
     @GetMapping
     public ResponseEntity<Page<RepositoryDTO>> getByFilter(@ModelAttribute Repository repository,
                                                            @RequestParam(name = "search", required = false, defaultValue = "") String search,
-                                                           @RequestParam(name = "username", required = false) String username,
-                                                           @RequestParam(name = "accessTypes", required = false, defaultValue = "") List<String> accessTypes,
-                                                           @RequestParam(name = "tags", required = false, defaultValue = "") List<String> tags,
+                                                           @RequestParam(name = "username") String username,
+                                                           @RequestParam(name = "shared", required = false) String shared,
                                                            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                            @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                            @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort)
     {
-        Map<String, Object> filter = new HashMap<>();
-        putIfNonNull(filter, "owner.username", username);
-        putIfNonNull(filter, "search", search);
-        if (accessTypes != null && !accessTypes.isEmpty()) {
-            putIfNonNull(filter, "accessTypes", accessTypes);
+        if (username != null) {
+            User user = new User();
+            user.setUsername(username);
+            repository.setOwner(user);
         }
-        if (tags != null && !accessTypes.isEmpty()) {
-            putIfNonNull(filter, "tags", tags);
+        if (search.contains("/")) {
+            repository.setDisplayFullName(search);
+        } else {
+            repository.setDisplayName(search);
         }
-        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, filter, page, size, sort).getBody());
+        return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, new HashMap<>(), page, size, sort).getBody());
     }
 
     private void putIfNonNull(Map<String, Object> map, String key, Object value) {

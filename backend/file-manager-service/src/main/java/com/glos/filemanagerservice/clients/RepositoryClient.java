@@ -3,6 +3,7 @@ package com.glos.filemanagerservice.clients;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
 import com.glos.filemanagerservice.entities.Repository;
+import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,9 @@ import java.util.Map;
 public interface RepositoryClient
 {
     @GetMapping("/{id}")
-    ResponseEntity<RepositoryDTO> getRepositoryById(@PathVariable Long id);
+    ResponseEntity<Repository> getRepositoryById(@PathVariable Long id);
     @PostMapping
-    ResponseEntity<RepositoryDTO> createRepository(@RequestBody Repository repository);
+    ResponseEntity<Repository> createRepository(@RequestBody Repository repository);
 
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteRepository(@PathVariable Long id);
@@ -26,12 +27,12 @@ public interface RepositoryClient
     ResponseEntity<?> updateRepository(@RequestBody Repository newRepository, @PathVariable("id") Long id);
 
     @GetMapping("/owner-id/{ownerId}")
-    ResponseEntity<List<RepositoryDTO>> getRepositoriesByOwnerId(@PathVariable Long ownerId);
+    ResponseEntity<List<Repository>> getRepositoriesByOwnerId(@PathVariable Long ownerId);
 
-    @GetMapping()
-    ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(@SpringQueryMap Map<String, Object> filter);
+    @PutMapping
+    ResponseEntity<Page<Repository>> getRepositoriesByFilter(@ModelAttribute Repository repository, @SpringQueryMap Map<String, Object> map);
 
     @GetMapping("/root-fullname/{rootFullName}")
-    ResponseEntity<RepositoryDTO> getRepositoryByRootFullName(@PathVariable String rootFullName);
+    ResponseEntity<Repository> getRepositoryByRootFullName(@PathVariable String rootFullName);
 
 }

@@ -16,7 +16,10 @@ public class RepositoryRequest {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private User owner;
+
+    @Size(max = 300, message = "max count of characters 300")
     private String description;
+
     private List<AccessModel> accessTypes;
     private List<String> tags;
 

@@ -48,8 +48,8 @@ class RepositoryControllerTest {
     @Test
     void getByIdTest() throws Exception {
             Long id = 1L;
-            RepositoryDTO repositoryDTO = new RepositoryDTO();
-            when(repositoryClient.getRepositoryById(anyLong())).thenReturn(ResponseEntity.ok(repositoryDTO));
+            Repository repository = new Repository();
+            when(repositoryClient.getRepositoryById(anyLong())).thenReturn(ResponseEntity.ok(repository));
 
             mockMvc.perform(MockMvcRequestBuilders.get("/repositories/{id}", id)
                             .contentType(MediaType.APPLICATION_JSON))
@@ -108,9 +108,9 @@ class RepositoryControllerTest {
 
     @Test
     void getRepositoryByRootFullNameTest() throws Exception{
-        RepositoryDTO repositoryDTO = new RepositoryDTO();
-        repositoryDTO.setId(1L);
-        when(repositoryClient.getRepositoryByRootFullName(any())).thenReturn(ResponseEntity.ok(repositoryDTO));
+        Repository repository = new Repository();
+        repository.setId(1L);
+        when(repositoryClient.getRepositoryByRootFullName(any())).thenReturn(ResponseEntity.ok(repository));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/root-fullname/testRoot"))
                 .andExpect(status().isOk())

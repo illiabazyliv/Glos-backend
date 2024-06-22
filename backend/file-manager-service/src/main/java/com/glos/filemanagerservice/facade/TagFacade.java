@@ -93,8 +93,8 @@ public class TagFacade {
         }
 
         private Repository getRepositoryByRootFullName(String rootFullName) {
-            RepositoryDTO dto = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
-            return repositoryDTOMapper.toEntity(dto);
+            Repository dto = repositoryClient.getRepositoryByRootFullName(rootFullName).getBody();
+            return dto;
         }
     }
 

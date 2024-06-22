@@ -10,10 +10,12 @@ import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.clients.TagClient;
 import com.glos.filemanagerservice.entities.File;
+import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.entities.Tag;
 import com.glos.filemanagerservice.requestFilters.FileRequestFilter;
 import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
 import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
+import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.utils.MapUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,18 +35,21 @@ public class FileApiFacade
     private final FileDTOMapper fileDTOMapper;
     private final FileRequestMapper fileRequestMapper;
     private final FileStorageClient fileStorageClient;
+    private final RepositoryDTOMapper repositoryDTOMapper;
     private final TagClient tagClient;
 
     public FileApiFacade(FileClient fileClient,
                          RepositoryClient repositoryClient,
                          FileDTOMapper fileDTOMapper,
                          FileRequestMapper fileRequestMapper,
+                         RepositoryDTOMapper repositoryDTOMapper,
                          FileStorageClient fileStorageClient, TagClient tagClient) {
         this.fileClient = fileClient;
         this.repositoryClient = repositoryClient;
         this.fileDTOMapper = fileDTOMapper;
         this.fileRequestMapper = fileRequestMapper;
         this.fileStorageClient = fileStorageClient;
+        this.repositoryDTOMapper = repositoryDTOMapper;
         this.tagClient = tagClient;
     }
 
@@ -156,7 +158,7 @@ public class FileApiFacade
             }
 
             DeleteRequest request = new DeleteRequest(rootFullNames);
-            fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
+            //fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
         }
         catch (Exception e)
         {
@@ -174,51 +176,44 @@ public class FileApiFacade
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)
     {
-        ResponseEntity<RepositoryDTO> response = repositoryClient.getRepositoryById(repositoryId);
-        RepositoryDTO repository = response.getBody();
-        FileDTO fileDTO = new FileDTO();
-        fileDTO.setRepository(repository);
-        FileRequestFilter filter = new FileRequestFilter();
-        fileRequestMapper.transferEntityDto(fileDTO, filter);
-        filter.setPage(page);
-        filter.setSize(size);
-        filter.setSort(sort);
+//        ResponseEntity<Repository> response = repositoryClient.getRepositoryById(repositoryId);
+//        Repository repository = response.getBody();
+//        RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
+//        FileDTO fileDTO = new FileDTO();
+//        fileDTO.setRepository(repositoryDTO);
+//        FileRequestFilter filter = new FileRequestFilter();
+//        fileRequestMapper.transferEntityDto(fileDTO, filter);
+//        filter.setPage(page);
+//        filter.setSize(size);
+//        filter.setSort(sort);
+        Repository repository = new Repository();
+        repository.setId(repositoryId);
+        File file = new File();
+        file.setRepository(repository);
 
-        Map<String, Object> map = MapUtils.map(filter);
-        return ResponseEntity.ok(fileClient.getFilesByFilter(map).getBody());
+        //Map<String, Object> map = MapUtils.map(filter);
+        Map<String, Object> map = new HashMap<>();
+        map.put("page", page);
+        map.put("size", size);
+        map.put("sort", sort);
+        return ResponseEntity.ok(fileClient.getFilesByFilter(file, map).getBody());
     }
 
     public ResponseEntity<Page<FileDTO>> getFilesByFilter(File file, int page, int size, String sort)
     {
         checkAccessTypes(file);
-        FileDTO fileDTO = fileDTOMapper.toDto(file);
-        FileRequestFilter filter = fileRequestMapper.toDto(fileDTO);
-        filter.setPage(page);
-        filter.setSize(size);
-        filter.setSort(sort);
+        //FileDTO fileDTO = fileDTOMapper.toDto(file);
+//        FileRequestFilter filter = fileRequestMapper.toDto(fileDTO);
+//        filter.setPage(page);
+//        filter.setSize(size);
+//        filter.setSort(sort);
 
-        Map<String, Object> map = MapUtils.map(filter);
-        return ResponseEntity.ok(fileClient.getFilesByFilter(map).getBody());
-    }
-
-    public ResponseEntity<FileDTO> addTag(String rootFullName, String name)
-    {
-        Tag tag = new Tag(name);
-        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
-        fileDTO.getTags().add(tag);
-        File file = fileDTOMapper.toEntity(fileDTO);
-        fileClient.updateFile(file, fileDTO.getId());
-        return ResponseEntity.ok(fileClient.getFileByID(fileDTO.getId()).getBody());
-    }
-
-    public ResponseEntity<FileDTO> removeTag(String rootFullName, String name)
-    {
-        FileDTO fileDTO = fileClient.getFileByRootFullName(rootFullName).getBody();
-        fileDTO.getTags().removeIf(x -> {return x.getName().equals(name);});
-        File file = fileDTOMapper.toEntity(fileDTO);
-        fileClient.updateFile(file, fileDTO.getId());
-        tagClient.deleteTag(tagClient.getTagByName(name).getBody().getId());
-        return ResponseEntity.noContent().build();
+//        Map<String, Object> map = MapUtils.map(filter);
+        Map<String, Object> map = new HashMap<>();
+        map.put("page", page);
+        map.put("size", size);
+        map.put("sort", sort);
+        return ResponseEntity.ok(fileClient.getFilesByFilter(file, map).getBody());
     }
 
     private void checkAccessTypes(File file) {

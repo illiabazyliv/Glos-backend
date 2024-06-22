@@ -98,7 +98,16 @@ public class RepositoryService
         final boolean ignoreSys = (boolean) props.get("ignoreSys");
         final boolean ignoreDefault = (boolean) props.get("ignoreDefault");
 
-        List<Repository> list = repository.findAll(Example.of(filter), pageable).stream()
+        final ExampleMatcher.GenericPropertyMatcher containing =
+                ExampleMatcher.GenericPropertyMatcher.of(ExampleMatcher.StringMatcher.CONTAINING);
+
+        final Example<Repository> repositoryExample = Example.of(filter, ExampleMatcher.matching()
+                .withMatcher("displayPath", containing)
+                .withMatcher("displayName", containing)
+                .withMatcher("displayFullName", containing)
+                .withIgnoreNullValues());
+
+        List<Repository> list = repository.findAll(repositoryExample, pageable).stream()
                 .filter(x -> !"sys".equals(x.getOwner().getUsername()) || !ignoreSys)
                 .filter(x -> x.getDefault() == null || !x.getDefault() || !ignoreDefault)
                 .filter(x -> filter.getAccessTypes() == null || x.getAccessTypes().containsAll(filter.getAccessTypes()))

@@ -2,6 +2,7 @@ package com.glos.filemanagerservice.controllers;
 
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.entities.File;
+import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.facade.FileApiFacade;
 import com.glos.filemanagerservice.clients.FileClient;
 import org.springframework.http.ResponseEntity;
@@ -50,22 +51,39 @@ public class FileController
 
     @GetMapping("/repository/{repositoryId}")
     public ResponseEntity<Page<FileDTO>> getByRepository(@PathVariable Long repositoryId,
+                                                         @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                                                         @RequestParam(name = "shared", required = false) String shared,
                                                          @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                          @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                          @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort
     )
     {
-
-        return ResponseEntity.ok(fileApiFacade.getFileByRepository(repositoryId, page, size, sort).getBody());
+        Repository repository = new Repository();
+        repository.setId(repositoryId);
+        File file = new File();
+        file.setRepository(repository);
+        if (search.contains("/")) {
+            file.setDisplayFullName(search);
+        } else {
+            file.setDisplayFilename(search);
+        }
+        return ResponseEntity.ok(fileApiFacade.getFilesByFilter(file, page, size, sort).getBody());
     }
 
     @GetMapping
     public ResponseEntity<Page<FileDTO>> getByFilter(@ModelAttribute File file,
+                                                     @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                                                     @RequestParam(name = "shared", required = false) String shared,
                                                      @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                                      @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                                      @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort
     )
     {
+        if (search.contains("/")) {
+            file.setDisplayFullName(search);
+        } else {
+            file.setDisplayFilename(search);
+        }
         return ResponseEntity.ok(fileApiFacade.getFilesByFilter(file, page, size, sort).getBody());
     }
 }

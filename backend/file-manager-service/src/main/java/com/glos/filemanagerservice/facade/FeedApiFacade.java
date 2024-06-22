@@ -4,6 +4,7 @@ import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.DTO.RepositoryDTO;
 import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.entities.AccessType;
+import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.requestFilters.RepositoryRequestFilter;
 import com.glos.filemanagerservice.responseMappers.AccessModelMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,11 +47,15 @@ public class FeedApiFacade
         accessTypes.add(piblicRW);
         RepositoryDTO repositoryDTO = new RepositoryDTO();
         RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
+        requestFilter.setPage(page);
+        requestFilter.setSize(size);
+        requestFilter.setSort(sort);
 
-        Map<String, Object> map = MapUtils.map(requestFilter);
 
-        Page<RepositoryDTO> repositoryPage = repositoryClient.getRepositoriesByFilter(map).getBody();
+        //Map<String, Object> map = MapUtils.map(requestFilter);
 
-        return ResponseEntity.ok(repositoryPage);
+        Page<Repository> repositoryPage = repositoryClient.getRepositoriesByFilter(new Repository(), new HashMap<>()).getBody();
+
+        return ResponseEntity.ok(repositoryPage.map(repositoryDTOMapper::toDto));
     }
 }

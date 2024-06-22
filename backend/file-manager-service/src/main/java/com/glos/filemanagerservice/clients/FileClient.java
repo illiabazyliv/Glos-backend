@@ -3,6 +3,7 @@ package com.glos.filemanagerservice.clients;
 import com.glos.filemanagerservice.DTO.FileDTO;
 import com.glos.filemanagerservice.DTO.Page;
 import com.glos.filemanagerservice.entities.File;
+import com.glos.filemanagerservice.entities.Repository;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,8 @@ public interface FileClient
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteFile(@PathVariable Long id);
 
-    @GetMapping
-    ResponseEntity<Page<FileDTO>> getFilesByFilter(@SpringQueryMap Map<String, Object> filter);
+    @PutMapping
+    ResponseEntity<Page<FileDTO>> getFilesByFilter(@ModelAttribute File file, @SpringQueryMap Map<String, Object> map);
 
     @GetMapping("/root-fullname/{rootFullName}")
     public ResponseEntity<FileDTO> getFileByRootFullName(@PathVariable String rootFullName);

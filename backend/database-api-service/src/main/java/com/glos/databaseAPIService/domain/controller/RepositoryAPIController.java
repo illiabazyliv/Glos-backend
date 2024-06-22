@@ -122,18 +122,20 @@ public class RepositoryAPIController
     {
         Repository rep = repositoryService.findByRootFullName(PathParser.getInstance().parse(rootFullName).getPath()).orElseThrow(() ->
                 new ResourceNotFoundException("Repository is not found") );
-        return ResponseEntity.of(Optional.of(mapper.toDto(rep)));
+        RepositoryDTO repositoryDTO = mapper.toDto(rep);
+        return ResponseEntity.of(Optional.of(repositoryDTO));
     }
 
-    @GetMapping()
+    @PutMapping
     public ResponseEntity<Page<RepositoryDTO>> getRepositoriesByFilter(
-            @ModelAttribute Repository filter,
+            @RequestBody(required = false) Repository filter,
             @RequestParam(value = "ignoreSys", required = false, defaultValue = "true") boolean ignoreSys,
             @RequestParam(value = "ignoreDefault", required = false, defaultValue = "true") boolean ignoreDefault,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable)
     {
-        if (filter != null && filter.getRootFullName() != null)
-        {
+        if (filter == null) {
+            filter = new Repository();
+        } else if (filter.getRootFullName() != null) {
             final Path path = PathParser.getInstance().parse(filter.getRootFullName());
             filter.setRootFullName(path.getPath());
         }

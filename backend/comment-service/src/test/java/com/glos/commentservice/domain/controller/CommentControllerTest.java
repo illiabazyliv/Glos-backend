@@ -37,22 +37,22 @@ class CommentControllerTest {
     @Test
     void getByIdTest() throws Exception {
         Long id = 1L;
-        CommentDTO commentDTO = new CommentDTO();
+        Comment comment = new Comment();
 
-        when(commentApiFacade.getById(id)).thenReturn(ResponseEntity.ok(commentDTO));
+        when(commentApiFacade.getById(id)).thenReturn(comment);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/comments/{id}", id)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(commentDTO)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(comment)));
     }
     @Test
     void createCommentTest() throws Exception {
         Comment comment = new Comment();
         CommentDTO commentDTO = new CommentDTO();
 
-        when(commentApiFacade.createComment(any(Comment.class))).thenReturn(ResponseEntity.ok(commentDTO));
+        when(commentApiFacade.createComment(anyString(), any(Comment.class))).thenReturn(comment);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String requestJson = objectMapper.writeValueAsString(comment);

@@ -56,9 +56,7 @@ public class RepositoryApiFacade
         final Path path = PathParser.getInstance().parse(repository.getRootFullName());
         final Path parentRepository = path.reader().parent(NodeType.REPOSITORY);
 
-        final Repository parentFound = repositoryDTOMapper.toEntity(
-                repositoryClient.getRepositoryByRootFullName(parentRepository.getPath()).getBody()
-        );
+        final Repository parentFound = repositoryClient.getRepositoryByRootFullName(parentRepository.getPath()).getBody();
 
         repository.setAccessTypes(parentFound.getAccessTypes());
 
@@ -77,9 +75,10 @@ public class RepositoryApiFacade
         {
             repository.setCreationDate(LocalDateTime.now());
             repository.setUpdateDate(LocalDateTime.now());
-            RepositoryDTO created = repositoryClient.createRepository(repository).getBody();
+            Repository created = repositoryClient.createRepository(repository).getBody();
+            RepositoryDTO createdDTO = repositoryDTOMapper.toDto(created);
             //repositoryAndStatus = repositoryStorageClient.createRepository(repository.getRootFullName()).getBody();
-            return ResponseEntity.ok(created);
+            return ResponseEntity.ok(createdDTO);
         }
         catch (FeignException e)
         {
@@ -99,7 +98,7 @@ public class RepositoryApiFacade
         MoveRequest moveRequest = new MoveRequest();
         for (RepositoryUpdateRequest.RepositoryNode repository : repositories)
         {
-            RepositoryDTO found = repositoryClient.getRepositoryById(repository.getId()).getBody();
+            Repository found = repositoryClient.getRepositoryById(repository.getId()).getBody();
             if (found.getDefault() != null && found.getDefault()) {
                 if (repositories.size() == 1) {
                     throw new ResourceNotFoundException();
@@ -162,35 +161,41 @@ public class RepositoryApiFacade
 
     public ResponseEntity<Page<RepositoryDTO>> getRepositoryByOwnerId(Long ownerId, int page, int size, String sort)
     {
-        UserDTO userDTO = new UserDTO();
+        User userDTO = new User();
         userDTO.setId(ownerId);
-        RepositoryDTO repositoryDTO = new RepositoryDTO();
+        Repository repositoryDTO = new Repository();
         repositoryDTO.setOwner(userDTO);
-        RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
-        requestFilter.setPage(page);
-        requestFilter.setSize(size);
-        requestFilter.setSort(sort);
+        //RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
+        //requestFilter.setPage(page);
+        //requestFilter.setSize(size);
+        //requestFilter.setSort(sort);
 
-        Map<String, Object> map = MapUtils.map(requestFilter);
-        Page<RepositoryDTO> repositoryPage = repositoryClient.getRepositoriesByFilter(map).getBody();
-        return ResponseEntity.ok(repositoryPage);
+        //Map<String, Object> map = MapUtils.map(requestFilter);
+        Map<String, Object> map = new HashMap<>();
+        map.put("page", page);
+        map.put("size", size);
+        map.put("sort", sort);
+        Page<Repository> repositoryPage = repositoryClient.getRepositoriesByFilter(repositoryDTO, map).getBody();
+        return ResponseEntity.ok(repositoryPage.map(repositoryDTOMapper::toDto));
     }
 
     public ResponseEntity<Page<RepositoryDTO>> getRepositoryByFilter(Repository repository, Map<String, Object> filter, int page, int size, String sort)
     {
         checkAccessTypes(repository);
-        RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
-        RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
-        requestFilter.setPage(page);
-        requestFilter.setSize(size);
-        requestFilter.setSort(sort);
+        //RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
+        //RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
+        //requestFilter.setPage(page);
+        //requestFilter.setSize(size);
+        //requestFilter.setSort(sort);
 
-        Map<String, Object> map = MapUtils.map(requestFilter);
-        map.putAll(filter);
+        //Map<String, Object> map = MapUtils.map(requestFilter);
+        //map.putAll(filter);
+        Map<String, Object> map = new HashMap<>();
+
         map.put("ignoreSys", true);
         map.put("ignoreDefault", true);
-        Page<RepositoryDTO> repositories = repositoryClient.getRepositoriesByFilter(map).getBody();
-        return ResponseEntity.ok(repositories);
+        Page<Repository> repositories = repositoryClient.getRepositoriesByFilter(repository, map).getBody();
+        return ResponseEntity.ok(repositories.map(repositoryDTOMapper::toDto));
     }
 
     private void assignPath(Repository repository) {

@@ -114,7 +114,7 @@ public class FileAPIController
         return ResponseEntity.of(Optional.of(fileDTO));
     }
 
-    @GetMapping()
+    @PutMapping()
     public ResponseEntity<Page<FileDTO>> getFilesByFilter(
             @ModelAttribute File filter,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable

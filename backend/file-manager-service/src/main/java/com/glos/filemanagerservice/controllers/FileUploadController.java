@@ -32,20 +32,22 @@ public class FileUploadController
     }
 
     @PostMapping("/files/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
+    public ResponseEntity<?> downloadFile(@RequestBody DownloadRequest request)
     {
-        ByteArrayResource resource = fileApiFacade.downloadFiles(request).getBody();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
-        headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
-
-        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
+//        ByteArrayResource resource = fileApiFacade.downloadFiles(request).getBody();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
+//        headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
+//
+//        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     @GetMapping("/repositories/{rootFullName}/download")
-    public ResponseEntity<ByteArrayResource> downloadRepository(@PathVariable String rootFullName)
+    public ResponseEntity<?> downloadRepository(@PathVariable String rootFullName)
     {
-        return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
+        //return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
     }
 
 }
