@@ -86,7 +86,7 @@ public class UserAPIFacade {
             throw new HttpStatusCodeImplException(HttpStatusCode.valueOf(e.status()), e.getMessage());
         }
 
-        //storageClient.create(user.getUsername());
+        storageClient.create(user.getUsername());
 
         //sendConfirmEmail(user);
 

@@ -8,12 +8,15 @@ import com.pathtools.Path;
 import com.pathtools.PathParser;
 import io.minio.errors.*;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -46,7 +49,7 @@ public class FileStorageRepositoryController
     }
 
     @GetMapping("/download/{rootFullName}")
-    public ResponseEntity<ByteArrayResource> getRepository(@PathVariable String rootFullName) throws Exception
+    public ResponseEntity<InputStreamResource> getRepository(@PathVariable String rootFullName) throws Exception
     {
        try {
            Map<String, Object> filesData = repositoryStorageService.download(rootFullName);
@@ -60,8 +63,8 @@ public class FileStorageRepositoryController
            }
 
            byte[] zipFile = ZipUtil.createRepositoryZip(filesData, fileNames);
-           ByteArrayResource resource = new ByteArrayResource(zipFile);
-
+           ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipFile);
+           final InputStreamResource resource = new InputStreamResource(byteArrayInputStream);
            HttpHeaders headers = new HttpHeaders();
            Path path = PathParser.getInstance().parse(rootFullName);
            Path newPath = path.createBuilder().removeFirst().build();

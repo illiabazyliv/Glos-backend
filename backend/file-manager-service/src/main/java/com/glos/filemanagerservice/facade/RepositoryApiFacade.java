@@ -77,7 +77,7 @@ public class RepositoryApiFacade
             repository.setUpdateDate(LocalDateTime.now());
             Repository created = repositoryClient.createRepository(repository).getBody();
             RepositoryDTO createdDTO = repositoryDTOMapper.toDto(created);
-            //repositoryAndStatus = repositoryStorageClient.createRepository(repository.getRootFullName()).getBody();
+            repositoryStorageClient.createRepository(repository.getRootFullName()).getBody();
             return ResponseEntity.ok(createdDTO);
         }
         catch (FeignException e)

@@ -5,6 +5,7 @@ import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,11 @@ public interface FileStorageClient
 {
     @PostMapping(value = "/storage/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<FileAndStatus> uploadFiles(@RequestPart(value = "filePath") String filePath, @RequestPart(value = "file") MultipartFile file);
-    @PostMapping(value = "/storage/files/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request);
+    @PostMapping(value = "/storage/files/download", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    ResponseEntity<InputStreamResource> downloadFiles(@RequestBody DownloadRequest request);
+
+    @GetMapping(value = "/storage/files/download/{filename}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    ResponseEntity<InputStreamResource> downloadFile(@PathVariable String filename);
 
     @PutMapping(value = "/storage/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<FileAndStatus> updateFile(@ModelAttribute FileWithPath request);

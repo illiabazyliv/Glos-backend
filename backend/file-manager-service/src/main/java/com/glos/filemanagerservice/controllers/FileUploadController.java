@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class FileUploadController
     @GetMapping(value = "/files/download",
             consumes = "application/json",
             produces = "application/octet-stream")
-    public ResponseEntity<InputStreamResource> downloadFile(@RequestBody DownloadRequest request)
+    public ResponseEntity<InputStreamResource> downloadFiles(@RequestBody DownloadRequest request)
     {
         final Map.Entry<InputStreamResource, Integer> resource = fileApiFacade.downloadFiles(request);
         final HttpHeaders headers = new HttpHeaders();
@@ -61,8 +62,7 @@ public class FileUploadController
     @GetMapping(value = "/files/{rootFullName}/download",
             consumes = "application/json",
             produces = "application/octet-stream")
-    public ResponseEntity<InputStreamResource> downloadFileByPath(@PathVariable String rootFullName)
-    {
+    public ResponseEntity<InputStreamResource> downloadFileByPath(@PathVariable String rootFullName) throws IOException {
         //return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
         //return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
         final Map.Entry<InputStreamResource, File> resource = fileApiFacade.downloadFileByRootFullName(rootFullName);
@@ -71,6 +71,7 @@ public class FileUploadController
         headers.setContentDisposition(ContentDisposition.attachment()
                 .filename(resource.getValue().getDisplayFilename())
                 .build());
+
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)

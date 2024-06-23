@@ -19,11 +19,9 @@ import com.pathtools.pathnode.FilePathNode;
 import com.pathtools.pathnode.PathNodeProps;
 import com.pathtools.pathnode.RepositoryPathNode;
 import feign.FeignException;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -42,14 +39,10 @@ import java.util.stream.Collectors;
 @Service
 public class FileApiFacade {
     private final FileClient fileClient;
-    private final RepositoryClient repositoryClient;
-
     private final FileDTOMapper fileDTOMapper;
-    private final FileRequestMapper fileRequestMapper;
     private final FileRequestDTOMapper fileRequestDTOMapper;
     private final FileStorageClient fileStorageClient;
-    private final RepositoryDTOMapper repositoryDTOMapper;
-    private final TagClient tagClient;
+    private final RepositoryStorageClient repositoryStorageClient;
 
     public FileApiFacade(FileClient fileClient,
                          RepositoryClient repositoryClient,
@@ -57,15 +50,12 @@ public class FileApiFacade {
                          FileRequestMapper fileRequestMapper,
                          RepositoryDTOMapper repositoryDTOMapper,
                          FileRequestDTOMapper fileRequestDTOMapper,
-                         FileStorageClient fileStorageClient, TagClient tagClient) {
+                         FileStorageClient fileStorageClient, TagClient tagClient, RepositoryStorageClient repositoryStorageClient) {
         this.fileClient = fileClient;
-        this.repositoryClient = repositoryClient;
         this.fileDTOMapper = fileDTOMapper;
-        this.fileRequestMapper = fileRequestMapper;
         this.fileStorageClient = fileStorageClient;
-        this.repositoryDTOMapper = repositoryDTOMapper;
         this.fileRequestDTOMapper = fileRequestDTOMapper;
-        this.tagClient = tagClient;
+        this.repositoryStorageClient = repositoryStorageClient;
     }
 
     public ResponseEntity<List<FileAndStatus>> uploadFiles(List<FileRequest.FileNode> uploadRequests) {
@@ -111,7 +101,7 @@ public class FileApiFacade {
             }
         });
 
-        //saveToStorage(fileWithPaths, fileAndStatuses);
+        saveToStorage(fileWithPaths, fileAndStatuses);
         return ResponseEntity.ok(fileAndStatuses);
     }
 
@@ -224,14 +214,11 @@ public class FileApiFacade {
     }
 
     public Map.Entry<InputStreamResource, Integer> downloadFiles(DownloadRequest request) {
-        //ByteArrayResource byteArrayResource = fileStorageClient.downloadFile(request).getBody();
-        // temp
-        final byte[] bytes = testZip(request.getFilenames());
-        final InputStream inputStream = new ByteArrayInputStream(bytes);
-        return Map.entry(new InputStreamResource(inputStream), bytes.length);
+        InputStreamResource inputStreamResource = fileStorageClient.downloadFiles(request).getBody();
+        return Map.entry(inputStreamResource, getInputStreamSize(inputStreamResource));
     }
 
-    public Map.Entry<InputStreamResource, File> downloadFileByRootFullName(String rootFullName) {
+    public Map.Entry<InputStreamResource, File> downloadFileByRootFullName(String rootFullName) throws IOException {
         final Path path = Path.builder(rootFullName).build();
         final File file;
         try {
@@ -244,16 +231,15 @@ public class FileApiFacade {
             throw new HttpStatusCodeImplException(code, "error download file");
         }
 
-        final byte[] bytes = testFile();
-        file.setRootSize(bytes.length);
-        final InputStream inputStream = new ByteArrayInputStream(bytes);
-        return Map.entry(new InputStreamResource(inputStream), file);
+        InputStreamResource inputStreamResource = fileStorageClient.downloadFile(rootFullName).getBody();
+        file.setRootSize(getInputStreamSize(inputStreamResource));
+        return Map.entry(fileStorageClient.downloadFile(rootFullName).getBody(), file);
     }
 
-    public Map.Entry<InputStreamResource, Integer> downloadFilesByPath(String rootPath) {
-        final byte[] bytes = testZip(List.of(rootPath));
-        final InputStream inputStream = new ByteArrayInputStream(bytes);
-        return Map.entry(new InputStreamResource(inputStream), bytes.length);
+    public Map.Entry<InputStreamResource, Integer> downloadFilesByPath(String rootPath)
+    {
+        final InputStreamResource inputStream = repositoryStorageClient.getRepository(rootPath).getBody();
+        return Map.entry(inputStream, getInputStreamSize(inputStream));
     }
 
     private byte[] testZip(List<String> names) {
@@ -383,5 +369,18 @@ public class FileApiFacade {
 
     public ResponseEntity<?> deleteById(Long id) {
         return fileClient.deleteFile(id);
+    }
+
+    private Integer getInputStreamSize(InputStreamResource inputStream)
+    {
+        long size = -1;
+        try {
+            size = inputStream.contentLength();
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
+        return (int)size;
     }
 }

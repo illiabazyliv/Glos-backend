@@ -7,10 +7,13 @@ import com.pathtools.Path;
 import com.pathtools.PathParser;
 import com.pathtools.pathnode.FilePathNode;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
@@ -44,8 +47,10 @@ public class FileStorageFileController
         return ResponseEntity.ok(fileAndStatus);
     }
 
-    @GetMapping("/files/download/{filename}")
-    public ResponseEntity<ByteArrayResource> downloadFiles(@PathVariable String filename) {
+    @GetMapping(value = "/files/download/{filename}",
+            consumes = "application/json",
+            produces = "application/octet-stream")
+    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable("filename") String filename) {
         try {
             final Path path = PathParser.getInstance().parse(filename);
             final FilePathNode fileNode = (FilePathNode) path.reader().last();
@@ -55,17 +60,11 @@ public class FileStorageFileController
                 return ResponseEntity.notFound().build();
 
             final byte[] bytes = filesData.get(0);
-            final ByteArrayResource resource = new ByteArrayResource(bytes);
-
-            final java.nio.file.Path pathIo = java.nio.file.Path.of(path.getSimplePath("/", true));
-            String mimeType = Files.probeContentType(pathIo);
-
-            if (mimeType == null)
-                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            final InputStreamResource resource = new InputStreamResource(byteArrayInputStream);
             final HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileNode.getSimpleName()));
-            headers.setContentType(MediaType.parseMediaType(mimeType));
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentLength(bytes.length);
 
             return new ResponseEntity<>(resource, headers, HttpStatus.OK);
@@ -75,8 +74,8 @@ public class FileStorageFileController
         }
     }
 
-    @PostMapping("/files/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestBody DownloadRequest request)
+    @PostMapping(value = "/files/download")
+    public ResponseEntity<InputStreamResource> downloadFiles(@RequestBody DownloadRequest request)
     {
         try
         {
@@ -87,12 +86,13 @@ public class FileStorageFileController
                     .toList();
 
             byte[] zipData = ZipUtil.createZip(filesData, fileNames);
-
-            ByteArrayResource resource = new ByteArrayResource(zipData);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipData);
+            InputStreamResource resource = new InputStreamResource(byteArrayInputStream);
 
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
-            headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentLength(zipData.length);
 
             return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         }
