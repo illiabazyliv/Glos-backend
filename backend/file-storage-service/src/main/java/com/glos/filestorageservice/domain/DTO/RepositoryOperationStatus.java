@@ -2,5 +2,5 @@ package com.glos.filestorageservice.domain.DTO;
 
 public enum RepositoryOperationStatus
 {
-    CREATED, DELETED, RENAMED, MOVED, FAILED
+    CREATED, EXISTS, DELETED, RENAMED, MOVED, FAILED
 }

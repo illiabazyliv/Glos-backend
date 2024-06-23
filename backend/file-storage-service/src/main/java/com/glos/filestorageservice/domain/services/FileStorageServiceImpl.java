@@ -10,7 +10,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -50,17 +49,15 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public List<byte[]> download(List<String> filenames) throws Exception {
+    public List<InputStream> download(List<String> filenames) throws Exception {
         logger.info("Downloading files");
 
-        List<byte[]> filesData = new ArrayList<>();
+        List<InputStream> filesData = new ArrayList<>();
         for (String path : filenames)
         {
             com.pathtools.Path pathObj = PathParser.getInstance().parse(path);
-            try (InputStream stream = getObject(pathObj)) {
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                IOUtils.copy(stream, buffer);
-                filesData.add(buffer.toByteArray());
+            try{
+                filesData.add(getObject(pathObj));
             } catch (MinioException e) {
                 e.printStackTrace();
                 throw new Exception("Error while downloading file: " + path, e);

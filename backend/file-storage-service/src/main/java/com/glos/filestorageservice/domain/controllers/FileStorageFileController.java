@@ -6,14 +6,14 @@ import com.glos.filestorageservice.domain.utils.ZipUtil;
 import com.pathtools.Path;
 import com.pathtools.PathParser;
 import com.pathtools.pathnode.FilePathNode;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.PipedInputStream;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
@@ -55,19 +55,20 @@ public class FileStorageFileController
             final Path path = PathParser.getInstance().parse(filename);
             final FilePathNode fileNode = (FilePathNode) path.reader().last();
 
-            final List<byte[]> filesData = fileStorageService.download(Collections.singletonList(filename));
+            final List<InputStream> filesData = fileStorageService.download(Collections.singletonList(filename));
             if (filesData.isEmpty())
                 return ResponseEntity.notFound().build();
 
-            final byte[] bytes = filesData.get(0);
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-            final InputStreamResource resource = new InputStreamResource(byteArrayInputStream);
+            final InputStreamResource resource = new InputStreamResource(filesData.get(0));
             final HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileNode.getSimpleName()));
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentLength(bytes.length);
+            headers.setContentDisposition(ContentDisposition.attachment()
+                    .filename(fileNode.getSimpleName())
+                    .build() );
 
-            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
@@ -79,22 +80,24 @@ public class FileStorageFileController
     {
         try
         {
-            List<byte[]> filesData = fileStorageService.download(request.getFilenames());
+            List<InputStream> filesData = fileStorageService.download(request.getFilenames());
 
             List<String> fileNames = request.getFilenames().stream()
                     .map(path -> PathParser.getInstance().parse(path).getLast().getSimpleName())
                     .toList();
 
-            byte[] zipData = ZipUtil.createZip(filesData, fileNames);
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipData);
-            InputStreamResource resource = new InputStreamResource(byteArrayInputStream);
+            InputStream zipData = ZipUtil.createZip(filesData, fileNames);
+            InputStreamResource resource = new InputStreamResource(zipData);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentLength(zipData.length);
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.attachment()
+                    .filename("files.zip")
+                    .build() );
 
-            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
         }
         catch (Exception e) {
             return ResponseEntity.internalServerError().build();

@@ -19,6 +19,7 @@ import com.pathtools.pathnode.FilePathNode;
 import com.pathtools.pathnode.PathNodeProps;
 import com.pathtools.pathnode.RepositoryPathNode;
 import feign.FeignException;
+import feign.Response;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -176,17 +177,17 @@ public class FileApiFacade {
                     moveRequest.getMoves().add(moveNode);
                 }
 
-//                if (request.getFileData() != null)
-//                {
-//                    FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
-//                    fileAndStatuses.add(fileStorageClient.updateFile(fileWithPath).getBody());
-//                }
+                if (request.getFileData() != null)
+                {
+                    FileWithPath fileWithPath = new FileWithPath(oldRootFullName, request.getFileData());
+                    fileAndStatuses.add(fileStorageClient.updateFile(fileWithPath).getBody());
+                }
 
             }
-//            if (moveRequest != null)
-//            {
-//                fileStorageClient.moveFile(moveRequest);
-//            }
+            if (moveRequest != null)
+            {
+                fileStorageClient.moveFile(moveRequest);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -205,7 +206,7 @@ public class FileApiFacade {
             }
 
             DeleteRequest request = new DeleteRequest(rootFullNames);
-            //fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
+            fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -213,9 +214,10 @@ public class FileApiFacade {
 
     }
 
-    public Map.Entry<InputStreamResource, Integer> downloadFiles(DownloadRequest request) {
-        InputStreamResource inputStreamResource = fileStorageClient.downloadFiles(request).getBody();
-        return Map.entry(inputStreamResource, getInputStreamSize(inputStreamResource));
+    public InputStreamResource downloadFiles(DownloadRequest request) {
+        Response response = fileStorageClient.downloadFiles(request);
+        InputStreamResource inputStreamResource = getInputStreamResource(response);
+        return inputStreamResource;
     }
 
     public Map.Entry<InputStreamResource, File> downloadFileByRootFullName(String rootFullName) throws IOException {
@@ -231,34 +233,14 @@ public class FileApiFacade {
             throw new HttpStatusCodeImplException(code, "error download file");
         }
 
-        InputStreamResource inputStreamResource = fileStorageClient.downloadFile(rootFullName).getBody();
-        file.setRootSize(getInputStreamSize(inputStreamResource));
-        return Map.entry(fileStorageClient.downloadFile(rootFullName).getBody(), file);
+        final InputStreamResource inputStreamResource = getInputStreamResource(fileStorageClient.downloadFile(rootFullName));
+        return Map.entry(inputStreamResource, file);
     }
 
-    public Map.Entry<InputStreamResource, Integer> downloadFilesByPath(String rootPath)
+    public InputStreamResource downloadFilesByPath(String rootPath)
     {
-        final InputStreamResource inputStream = repositoryStorageClient.getRepository(rootPath).getBody();
-        return Map.entry(inputStream, getInputStreamSize(inputStream));
-    }
-
-    private byte[] testZip(List<String> names) {
-        try {
-            final List<byte[]> fileBytes = List.of(testFile());
-            return ZipUtil.createZip(fileBytes, names);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    // temp
-    private byte[] testFile() {
-        try {
-            final Resource resource = new ClassPathResource("file.txt");
-            return Files.readAllBytes(resource.getFile().toPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        final InputStreamResource inputStream = getInputStreamResource(repositoryStorageClient.getRepository(rootPath));
+        return inputStream;
     }
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort) {
@@ -371,16 +353,11 @@ public class FileApiFacade {
         return fileClient.deleteFile(id);
     }
 
-    private Integer getInputStreamSize(InputStreamResource inputStream)
-    {
-        long size = -1;
+    private InputStreamResource getInputStreamResource(Response response) {
         try {
-            size = inputStream.contentLength();
+            return new InputStreamResource(response.body().asInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException("Internal error");
         }
-        catch (Exception e)
-        {
-            throw new RuntimeException(e.getMessage());
-        }
-        return (int)size;
     }
 }

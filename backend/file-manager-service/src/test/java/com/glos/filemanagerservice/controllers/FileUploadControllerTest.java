@@ -18,14 +18,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -73,7 +77,13 @@ class FileUploadControllerTest {
         ByteArrayResource resource = new ByteArrayResource(fileContent);
         ResponseEntity<ByteArrayResource> responseEntity = ResponseEntity.ok(resource);
 
-        when(fileApiFacade.downloadFiles(any(DownloadRequest.class))).thenReturn(fileContent);
+        InputStream inputStream = new ByteArrayInputStream(fileContent);
+        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+
+        File file = new File();
+        Map.Entry<InputStreamResource, Integer> entry = Map.entry(inputStreamResource, 0);
+
+        when(fileApiFacade.downloadFiles(any(DownloadRequest.class))).thenReturn(entry);
         DownloadRequest downloadRequest = new DownloadRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/files/download")

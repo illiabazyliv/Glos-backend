@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PipedInputStream;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -50,9 +51,9 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     }
 
     @Override
-    public Map<String, Object> download(String rootFullName) throws Exception
+    public Map<String, InputStream> download(String rootFullName) throws Exception
     {
-        Map<String, Object> filesAndNames;
+        Map<String, InputStream> filesAndNames;
         try
         {
             Path path = PathParser.getInstance().parse(rootFullName);
@@ -128,15 +129,15 @@ public class RepositoryStorageImpl implements RepositoryStorageService
                 PutObjectArgs.builder()
                         .bucket(path.reader().first().getSimpleName())
                         .object(simplePath + ".placeholder")
-                        .stream(new ByteArrayInputStream(new byte[]{}), 0, partSize)
+                        .stream(new PipedInputStream(), 0, partSize)
                         .build()
         );
     }
 
-    private  Map<String, Object> downloadRepo(com.pathtools.Path path) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    private  Map<String, InputStream> downloadRepo(com.pathtools.Path path) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         Path newPath = path.createBuilder().removeFirst().build();
         String simplePath = newPath.getSimplePath("/", false);
-        Map<String, Object> filesAndNames = new HashMap<>();
+        Map<String, InputStream> filesAndNames = new HashMap<>();
 
         if (!simplePath.endsWith("/"))
         {
@@ -155,14 +156,11 @@ public class RepositoryStorageImpl implements RepositoryStorageService
             Item item = result.get();
             String objectName = item.objectName();
 
-            try (InputStream stream = minioClient.getObject(
-                    GetObjectArgs.builder()
+            InputStream content = minioClient.getObject(GetObjectArgs.builder()
                             .bucket(path.reader().first().getSimpleName())
                             .object(objectName)
-                            .build())) {
-                byte[] content = stream.readAllBytes();
-                filesAndNames.put(objectName, content);
-            }
+                            .build());
+            filesAndNames.put(objectName, content);
         }
         return filesAndNames;
     }

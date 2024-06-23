@@ -2,6 +2,7 @@ package com.glos.filemanagerservice.clients;
 
 import com.glos.filemanagerservice.DTO.MoveRequest;
 import com.glos.filemanagerservice.DTO.RepositoryAndStatus;
+import feign.Response;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
@@ -20,7 +21,7 @@ public interface RepositoryStorageClient
     ResponseEntity<RepositoryAndStatus> createRepository(@PathVariable String rootFullName);
 
     @GetMapping(value = "/download/{rootFullName}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    ResponseEntity<InputStreamResource> getRepository(@PathVariable String rootFullName);
+    Response getRepository(@PathVariable String rootFullName);
     @PostMapping("/move")
     ResponseEntity<List<RepositoryAndStatus>> moveRepository(@RequestBody MoveRequest moves);
 

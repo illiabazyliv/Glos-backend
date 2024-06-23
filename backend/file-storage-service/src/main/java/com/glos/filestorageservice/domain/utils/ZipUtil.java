@@ -1,7 +1,6 @@
 package com.glos.filestorageservice.domain.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,65 +8,79 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipUtil
-{
-    public static byte[] createZip(List<byte[]> filesData, List<String> fileNames) throws IOException
-    {
-        if (filesData.size() != fileNames.size())
-        {
+public class ZipUtil {
+    public static InputStream createZip(List<InputStream> filesData, List<String> fileNames) throws IOException {
+        if (filesData.size() != fileNames.size()) {
             throw new IllegalArgumentException("Files data and file names lists must have the same size.");
         }
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PipedInputStream pipedInputStream = new PipedInputStream();
+        PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
 
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream))
-        {
-            for (int i = 0; i < filesData.size(); i++)
-            {
-                zipOutputStream.putNextEntry(new ZipEntry(fileNames.get(i)));
-                zipOutputStream.write(filesData.get(i));
-                zipOutputStream.closeEntry();
+        new Thread(() -> {
+            try (ZipOutputStream zipOutputStream = new ZipOutputStream(pipedOutputStream)) {
+                for (int i = 0; i < filesData.size(); i++) {
+                    zipOutputStream.putNextEntry(new ZipEntry(fileNames.get(i)));
+                    filesData.get(i).transferTo(zipOutputStream);
+                    zipOutputStream.closeEntry();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    pipedOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        return byteArrayOutputStream.toByteArray();
+        }).start();
+
+        return pipedInputStream;
     }
 
-    public static byte[] createRepositoryZip(Map<String, Object> filesData, Map<String, String> fileNames) throws IOException
-    {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    public static InputStream createRepositoryZip(Map<String, InputStream> filesData, Map<String, String> fileNames) throws IOException {
+        PipedInputStream pipedInputStream = new PipedInputStream();
+        PipedOutputStream pipedOutputStream = new PipedOutputStream(pipedInputStream);
 
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream))
-        {
-            Set<String> uniqueFileNames = new HashSet<>();
+        new Thread(() -> {
+            try (ZipOutputStream zipOutputStream = new ZipOutputStream(pipedOutputStream)) {
+                Set<String> uniqueFileNames = new HashSet<>();
 
-            for (Map.Entry<String, Object> entry : filesData.entrySet())
-            {
-                String key = entry.getKey();
-                byte[] fileData = (byte[]) entry.getValue();
-                String fileName = fileNames.get(key);
+                for (Map.Entry<String, InputStream> entry : filesData.entrySet()) {
+                    String key = entry.getKey();
+                    InputStream fileData = entry.getValue();
+                    String fileName = fileNames.get(key);
 
-                if (fileName.endsWith(".placeholder"))
-                {
-                    continue;
-                }
-
-                if (!uniqueFileNames.add(fileName)) {
-                    int index = 1;
-                    String newFileName;
-                    while (!uniqueFileNames.add(newFileName = fileNameWithoutExtension(fileName) + "_" + index + getFileExtension(fileName))) {
-                        index++;
+                    if (fileName.endsWith(".placeholder")) {
+                        continue;
                     }
-                    fileName = newFileName;
+
+                    if (!uniqueFileNames.add(fileName)) {
+                        int index = 1;
+                        String newFileName;
+                        while (!uniqueFileNames.add(newFileName = fileNameWithoutExtension(fileName) + "_" + index + getFileExtension(fileName))) {
+                            index++;
+                        }
+                        fileName = newFileName;
+                    }
+
+                    ZipEntry zipEntry = new ZipEntry(fileName);
+                    zipOutputStream.putNextEntry(zipEntry);
+                    fileData.transferTo(zipOutputStream);
+                    zipOutputStream.closeEntry();
                 }
-
-                ZipEntry zipEntry = new ZipEntry(fileName);
-                zipOutputStream.putNextEntry(zipEntry);
-                zipOutputStream.write(fileData);
-                zipOutputStream.closeEntry();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    pipedOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        }).start();
 
-        return byteArrayOutputStream.toByteArray();
+        return pipedInputStream;
     }
 
     private static String fileNameWithoutExtension(String fileName) {

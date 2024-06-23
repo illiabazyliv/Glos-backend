@@ -7,14 +7,13 @@ import com.glos.filestorageservice.domain.utils.ZipUtil;
 import com.pathtools.Path;
 import com.pathtools.PathParser;
 import io.minio.errors.*;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -52,7 +51,7 @@ public class FileStorageRepositoryController
     public ResponseEntity<InputStreamResource> getRepository(@PathVariable String rootFullName) throws Exception
     {
        try {
-           Map<String, Object> filesData = repositoryStorageService.download(rootFullName);
+           Map<String, InputStream> filesData = repositoryStorageService.download(rootFullName);
            Map<String, String> fileNames = new HashMap<>();
 
            for (String key: filesData.keySet())
@@ -62,14 +61,15 @@ public class FileStorageRepositoryController
                fileNames.put(key, filename);
            }
 
-           byte[] zipFile = ZipUtil.createRepositoryZip(filesData, fileNames);
-           ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(zipFile);
-           final InputStreamResource resource = new InputStreamResource(byteArrayInputStream);
-           HttpHeaders headers = new HttpHeaders();
+           final InputStream zipFile = ZipUtil.createRepositoryZip(filesData, fileNames);
+           final InputStreamResource resource = new InputStreamResource(zipFile);
+           final HttpHeaders headers = new HttpHeaders();
            Path path = PathParser.getInstance().parse(rootFullName);
            Path newPath = path.createBuilder().removeFirst().build();
            String zipName = newPath.getSimplePath("/", false);
-           headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipName + ".zip");
+           headers.setContentDisposition(ContentDisposition.attachment()
+                   .filename(zipName + ".zip")
+                   .build());
            headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
 
            return new ResponseEntity<>(resource, headers, HttpStatus.OK);

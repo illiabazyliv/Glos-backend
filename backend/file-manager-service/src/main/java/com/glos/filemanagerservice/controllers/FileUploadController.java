@@ -42,7 +42,7 @@ public class FileUploadController
             produces = "application/octet-stream")
     public ResponseEntity<InputStreamResource> downloadFiles(@RequestBody DownloadRequest request)
     {
-        final Map.Entry<InputStreamResource, Integer> resource = fileApiFacade.downloadFiles(request);
+        final InputStreamResource resource = fileApiFacade.downloadFiles(request);
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentDisposition(ContentDisposition.attachment()
                         .filename(Constants.DOWNLOAD_ZIP_DEFAULT_NAME)
@@ -50,21 +50,13 @@ public class FileUploadController
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(resource.getValue())
-                .body(resource.getKey());
-//        ByteArrayResource resource = fileApiFacade.downloadFiles(request).getBody();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
-//        headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
-//        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+                .body(resource);
     }
 
     @GetMapping(value = "/files/{rootFullName}/download",
             consumes = "application/json",
             produces = "application/octet-stream")
     public ResponseEntity<InputStreamResource> downloadFileByPath(@PathVariable String rootFullName) throws IOException {
-        //return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
-        //return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
         final Map.Entry<InputStreamResource, File> resource = fileApiFacade.downloadFileByRootFullName(rootFullName);
 
         final HttpHeaders headers = new HttpHeaders();
@@ -75,9 +67,7 @@ public class FileUploadController
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(resource.getValue().getRootSize())
                 .body(resource.getKey());
-
     }
 
 
@@ -86,10 +76,7 @@ public class FileUploadController
             produces = "application/octet-stream")
     public ResponseEntity<InputStreamResource> downloadRepository(@PathVariable String rootPath)
     {
-        //return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
-        //return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
-
-        final Map.Entry<InputStreamResource, Integer> resource = fileApiFacade.downloadFilesByPath(rootPath);
+        final InputStreamResource resource = fileApiFacade.downloadFilesByPath(rootPath);
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentDisposition(ContentDisposition.attachment()
                 .filename(Constants.DOWNLOAD_ZIP_DEFAULT_NAME)
@@ -97,8 +84,7 @@ public class FileUploadController
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(resource.getValue())
-                .body(resource.getKey());
+                .body(resource);
     }
 
 }
