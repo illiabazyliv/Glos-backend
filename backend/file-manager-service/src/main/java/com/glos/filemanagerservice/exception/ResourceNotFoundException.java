@@ -1,23 +1,22 @@
 package com.glos.filemanagerservice.exception;
 
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends FieldException {
 
-    public ResourceNotFoundException() {
+
+    public ResourceNotFoundException(String field) {
+        super(field);
     }
 
-    public ResourceNotFoundException(String message) {
-        super(message);
+    public ResourceNotFoundException(String s, String field) {
+        super(s, field);
     }
 
-    public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public ResourceNotFoundException(String message, Throwable cause, String field) {
+        super(message, cause, field);
     }
 
-    public ResourceNotFoundException(Throwable cause) {
-        super(cause);
+    public ResourceNotFoundException(Throwable cause, String field) {
+        super(cause, field);
     }
 
-    public ResourceNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

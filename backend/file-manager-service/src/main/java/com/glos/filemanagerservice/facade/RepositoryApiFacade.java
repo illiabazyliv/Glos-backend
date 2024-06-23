@@ -101,7 +101,7 @@ public class RepositoryApiFacade
             Repository found = repositoryClient.getRepositoryById(repository.getId()).getBody();
             if (found.getDefault() != null && found.getDefault()) {
                 if (repositories.size() == 1) {
-                    throw new ResourceNotFoundException();
+                    throw new ResourceNotFoundException("not found", "id");
                 }
                 repositoryAndStatuses.add(new RepositoryAndStatus(
                         found.getDisplayFullName(),
@@ -165,12 +165,6 @@ public class RepositoryApiFacade
         userDTO.setId(ownerId);
         Repository repositoryDTO = new Repository();
         repositoryDTO.setOwner(userDTO);
-        //RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
-        //requestFilter.setPage(page);
-        //requestFilter.setSize(size);
-        //requestFilter.setSort(sort);
-
-        //Map<String, Object> map = MapUtils.map(requestFilter);
         Map<String, Object> map = new HashMap<>();
         map.put("page", page);
         map.put("size", size);
@@ -182,14 +176,6 @@ public class RepositoryApiFacade
     public ResponseEntity<Page<RepositoryDTO>> getRepositoryByFilter(Repository repository, Map<String, Object> filter, int page, int size, String sort)
     {
         checkAccessTypes(repository);
-        //RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
-        //RepositoryRequestFilter requestFilter = requestMapper.toDto(repositoryDTO);
-        //requestFilter.setPage(page);
-        //requestFilter.setSize(size);
-        //requestFilter.setSort(sort);
-
-        //Map<String, Object> map = MapUtils.map(requestFilter);
-        //map.putAll(filter);
         Map<String, Object> map = new HashMap<>();
 
         map.put("ignoreSys", true);

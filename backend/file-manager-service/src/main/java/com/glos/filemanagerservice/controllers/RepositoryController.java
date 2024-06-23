@@ -8,7 +8,6 @@ import com.glos.filemanagerservice.clients.RepositoryClient;
 import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
 import com.glos.filemanagerservice.responseMappers.RepositoryRequestMapper;
 import com.pathtools.Path;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,11 +79,7 @@ public class RepositoryController
         final Repository repository = new Repository();
         final User user = new User();
         user.setUsername(username);
-        if (search.contains("/")) {
-            repository.setDisplayFullName(search);
-        } else {
-            repository.setDisplayName(search);
-        }
+        repository.setDisplayFullName(search);
         repository.setOwner(user);
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, new HashMap<>(), page, size, sort)
                 .getBody());
@@ -110,11 +105,7 @@ public class RepositoryController
         final User user = new User();
         user.setUsername(path.getFirst().getSimpleName());
         repository.setRootPath(path.getPath());
-        if (search.contains("/")) {
-            repository.setDisplayFullName(search);
-        } else {
-            repository.setDisplayName(search);
-        }
+        repository.setDisplayFullName(search);
         repository.setOwner(user);
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, new HashMap<>(), page, size, sort).getBody());
     }
@@ -133,11 +124,7 @@ public class RepositoryController
             user.setUsername(username);
             repository.setOwner(user);
         }
-        if (search.contains("/")) {
-            repository.setDisplayFullName(search);
-        } else {
-            repository.setDisplayName(search);
-        }
+        repository.setDisplayFullName(search);
         return ResponseEntity.ok(repositoryApiFacade.getRepositoryByFilter(repository, new HashMap<>(), page, size, sort).getBody());
     }
 

@@ -73,7 +73,7 @@ class FileUploadControllerTest {
         ByteArrayResource resource = new ByteArrayResource(fileContent);
         ResponseEntity<ByteArrayResource> responseEntity = ResponseEntity.ok(resource);
 
-        when(fileApiFacade.downloadFiles(any(DownloadRequest.class))).thenReturn(responseEntity);
+        when(fileApiFacade.downloadFiles(any(DownloadRequest.class))).thenReturn(fileContent);
         DownloadRequest downloadRequest = new DownloadRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/files/download")

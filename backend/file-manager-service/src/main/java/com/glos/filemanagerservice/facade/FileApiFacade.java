@@ -8,8 +8,11 @@ import com.glos.filemanagerservice.clients.*;
 import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.exception.FieldException;
+import com.glos.filemanagerservice.exception.HttpStatusCodeImplException;
 import com.glos.filemanagerservice.exception.ResourceAlreadyExistsException;
+import com.glos.filemanagerservice.exception.ResourceNotFoundException;
 import com.glos.filemanagerservice.responseMappers.*;
+import com.glos.filemanagerservice.utils.ZipUtil;
 import com.pathtools.Path;
 import com.pathtools.PathParser;
 import com.pathtools.pathnode.FilePathNode;
@@ -17,6 +20,9 @@ import com.pathtools.pathnode.PathNodeProps;
 import com.pathtools.pathnode.RepositoryPathNode;
 import feign.FeignException;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,6 +30,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -213,9 +223,56 @@ public class FileApiFacade {
 
     }
 
-    public ResponseEntity<ByteArrayResource> downloadFiles(DownloadRequest request) {
-        ByteArrayResource byteArrayResource = fileStorageClient.downloadFile(request).getBody();
-        return ResponseEntity.ok(byteArrayResource);
+    public Map.Entry<InputStreamResource, Integer> downloadFiles(DownloadRequest request) {
+        //ByteArrayResource byteArrayResource = fileStorageClient.downloadFile(request).getBody();
+        // temp
+        final byte[] bytes = testZip(request.getFilenames());
+        final InputStream inputStream = new ByteArrayInputStream(bytes);
+        return Map.entry(new InputStreamResource(inputStream), bytes.length);
+    }
+
+    public Map.Entry<InputStreamResource, File> downloadFileByRootFullName(String rootFullName) {
+        final Path path = Path.builder(rootFullName).build();
+        final File file;
+        try {
+             file = getFileByRootFullName(path.getPath());
+        } catch (FeignException e) {
+            HttpStatusCode code = HttpStatusCode.valueOf(e.status());
+            if (code.isSameCodeAs(HttpStatus.NOT_FOUND)) {
+                throw new ResourceNotFoundException("not found", "rootFullName");
+            }
+            throw new HttpStatusCodeImplException(code, "error download file");
+        }
+
+        final byte[] bytes = testFile();
+        file.setRootSize(bytes.length);
+        final InputStream inputStream = new ByteArrayInputStream(bytes);
+        return Map.entry(new InputStreamResource(inputStream), file);
+    }
+
+    public Map.Entry<InputStreamResource, Integer> downloadFilesByPath(String rootPath) {
+        final byte[] bytes = testZip(List.of(rootPath));
+        final InputStream inputStream = new ByteArrayInputStream(bytes);
+        return Map.entry(new InputStreamResource(inputStream), bytes.length);
+    }
+
+    private byte[] testZip(List<String> names) {
+        try {
+            final List<byte[]> fileBytes = List.of(testFile());
+            return ZipUtil.createZip(fileBytes, names);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // temp
+    private byte[] testFile() {
+        try {
+            final Resource resource = new ClassPathResource("file.txt");
+            return Files.readAllBytes(resource.getFile().toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort) {
@@ -244,13 +301,7 @@ public class FileApiFacade {
 
     public ResponseEntity<Page<FileDTO>> getFilesByFilter(File file, int page, int size, String sort) {
         checkAccessTypes(file);
-        //FileDTO fileDTO = fileDTOMapper.toDto(file);
-//        FileRequestFilter filter = fileRequestMapper.toDto(fileDTO);
-//        filter.setPage(page);
-//        filter.setSize(size);
-//        filter.setSort(sort);
 
-//        Map<String, Object> map = MapUtils.map(filter);
         Map<String, Object> map = new HashMap<>();
         map.put("page", page);
         map.put("size", size);

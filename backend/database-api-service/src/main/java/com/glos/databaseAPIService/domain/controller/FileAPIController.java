@@ -116,11 +116,13 @@ public class FileAPIController
 
     @PutMapping()
     public ResponseEntity<Page<FileDTO>> getFilesByFilter(
-            @ModelAttribute File filter,
+            @RequestBody(required = false) File filter,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     )
     {
-        if (filter != null && filter.getRootFullName() != null)
+        if (filter == null) {
+            filter = new File();
+        } else if (filter.getRootFullName() != null)
         {
             Path path = PathParser.getInstance().parse(filter.getRootFullName());
             filter.setRootFullName(path.getPath());

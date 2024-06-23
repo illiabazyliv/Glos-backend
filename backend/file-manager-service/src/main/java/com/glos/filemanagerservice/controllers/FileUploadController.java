@@ -3,16 +3,20 @@ package com.glos.filemanagerservice.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.glos.filemanagerservice.DTO.*;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
+import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.facade.FileApiFacade;
+import com.glos.filemanagerservice.utils.Constants;
 import com.glos.filemanagerservice.validation.OnCreate;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping
@@ -32,23 +36,68 @@ public class FileUploadController
         return fileApiFacade.uploadFiles(uploadRequests.getFiles());
     }
 
-    @PostMapping("/files/download")
-    public ResponseEntity<?> downloadFile(@RequestBody DownloadRequest request)
+    @GetMapping(value = "/files/download",
+            consumes = "application/json",
+            produces = "application/octet-stream")
+    public ResponseEntity<InputStreamResource> downloadFile(@RequestBody DownloadRequest request)
     {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
+        final Map.Entry<InputStreamResource, Integer> resource = fileApiFacade.downloadFiles(request);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(ContentDisposition.attachment()
+                        .filename(Constants.DOWNLOAD_ZIP_DEFAULT_NAME)
+                .build());
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.getValue())
+                .body(resource.getKey());
 //        ByteArrayResource resource = fileApiFacade.downloadFiles(request).getBody();
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
 //        headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
-//
 //        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/repositories/{rootFullName}/download")
-    public ResponseEntity<?> downloadRepository(@PathVariable String rootFullName)
+    @GetMapping(value = "/files/{rootFullName}/download",
+            consumes = "application/json",
+            produces = "application/octet-stream")
+    public ResponseEntity<InputStreamResource> downloadFileByPath(@PathVariable String rootFullName)
     {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
+        //return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
         //return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
+        final Map.Entry<InputStreamResource, File> resource = fileApiFacade.downloadFileByRootFullName(rootFullName);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(ContentDisposition.attachment()
+                .filename(resource.getValue().getDisplayFilename())
+                .build());
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.getValue().getRootSize())
+                .body(resource.getKey());
+
+    }
+
+
+    @GetMapping(value = "/files/path/{rootPath}/download",
+            consumes = "application/json",
+            produces = "application/octet-stream")
+    public ResponseEntity<InputStreamResource> downloadRepository(@PathVariable String rootPath)
+    {
+        //return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("not implemented");
+        //return ResponseEntity.ok(repositoryStorageClient.getRepository(rootFullName).getBody());
+
+        final Map.Entry<InputStreamResource, Integer> resource = fileApiFacade.downloadFilesByPath(rootPath);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(ContentDisposition.attachment()
+                .filename(Constants.DOWNLOAD_ZIP_DEFAULT_NAME)
+                .build());
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(resource.getValue())
+                .body(resource.getKey());
     }
 
 }

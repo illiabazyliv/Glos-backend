@@ -74,11 +74,7 @@ public class FileController
         repository.setId(repositoryId);
         File file = new File();
         file.setRepository(repository);
-        if (search.contains("/")) {
-            file.setDisplayFullName(search);
-        } else {
-            file.setDisplayFilename(search);
-        }
+        file.setDisplayFullName(search);
         return ResponseEntity.ok(fileApiFacade.getFilesByFilter(file, page, size, sort).getBody());
     }
 
@@ -91,11 +87,7 @@ public class FileController
                                                      @RequestParam(name = "sort", required = false, defaultValue = "id,asc") String sort
     )
     {
-        if (search.contains("/")) {
-            file.setDisplayFullName(search);
-        } else {
-            file.setDisplayFilename(search);
-        }
+        file.setDisplayFullName(search);
         return ResponseEntity.ok(fileApiFacade.getFilesByFilter(file, page, size, sort).getBody());
     }
 }
