@@ -1,9 +1,12 @@
 package com.glos.filemanagerservice.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.util.List;
 
 public class FileRequestDTO {
 
+    @NotEmpty(message = "can't be empty")
     private String rootPath;
 
     private String rootFilename;

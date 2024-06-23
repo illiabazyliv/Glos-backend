@@ -3,37 +3,40 @@ package com.glos.filemanagerservice.facade;
 import com.accesstools.AccessNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.glos.filemanagerservice.DTO.*;
-import com.glos.filemanagerservice.clients.FileClient;
-import com.glos.filemanagerservice.clients.FileStorageClient;
-import com.glos.filemanagerservice.clients.RepositoryClient;
-import com.glos.filemanagerservice.clients.TagClient;
+import com.glos.filemanagerservice.clients.*;
 import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.entities.Repository;
-import com.glos.filemanagerservice.entities.Tag;
-import com.glos.filemanagerservice.requestFilters.FileRequestFilter;
-import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
-import com.glos.filemanagerservice.responseMappers.FileRequestMapper;
-import com.glos.filemanagerservice.responseMappers.RepositoryDTOMapper;
-import com.glos.filemanagerservice.utils.MapUtils;
+import com.glos.filemanagerservice.exception.FieldException;
+import com.glos.filemanagerservice.exception.ResourceAlreadyExistsException;
+import com.glos.filemanagerservice.responseMappers.*;
+import com.pathtools.Path;
+import com.pathtools.PathParser;
+import com.pathtools.pathnode.FilePathNode;
+import com.pathtools.pathnode.PathNodeProps;
+import com.pathtools.pathnode.RepositoryPathNode;
+import feign.FeignException;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class FileApiFacade
-{
+public class FileApiFacade {
     private final FileClient fileClient;
     private final RepositoryClient repositoryClient;
 
     private final FileDTOMapper fileDTOMapper;
     private final FileRequestMapper fileRequestMapper;
+    private final FileRequestDTOMapper fileRequestDTOMapper;
     private final FileStorageClient fileStorageClient;
     private final RepositoryDTOMapper repositoryDTOMapper;
     private final TagClient tagClient;
@@ -43,6 +46,7 @@ public class FileApiFacade
                          FileDTOMapper fileDTOMapper,
                          FileRequestMapper fileRequestMapper,
                          RepositoryDTOMapper repositoryDTOMapper,
+                         FileRequestDTOMapper fileRequestDTOMapper,
                          FileStorageClient fileStorageClient, TagClient tagClient) {
         this.fileClient = fileClient;
         this.repositoryClient = repositoryClient;
@@ -50,66 +54,114 @@ public class FileApiFacade
         this.fileRequestMapper = fileRequestMapper;
         this.fileStorageClient = fileStorageClient;
         this.repositoryDTOMapper = repositoryDTOMapper;
+        this.fileRequestDTOMapper = fileRequestDTOMapper;
         this.tagClient = tagClient;
     }
 
-    public ResponseEntity<List<FileAndStatus>> uploadFiles(List<FileRequest.FileNode> uploadRequests) throws JsonProcessingException
-    {
-        List<File> files = new ArrayList<>();
-        List<MultipartFile> filesData = new ArrayList<>();
-        for (var u : uploadRequests)
-        {
-            ObjectMapper objectMapper = new ObjectMapper();
-            File file = objectMapper.readValue(u.getFileData(), File.class);
-            files.add(file);
-            filesData.add(u.getFile());
-        }
-
-        if (files.size() != filesData.size())
-        {
-            throw new RuntimeException("Number of entities and file data must be equal");
-        }
-
-        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
-
-        List<FileWithPath> fileWithPaths = new ArrayList<>();
-        for (int i = 0; i < files.size(); i++)
-        {
-            fileWithPaths.add(new FileWithPath());
-        }
-
-        try
-        {
-            for (int i = 0; i < files.size(); i++)
-            {
-                File temp = files.get(i);
-                checkAccessTypes(temp);
-                temp.setCreationDate(LocalDateTime.now());
-                fileClient.createFile(temp);
-                fileWithPaths.get(i).setFilePath(temp.getRootFullName());
-                fileWithPaths.get(i).setFile(filesData.get(i));
+    public ResponseEntity<List<FileAndStatus>> uploadFiles(List<FileRequest.FileNode> uploadRequests) {
+        final List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        final Map<String, Map.Entry<File, MultipartFile>> map = new HashMap<>();
+        for (var u : uploadRequests) {
+            try {
+                if (u.getFile() == null) {
+                    throw new FieldException("file field is null", "file");
+                } else if (u.getFileData() == null) {
+                    throw new FieldException("fileData field is null", "fileData");
+                }
+                final File file = convertAndComplateFile(u.getFileData());
+                file.setRootSize((int)u.getFile().getSize());
+                final String mime = Files.probeContentType(java.nio.file.Path.of(file.getDisplayFilename()));
+                if (!mime.equals(u.getFile().getContentType())) {
+                    throw new FieldException("Multipart file format and entity file format not match", "rootFormat");
+                }
+                final Map.Entry<File, MultipartFile> entry = Map.entry(file, u.getFile());
+                map.put(file.getRootFullName(), entry);
+            } catch (JsonProcessingException e) {
+                fileAndStatuses.add(new FileAndStatus(u.getFile().getOriginalFilename(), FileOperationStatus.FAILED, "Invalid fileData body"));
+            } catch (Exception e) {
+                fileAndStatuses.add(new FileAndStatus("?", FileOperationStatus.FAILED, e.getMessage()));
             }
+        }
 
-//            for (FileWithPath file:fileWithPaths)
-//            {
-//               fileAndStatuses.add( fileStorageClient.uploadFiles(file.getFilePath(), file.getFile()).getBody());
-//            }
-        }
-        catch (Exception e)
-        {
-            throw  new RuntimeException(e.getMessage());
-        }
+        final List<FileWithPath> fileWithPaths = new ArrayList<>();
+
+        map.forEach((k, v) -> {
+            final File file = v.getKey();
+            try {
+                throwIfExistsInDB(k);
+                File created = fileClient.createFile(file).getBody();
+                fileWithPaths.add(new FileWithPath(k, v.getValue()));
+            } catch (FeignException e) {
+                String filename = "?";
+                if (file != null && file.getRootFullName() != null) {
+                    filename = file.getRootFullName();
+                }
+                final String message = "%s. Invalid saved file.".formatted(HttpStatus.valueOf(e.status()));
+                fileAndStatuses.add(new FileAndStatus(filename, FileOperationStatus.FAILED, message));
+            }
+        });
+
+        //saveToStorage(fileWithPaths, fileAndStatuses);
         return ResponseEntity.ok(fileAndStatuses);
     }
 
-    public ResponseEntity<List<FileAndStatus>> update(FileUpdateRequest updateRequest)
-    {
+    private void throwIfExistsInDB(String rootFullName) {
+        try {
+            getFileByRootFullName(rootFullName);
+        } catch (FeignException e) {
+            HttpStatusCode code = HttpStatusCode.valueOf(e.status());
+            if (code.isSameCodeAs(HttpStatus.CONFLICT) ||
+                    !code.isSameCodeAs(HttpStatus.NOT_FOUND)) {
+                throw new ResourceAlreadyExistsException("already taken", "rootFullName");
+            }
+        }
+    }
+
+    private void saveToStorage(List<FileWithPath> fileWithPaths, List<FileAndStatus> fileAndStatuses) {
+        for (FileWithPath file : fileWithPaths) {
+            try {
+                fileAndStatuses.add(fileStorageClient.uploadFiles(file.getFilePath(), file.getFile()).getBody());
+            } catch (FeignException e) {
+                undoSaveDb(file.getFilePath());
+                String filename = "?";
+                if (file.getFilePath() != null) {
+                    filename = file.getFilePath();
+                }
+                final String message = "%s. Invalid saved file.".formatted(HttpStatus.valueOf(e.status()));
+                fileAndStatuses.add(new FileAndStatus(filename, FileOperationStatus.FAILED, message));
+            }
+        }
+    }
+
+    private void undoSaveDb(String rootFullName) {
+        try {
+            final File file = getFileByRootFullName(rootFullName);
+            fileClient.deleteFile(file.getId());
+        } catch (Exception ignore) {}
+    }
+
+    public File getFileByRootFullName(String rootFullName) {
+        return fileClient.getFileByRootFullName(rootFullName).getBody();
+    }
+
+    private File convertAndComplateFile(String json) throws JsonProcessingException {
+        final FileRequestDTO fileDTO = new ObjectMapper().readValue(json, FileRequestDTO.class);
+        final File file = fileRequestDTOMapper.toEntity(fileDTO);
+        return complateFile(file);
+    }
+
+    private File complateFile(File file) {
+        checkAccessTypes(file);
+        file.setCreationDate(LocalDateTime.now());
+        assignPath(file);
+        return file;
+    }
+
+    public ResponseEntity<List<FileAndStatus>> update(FileUpdateRequest updateRequest) {
         List<FileAndStatus> fileAndStatuses = new ArrayList<>();
-        try
-        {
+        try {
             MoveRequest moveRequest = new MoveRequest();
-            for (FileUpdateRequest.FileNode request: updateRequest.getFileNodes())
-            {
+            for (FileUpdateRequest.FileNode request : updateRequest.getFileNodes()) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 File file = objectMapper.readValue(request.getFileBody(), File.class);
                 checkAccessTypes(file);
@@ -119,8 +171,7 @@ public class FileApiFacade
                 String oldRootFullName = fileClient.getFileByID(request.getId()).getBody().getRootFullName();
                 fileClient.updateFile(file, request.getId());
 
-                if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName()))
-                {
+                if (file.getRootFullName() != null && !oldRootFullName.equals(file.getRootFullName())) {
                     MoveRequest.MoveNode moveNode = new MoveRequest.MoveNode(oldRootFullName, file.getRootFullName());
                     moveRequest.getMoves().add(moveNode);
                 }
@@ -136,48 +187,38 @@ public class FileApiFacade
 //            {
 //                fileStorageClient.moveFile(moveRequest);
 //            }
-        }
-        catch (Exception e)
-        {
-            throw  new RuntimeException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
 
         return ResponseEntity.ok(fileAndStatuses);
     }
 
-    public ResponseEntity<List<FileAndStatus>> deleteFiles(List<String> rootFullNames)
-    {
+    public ResponseEntity<List<FileAndStatus>> deleteFiles(List<String> rootFullNames) {
         List<FileAndStatus> fileAndStatuses = new ArrayList<>();
-        if (rootFullNames == null || rootFullNames.isEmpty())
-        {
+        if (rootFullNames == null || rootFullNames.isEmpty()) {
             return ResponseEntity.ok(List.of());
         }
-        try
-        {
-            for (String rotFullName:rootFullNames)
-            {
+        try {
+            for (String rotFullName : rootFullNames) {
                 fileClient.deleteFile(fileClient.getFileByRootFullName(rotFullName).getBody().getId());
             }
 
             DeleteRequest request = new DeleteRequest(rootFullNames);
             //fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
         return ResponseEntity.ok(fileAndStatuses);
 
     }
 
-    public ResponseEntity<ByteArrayResource> downloadFiles(DownloadRequest request)
-    {
+    public ResponseEntity<ByteArrayResource> downloadFiles(DownloadRequest request) {
         ByteArrayResource byteArrayResource = fileStorageClient.downloadFile(request).getBody();
         return ResponseEntity.ok(byteArrayResource);
     }
 
-    public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort)
-    {
+    public ResponseEntity<Page<FileDTO>> getFileByRepository(Long repositoryId, int page, int size, String sort) {
 //        ResponseEntity<Repository> response = repositoryClient.getRepositoryById(repositoryId);
 //        Repository repository = response.getBody();
 //        RepositoryDTO repositoryDTO = repositoryDTOMapper.toDto(repository);
@@ -198,11 +239,10 @@ public class FileApiFacade
         map.put("page", page);
         map.put("size", size);
         map.put("sort", sort);
-        return ResponseEntity.ok(fileClient.getFilesByFilter(file, map).getBody());
+        return ResponseEntity.ok(fileClient.getFilesByFilter(file, map).getBody().map(fileDTOMapper::toDto));
     }
 
-    public ResponseEntity<Page<FileDTO>> getFilesByFilter(File file, int page, int size, String sort)
-    {
+    public ResponseEntity<Page<FileDTO>> getFilesByFilter(File file, int page, int size, String sort) {
         checkAccessTypes(file);
         //FileDTO fileDTO = fileDTOMapper.toDto(file);
 //        FileRequestFilter filter = fileRequestMapper.toDto(fileDTO);
@@ -215,7 +255,67 @@ public class FileApiFacade
         map.put("page", page);
         map.put("size", size);
         map.put("sort", sort);
-        return ResponseEntity.ok(fileClient.getFilesByFilter(file, map).getBody());
+        return ResponseEntity.ok(fileClient.getFilesByFilter(file, map).getBody().map(fileDTOMapper::toDto));
+    }
+
+    private void assignPath(File file) {
+        Path path = PathParser.getInstance().parse(file.getRootPath());
+        final RepositoryPathNode repositoryPathNode;
+        try {
+            repositoryPathNode = (RepositoryPathNode)path.getLast();
+            if (repositoryPathNode == null) {
+                throw new RuntimeException();
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Parent repository of file not found in path.");
+        }
+        String rootName = file.getRootFilename();
+        if (!rootName.startsWith("%")) {
+            rootName = '%' + rootName;
+        }
+        Path pathFile = PathParser.getInstance().parse(rootName);
+        final FilePathNode filePathNode;
+        try {
+            filePathNode = (FilePathNode)pathFile.getLast();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Last node of path is not a file");
+        }
+
+        path = path.createBuilder()
+                .node(filePathNode, false)
+                .build();
+        file.setRootFilename(path.getLast().getRootName());
+        file.setRootPath(path.getLast().getRootPath());
+        file.setRootFullName(path.getLast().getRootFullName());
+        file.setRootFormat(path.getLast().getRootProp(PathNodeProps.ROOT_FORMAT));
+        file.setDisplayFilename(path.getLast().getSimpleName());
+        file.setDisplayPath(path.reader().parent().getSimplePath("/", false));
+        file.setDisplayFullName(path.getSimplePath("/", false));
+        if (file.getRepository() == null) {
+            final Repository repository = new Repository();
+            repository.setRootPath(repositoryPathNode.getRootPath());
+            repository.setRootName(repositoryPathNode.getRootName());
+            file.setRepository(repository);
+        } else if (file.getRepository().getRootName() == null || file.getRepository().getRootPath() == null) {
+            file.getRepository().setRootPath(repositoryPathNode.getRootPath());
+            file.getRepository().setRootName(repositoryPathNode.getRootName());
+        }
+        assignPath(file.getRepository());
+    }
+
+    private void assignPath(Repository repository) {
+        Path path = PathParser.getInstance().parse(repository.getRootPath());
+        String rootName = repository.getRootName();
+        if (!rootName.startsWith("$")) {
+            rootName = '$' + rootName;
+        }
+        path = path.createBuilder().repository(rootName, false).build();
+        repository.setRootName(path.getLast().getRootName());
+        repository.setRootPath(path.getLast().getRootPath());
+        repository.setRootFullName(path.getLast().getRootFullName());
+        repository.setDisplayName(path.getLast().getSimpleName());
+        repository.setDisplayPath(path.reader().parent().getSimplePath("/", false));
+        repository.setDisplayFullName(path.getSimplePath("/", false));
     }
 
     private void checkAccessTypes(File file) {
@@ -228,5 +328,9 @@ public class FileApiFacade
                             }).collect(Collectors.toSet())
             ));
         }
+    }
+
+    public ResponseEntity<?> deleteById(Long id) {
+        return fileClient.deleteFile(id);
     }
 }

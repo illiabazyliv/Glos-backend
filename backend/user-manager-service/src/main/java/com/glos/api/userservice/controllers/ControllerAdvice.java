@@ -50,13 +50,18 @@ public class ControllerAdvice {
             IllegalArgumentException.class,
             IllegalStateException.class,
             InvocationTargetException.class,
-            MethodArgumentNotValidException.class
+            MethodArgumentNotValidException.class,
+            InvalidLoginException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionBody handleBadRequest(
             Exception e
     ) {
-        return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
+        HashMap<String, String> map = new HashMap<>();
+        if (e instanceof InvalidLoginException ex) {
+            map.put("login", e.getMessage());
+        }
+        return new SimpleExceptionBody("Bad request", map);
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)

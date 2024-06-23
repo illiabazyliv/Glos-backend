@@ -3,6 +3,7 @@ package com.glos.filemanagerservice.controllers;
 import com.glos.filemanagerservice.exception.*;
 import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -84,6 +85,17 @@ public class ControllerAdvice {
         return new SimpleExceptionBody(e.getMessage(), new HashMap<>());
     }
 
+    @ExceptionHandler(FieldException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionBody handleFieldException(
+            FieldException e
+    ) {
+        ExceptionBody exceptionBody = new SimpleExceptionBody();
+        exceptionBody.setMessage("Bad request");
+        exceptionBody.appendError(e.getField(), e.getMessage());
+        return exceptionBody;
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionBody handleConstraintViolationException(ConstraintViolationException ex) {
@@ -100,6 +112,17 @@ public class ControllerAdvice {
     ) {
         ExceptionBody exceptionBody = new SimpleExceptionBody();
         exceptionBody.setMessage(e.getMessage());
+        return exceptionBody;
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ExceptionBody handleResponseEntityException(
+            ResourceAlreadyExistsException e
+    ) {
+        ExceptionBody exceptionBody = new SimpleExceptionBody();
+        exceptionBody.setMessage("Conflict");
+        exceptionBody.appendError(e.getField(), (e.getMessage() != null) ? e.getMessage() : "already taken");
         return exceptionBody;
     }
 

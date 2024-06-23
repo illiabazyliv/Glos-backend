@@ -53,8 +53,7 @@ public class TagFacade {
         }
 
         private File getFileByRootFullName(String rootFullName) {
-            FileDTO dto = fileClient.getFileByRootFullName(rootFullName).getBody();
-            return fileDTOMapper.toEntity(dto);
+            return fileClient.getFileByRootFullName(rootFullName).getBody();
         }
 
     }

@@ -1,22 +1,20 @@
 package com.glos.filemanagerservice.exception;
 
-public class ResourceAlreadyExistsException extends RuntimeException {
-    public ResourceAlreadyExistsException() {
+public class ResourceAlreadyExistsException extends FieldException {
+
+    public ResourceAlreadyExistsException(String field) {
+        super(field);
     }
 
-    public ResourceAlreadyExistsException(String message) {
-        super(message);
+    public ResourceAlreadyExistsException(String s, String field) {
+        super(s, field);
     }
 
-    public ResourceAlreadyExistsException(String message, Throwable cause) {
-        super(message, cause);
+    public ResourceAlreadyExistsException(String message, Throwable cause, String field) {
+        super(message, cause, field);
     }
 
-    public ResourceAlreadyExistsException(Throwable cause) {
-        super(cause);
-    }
-
-    public ResourceAlreadyExistsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public ResourceAlreadyExistsException(Throwable cause, String field) {
+        super(cause, field);
     }
 }

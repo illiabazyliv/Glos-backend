@@ -15,10 +15,10 @@ import java.util.Map;
 public interface FileClient
 {
     @GetMapping("/{id}")
-    ResponseEntity<FileDTO> getFileByID(@PathVariable Long id);
+    ResponseEntity<File> getFileByID(@PathVariable Long id);
 
     @PostMapping
-    ResponseEntity<FileDTO> createFile(@RequestBody File file);
+    ResponseEntity<File> createFile(@RequestBody File file);
 
     @PutMapping("/{id}")
     ResponseEntity<?> updateFile(@RequestBody File newFile, @PathVariable("id") Long id);
@@ -27,8 +27,8 @@ public interface FileClient
     ResponseEntity<?> deleteFile(@PathVariable Long id);
 
     @PutMapping
-    ResponseEntity<Page<FileDTO>> getFilesByFilter(@ModelAttribute File file, @SpringQueryMap Map<String, Object> map);
+    ResponseEntity<Page<File>> getFilesByFilter(@ModelAttribute File file, @SpringQueryMap Map<String, Object> map);
 
     @GetMapping("/root-fullname/{rootFullName}")
-    public ResponseEntity<FileDTO> getFileByRootFullName(@PathVariable String rootFullName);
+    ResponseEntity<File> getFileByRootFullName(@PathVariable String rootFullName);
 }

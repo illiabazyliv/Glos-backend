@@ -5,6 +5,7 @@ import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.entities.Repository;
 import com.glos.filemanagerservice.facade.FileApiFacade;
 import com.glos.filemanagerservice.clients.FileClient;
+import com.glos.filemanagerservice.responseMappers.FileDTOMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,24 +18,34 @@ public class FileController
 {
     private final FileClient fileClient;
     private final FileApiFacade fileApiFacade;
+    private final FileDTOMapper fileDTOMapper;
 
 
     public FileController(FileClient fileClient,
-                          FileApiFacade fileApiFacade) {
+                          FileApiFacade fileApiFacade,
+                          FileDTOMapper fileDTOMapper) {
         this.fileClient = fileClient;
         this.fileApiFacade = fileApiFacade;
+        this.fileDTOMapper = fileDTOMapper;
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<FileDTO> getFileById(@PathVariable Long id)
     {
-        return ResponseEntity.ok(fileClient.getFileByID(id).getBody());
+        final File file = fileClient.getFileByID(id).getBody();
+        return ResponseEntity.ok(fileDTOMapper.toDto(file));
     }
 
     @PutMapping("/id/{id}")
     public ResponseEntity<List<FileAndStatus>> update(@ModelAttribute FileUpdateRequest updateRequest)
     {
         return ResponseEntity.ok(fileApiFacade.update(updateRequest).getBody());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(fileApiFacade.deleteById(id).getBody());
     }
 
     @DeleteMapping()
@@ -46,7 +57,8 @@ public class FileController
     @GetMapping("/{rootFullName}")
     public ResponseEntity<FileDTO> getByRootFullName(@PathVariable String rootFullName)
     {
-        return ResponseEntity.ok(fileClient.getFileByRootFullName(rootFullName).getBody());
+        final File file = fileClient.getFileByRootFullName(rootFullName).getBody();
+        return ResponseEntity.ok(fileDTOMapper.toDto(file));
     }
 
     @GetMapping("/repository/{repositoryId}")

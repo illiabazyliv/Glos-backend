@@ -53,7 +53,7 @@ class FileControllerTest {
 
     @Test
     void getFileByIdTest() throws Exception {
-        FileDTO fileDTO = new FileDTO();
+        File fileDTO = new File();
         fileDTO.setId(1L);
         when(fileClient.getFileByID(anyLong())).thenReturn(ResponseEntity.ok(fileDTO));
 
@@ -95,7 +95,7 @@ class FileControllerTest {
 
     @Test
     void getByRootFullNameTest() throws Exception {
-        FileDTO fileDTO = new FileDTO();
+        File fileDTO = new File();
         fileDTO.setId(1L);
         when(fileClient.getFileByRootFullName(any())).thenReturn(ResponseEntity.ok(fileDTO));
 
