@@ -3,12 +3,15 @@ package com.glos.filestorageservice.domain.services;
 import com.glos.filestorageservice.domain.DTO.MoveRequest;
 import com.glos.filestorageservice.domain.DTO.RepositoryAndStatus;
 import com.glos.filestorageservice.domain.DTO.RepositoryOperationStatus;
+import com.glos.filestorageservice.domain.utils.MinioUtil;
 import com.pathtools.NodeType;
 import com.pathtools.Path;
 import com.pathtools.PathParser;
+import com.pathtools.pathnode.PathNode;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;
+import org.checkerframework.checker.units.qual.MixedUnits;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
@@ -35,20 +38,25 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     public RepositoryAndStatus create(String rootFullName)
     {
         RepositoryAndStatus repositoryAndStatuses;
+        Path path = MinioUtil.normilizePath(PathParser
+                .getInstance()
+                .parse(rootFullName));
+
         try
         {
-            Path path = PathParser.getInstance().parse(rootFullName);
             createRepo(path, -1);
             logger.info("Repository created successfully");
-            repositoryAndStatuses = new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.CREATED, "Repository created successfully");
+            repositoryAndStatuses = new RepositoryAndStatus(path.getPath(), RepositoryOperationStatus.CREATED, "Repository created successfully");
         }
         catch (Exception e)
         {
             logger.info("Failed to create repository");
-            repositoryAndStatuses = new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.FAILED, "Failed to create repository " + e.getMessage());
+            repositoryAndStatuses = new RepositoryAndStatus(path.getPath(), RepositoryOperationStatus.FAILED, "Failed to create repository " + e.getMessage());
         }
         return repositoryAndStatuses;
     }
+
+
 
     @Override
     public Map<String, InputStream> download(String rootFullName) throws Exception
@@ -56,7 +64,9 @@ public class RepositoryStorageImpl implements RepositoryStorageService
         Map<String, InputStream> filesAndNames;
         try
         {
-            Path path = PathParser.getInstance().parse(rootFullName);
+            Path path = MinioUtil.normilizePath(PathParser
+                    .getInstance()
+                    .parse(rootFullName));
             filesAndNames = downloadRepo(path);
             logger.info("Repository downloaded successfully");
             return filesAndNames;
@@ -79,8 +89,12 @@ public class RepositoryStorageImpl implements RepositoryStorageService
                 String from = move.getFrom();
                 String to = move.getTo();
 
-                Path fromPath = PathParser.getInstance().parse(from);
-                Path toPath = PathParser.getInstance().parse(to);
+                Path fromPath = MinioUtil.normilizePath(PathParser
+                        .getInstance()
+                        .parse(from));
+                Path toPath = MinioUtil.normilizePath(PathParser
+                        .getInstance()
+                        .parse(to));
 
                 moveRepo(fromPath, toPath);
 
@@ -100,13 +114,14 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     @Override
     public RepositoryAndStatus delete(String rootFullName)
     {
+        String normilize = MinioUtil.normalizeBucketName(rootFullName);
         RepositoryAndStatus repositoryAndStatuses;
         try
         {
-            Path path = PathParser.getInstance().parse(rootFullName);
+            Path path = MinioUtil.normilizePath(PathParser.getInstance().parse(rootFullName));
             deleteRepo(path);
             logger.info("Repository deleted successfully");
-            repositoryAndStatuses = new RepositoryAndStatus(rootFullName, RepositoryOperationStatus.DELETED, "Repository deleted successfully");
+            repositoryAndStatuses = new RepositoryAndStatus(path.getPath(), RepositoryOperationStatus.DELETED, "Repository deleted successfully");
         }
         catch (Exception e)
         {
@@ -117,7 +132,8 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     }
 
     private void createRepo(com.pathtools.Path path, int partSize) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        Path newPath = path.createBuilder().removeFirst().build();
+        Path newPath = MinioUtil.normilizePath(path);
+        path.createBuilder().removeFirst().build();
         String simplePath = newPath.getSimplePath("/", false);
 
         if (!simplePath.endsWith("/"))
@@ -135,7 +151,7 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     }
 
     private  Map<String, InputStream> downloadRepo(com.pathtools.Path path) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        Path newPath = path.createBuilder().removeFirst().build();
+        Path newPath = MinioUtil.normilizePath(path.createBuilder().removeFirst().build());
         String simplePath = newPath.getSimplePath("/", false);
         Map<String, InputStream> filesAndNames = new HashMap<>();
 
@@ -166,7 +182,7 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     }
 
     private void deleteRepo(com.pathtools.Path path) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        Path newPath = path.createBuilder().removeFirst().build();
+        Path newPath = MinioUtil.normilizePath(path.createBuilder().removeFirst().build());
         String simplePath = newPath.getSimplePath("/", false);
 
         if (!simplePath.endsWith("/"))
@@ -192,8 +208,9 @@ public class RepositoryStorageImpl implements RepositoryStorageService
     }
 
     private void moveRepo(com.pathtools.Path from, com.pathtools.Path to) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        Path newTo = to.createBuilder().removeFirst().build();
-        String simpleToPath = newTo.getSimplePath("/", false);
+        Path newTo = MinioUtil.normilizePath(to.createBuilder().removeFirst().build());
+        String simpleToPath = MinioUtil.normilizePath(newTo)
+                .getSimplePath("/", false);
 
         Path newFrom = from.createBuilder().removeFirst().build();
         String simpleFromPath = newFrom.getSimplePath("/", false);

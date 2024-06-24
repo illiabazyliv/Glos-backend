@@ -10,6 +10,7 @@ import com.glos.filemanagerservice.clients.FileStorageClient;
 import com.glos.filemanagerservice.clients.RepositoryStorageClient;
 import com.glos.filemanagerservice.entities.File;
 import com.glos.filemanagerservice.facade.FileApiFacade;
+import feign.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -81,9 +82,8 @@ class FileUploadControllerTest {
         InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
 
         File file = new File();
-        Map.Entry<InputStreamResource, Integer> entry = Map.entry(inputStreamResource, 0);
 
-        when(fileApiFacade.downloadFiles(any(DownloadRequest.class))).thenReturn(entry);
+        when(fileApiFacade.downloadFiles(any(DownloadRequest.class))).thenReturn(inputStreamResource);
         DownloadRequest downloadRequest = new DownloadRequest();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/files/download")
@@ -96,7 +96,8 @@ class FileUploadControllerTest {
     @Test
     void downloadRepository() throws Exception {
         ByteArrayResource resource = new ByteArrayResource("repository content".getBytes());
-        when(repositoryStorageClient.getRepository(any())).thenReturn(ResponseEntity.ok(resource));
+        Response response = Response.builder().status(200).build();
+        when(repositoryStorageClient.getRepository(any())).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/repositories/someRootFullName/download"))
                 .andExpect(status().isOk())
