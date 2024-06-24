@@ -13,13 +13,16 @@ import com.glos.filemanagerservice.exception.ResourceAlreadyExistsException;
 import com.glos.filemanagerservice.exception.ResourceNotFoundException;
 import com.glos.filemanagerservice.responseMappers.*;
 import com.glos.filemanagerservice.utils.ZipUtil;
+import com.pathtools.NodeType;
 import com.pathtools.Path;
 import com.pathtools.PathParser;
 import com.pathtools.pathnode.FilePathNode;
+import com.pathtools.pathnode.PathNode;
 import com.pathtools.pathnode.PathNodeProps;
 import com.pathtools.pathnode.RepositoryPathNode;
 import feign.FeignException;
 import feign.Response;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -28,6 +31,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.Node;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -69,8 +73,8 @@ public class FileApiFacade {
                 } else if (u.getFileData() == null) {
                     throw new FieldException("fileData field is null", "fileData");
                 }
-                final File file = convertAndComplateFile(u.getFileData());
-                file.setRootSize((int)u.getFile().getSize());
+                final File file = convertAndComplateFile(u.getFileData(), true);
+                file.setRootSize((int) u.getFile().getSize());
                 final String mime = Files.probeContentType(java.nio.file.Path.of(file.getDisplayFilename()));
                 if (!mime.equals(u.getFile().getContentType())) {
                     throw new FieldException("Multipart file format and entity file format not match", "rootFormat");
@@ -118,12 +122,24 @@ public class FileApiFacade {
         }
     }
 
+    private void throwIfNotExistsInDB(String rootFullName) {
+        try {
+            getFileByRootFullName(rootFullName);
+        } catch (FeignException e) {
+            HttpStatusCode code = HttpStatusCode.valueOf(e.status());
+            if (code.isSameCodeAs(HttpStatus.CONFLICT) ||
+                    !code.isSameCodeAs(HttpStatus.NOT_FOUND)) {
+                throw new ResourceAlreadyExistsException("already taken", "rootFullName");
+            }
+        }
+    }
+
     private void saveToStorage(List<FileWithPath> fileWithPaths, List<FileAndStatus> fileAndStatuses) {
         for (FileWithPath file : fileWithPaths) {
             try {
                 fileAndStatuses.add(fileStorageClient.uploadFiles(file.getFilePath(), file.getFile()).getBody());
             } catch (FeignException e) {
-                undoSaveDb(file.getFilePath());
+                undoSaveDb(file.getFilePath(), null);
                 String filename = "?";
                 if (file.getFilePath() != null) {
                     filename = file.getFilePath();
@@ -134,27 +150,50 @@ public class FileApiFacade {
         }
     }
 
-    private void undoSaveDb(String rootFullName) {
+    private void saveToStorageUpdate(Map<String, Map.Entry<FileWithPath, File>> fileWithPaths, List<FileAndStatus> fileAndStatuses) {
+        fileWithPaths.forEach((k, v) -> {
+            try {
+                fileAndStatuses.add(fileStorageClient.updateFile(v.getKey()).getBody());
+            } catch (FeignException e) {
+                undoSaveDb(v.getKey().getFilePath(), v.getValue());
+                String filename = "?";
+                if (v.getKey().getFilePath() != null) {
+                    filename = v.getKey().getFilePath();
+                }
+                final String message = "%s. Invalid saved file.".formatted(HttpStatus.valueOf(e.status()));
+                fileAndStatuses.add(new FileAndStatus(filename, FileOperationStatus.FAILED, message));
+            }
+        });
+    }
+
+    private void undoSaveDb(String rootFullName, File roollback) {
         try {
             final File file = getFileByRootFullName(rootFullName);
-            fileClient.deleteFile(file.getId());
-        } catch (Exception ignore) {}
+            if (roollback == null) {
+                fileClient.deleteFile(file.getId());
+            } else {
+                fileClient.updateFile(roollback, file.getId());
+            }
+        } catch (Exception ignore) {
+        }
     }
 
     public File getFileByRootFullName(String rootFullName) {
         return fileClient.getFileByRootFullName(rootFullName).getBody();
     }
 
-    private File convertAndComplateFile(String json) throws JsonProcessingException {
+    private File convertAndComplateFile(String json, boolean assignPath) throws JsonProcessingException {
         final FileRequestDTO fileDTO = new ObjectMapper().readValue(json, FileRequestDTO.class);
         final File file = fileRequestDTOMapper.toEntity(fileDTO);
-        return complateFile(file);
+        return complateFile(file, assignPath);
     }
 
-    private File complateFile(File file) {
+    private File complateFile(File file, boolean assignPath) {
         checkAccessTypes(file);
         file.setCreationDate(LocalDateTime.now());
-        assignPath(file);
+        if (assignPath) {
+            assignPath(file);
+        }
         return file;
     }
 
@@ -162,7 +201,7 @@ public class FileApiFacade {
         List<FileAndStatus> fileAndStatuses = new ArrayList<>();
         try {
             MoveRequest moveRequest = new MoveRequest();
-            for (FileUpdateRequest.FileNode request : updateRequest.getFileNodes()) {
+            for (FileUpdateRequest.FileNode request : updateRequest.getFiles()) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 File file = objectMapper.readValue(request.getFileBody(), File.class);
                 checkAccessTypes(file);
@@ -196,20 +235,39 @@ public class FileApiFacade {
     }
 
     public ResponseEntity<List<FileAndStatus>> deleteFiles(List<String> rootFullNames) {
-        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
-        if (rootFullNames == null || rootFullNames.isEmpty()) {
+        if (rootFullNames == null) {
+            throw new IllegalArgumentException("body is null");
+        } else if (rootFullNames.isEmpty()) {
             return ResponseEntity.ok(List.of());
         }
-        try {
-            for (String rotFullName : rootFullNames) {
-                fileClient.deleteFile(fileClient.getFileByRootFullName(rotFullName).getBody().getId());
-            }
+        List<FileAndStatus> fileAndStatuses = new ArrayList<>();
+        List<String> existingFiles = new ArrayList<>(rootFullNames);
+        for (String rotFullName : rootFullNames) {
+            File file;
+            try {
+                file = fileClient.getFileByRootFullName(rotFullName).getBody();
+            } catch (FeignException e) {
+                HttpStatusCode code = HttpStatusCode.valueOf(e.status());
+                if (code.isSameCodeAs(HttpStatus.NOT_FOUND)) {
+                    fileAndStatuses.add(new FileAndStatus(rotFullName, FileOperationStatus.FAILED, "not found"));
+                } else {
+                    final String message = "%s. Invalid saved file.".formatted(HttpStatus.valueOf(e.status()));
+                    fileAndStatuses.add(new FileAndStatus(rotFullName, FileOperationStatus.FAILED, message));
 
-            DeleteRequest request = new DeleteRequest(rootFullNames);
-            fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+                }
+                existingFiles.remove(rotFullName);
+                continue;
+            }
+            try {
+                fileClient.deleteFile(file.getId());
+            } catch (FeignException e) {
+                final String message = "%s. Invalid saved file.".formatted(HttpStatus.valueOf(e.status()));
+                fileAndStatuses.add(new FileAndStatus(rotFullName, FileOperationStatus.FAILED, message));
+                existingFiles.remove(rotFullName);
+            }
         }
+        DeleteRequest request = new DeleteRequest(existingFiles);
+        fileAndStatuses = fileStorageClient.deleteFile(request).getBody();
         return ResponseEntity.ok(fileAndStatuses);
 
     }
@@ -224,7 +282,7 @@ public class FileApiFacade {
         final Path path = Path.builder(rootFullName).build();
         final File file;
         try {
-             file = getFileByRootFullName(path.getPath());
+            file = getFileByRootFullName(path.getPath());
         } catch (FeignException e) {
             HttpStatusCode code = HttpStatusCode.valueOf(e.status());
             if (code.isSameCodeAs(HttpStatus.NOT_FOUND)) {
@@ -278,48 +336,66 @@ public class FileApiFacade {
     }
 
     private void assignPath(File file) {
-        Path path = PathParser.getInstance().parse(file.getRootPath());
-        final RepositoryPathNode repositoryPathNode;
-        try {
-            repositoryPathNode = (RepositoryPathNode)path.getLast();
-            if (repositoryPathNode == null) {
-                throw new RuntimeException();
+        if (file.getRootFullName() != null) {
+            Path path = PathParser.getInstance().parse(file.getRootPath());
+            final FilePathNode node;
+            try {
+                node = (FilePathNode) path.getLast();
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Last node of path is not a file");
             }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Parent repository of file not found in path.");
-        }
-        String rootName = file.getRootFilename();
-        if (!rootName.startsWith("%")) {
-            rootName = '%' + rootName;
-        }
-        Path pathFile = PathParser.getInstance().parse(rootName);
-        final FilePathNode filePathNode;
-        try {
-            filePathNode = (FilePathNode)pathFile.getLast();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Last node of path is not a file");
-        }
+            file.setRootFullName(node.getRootFullName());
+            file.setRootPath(node.getRootPath());
+            file.setRootFilename(node.getRootName());
+            file.setRootFormat(node.getRootFormat());
+            file.setDisplayFullName(path.getSimplePath("/", false));
+            file.setDisplayPath(path.reader().parent().getSimplePath("/", false));
+            file.setDisplayFilename(node.getSimpleName());
+        } else {
 
-        path = path.createBuilder()
-                .node(filePathNode, false)
-                .build();
-        file.setRootFilename(path.getLast().getRootName());
-        file.setRootPath(path.getLast().getRootPath());
-        file.setRootFullName(path.getLast().getRootFullName());
-        file.setRootFormat(path.getLast().getRootProp(PathNodeProps.ROOT_FORMAT));
-        file.setDisplayFilename(path.getLast().getSimpleName());
-        file.setDisplayPath(path.reader().parent().getSimplePath("/", false));
-        file.setDisplayFullName(path.getSimplePath("/", false));
-        if (file.getRepository() == null) {
-            final Repository repository = new Repository();
-            repository.setRootPath(repositoryPathNode.getRootPath());
-            repository.setRootName(repositoryPathNode.getRootName());
-            file.setRepository(repository);
-        } else if (file.getRepository().getRootName() == null || file.getRepository().getRootPath() == null) {
-            file.getRepository().setRootPath(repositoryPathNode.getRootPath());
-            file.getRepository().setRootName(repositoryPathNode.getRootName());
+            Path path = PathParser.getInstance().parse(file.getRootPath());
+            final RepositoryPathNode repositoryPathNode;
+            try {
+                repositoryPathNode = (RepositoryPathNode) path.getLast();
+                if (repositoryPathNode == null) {
+                    throw new RuntimeException();
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Parent repository of file not found in path.");
+            }
+            String rootName = file.getRootFilename();
+            if (!rootName.startsWith("%")) {
+                rootName = '%' + rootName;
+            }
+            Path pathFile = PathParser.getInstance().parse(rootName);
+            final FilePathNode filePathNode;
+            try {
+                filePathNode = (FilePathNode) pathFile.getLast();
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Last node of path is not a file");
+            }
+
+            path = path.createBuilder()
+                    .node(filePathNode, false)
+                    .build();
+            file.setRootFilename(path.getLast().getRootName());
+            file.setRootPath(path.getLast().getRootPath());
+            file.setRootFullName(path.getLast().getRootFullName());
+            file.setRootFormat(path.getLast().getRootProp(PathNodeProps.ROOT_FORMAT));
+            file.setDisplayFilename(path.getLast().getSimpleName());
+            file.setDisplayPath(path.reader().parent().getSimplePath("/", false));
+            file.setDisplayFullName(path.getSimplePath("/", false));
+            if (file.getRepository() == null) {
+                final Repository repository = new Repository();
+                repository.setRootPath(repositoryPathNode.getRootPath());
+                repository.setRootName(repositoryPathNode.getRootName());
+                file.setRepository(repository);
+            } else if (file.getRepository().getRootName() == null || file.getRepository().getRootPath() == null) {
+                file.getRepository().setRootPath(repositoryPathNode.getRootPath());
+                file.getRepository().setRootName(repositoryPathNode.getRootName());
+            }
+            assignPath(file.getRepository());
         }
-        assignPath(file.getRepository());
     }
 
     private void assignPath(Repository repository) {
