@@ -21,7 +21,7 @@ spring:
           filters:
             - RewritePath=/api(?<segment>.*), /api/v1${segment}
         - id: access-service
-          uri: ${ACCESS_SERVICE_URL:http://localhost:9009}
+          uri: ${ACCESS_SERVICE_URL:http://localhost:9011}
           predicates:
             - Path=/api/access/**
           filters:

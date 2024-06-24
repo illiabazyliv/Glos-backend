@@ -29,19 +29,16 @@ import java.util.*;
 public class RepositoryApiFacade
 {
     private final RepositoryClient repositoryClient;
-    private  final RepositoryRequestFilterMapper requestMapper;
     private final RepositoryDTOMapper repositoryDTOMapper;
     private final RepositoryStorageClient repositoryStorageClient;
     private final RepositoryUpdateDTOMapper repositoryUpdateDTOMapper;
 
     public RepositoryApiFacade(
             RepositoryClient repositoryClient,
-            RepositoryRequestFilterMapper requestMapper,
             RepositoryDTOMapper repositoryDTOMapper,
             RepositoryStorageClient repositoryStorageClient,
             RepositoryUpdateDTOMapper repositoryUpdateDTOMapper) {
         this.repositoryClient = repositoryClient;
-        this.requestMapper = requestMapper;
         this.repositoryDTOMapper = repositoryDTOMapper;
         this.repositoryStorageClient = repositoryStorageClient;
         this.repositoryUpdateDTOMapper = repositoryUpdateDTOMapper;
@@ -134,17 +131,17 @@ public class RepositoryApiFacade
             }
         }
         if (moveRequest.getMoves() != null && !moveRequest.getMoves().isEmpty()) {
-            //repositoryAndStatuses.addAll(repositoryStorageClient.moveRepository(moveRequest).getBody());
+            repositoryAndStatuses.addAll(repositoryStorageClient.moveRepository(moveRequest).getBody());
         }
 
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(repositoryAndStatuses);
     }
 
     public ResponseEntity<?> delete(Long id)
     {
         try {
-            //repositoryStorageClient.deleteRepository(repositoryClient.getRepositoryById(id).getBody().getRootFullName());
+            repositoryStorageClient.deleteRepository(repositoryClient.getRepositoryById(id).getBody().getRootFullName());
         } catch (FeignException e) {
             throw new RuntimeException("Internal server error");
         }

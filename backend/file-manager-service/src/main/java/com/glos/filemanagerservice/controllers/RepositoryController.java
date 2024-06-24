@@ -57,8 +57,8 @@ public class RepositoryController
     }
 
     @PutMapping
-    public ResponseEntity<List<RepositoryAndStatus>> update(@RequestBody @Valid List<RepositoryNode> repositoryNodes) {
-        return ResponseEntity.ok(repositoryApiFacade.update(repositoryNodes).getBody());
+    public ResponseEntity<List<RepositoryAndStatus>> update(@RequestBody @Valid RepositoryUpdateRequest request) {
+        return ResponseEntity.ok(repositoryApiFacade.update(request.getRepositories()).getBody());
     }
 
     @DeleteMapping("/{id}")
