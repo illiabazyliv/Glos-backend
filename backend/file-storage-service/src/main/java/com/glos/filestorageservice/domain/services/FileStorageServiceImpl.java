@@ -1,6 +1,7 @@
 package com.glos.filestorageservice.domain.services;
 
 import com.glos.filestorageservice.domain.DTO.*;
+import com.glos.filestorageservice.domain.utils.MinioUtil;
 import com.pathtools.PathParser;
 import io.minio.*;
 import io.minio.errors.*;
@@ -34,7 +35,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         FileAndStatus fileAndStatus = new FileAndStatus();
 
         try {
-            com.pathtools.Path path = PathParser.getInstance().parse(filePath);
+            com.pathtools.Path path = MinioUtil
+                    .normilizePath(PathParser
+                            .getInstance()
+                    .parse(filePath));
             putObject(path, file, -1);
             fileAndStatus = new FileAndStatus(filePath, FileOperationStatus.SAVED, "Successfully saved file");
         }
@@ -55,7 +59,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         List<InputStream> filesData = new ArrayList<>();
         for (String path : filenames)
         {
-            com.pathtools.Path pathObj = PathParser.getInstance().parse(path);
+            com.pathtools.Path pathObj = MinioUtil.normilizePath(
+                    PathParser
+                            .getInstance()
+                            .parse(path));
             try{
                 filesData.add(getObject(pathObj));
             } catch (MinioException e) {
@@ -107,8 +114,14 @@ public class FileStorageServiceImpl implements FileStorageService {
         {
             try
             {
-                com.pathtools.Path fromPath = PathParser.getInstance().parse(move.getFrom());
-                com.pathtools.Path toPath = PathParser.getInstance().parse(move.getTo());
+                com.pathtools.Path fromPath = MinioUtil
+                        .normilizePath(PathParser
+                                .getInstance()
+                                .parse(move.getFrom()));
+                com.pathtools.Path toPath = MinioUtil
+                        .normilizePath(PathParser
+                                .getInstance()
+                                .parse(move.getTo()));
                 copyObject(fromPath, toPath);
                 removeObject(fromPath);
                 fileAndStatuses.add(new FileAndStatus(move.getFrom(), FileOperationStatus.MOVED, "File moved successful"));
@@ -131,7 +144,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         for (String filename:filenames)
         {
             try {
-                com.pathtools.Path path = PathParser.getInstance().parse(filename);
+                com.pathtools.Path path = MinioUtil.normilizePath(PathParser.getInstance().parse(filename));
                 removeObject(path);
                 fileAndStatuses.add(new FileAndStatus(filename, FileOperationStatus.DELETED, "File deleted successfully"));
             } catch (Exception e) {
@@ -145,20 +158,21 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     private void putBucket(String bucket) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        String bucketNormilize = bucket;
         boolean existsBucket = minioClient.bucketExists(BucketExistsArgs.builder()
-                .bucket(bucket)
+                .bucket(bucketNormilize)
                 .build());
         if (!existsBucket) {
             minioClient.makeBucket(MakeBucketArgs.builder()
-                    .bucket(bucket)
+                    .bucket(bucketNormilize)
                     .build());
         }
     }
 
     private InputStream getObject(com.pathtools.Path pathObj) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        final String objectPath = pathObj.createBuilder()
+        final String objectPath = MinioUtil.normilizePath(pathObj.createBuilder()
                 .removeFirst()
-                .build().getSimplePath("/", false);
+                .build()).getSimplePath("/", false);
         return minioClient.getObject(
                 GetObjectArgs.builder()
                         .bucket(pathObj.reader().first().getSimpleName())
@@ -167,9 +181,10 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     private void removeObject(com.pathtools.Path path) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        final String objectPath = path.createBuilder()
+        final String objectPath = MinioUtil
+                .normilizePath(path.createBuilder()
                 .removeFirst()
-                .build().getSimplePath("/", false);
+                .build()).getSimplePath("/", false);
         minioClient.removeObject(
                 RemoveObjectArgs.builder()
                         .bucket(path.reader().first().getSimpleName())
@@ -178,9 +193,10 @@ public class FileStorageServiceImpl implements FileStorageService {
         );
     }
     private void putObject(com.pathtools.Path path, MultipartFile file, int partSize) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        final String objectPath = path.createBuilder()
+        final String objectPath = MinioUtil
+                .normilizePath(path.createBuilder()
                 .removeFirst()
-                .build().getSimplePath("/", false);
+                .build()).getSimplePath("/", false);
         minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(path.reader().first().getSimpleName())
@@ -192,12 +208,14 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     private void copyObject(com.pathtools.Path from, com.pathtools.Path to) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        final String pathObjectTo = to.createBuilder()
+        final String pathObjectTo = MinioUtil
+                .normilizePath(to.createBuilder()
                 .removeFirst()
-                .build().getSimplePath("/", false);
-        final String pathObjectFrom = from.createBuilder()
+                .build()).getSimplePath("/", false);
+        final String pathObjectFrom = MinioUtil
+                .normilizePath(from.createBuilder()
                 .removeFirst()
-                .build().getSimplePath("/", false);
+                .build()).getSimplePath("/", false);
         minioClient.copyObject(
                 CopyObjectArgs.builder()
                         .bucket(to.reader().first().getSimpleName())

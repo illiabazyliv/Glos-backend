@@ -2,6 +2,7 @@ package com.glos.filemanagerservice.DTO;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileUpdateRequest
@@ -46,20 +47,21 @@ public class FileUpdateRequest
         }
     }
 
-    private List<FileNode> fileNodes;
+    private List<FileNode> files;
 
     public FileUpdateRequest(List<FileNode> fileNodes) {
-        this.fileNodes = fileNodes;
+        this.files = fileNodes;
     }
 
     public FileUpdateRequest() {
+        this.files = new ArrayList<>();
     }
 
-    public List<FileNode> getFileNodes() {
-        return fileNodes;
+    public List<FileNode> getFiles() {
+        return files;
     }
 
-    public void setFileNodes(List<FileNode> fileNodes) {
-        this.fileNodes = fileNodes;
+    public void setFiles(List<FileNode> fileNodes) {
+        this.files = fileNodes;
     }
 }

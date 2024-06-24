@@ -2,6 +2,7 @@ package com.glos.filestorageservice.domain.services;
 
 import com.glos.filestorageservice.domain.DTO.BucketOperationStatus;
 import com.glos.filestorageservice.domain.DTO.UserBucketAndStatus;
+import com.glos.filestorageservice.domain.utils.MinioUtil;
 import io.minio.*;
 import io.minio.messages.Item;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +20,31 @@ public class UserBucketServiceImpl implements UserBucketService
     @Override
     public UserBucketAndStatus createUserBucket(String username)
     {
-        logger.info("Creating bucket " + username);
+        String normilizeUsername = MinioUtil.normalizeBucketName(username);
+        logger.info("Creating bucket " + normilizeUsername);
         UserBucketAndStatus userBucketAndStatus = new UserBucketAndStatus();
         try
         {
-            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(username).build()))
+            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(normilizeUsername).build()))
             {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(username).build());
-                userBucketAndStatus.setUsername(username);
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(normilizeUsername).build());
+                userBucketAndStatus.setUsername(normilizeUsername);
                 userBucketAndStatus.setStatus(BucketOperationStatus.CREATED);
                 userBucketAndStatus.setMessage("Bucket created successfully");
-                logger.info("Bucket " + username + " created successfully");
+                logger.info("Bucket " + normilizeUsername + " created successfully");
             }
             else
             {
-                userBucketAndStatus.setUsername(username);
+                userBucketAndStatus.setUsername(normilizeUsername);
                 userBucketAndStatus.setStatus(BucketOperationStatus.ALREADY_EXISTS);
                 userBucketAndStatus.setMessage("Bucket already exists");
             }
         }
         catch (Exception e)
         {
-            userBucketAndStatus.setUsername(username);
+            userBucketAndStatus.setUsername(normilizeUsername);
             userBucketAndStatus.setStatus(BucketOperationStatus.FAILED);
-            userBucketAndStatus.setMessage("Failed to create bucket " + username);
+            userBucketAndStatus.setMessage("Failed to create bucket " + normilizeUsername);
             throw new RuntimeException(e.getMessage());
         }
         return userBucketAndStatus;
@@ -51,44 +53,45 @@ public class UserBucketServiceImpl implements UserBucketService
     @Override
     public UserBucketAndStatus deleteUserBucket(String username)
     {
-        logger.info("Deleting bucket " + username);
+        String normilizeUsername = MinioUtil.normalizeBucketName(username);
+        logger.info("Deleting bucket " + normilizeUsername);
         UserBucketAndStatus userBucketAndStatus = new UserBucketAndStatus();
 
         try
         {
-            if (minioClient.bucketExists(BucketExistsArgs.builder().bucket(username).build()))
+            if (minioClient.bucketExists(BucketExistsArgs.builder().bucket(normilizeUsername).build()))
             {
                 Iterable<Result<Item>> results = minioClient.listObjects(
-                        ListObjectsArgs.builder().bucket(username).recursive(true).build()
+                        ListObjectsArgs.builder().bucket(normilizeUsername).recursive(true).build()
                 );
 
                 for (Result<Item> result : results)
                 {
                     Item item = result.get();
                     minioClient.removeObject(
-                            RemoveObjectArgs.builder().bucket(username).object(item.objectName()).build()
+                            RemoveObjectArgs.builder().bucket(normilizeUsername).object(item.objectName()).build()
                     );
                 }
 
-                minioClient.removeBucket(RemoveBucketArgs.builder().bucket(username).build());
+                minioClient.removeBucket(RemoveBucketArgs.builder().bucket(normilizeUsername).build());
 
-                userBucketAndStatus.setUsername(username);
+                userBucketAndStatus.setUsername(normilizeUsername);
                 userBucketAndStatus.setStatus(BucketOperationStatus.DELETED);
                 userBucketAndStatus.setMessage("Bucket deleted successfully");
-                logger.info("Bucket " + username + " deleted successfully");
+                logger.info("Bucket " + normilizeUsername + " deleted successfully");
             }
             else
             {
-                userBucketAndStatus.setUsername(username);
+                userBucketAndStatus.setUsername(normilizeUsername);
                 userBucketAndStatus.setStatus(BucketOperationStatus.DOES_NOT_EXIST);
                 userBucketAndStatus.setMessage("Bucket does not exist");
             }
         }
         catch (Exception e)
         {
-            userBucketAndStatus.setUsername(username);
+            userBucketAndStatus.setUsername(normilizeUsername);
             userBucketAndStatus.setStatus(BucketOperationStatus.FAILED);
-            userBucketAndStatus.setMessage("Failed to delete bucket " + username);
+            userBucketAndStatus.setMessage("Failed to delete bucket " + normilizeUsername);
             throw new RuntimeException(e.getMessage());
         }
 
@@ -98,17 +101,19 @@ public class UserBucketServiceImpl implements UserBucketService
     @Override
     public UserBucketAndStatus updateUserBucket(String oldUsername, String newUsername)
     {
-        logger.info("Renaming bucket " + oldUsername + " to " + newUsername);
+        String normilizeOldUsername = MinioUtil.normalizeBucketName(oldUsername);
+        String normilizeNewUsername = MinioUtil.normalizeBucketName(newUsername);
+        logger.info("Renaming bucket " + normilizeOldUsername + " to " + normilizeNewUsername);
         UserBucketAndStatus userBucketAndStatus = new UserBucketAndStatus();
 
         try
         {
-            if (minioClient.bucketExists(BucketExistsArgs.builder().bucket(oldUsername).build()))
+            if (minioClient.bucketExists(BucketExistsArgs.builder().bucket(normilizeOldUsername).build()))
             {
-                createUserBucket(newUsername);
+                createUserBucket(normilizeNewUsername);
 
                 Iterable<Result<Item>> results = minioClient.listObjects(
-                        ListObjectsArgs.builder().bucket(oldUsername).recursive(true).build()
+                        ListObjectsArgs.builder().bucket(normilizeOldUsername).recursive(true).build()
                 );
 
                 for (Result<Item> result : results)
@@ -116,30 +121,30 @@ public class UserBucketServiceImpl implements UserBucketService
                     Item item = result.get();
                     minioClient.copyObject(
                             CopyObjectArgs.builder()
-                                    .bucket(newUsername)
+                                    .bucket(normilizeNewUsername)
                                     .object(item.objectName())
-                                    .source(CopySource.builder().bucket(oldUsername).object(item.objectName()).build())
+                                    .source(CopySource.builder().bucket(normilizeOldUsername).object(item.objectName()).build())
                                     .build()
                     );
                 }
 
-                deleteUserBucket(oldUsername);
-                userBucketAndStatus.setUsername(newUsername);
+                deleteUserBucket(normilizeOldUsername);
+                userBucketAndStatus.setUsername(normilizeNewUsername);
                 userBucketAndStatus.setStatus(BucketOperationStatus.UPDATED);
-                userBucketAndStatus.setMessage("Bucket renamed from " + oldUsername + " to " + newUsername + " successfully");
+                userBucketAndStatus.setMessage("Bucket renamed from " + normilizeOldUsername + " to " + normilizeNewUsername + " successfully");
             }
             else
             {
-                userBucketAndStatus.setUsername(oldUsername);
+                userBucketAndStatus.setUsername(normilizeOldUsername);
                 userBucketAndStatus.setStatus(BucketOperationStatus.DOES_NOT_EXIST);
                 userBucketAndStatus.setMessage("Bucket does not exist");
             }
         }
         catch (Exception e)
         {
-            userBucketAndStatus.setUsername(oldUsername);
+            userBucketAndStatus.setUsername(normilizeOldUsername);
             userBucketAndStatus.setStatus(BucketOperationStatus.FAILED);
-            userBucketAndStatus.setMessage("Failed to update bucket " + oldUsername);
+            userBucketAndStatus.setMessage("Failed to update bucket " + normilizeOldUsername);
             throw new RuntimeException(e.getMessage());
         }
 
