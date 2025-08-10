@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="be573ed2-7c65-469c-afcf-7f54e388d45c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/database-api-service/src/main/java/com/glos/databaseAPIService/domain/service/FileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/database-api-service/src/main/java/com/glos/databaseAPIService/domain/service/FileService.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="JUnit5 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/globalstorage/GlobalStorageProject&quot;,
+    &quot;accountId&quot;: &quot;9610a0ac-6e7c-40d9-be1b-f4da95a79697&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2gWCgoAGJpyPWT1w09cCXS3ePpE" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.backend/docker-compose.dev.yml.minio: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.backend: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.GetAccessesTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.IsAvailableTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.RemoveAccessTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.isAvailableTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.testAddAccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.testIsAvailable.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessControllerTest.testRemoveAccess.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessTypeAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessTypeControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AccessTypeControllerTest.testGetByFilter.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.All in comment-service.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.getTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.loginTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.logoutTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.refreshTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.registerAdminTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.registerUserNoCorrectDataTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.registerUserTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthControllerTest.validateTokenTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentAPIControllerTest.getAllTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentAPIControllerTest.getByIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentControllerTest.deleteCommentTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentControllerTest.getByFilterTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentControllerTest.updateCommentTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CommentServiceApplicationTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.EmailControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.EmailControllerTest.getAllTemplatesTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.EmailControllerTest.sendMessageTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FeedControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FeedControllerTest.getPublicRepositoriesTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileAPIControllerTest.createFileTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileAPIControllerTest.deleteFileTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileAPIControllerTest.getFileByRootFullNameTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileAPIControllerTest.getFilesByRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileAPIControllerTest.updateFileTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileAccessControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileCommentControllerTest,getCommentsTest and 3 more.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileCommentControllerTest.createComment.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileCommentControllerTest.createCommentTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileCommentControllerTest.deleteCommentTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileCommentControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileCommentControllerTest.getCommentsTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileControllerTest.deleteTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileControllerTest.getByRootFullNameTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileControllerTest.getFileByIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileControllerTest.updateTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileUploadControllerTest,uploadFileTest and 1 more.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileUploadControllerTest.downloadFileTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileUploadControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileUploadControllerTest.uploadFileTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileUserAccessTypeControllerTest.createTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileUserAccessTypeControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileUserAccessTypeControllerTest.testCreate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupAPIControllerTest.getAllGroups.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupAPIControllerTest.getGroupById.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupAPIControllerTest.getGroupByIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupAPIControllerTest.getGroupsByFilters.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.GroupAPIControllerTest.getGroupsByFiltersTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.OpenEndpointControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryAPIControllerTest.getRepositoriesByOwnerIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryAPIControllerTest.getRepositoryByRootFullNameTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryAPIControllerTest.getRepositoryTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryAccessControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryCommentControllerTest.createCommentTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryCommentControllerTest.deleteCommentTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryCommentControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryCommentControllerTest.getCommentsTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryCommentControllerTest.updateCommentTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryControllerTest.createTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryControllerTest.getByFilterTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryControllerTest.getByOwnerIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryControllerTest.getRepositoryByRootFullNameTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryControllerTest.updateTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryUserAccessTypeAPIControllerTest.createRUATTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryUserAccessTypeAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryUserAccessTypeAPIControllerTest.getAllRUATTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryUserAccessTypeAPIControllerTest.getRUATByFilterTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryUserAccessTypeAPIControllerTest.getRUATByIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RoleAPIControllerTest.createRole.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RoleAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RoleAPIControllerTest.getAllRoles.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RoleAPIControllerTest.getRoleByIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RoleAPIControllerTest.getRoleByName.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedControllerTest.GenerateSharedTokenTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedTokenControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SharedTokenControllerTest.generateTokenTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagControllerTest.addFilesTag.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagControllerTest.getTagsTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagControllerTest.removeFilesTag.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagControllerTest.removeRepositoryTag.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagControllerTest.testAddTag.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserAPIControllerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserAPIControllerTest.getUserTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserAPIControllerTest.updateUserTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.java in comment-service.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.comment-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.comment-service [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.comment-service [org.apache.maven.plugins:maven-jar-plugin:3.3.0:jar].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.comment-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.database-api-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.database-api-service [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.database-api-service [test].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AccessServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.AuthServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.CommentServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.DatabaseApiServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EurekaServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.FeedServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.FileManagerServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.FileStorageServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.UserServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;backend&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/GlobalStorageProject&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.project.maven.repository.indices&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.glos.filemanagerservice.controllers" />
+      <recent name="com.glos.databaseAPIService.domain.controller" />
+      <recent name="com.glos.accessservice.controllers" />
+      <recent name="com.glos.api.apigateway.domain.controller" />
+      <recent name="com.glos.api.authservice.controller" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.FileAPIControllerTest">
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="EmailControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="notification-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.notificationservice.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.notificationservice.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.notificationservice.controller.EmailControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EmailControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="notification-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.notificationservice.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.notificationservice.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.notificationservice.controller.EmailControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FeedControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="file-manager-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.filemanagerservice.controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.filemanagerservice.controllers" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.filemanagerservice.controllers.FeedControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FeedControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="file-manager-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.filemanagerservice.controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.filemanagerservice.controllers" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.filemanagerservice.controllers.FeedControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileAPIControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.databaseAPIService.domain.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.databaseAPIService.domain.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.databaseAPIService.domain.controller.FileAPIControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileAPIControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.databaseAPIService.domain.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.databaseAPIService.domain.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.databaseAPIService.domain.controller.FileAPIControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RepositoryAPIControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.databaseAPIService.domain.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.databaseAPIService.domain.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.databaseAPIService.domain.controller.RepositoryAPIControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RepositoryAPIControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.databaseAPIService.domain.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.databaseAPIService.domain.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.databaseAPIService.domain.controller.RepositoryAPIControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoleAPIControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.databaseAPIService.domain.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.databaseAPIService.domain.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.databaseAPIService.domain.controller.RoleAPIControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RoleAPIControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.glos.databaseAPIService.domain.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.glos.databaseAPIService.domain.controller" />
+      <option name="MAIN_CLASS_NAME" value="com.glos.databaseAPIService.domain.controller.RoleAPIControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AccessServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="access-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.accessservice.AccessServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AccessServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="access-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.accessservice.AccessServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.apigateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.apigateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AuthServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="auth-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.authservice.AuthServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AuthServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="auth-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.authservice.AuthServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CommentServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="comment-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.commentservice.CommentServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CommentServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="comment-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.commentservice.CommentServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.config.ConfigServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.config.ConfigServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DatabaseApiServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.databaseAPIService.DatabaseApiServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DatabaseApiServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="database-api-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.databaseAPIService.DatabaseApiServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eureka-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.eurekaservice.EurekaServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurekaServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eureka-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.eurekaservice.EurekaServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FeedServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="feed-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.feedservice.FeedServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FeedServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="feed-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.feedservice.FeedServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileManagerServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="file-manager-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.filemanagerservice.FileManagerServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileManagerServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="file-manager-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.filemanagerservice.FileManagerServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileStorageServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="file-storage-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.filestorageservice.FileStorageServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileStorageServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="file-storage-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.filestorageservice.FileStorageServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="notification-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.notificationservice.NotificationServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NotificationServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="notification-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.notificationservice.NotificationServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OperationServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="operation-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.operationservice.OperationServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OperationServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="operation-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.operationservice.OperationServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="user-manager-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.userservice.UserServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="user-manager-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.glos.api.userservice.UserServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.FileAPIControllerTest" />
+        <item itemvalue="JUnit.EmailControllerTest" />
+        <item itemvalue="JUnit.RoleAPIControllerTest" />
+        <item itemvalue="JUnit.RepositoryAPIControllerTest" />
+        <item itemvalue="JUnit.FeedControllerTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
+        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="be573ed2-7c65-469c-afcf-7f54e388d45c" name="Changes" comment="" />
+      <created>1715804064598</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1715804064598</updated>
+      <workItem from="1715804066250" duration="2842000" />
+      <workItem from="1715947805961" duration="22474000" />
+      <workItem from="1716030108818" duration="3191000" />
+      <workItem from="1716035838260" duration="3000" />
+      <workItem from="1716286822388" duration="1019000" />
+      <workItem from="1716288683089" duration="8124000" />
+      <workItem from="1716305897106" duration="17797000" />
+      <workItem from="1716393434392" duration="9293000" />
+      <workItem from="1716404923323" duration="63000" />
+      <workItem from="1716405006407" duration="14635000" />
+      <workItem from="1716419848303" duration="677000" />
+      <workItem from="1716471058551" duration="24419000" />
+      <workItem from="1716562080663" duration="2094000" />
+      <workItem from="1716623352077" duration="4101000" />
+      <workItem from="1716635663692" duration="6058000" />
+      <workItem from="1716810910678" duration="2152000" />
+      <workItem from="1716834537211" duration="39000" />
+      <workItem from="1716838515064" duration="7567000" />
+      <workItem from="1716846886082" duration="694000" />
+      <workItem from="1716917516927" duration="4357000" />
+      <workItem from="1716925698801" duration="4663000" />
+      <workItem from="1717008771272" duration="608000" />
+      <workItem from="1717085952918" duration="4454000" />
+      <workItem from="1717106843566" duration="3039000" />
+      <workItem from="1717184891315" duration="9259000" />
+      <workItem from="1717231409821" duration="128000" />
+      <workItem from="1717246542091" duration="1475000" />
+      <workItem from="1717248597431" duration="2732000" />
+      <workItem from="1717252429573" duration="476000" />
+      <workItem from="1717256082329" duration="1544000" />
+      <workItem from="1717320356526" duration="2286000" />
+      <workItem from="1717440022687" duration="5319000" />
+      <workItem from="1717523124289" duration="43000" />
+      <workItem from="1717694842985" duration="7521000" />
+      <workItem from="1717802742705" duration="2568000" />
+      <workItem from="1717849802453" duration="6364000" />
+      <workItem from="1717957258746" duration="67000" />
+      <workItem from="1718037162186" duration="5557000" />
+      <workItem from="1718049422345" duration="2173000" />
+      <workItem from="1718052747189" duration="712000" />
+      <workItem from="1718135658484" duration="7017000" />
+      <workItem from="1718230215489" duration="833000" />
+      <workItem from="1718311152704" duration="640000" />
+      <workItem from="1718619806577" duration="2363000" />
+      <workItem from="1718638918548" duration="5572000" />
+      <workItem from="1718714834334" duration="10974000" />
+      <workItem from="1718861331444" duration="324000" />
+      <workItem from="1719040123805" duration="445000" />
+      <workItem from="1719050021188" duration="5325000" />
+      <workItem from="1719223287851" duration="2150000" />
+      <workItem from="1719225780757" duration="9330000" />
+      <workItem from="1720176859120" duration="843000" />
+      <workItem from="1734369874050" duration="1770000" />
+      <workItem from="1735581339474" duration="36000" />
+      <workItem from="1737723795847" duration="690000" />
+      <workItem from="1737733705528" duration="246000" />
+      <workItem from="1746892283566" duration="577000" />
+      <workItem from="1749658213409" duration="1109000" />
+      <workItem from="1749715175219" duration="221000" />
+      <workItem from="1754840664849" duration="529000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/backend/file-manager-service/src/main/java/com/glos/filemanagerservice/facade/RepositoryApiFacade.java</url>
+          <line>53</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
